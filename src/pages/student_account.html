@@ -10,36 +10,59 @@
 </head>
 <body>
     <header>
-        <nav>
-            <div class="mobile-menu-container">
-                <button class="mobile-burger" id="mobile-burger">
-                    <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
-                    <i class="fa-solid fa-xmark trans-xmark" id="trans-xmark"></i>
-                </button>
-
-                <div class="mobile-menu" id="mobile-menu"> 
-                    <ul>
-                        <li><a href="student_home.php">HOME</a></li>
-                        <li><a href="#">ENROLLMENT</a></li>
-                        <li><a href="student_subjects.html">SUBJECTS</a></li>
-                        <li><a href="#">COURSE</a></li>
-                        <li><a href="#">GRADES</a></li>
-                    </ul>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
                 </div>
             </div>
 
-            <div class="logo-container">
-                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Judah Isaiah dela Cruz
+                </div>
+                <div class="acc-img">
+                    <img  src="../assets/test/student-profile.webp">
+                </div>
             </div>
-            <ul class="main-nav">
-                <li><a href="student_home.php">HOME</a></li>
-                <li><a href="#">ENROLLMENT</a></li>
-                <li><a href="student_subjects.html">SUBJECTS</a></li>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <!--
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="student_home.php">
+                        <i class="fa-solid fa-display"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Enrollment</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="student_subjects.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Subjects</div>
+                    </a>
+                </li>
                 <li class="course-dropdown">
                     <a href="#" id="course-dropdown">
-                        COURSE<i class="fa-solid fa-chevron-down" id="course-dropdown-icon"></i>
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">
+                            Course
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
                     </a>
-                    <div class="course-dropdown-menu" id="course-dropdown-menu">
+                    <div class="course-dropdown-menu" style="display: none;">
                         <ul>
                             <li class="course-option1"><a href="student_info-program.html">PROGRAM</a></li>
                             <li class="course-option2"><a href="student_info-college.html">COLLEGE</a></li>
@@ -47,22 +70,15 @@
                         </ul>
                     </div>
                 </li>
-                <li><a href="#">GRADES</a></li>
-            </ul>
-
-            <div class="account-container" id="account-button">
-                <button>
-                    <i class="fa-solid fa-user"></i>
-                </button>
-
-                <div class="account-menu" id="account-menu">
-                    <ul>
-                        <li class="account-option1"><a href="student_account.html">ACCOUNT</a></li>
-                        <li class="account-option2"><a href="../php/logout.php">LOG-OUT</a></li>
-                    </ul>
-                </div>
-            </div>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">GRADES</div>
+                    </a>
+                </li>
+            </ul> 
         </nav>
+        -->
     </header>
 
     <main>
@@ -404,7 +420,6 @@
             </div>
         </div>
     </main>
-
     <script src="../js/student_account.js"></script>
     <script src="../js/student_main.js"></script>
 </body>

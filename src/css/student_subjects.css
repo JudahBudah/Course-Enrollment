@@ -1,5 +1,6 @@
 main {
-    padding: 80px 0 0 0;
+    display: flex;
+    flex-direction: column;
 }
 
 
@@ -24,12 +25,6 @@ select {
     background-size: 17px;
     padding-right: 40px;
     text-align: center;
-}
-
-
-.main-container {
-    display: flex;
-    flex-direction: column;
 }
 
 
@@ -96,7 +91,7 @@ hr {
     letter-spacing: 0.06em;
 }
 
-.col-name{
+.col-side {
     text-align: left;
 }
 
@@ -137,14 +132,10 @@ hr {
 }
 
 .code-badge {
-    background: #f5e0e2;
-    color: var(--red-dk);
+    color: var(--navy);
     white-space: nowrap;
     font-weight: 700;
     font-size: 0.75rem;
-
-    padding: 3px 10px;
-    border-radius: 6px;
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
@@ -168,7 +159,7 @@ hr {
 
 /* Lecture & Lab tag */
 .type-tag {
-    margin: 0 0 0 6px;
+    margin-left: 6px;
     padding: 2px 7px;
     border-radius: 4px;
 
@@ -194,26 +185,6 @@ hr {
     width: 24px;
     height: 24px;
     border-radius: 50%;
-}
-
-.col-prof {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.prof-avatar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-
-    background: var(--off);
-    color: var(--navy);
-    font-size: 0.7rem;
 }
 
 

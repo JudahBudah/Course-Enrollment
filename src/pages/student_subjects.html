@@ -10,36 +10,59 @@
 </head>
 <body>
     <header>
-        <nav>
-            <div class="mobile-menu-container">
-                <button class="mobile-burger" id="mobile-burger">
-                    <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
-                    <i class="fa-solid fa-xmark trans-xmark" id="trans-xmark"></i>
-                </button>
-
-                <div class="mobile-menu" id="mobile-menu"> 
-                    <ul>
-                        <li><a href="student_home.php">HOME</a></li>
-                        <li><a href="#">ENROLLMENT</a></li>
-                        <li><a href="student_subjects.html">SUBJECTS</a></li>
-                        <li><a href="#">COURSE</a></li>
-                        <li><a href="#">GRADES</a></li>
-                    </ul>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
                 </div>
             </div>
 
-            <div class="logo-container">
-                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Judah Isaiah dela Cruz
+                </div>
+                <div class="acc-img">
+                    <img  src="../assets/test/student-profile.webp">
+                </div>
             </div>
-            <ul class="main-nav">
-                <li><a href="student_home.php">HOME</a></li>
-                <li><a href="#">ENROLLMENT</a></li>
-                <li><a href="student_subjects.html">SUBJECTS</a></li>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <!--
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="student_home.php">
+                        <i class="fa-solid fa-display"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Enrollment</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="student_subjects.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Subjects</div>
+                    </a>
+                </li>
                 <li class="course-dropdown">
                     <a href="#" id="course-dropdown">
-                        COURSE<i class="fa-solid fa-chevron-down" id="course-dropdown-icon"></i>
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">
+                            Course
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
                     </a>
-                    <div class="course-dropdown-menu" id="course-dropdown-menu">
+                    <div class="course-dropdown-menu" style="display: none;">
                         <ul>
                             <li class="course-option1"><a href="student_info-program.html">PROGRAM</a></li>
                             <li class="course-option2"><a href="student_info-college.html">COLLEGE</a></li>
@@ -47,242 +70,221 @@
                         </ul>
                     </div>
                 </li>
-                <li><a href="#">GRADES</a></li>
-            </ul>
-
-            <div class="account-container" id="account-button">
-                <button>
-                    <i class="fa-solid fa-user"></i>
-                </button>
-
-                <div class="account-menu" id="account-menu">
-                    <ul>
-                        <li class="account-option1"><a href="student_account.html">ACCOUNT</a></li>
-                        <li class="account-option2"><a href="../php/logout.php">LOG-OUT</a></li>
-                    </ul>
-                </div>
-            </div>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">GRADES</div>
+                    </a>
+                </li>
+            </ul> 
         </nav>
+        -->
     </header>
 
     <main>
-        <div class="main-container">
-
-            <!-- Schedule Navigation -->
-
-            <div class="sched-nav">
-                <div class="sched-opn-title">
-                    Year and Semester
-                </div>
-                <hr>
-                <div class="sched-nav-options"> <!-- Selected na agad 'yong current year and sem ni student' -->
-                    <select name="sched-year" >
-                        <option value="2025 - 2026">2025 - 2026</option>
-                    </select>
-
-                    <select name="admission_status" id="admission_status">
-                        <option value="First Semester">First Semester</option>
-                        <option value="Second Semester">Second Semester</option>
-                    </select>
-                </div>
+        <!-- Schedule Navigation -->
+        <div class="sched-nav">
+            <div class="sched-opn-title">
+                Year and Semester
             </div>
+            <hr>
+            <div class="sched-nav-options"> <!-- Selected na agad 'yong current year and sem ni student' -->
+                <select name="sched-year" >
+                    <option value="2025 - 2026">2025 - 2026</option>
+                </select>
+
+                <select name="admission_status" id="admission_status">
+                    <option value="First Semester">First Semester</option>
+                    <option value="Second Semester">Second Semester</option>
+                </select>
+            </div>
+        </div>
 
 
-            <!-- Schedule Table -->
-            
-            <div class="sched-table-wrapper">
-                <div class="sched-table">
-                    <div class="sched-table-header">
-                        <span class="col-head">#</span>
-                        <span class="col-head">SUBJECT CODE</span>
-                        <span class="col-head">SECTION</span>
-                        <span class="col-name">SUBJECT NAME</span>
-                        <span class="col-head">UNITS</span>
-                        <span class="col-head">PROFESSOR</span>
-                    </div>
+        <!-- Schedule Table -->
+        
+        <div class="sched-table-wrapper">
+            <div class="sched-table">
+                <div class="sched-table-header">
+                    <span class="col-head">#</span>
+                    <span class="col-head">SUBJECT CODE</span>
+                    <span class="col-head">SECTION</span>
+                    <span class="col-side">SUBJECT NAME</span>
+                    <span class="col-head">UNITS</span>
+                    <span class="col-head">PROFESSOR</span>
+                </div>
 
-                    <div class="sched-table-body">
-                        <div class="sched-row">
-                            <span class="col-num">1</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0221</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Numerical Methods</span>
-                        
-                            <span class="units-badge">3</span>
+                <div class="sched-table-body">
+                    <div class="sched-row">
+                        <span class="col-num">1</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0221</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Numerical Methods</span>
                     
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Juan dela Cruz
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">2</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0222</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Software Design
-                                <span class="type-tag">Lecture</span>
-                            </span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Maria Santos
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">3</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0222.1</span>
-                            </span>
-                            <span class="col-container"><span class="section-badge">BSCpE 2-1</span></span>
-                            <span class="col-name">Software Design 
-                                <span class="type-tag">Laboratory</span>
-                            </span>
-                            <span class="units-badge">1</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Maria Santos
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">4</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0223</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Fundamentals of Electronic Circuits 
-                                <span class="type-tag">Lecture</span>
-                            </span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Carlos Reyes
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">5</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0223.1</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Fundamentals of Electronic Circuits 
-                                <span class="type-tag">Laboratory</span>
-                            </span>
-                            <span class="units-badge">1</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Carlos Reyes
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">6</span>
-                            <span class="col-container">
-                                <span class="code-badge">ETH 0008</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Ethics</span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Ana Villanueva
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">7</span>
-                            <span class="col-container">
-                                <span class="code-badge">LWR 0009</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Life and Works of Rizal</span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Roberto Lim
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">8</span>
-                            <span class="col-container">
-                                <span class="code-badge">PPC 122</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">Philippine Popular Culture</span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Luz Fernandez
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">9</span>
-                            <span class="col-container">
-                                <span class="code-badge">TCW 0005</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-name">The Contemporary World</span>
-                            <span class="units-badge">3</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Edwin Torres
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">10</span>
-                            <span class="col-container">
-                                <span class="code-badge">PATHFIT 405</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge alt">PATHFIT 4-2</span>
-                            </span>
-                            <span class="col-name">Larong Lahi</span>
-                            <span class="units-badge">2</span>
-                            <span class="col-prof">
-                                <span class="prof-avatar"><i class="fa-solid fa-user-tie"></i></span>
-                                Prof. Dante Garcia
-                            </span>
-                        </div>
+                        <span class="units-badge">3</span>
+                
+                        <span class="col-prof">
+                            Prof. Juan dela Cruz
+                        </span>
                     </div>
 
-                    <div class="sched-table-footer">
-                        <span>Total Subjects: <strong>10</strong></span>
-                        <span>Total Units: <strong>25</strong></span>
+                    <div class="sched-row">
+                        <span class="col-num">2</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Software Design
+                            <span class="type-tag">Lecture</span>
+                        </span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Maria Santos
+                        </span>
                     </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">3</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222.1</span>
+                        </span>
+                        <span class="col-container"><span class="section-badge">BSCpE 2-1</span></span>
+                        <span class="col-side">Software Design 
+                            <span class="type-tag">Laboratory</span>
+                        </span>
+                        <span class="units-badge">1</span>
+                        <span class="col-prof">
+                            Prof. Maria Santos
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">4</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0223</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Fundamentals of Electronic Circuits 
+                            <span class="type-tag">Lecture</span>
+                        </span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Carlos Reyes
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">5</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0223.1</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Fundamentals of Electronic Circuits 
+                            <span class="type-tag">Laboratory</span>
+                        </span>
+                        <span class="units-badge">1</span>
+                        <span class="col-prof">
+                            Prof. Carlos Reyes
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">6</span>
+                        <span class="col-container">
+                            <span class="code-badge">ETH 0008</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Ethics</span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Ana Villanueva
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">7</span>
+                        <span class="col-container">
+                            <span class="code-badge">LWR 0009</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Life and Works of Rizal</span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Roberto Lim
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">8</span>
+                        <span class="col-container">
+                            <span class="code-badge">PPC 122</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Philippine Popular Culture</span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Luz Fernandez
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">9</span>
+                        <span class="col-container">
+                            <span class="code-badge">TCW 0005</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">The Contemporary World</span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Edwin Torres
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">10</span>
+                        <span class="col-container">
+                            <span class="code-badge">PATHFIT 405</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge alt">PATHFIT 4-2</span>
+                        </span>
+                        <span class="col-side">Larong Lahi</span>
+                        <span class="units-badge">2</span>
+                        <span class="col-prof">
+                            Prof. Dante Garcia
+                        </span>
+                    </div>
+                </div>
+
+                <div class="sched-table-footer">
+                    <span>Total Subjects: <strong>10</strong></span>
+                    <span>Total Units: <strong>25</strong></span>
                 </div>
             </div>
+        </div>
 
-            <div class="sched-time">
-                <div class="weekly-sched-titlebar">WEEKLY SCHEDULE</div>
-                <div class="weekly-sched-wrapper">
-                    <div class="weekly-grid" id="weeklyGrid"></div>
-                </div>
+        <div class="sched-time">
+            <div class="weekly-sched-titlebar">WEEKLY SCHEDULE</div>
+            <div class="weekly-sched-wrapper">
+                <div class="weekly-grid" id="weeklyGrid"></div>
             </div>
         </div>
     </main>
