@@ -5,6 +5,7 @@
     --tag-bg:   #e6e2d8;
 }
 
+
 /* Main */
 main {
     display: flex;
@@ -83,20 +84,6 @@ main {
     font-weight: 500;
     color: var(--dark);
 }
-
-.badge {
-    display: inline-flex;
-    align-items: center;
-    background: var(--tag-bg);
-    color: var(--navy);
-    font-size: .72rem;
-    font-weight: 600;
-    letter-spacing: .05em;
-    padding: 3px 10px;
-    border-radius: 999px;
-    text-transform: uppercase;
-}
-.badge.green { background: #e5f5ec; color: #1a6b3c; }
 
 
 /* TABLE SECTION HEAD */
