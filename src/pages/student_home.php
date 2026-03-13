@@ -43,7 +43,6 @@
             </button>
             -->
         </div>
-        <!--
         <nav>
             <ul class="main-ul">
                 <li>
@@ -88,8 +87,10 @@
                 </li>
             </ul> 
         </nav>
-        -->
+
     </header>
+    <div class="main-flex">
+    <div class="spacer"></div>
 
     <main>
         <div class="student-calendar-container">
@@ -270,10 +271,7 @@
         </div>
     </main>
 
-    <footer>
-
-    </footer>
-
+    </div>
     <script src="../js/student_home.js"></script>
     <script src="../js/student_main.js"></script>
 </body>
