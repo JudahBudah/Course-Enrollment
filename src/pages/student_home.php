@@ -105,59 +105,98 @@
     <div class="spacer"></div>
 
     <main>
-        <div class="student-calendar-container">
-            <div class="student-info-container">
-                <div class="student-title">
-                    <div class="img-container">
-                        <img src="../assets/test/student-profile.webp">
-                    </div>
-                    <div class="student-title-content">
-                        <h1><?php echo $user_data["user_name"]; ?></h1>
-                        <p>202412680</p>
-                        <p>jindelacruz2024@plm.edu.ph</p>
-                    </div>
+        <!-- STUDENT INFO CARD -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Student Information</h2>
+            </div>
+            <div class="student-body">
+                <div class="avatar-wrap">
+                    <img src="../assets/test/student-profile.webp">
                 </div>
-                <hr>
-                <div class="student-content">
-                    <div class="info-row">
-                        <p class="info-heading">PROGRAM</p>
-                        <p class="info-input">Bachelor of Science in Computer Engineering</p>
+                <div class="student-title-content">
+                    <h3><?php echo $user_data["user_name"]; ?></h3>
+                    <p>202412680</p>
+                    <p>jindelacruz2024@plm.edu.ph</p>
+                </div>
+                <div class="student-divider"></div>
+                <div class="student-details">
+                    <div class="detail-item">
+                        <label>Program</label>
+                        <span>Bachelor of Science in Computer Engineering</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">YEAR</p>
-                        <p class="info-input">Second Year</p>
+                    <div class="detail-item">
+                        <label>Year</label>
+                        <span>2nd Year</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">REGISTRATION STATUS</p>
-                        <p class="info-input">Regular</p>
+                    <div class="detail-item">
+                        <label>Registration Status</label>
+                        <span>Regular</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">ENROLLMENT STATUS</p>
-                        <p class="info-input">Enrolled</p>
+                    <div class="detail-item">
+                        <label>Enrollment Status</label>
+                        <span>Enrolled</span>
                     </div>
                 </div>
             </div>
-
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <h2 id="cal-month-label"></h2>
-                    <div class="cal-nav">
-                        <button id="cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button id="cal-next"><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                <div class="calendar-days-of-week">
-                    <span>SUN</span><span>MON</span><span>TUE</span>
-                    <span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
-                </div>
-                <div class="calendar-grid" id="cal-grid"></div>
-                <div class="calendar-footer" id="cal-footer">No date selected</div>
-            </div>
-
         </div>
 
-        <div class="schedule-container">
+            
 
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Today's Schedule</h2>
+                    <a href="student_schedule.php" class="link-small">View All</a>
+                </div>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <div class="schedule-time">08:00 - 10:00</div>
+                        <div class="schedule-details">
+                            <h4>Data Structures and Algorithms</h4>
+                            <p>Room 301 • Prof. Maria Santos</p>
+                        </div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">10:30 - 12:30</div>
+                        <div class="schedule-details">
+                            <h4>Database Management Systems</h4>
+                            <p>Room 205 • Prof. Roberto Cruz</p>
+                        </div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">14:00 - 16:00</div>
+                        <div class="schedule-details">
+                            <h4>Software Engineering</h4>
+                            <p>Room 402 • Prof. Ana Reyes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Calendar</h2>
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span class="cal-month-label" id="cal-month-label"></span>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="calendar-wrap">
+                    <div class="cal-grid-header">
+                        <span>Sun</span><span>Mon</span><span>Tue</span>
+                        <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div class="cal-grid" id="cal-grid"></div>
+                </div>
+
+                <!-- Event tooltip -->
+                <div class="cal-event-peek" id="cal-event-peek">
+                    <p id="cal-event-text"></p>
+                </div>
+            </div>
         </div>
 
         <div class="news-events-section">

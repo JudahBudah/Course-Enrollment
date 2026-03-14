@@ -7,3 +7,5 @@ acad_dropdown.addEventListener("click", event => {
     acad_dropdown_menu.classList.toggle("open");
     acad_dropdown.classList.toggle("open");
 });
+
+

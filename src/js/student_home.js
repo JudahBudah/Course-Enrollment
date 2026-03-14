@@ -1,76 +1,69 @@
-/* Calendar */
+// Simulated admin events — replace with PHP/DB data
+const events = {
+    "2026-03-05": "Enrollment deadline for 2nd Semester",
+    "2026-03-14": "University Foundation Day — No Classes",
+    "2026-03-20": "Mid-term Examinations Begin",
+    "2026-03-25": "Research Symposium",
+};
 
-const MONTHS = [
-    'January','February','March','April','May','June',
-    'July','August','September','October','November','December'
-];
+let current = new Date();
 
-const today      = new Date();
-let viewYear     = today.getFullYear();
-let viewMonth    = today.getMonth();
-let selectedDate = null;
+function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const today = new Date();
 
-const monthLabel = document.getElementById('cal-month-label');
-const grid       = document.getElementById('cal-grid');
-const footer     = document.getElementById('cal-footer');
+    document.getElementById("cal-month-label").textContent =
+        date.toLocaleString("default", { month: "long", year: "numeric" });
 
-function renderCalendar() {
-    monthLabel.textContent = `${MONTHS[viewMonth]} ${viewYear}`;
-    grid.innerHTML = '';
+    const grid = document.getElementById("cal-grid");
+    grid.innerHTML = "";
 
-    const firstDay    = new Date(viewYear, viewMonth, 1).getDay();
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const daysInPrev  = new Date(viewYear, viewMonth, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    for (let i = firstDay - 1; i >= 0; i--)
-        addCell(daysInPrev - i, true);
+    // Empty leading cells
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement("div");
+        empty.className = "cal-day empty";
+        grid.appendChild(empty);
+    }
 
     for (let d = 1; d <= daysInMonth; d++) {
-        const isToday =
-            d === today.getDate() &&
-            viewMonth === today.getMonth() &&
-            viewYear  === today.getFullYear();
-        const isSelected =
-            selectedDate &&
-            d === selectedDate.day &&
-            viewMonth === selectedDate.month &&
-            viewYear  === selectedDate.year;
-        addCell(d, false, isToday, isSelected, d);
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const cell = document.createElement("div");
+        cell.className = "cal-day";
+        cell.textContent = d;
+
+        const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        if (isToday) cell.classList.add("today");
+
+        if (events[key]) {
+            cell.classList.add("has-event");
+            const dot = document.createElement("span");
+            dot.className = "event-dot";
+            cell.appendChild(dot);
+
+            cell.addEventListener("click", () => {
+                const peek = document.getElementById("cal-event-peek");
+                const text = document.getElementById("cal-event-text");
+                text.textContent = `${key} — ${events[key]}`;
+                peek.style.display = "block";
+            });
+        }
+
+        grid.appendChild(cell);
     }
 
-    const total    = firstDay + daysInMonth;
-    const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
-    for (let d = 1; d <= trailing; d++) addCell(d, true);
+    document.getElementById("cal-event-peek").style.display = "none";
 }
 
-function addCell(label, otherMonth, isToday = false, isSelected = false, dayNum = null) {
-    const el = document.createElement('div');
-    el.classList.add('cal-day');
-    el.textContent = label;
-    if (otherMonth)  el.classList.add('other-month', 'empty');
-    if (isToday)     el.classList.add('today');
-    if (isSelected)  el.classList.add('selected');
-    if (!otherMonth && dayNum) {
-        el.addEventListener('click', () => {
-            selectedDate = { day: dayNum, month: viewMonth, year: viewYear };
-            footer.textContent = `${MONTHS[viewMonth]} ${dayNum}, ${viewYear}`;
-            renderCalendar();
-        });
-    }
-    grid.appendChild(el);
+function changeMonth(dir) {
+    current.setMonth(current.getMonth() + dir);
+    renderCalendar(current);
 }
 
-document.getElementById('cal-prev').addEventListener('click', () => {
-    if (--viewMonth < 0) { viewMonth = 11; viewYear--; }
-    renderCalendar();
-});
-
-document.getElementById('cal-next').addEventListener('click', () => {
-    if (++viewMonth > 11) { viewMonth = 0; viewYear++; }
-    renderCalendar();
-});
-
-renderCalendar();
+renderCalendar(current);
 
 
 /* Card Slider */
