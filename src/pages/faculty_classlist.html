@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Class List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../css/faculty_classlist.css" />
+    <link rel="stylesheet" href="../css/faculty_main.css" />
+  </head>
+  <body>
+    <header>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
+            </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Venedict Mendoza
+                </div>
+                <div class="acc-img">
+                    <img  src="../assets/test/faculty-profile.jpg">
+                </div>
+            </div>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="faculty_home.html">
+                        <i class="fa-solid fa-display"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_load.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Load / Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_classlist.html">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Class List</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_spreadsheet.html">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Spreadsheet</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Grading</div>
+                    </a>
+                </li>
+            </ul> 
+        </nav>
+    </header>
+
+    <div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+
+        <div class="section-nav">
+            <div class="section-opn-title">
+                Class List (Section / Block)
+            </div>
+            <hr>
+            <div class="section-nav-options">
+                <select name="sec-block">
+                    <option value="section">CPE 0222 - BSCpE 2-1 - Software Design (Lecture)</option>
+                    <option value="section">CPE 0222 - BSCpE 2-2 - Software Design (Lecture)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sec-table-wrapper">
+            <div class="sec-table">
+                <div class="sec-table-header">
+                    <span class="col-head-num">#</span>
+                    <span class="col-head-stud-no">STUDENT NO.</span>
+                    <span class="col-head-sec">SECTION</span>
+                    <span class="col-head-name">FULL NAME (LN, FN_MI)</span>
+                </div>
+
+                <div class="sec-table-body">
+                    <div class="sec-row">
+                        <span class="col-num">1</span>
+                        <span class="col-container">
+                            <span class="student-no">202410579</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Agote, Jimboy D.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">2</span>
+                        <span class="col-container">
+                            <span class="student-no">202410914</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Almario, John Basty J.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">3</span>
+                        <span class="col-container">
+                            <span class="student-no">202410385</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Aniag, Samantha Nicole D.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">4</span>
+                        <span class="col-container">
+                            <span class="student-no">202411711</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Antonino, Nelson Jr. M.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">5</span>
+                        <span class="col-container">
+                            <span class="student-no">202410304</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Bagorio, Laimelyn R.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">6</span>
+                        <span class="col-container">
+                            <span class="student-no">202410061</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Bautista, John Carlo E.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">7</span>
+                        <span class="col-container">
+                            <span class="student-no">202411098</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Blanco, Gabrielle Nicole S.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">8</span>
+                        <span class="col-container">
+                            <span class="student-no">202333054</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Celeste, Carl Isaac D.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">9</span>
+                        <span class="col-container">
+                            <span class="student-no">202411727</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Daez, Jiro A.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">10</span>
+                        <span class="col-container">
+                            <span class="student-no">202412680</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Dela Cruz, Judah Isaiah N.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">11</span>
+                        <span class="col-container">
+                            <span class="student-no">202411126</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Doria, Iresh Gail C.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">12</span>
+                        <span class="col-container">
+                            <span class="student-no">202411162</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Era, Kent C.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">13</span>
+                        <span class="col-container">
+                            <span class="student-no">202411110</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Hernando, Francine Mica M.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">14</span>
+                        <span class="col-container">
+                            <span class="student-no">202410876</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Lewis, Pearl Nadine A.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">15</span>
+                        <span class="col-container">
+                            <span class="student-no">202410605</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Lopez, Miguel Ross S.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">16</span>
+                        <span class="col-container">
+                            <span class="student-no">202411443</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Lumabi, Kevin G.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">17</span>
+                        <span class="col-container">
+                            <span class="student-no">202411357</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Martinez, Bryelle Eauxyrish V.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">18</span>
+                        <span class="col-container">
+                            <span class="student-no">202412294</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Mendoza, Venedict E.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">19</span>
+                        <span class="col-container">
+                            <span class="student-no">202410544</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Montalban, Amira Beatriz B.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">20</span>
+                        <span class="col-container">
+                            <span class="student-no">202412685</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Muncada, John Louie L.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">21</span>
+                        <span class="col-container">
+                            <span class="student-no">202400348</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Orongan, Princess Kyle E.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">22</span>
+                        <span class="col-container">
+                            <span class="student-no">202411846</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Placio, Rheanne D.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">23</span>
+                        <span class="col-container">
+                            <span class="student-no">202412557</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Porta, Rex Reu B.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">24</span>
+                        <span class="col-container">
+                            <span class="student-no">202410103</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Rodriguez, Ivanne Joshua L.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">25</span>
+                        <span class="col-container">
+                            <span class="student-no">202411077</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Rollon, John Rupert M.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">26</span>
+                        <span class="col-container">
+                            <span class="student-no">202410565</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Tiu, Khristian Gabriel R.</span>
+                    </div>
+
+                    <div class="sec-row">
+                        <span class="col-num">27</span>
+                        <span class="col-container">
+                            <span class="student-no">202411104</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Tulang, Humprey P.</span>
+                    </div>
+                </div>
+
+                <div class="sec-table-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </div>
+    
+    <script src="../js/faculty_main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../css/faculty_home.css" />
+    <link rel="stylesheet" href="../css/faculty_main.css" />
+  </head>
+  <body>
+    <header>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
+            </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Venedict Mendoza
+                </div>
+                <div class="acc-img">
+                    <img  src="../assets/test/faculty-profile.jpg">
+                </div>
+            </div>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="faculty_home.html">
+                        <i class="fa-solid fa-display"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_load.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Load / Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_classlist.html">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Class List</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_spreadsheet.html">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Spreadsheet</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-regular fa-id-badge"></i>
+                        <div class="li-name">Grading</div>
+                    </a>
+                </li>
+            </ul> 
+        </nav>
+    </header>
+
+    <div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+        <div class="faculty-calendar-container">
+            <div class="faculty-info-container">
+                <div class="faculty-title">
+                    <div class="img-container">
+                        <img src="../assets/test/faculty-profile.jpg">
+                    </div>
+                    <div class="faculty-title-content">
+                        <h1>Venedict Mendoza</h1>
+                    </div>
+                </div>
+                <hr>
+                <div class="faculty-content">
+                    <div class="info-row">
+                        <p class="info-heading">CODE NUMBER</p>
+                        <p class="info-input">202419994</p>
+                    </div>
+                    <div class="info-row">
+                        <p class="info-heading">EMAIL</p>
+                        <p class="info-input">vemendoza2024@plm.edu.ph</p>
+                    </div>
+                    <div class="info-row">
+                        <p class="info-heading">POSITION</p>
+                        <p class="info-input">Part-Time Faculty</p>
+                    </div>
+                    <div class="info-row">
+                        <p class="info-heading">COLLEGE</p>
+                        <p class="info-input">College of Engineering</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <h2 id="cal-month-label"></h2>
+                    <div class="cal-nav">
+                        <button id="cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button id="cal-next"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="calendar-days-of-week">
+                    <span>SUN</span><span>MON</span><span>TUE</span>
+                    <span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+                </div>
+                <div class="calendar-grid" id="cal-grid"></div>
+                <div class="calendar-footer" id="cal-footer">No date selected</div>
+            </div>
+
+        </div>
+
+        <div class="schedule-container">
+          <div class="schedule-header">
+            <div class="schedule-title">
+              <i class="fa-solid fa-book"></i>
+              <span>Load / Schedule</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="news-events-section">
+            <div class="news-events-header">
+                <div class="news-events-title">
+                    <i class="fa-regular fa-newspaper"></i>
+                    <span>News & Events</span>
+                </div>
+
+                <div class="nav-buttons">
+                    <button>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="news-events-card-wrapper">
+                <div class="news-events-container">
+
+                    <div class="news-events-card">
+                        <a href="#">
+                            <img src="../assets/student_home_slider/slider-sample01.webp" alt="PLM Campus" loading="lazy">
+
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    </p>
+                                </div>
+                                <div class="card-date">
+                                    <p>
+                                        January 1, 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="news-events-card">
+                        <a href="#">
+                            <img src="../assets/student_home_slider/slider-sample02.webp" alt="PLM Campus" loading="lazy">
+
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    </p>
+                                </div>
+                                <div class="card-date">
+                                    <p>
+                                        January 1, 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="news-events-card">
+                        <a href="#">
+                            <img src="../assets/student_home_slider/slider-sample03.webp" alt="PLM Campus" loading="lazy">
+
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    </p>
+                                </div>
+                                <div class="card-date">
+                                    <p>
+                                        January 1, 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="news-events-card">
+                        <a href="#">
+                            <img src="../assets/student_home_slider/slider-sample04.webp" alt="PLM Campus" loading="lazy">
+
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    </p>
+                                </div>
+                                <div class="card-date">
+                                    <p>
+                                        January 1, 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="news-events-card">
+                        <a href="#">
+                            <img src="../assets/student_home_slider/slider-sample05.webp" alt="PLM Campus" loading="lazy">
+
+                            <div class="card-content">
+                                <div class="card-title">
+                                    <p>
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                    </p>
+                                </div>
+                                <div class="card-date">
+                                    <p>
+                                        January 1, 2026
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    </div>
+
+    <footer></footer>
+
+    <script src="../js/faculty_home.js"></script>
+  </body>
+</html>

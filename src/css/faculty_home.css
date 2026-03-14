@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* --- Faculty & Calendar Container --- */
+
+.faculty-calendar-container {
+    display: flex;
+    width: 100%;
+}
+
+
+/* Faculty Information */
+
+.faculty-info-container {
+    width: 40%;
+    padding: 40px 30px;
+    border: solid 3px var(--red); 
+    border-radius: 25px;
+
+}
+
+.faculty-info-container hr {
+    border: 1.5px solid var(--red);
+    margin: 30px 0;
+}
+
+
+/* Faculty Title */
+
+.faculty-title {
+    display: flex;
+}
+
+.img-container {
+    height: 130px;
+    width: 130px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.img-container img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;  
+    object-position: center;
+    border-radius: 25px;
+}
+
+.faculty-title-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 0 0 20px;
+}
+
+.faculty-title-content h1 {
+    font-size: 1.3rem;
+    margin: 0 0 10px 0;
+}
+
+
+/* Faculty Content */
+
+.faculty-content {
+    display: flex;
+    flex-direction: column;
+    gap: 45px;
+}
+
+.info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.info-heading {
+    font-weight: 600;
+    text-align: center;
+}
+
+.info-input {
+    text-align: center;
+}
+
+
+/* Calender Container */
+
+.calendar-container {
+    padding: 24px 28px;
+    flex-grow: 1;
+    margin: 0 0 0 20px;
+    border: solid 3px var(--red);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.calendar-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.cal-nav {
+    display: flex;
+    gap: 6px;
+}
+
+.cal-nav button {
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.cal-nav button:hover {
+    border-color: var(--red);
+}
+
+.calendar-days-of-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.calendar-days-of-week span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 1.5px solid #e8c0c3;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    color: #333;
+    transition: background 0.12s, color 0.12s;
+    user-select: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+.cal-day:hover:not(.empty):not(.today):not(.selected) {
+    background: #f5e6e7;
+}
+
+.cal-day.other-month {
+    color: #ccc;
+}
+
+.cal-day.today {
+    background: #f5e6e7;
+    color: var(--red);
+    font-weight: 700;
+    border: 1.5px solid var(--red);
+}
+
+.cal-day.selected {
+    background: var(--red);
+    color: #fff;
+    font-weight: 700;
+}
+
+.cal-day.empty {
+    cursor: default;
+}
+
+.calendar-footer {
+    font-size: 0.75rem;
+    color: #706f6f;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* Load / Schedule */
+
+.schedule-container {
+    padding: 24px 28px;
+    flex-grow: 1;
+    margin: 20px 0 0 0;
+    border: solid 3px var(--red);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.schedule-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* News & Updates Carousel */
+
+.news-events-section {
+    margin: 30px 0;
+}
+
+.news-events-section hr {
+    border: 1.5px solid var(--red);
+}
+
+
+/* News Header */
+
+.news-events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.4rem;
+    margin: 0 0 10px 0;
+}
+
+.news-events-title {
+    display: flex;
+    align-items: center;
+}
+
+.news-events-title span {
+    font-weight: 500;
+    margin: 0 0 0 10px;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-buttons button {
+    height: 30px;
+    width: 30px;
+    background-color: white;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.nav-buttons button:hover {
+    border-color: var(--red);
+}
+
+.nav-buttons button:disabled {
+    opacity: 0.4;
+    cursor: default;
+    background-color: white;
+    border-color: #ddd;
+}
+
+/* Slider */
+
+.news-events-card-wrapper {
+    margin: 40px 0 0 0;
+    overflow: hidden; 
+}
+
+.news-events-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    gap: 5px;
+}
+
+
+/* Slider Card */
+
+.news-events-card {
+    width: 25%;
+    flex-shrink: 0;
+    overflow: hidden;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-events-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+}
+
+
+/* Card Content */
+
+.card-content {
+    padding: 10px 5px;
+}
+
+.card-title {
+    color: var(--red);
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0 10px 0;
+}
+
+.card-date {
+    color: rgb(102, 102, 102);
+}
+
+/* Media Query */
+
+@media(min-width: 1400px) {
+    .student-title-content h1 {
+    font-size: 1.4rem;
+    }
+
+}
+
+@media(min-width: 1550px) {
+
+    .news-events-card {
+    width: 20%;
+    }
+
+    .student-title-content h1 {
+    font-size: 1.5rem;
+    }
+
+}
+
+@media(min-width: 2000px) {
+    .student-info-container {
+        padding: 50px;
+    }
+}
