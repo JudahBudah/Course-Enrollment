@@ -13,7 +13,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="../css/student_home.css">
     <link rel="stylesheet" href="../css/student_main.css">
@@ -46,43 +46,55 @@
         <nav>
             <ul class="main-ul">
                 <li>
-                    <a href="student_home.php">
-                        <i class="fa-solid fa-display"></i>
+                    <a href="student_home.php" class="active">
+                        <i class="fa-solid fa-house"></i>
                         <div class="li-name">Dashboard</div>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fa-regular fa-id-badge"></i>
+                    <a href="student_subjects.html">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="student_enrollment.html">
+                        <i class="fa-solid fa-id-card"></i>
                         <div class="li-name">Enrollment</div>
                     </a>
                 </li>
                 <li>
-                    <a href="student_subjects.html">
+                    <a href="student_grades.html">
                         <i class="fa-solid fa-book"></i>
-                        <div class="li-name">Subjects</div>
+                        <div class="li-name">Grades</div>
                     </a>
                 </li>
                 <li class="course-dropdown">
-                    <a href="#" id="course-dropdown">
-                        <i class="fa-regular fa-id-badge"></i>
-                        <div class="li-name">
-                            Course
+                    <a href="#" id="acad-dropdown">
+                        <i class="fa-solid fa-school"></i>
+                        <div class="li-name chev-space">
+                            Academics
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
                     </a>
-                    <div class="course-dropdown-menu" style="display: none;">
+                    <div class="acad-dropdown-menu" id="acad-dropdown-menu">
                         <ul>
-                            <li class="course-option1"><a href="student_info-program.html">PROGRAM</a></li>
-                            <li class="course-option2"><a href="student_info-college.html">COLLEGE</a></li>
-                            <li class="course-option3"><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">CURRICULUM</a></li>
+                            <li><a href="student_info-program.html">Program</a></li>
+                            <li><a href="student_info-college.html">College</a></li>
+                            <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
                         </ul>
                     </div>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fa-regular fa-id-badge"></i>
-                        <div class="li-name">GRADES</div>
+                    <a href="student_account.html">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="../php/logout.php" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
                     </a>
                 </li>
             </ul> 
