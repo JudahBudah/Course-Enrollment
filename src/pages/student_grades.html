@@ -97,207 +97,637 @@
 
     <main>
         <!-- STUDENT INFO CARD -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>Student Information</h2>
+        <div class="card">
+            <div class="card-header">
+                <h2>Student Information</h2>
+            </div>
+            <div class="student-body">
+                <div class="avatar-wrap">
+                    <img src="../assets/test/student-profile.webp">
                 </div>
-                <div class="student-body">
-                    <div class="avatar-wrap">
-                        <img src="../assets/test/student-profile.webp">
+                <div class="student-details">
+                    <div class="detail-item">
+                        <label>Full Name</label>
+                        <span>Ako si Tiu</span>
                     </div>
-                    <div class="student-details">
-                        <div class="detail-item">
-                            <label>Full Name</label>
-                            <span>Ako si Tiu</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Student Number</label>
-                            <span>2022511047</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Program</label>
-                            <span>Professional Scavenger</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>School Year</label>
-                            <span>2025 - 2026</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Status</label>
-                            <span>Regular</span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Semester</label>
-                            <span>1st Semester</span>
-                        </div>
+                    <div class="detail-item">
+                        <label>Student Number</label>
+                        <span>2022511047</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Program</label>
+                        <span>Professional Scavenger</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>School Year</label>
+                        <span>2025 - 2026</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Status</label>
+                        <span>Regular</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>Semester</label>
+                        <span>1st Semester</span>
                     </div>
                 </div>
             </div>
+        </div>
  
         <!-- FOLDER TABS + GRADES -->
         <div class="folder-card">
             <!-- Year Tabs -->
             <div class="tab-row">
-                <button class="tab">1st Year</button>
-                <button class="tab">2nd Year</button>
-                <button class="tab active">3rd Year</button>
-                <button class="tab">4th Year</button>
+                <button class="tab active" data-year="1">1st Year</button>
+                <button class="tab" data-year="2">2nd Year</button>
+                <button class="tab" data-year="3">3rd Year</button>
+                <button class="tab" data-year="4">4th Year</button>
             </div>
  
             <!-- Folder Body -->
             <div class="folder-body">
- 
-                <!-- 1st Semester -->
-                <div class="semester-panel">
-                    <div class="semester-label">1st Semester</div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="center">#</th>
-                                    <th class="center">Subject Code</th>
-                                    <th>Subject Title</th>
-                                    <th class="center">Units</th>
-                                    <th class="center">Section</th>
-                                    <th class="center">Final Grade</th>
-                                    <th class="center">Grade Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="center row-num">1</td>
-                                    <td><span class="subj-code">CPE 0221</span></td>
-                                    <td>Numerical Methods</td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">1.00</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">2</td>
-                                    <td><span class="subj-code">CPE 0223</span></td>
-                                    <td>Fundamentals of Electronic Circuits <span class="type-tag">Lecture</span></td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">1.00</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">3</td>
-                                    <td><span class="subj-code">CPE 0223.1</span></td>
-                                    <td>Fundamentals of Electronic Circuits <span class="type-tag">Laboratory</span></td>
-                                    <td class="center">1</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">1.25</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">4</td>
-                                    <td><span class="subj-code">ETH 0008</span></td>
-                                    <td>Ethics</td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">2.00</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr class="gwa-row">
-                                    <td colspan="7" class="gwa-label">
-                                        GWA: <span class="gwa-val">1.0000</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        
-                        </table>
-                    </div><!-- Table Wrapper -->
-                </div><!-- semester-panel -->
- 
-                <!-- 2nd Semester -->
-                <div class="semester-panel">
-                    <div class="semester-label">2nd Semester</div>
-                    <div class="table-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="center">#</th>
-                                    <th class="center">Subject Code</th>
-                                    <th>Subject Title</th>
-                                    <th class="center">Units</th>
-                                    <th class="center">Section</th>
-                                    <th class="center">Final Grade</th>
-                                    <th class="center">Grade Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="center row-num">1</td>
-                                    <td><span class="subj-code">CPE 0221</span></td>
-                                    <td>Numerical Methods</td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">1.00</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">2</td>
-                                    <td><span class="subj-code">CPE 0223</span></td>
-                                    <td>Fundamentals of Electronic Circuits <span class="type-tag">Lecture</span></td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">1.00</span></td>
-                                    <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">3</td>
-                                    <td><span class="subj-code">CPE 0224</span></td>
-                                    <td>Software Engineering</td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">INC</span></td>
-                                    <td class="center"><span class="grade-status incomplete"><i class="fa-solid fa-circle-exclamation" style="font-size:.65rem"></i>Incomplete</span></td>
-                                </tr>
-                                <tr>
-                                    <td class="center row-num">4</td>
-                                    <td><span class="subj-code">MATH 0031</span></td>
-                                    <td>Differential Equations</td>
-                                    <td class="center">3</td>
-                                    <td class="center">BSCpE 2-1</td>
-                                    <td class="center"><span class="grade-val">5.00</span></td>
-                                    <td class="center"><span class="grade-status failed"><i class="fa-solid fa-circle-xmark" style="font-size:.65rem"></i>Failed</span></td>
-                                </tr>
-                                <tr class="gwa-row">
-                                    <td colspan="7" class="gwa-label">
-                                        GWA: <span class="gwa-val">1.0000</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div><!-- Table Wrapper -->
-                </div><!-- semester-panel -->
- 
-                <!-- Overall Summary Bar -->
-                <div class="summary-bar">
-                    <div class="summary-item">
-                        <span class="s-label">Overall GWA</span>
-                        <span class="s-val gold">1.96875</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="s-label">Actual Total Units Earned</span>
-                        <span class="s-val">75</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="s-label">Academic Units</span>
-                        <span class="s-val">72</span>
-                    </div>
-                    <div class="summary-item">
-                        <span class="s-label">Non-Academic Units</span>
-                        <span class="s-val">6</span>
-                    </div>
-                </div><!-- Summary Bar -->
+
+                <div class="year-panel active" data-year="1">
+                    <!-- 1st Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">1st Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0221</span></td>
+                                        <td>Numerical Methods</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0223</span></td>
+                                        <td>Fundamentals of Electronic Circuits <span class="type-tag">Lecture</span></td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">CPE 0223.1</span></td>
+                                        <td>Fundamentals of Electronic Circuits <span class="type-tag">Laboratory</span></td>
+                                        <td class="center">1</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.25</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">ETH 0008</span></td>
+                                        <td>Ethics</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">2.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">1.0000</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- 2nd Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">2nd Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0221</span></td>
+                                        <td>Numerical Methods</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0223</span></td>
+                                        <td>Fundamentals of Electronic Circuits <span class="type-tag">Lecture</span></td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">CPE 0224</span></td>
+                                        <td>Software Engineering</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">INC</span></td>
+                                        <td class="center"><span class="grade-status incomplete"><i class="fa-solid fa-circle-exclamation" style="font-size:.65rem"></i>Incomplete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">MATH 0031</span></td>
+                                        <td>Differential Equations</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">5.00</span></td>
+                                        <td class="center"><span class="grade-status failed"><i class="fa-solid fa-circle-xmark" style="font-size:.65rem"></i>Failed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">1.0000</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- Overall Summary Bar -->
+                    <div class="summary-bar">
+                        <div class="summary-item">
+                            <span class="s-label">Overall GWA</span>
+                            <span class="s-val gold">1.96875</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Actual Total Units Earned</span>
+                            <span class="s-val">75</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Academic Units</span>
+                            <span class="s-val">72</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Non-Academic Units</span>
+                            <span class="s-val">6</span>
+                        </div>
+                    </div><!-- Summary Bar -->
+                </div>
+
+                <div class="year-panel" data-year="2">
+                    <!-- 1st Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">1st Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">MATH 0021</span></td>
+                                        <td>Calculus II</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.50</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0111</span></td>
+                                        <td>Computer Programming I</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.25</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">PHYS 0012</span></td>
+                                        <td>Physics for Engineers <span class="type-tag">Lecture</span></td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">2.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">PHYS 0012.1</span></td>
+                                        <td>Physics for Engineers <span class="type-tag">Laboratory</span></td>
+                                        <td class="center">1</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.75</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">1.6250</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- 2nd Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">2nd Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">MATH 0022</span></td>
+                                        <td>Calculus III</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">2.25</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0112</span></td>
+                                        <td>Computer Programming II</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">1.50</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">ENG 0015</span></td>
+                                        <td>Technical Writing</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">INC</span></td>
+                                        <td class="center"><span class="grade-status incomplete"><i class="fa-solid fa-circle-exclamation" style="font-size:.65rem"></i>Incomplete</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">HUM 0010</span></td>
+                                        <td>Philippine Literature</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 2-1</td>
+                                        <td class="center"><span class="grade-val">2.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">1.9375</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- Overall Summary Bar -->
+                    <div class="summary-bar">
+                        <div class="summary-item">
+                            <span class="s-label">Overall GWA</span>
+                            <span class="s-val gold">1.96875</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Actual Total Units Earned</span>
+                            <span class="s-val">75</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Academic Units</span>
+                            <span class="s-val">72</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Non-Academic Units</span>
+                            <span class="s-val">6</span>
+                        </div>
+                    </div><!-- Summary Bar -->
+                </div>
+
+                <div class="year-panel" data-year="3">
+                    <!-- 1st Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">1st Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0221</span></td>
+                                        <td>Numerical Methods</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">1.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0231</span></td>
+                                        <td>Microprocessor Systems <span class="type-tag">Lecture</span></td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">1.75</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">CPE 0231.1</span></td>
+                                        <td>Microprocessor Systems <span class="type-tag">Laboratory</span></td>
+                                        <td class="center">1</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">2.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">CPE 0241</span></td>
+                                        <td>Data Structures & Algorithms</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">1.25</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">1.5000</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- 2nd Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">2nd Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0251</span></td>
+                                        <td>Operating Systems</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">2.50</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0252</span></td>
+                                        <td>Computer Networks</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">3.00</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">CPE 0253</span></td>
+                                        <td>Embedded Systems Design</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">5.00</span></td>
+                                        <td class="center"><span class="grade-status failed"><i class="fa-solid fa-circle-xmark" style="font-size:.65rem"></i>Failed</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">MATH 0031</span></td>
+                                        <td>Differential Equations</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 3-1</td>
+                                        <td class="center"><span class="grade-val">2.75</span></td>
+                                        <td class="center"><span class="grade-status passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i>Passed</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">3.3125</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- Overall Summary Bar -->
+                    <div class="summary-bar">
+                        <div class="summary-item">
+                            <span class="s-label">Overall GWA</span>
+                            <span class="s-val gold">1.96875</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Actual Total Units Earned</span>
+                            <span class="s-val">75</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Academic Units</span>
+                            <span class="s-val">72</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Non-Academic Units</span>
+                            <span class="s-val">6</span>
+                        </div>
+                    </div><!-- Summary Bar -->
+                </div>  
+                
+                <div class="year-panel" data-year="4">
+                    <!-- 1st Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">1st Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0411</span></td>
+                                        <td>Capstone Project I</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">OG</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0421</span></td>
+                                        <td>Advanced Computer Architecture</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">OG</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">3</td>
+                                        <td><span class="subj-code">CPE 0431</span></td>
+                                        <td>IoT and Cyber-Physical Systems</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">OG</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">4</td>
+                                        <td><span class="subj-code">MGT 0041</span></td>
+                                        <td>Engineering Management</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">OG</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">—</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- 2nd Semester -->
+                    <div class="semester-panel">
+                        <div class="semester-label">2nd Semester</div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th class="center">#</th>
+                                        <th class="center">Subject Code</th>
+                                        <th>Subject Title</th>
+                                        <th class="center">Units</th>
+                                        <th class="center">Section</th>
+                                        <th class="center">Final Grade</th>
+                                        <th class="center">Grade Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="center row-num">1</td>
+                                        <td><span class="subj-code">CPE 0412</span></td>
+                                        <td>Capstone Project II</td>
+                                        <td class="center">3</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">—</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="center row-num">2</td>
+                                        <td><span class="subj-code">CPE 0441</span></td>
+                                        <td>On-the-Job Training</td>
+                                        <td class="center">6</td>
+                                        <td class="center">BSCpE 4-1</td>
+                                        <td class="center"><span class="grade-val">—</span></td>
+                                        <td class="center"><span class="grade-status ongoing"><i class="fa-solid fa-circle-half-stroke" style="font-size:.65rem"></i>Ongoing</span></td>
+                                    </tr>
+                                    <tr class="gwa-row">
+                                        <td colspan="7" class="gwa-label">
+                                            GWA: <span class="gwa-val">—</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div><!-- Table Wrapper -->
+                    </div><!-- semester-panel -->
+    
+                    <!-- Overall Summary Bar -->
+                    <div class="summary-bar">
+                        <div class="summary-item">
+                            <span class="s-label">Overall GWA</span>
+                            <span class="s-val gold">1.96875</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Actual Total Units Earned</span>
+                            <span class="s-val">75</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Academic Units</span>
+                            <span class="s-val">72</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="s-label">Non-Academic Units</span>
+                            <span class="s-val">6</span>
+                        </div>
+                    </div><!-- Summary Bar -->
+                </div>    
+
             </div><!-- folder-body -->
-        </div><!-- folder-wrapper -->
+        </div>
     </main>
 
     </div>
     <script src="../js/student_main.js"></script>
+    <script src="../js/student_grades.js"></script>
 </body>
 </html>

@@ -225,6 +225,9 @@ thead th {
 }
 
 
+.year-panel { display: none; }
+.year-panel.active { display: block; }
+
 /* Table Body */
 
 tbody tr:not(:last-child) {

@@ -4,8 +4,9 @@
     header("Cashe-Control: pre-check-0, post-check-0", false);
     header("Pragma: no-cashe");
 
-    if ( $_GET["rel"]!="page") {
+    $current = basename($_SERVER['PHP_SELF']); // gets "test1.php" or "test2.php"
 
+    if ( $_GET["rel"]!="page") {
 ?>
 
 <!DOCTYPE html>
@@ -14,11 +15,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Test1</title>
+    <style>
+        a.active { font-weight: bold; color: red; }
+    </style>
 </head>
 <body>
     <div>
-        <a href="test1.php" rel="page">Test1</a>
-        <a href="test2.php" rel="page">Test2</a>
+        <a href="test1.php" rel="page" class="<?= $current == 'test1.php' ? 'active' : '' ?>">Test1</a>
+        <a href="test2.php" rel="page" class="<?= $current == 'test2.php' ? 'active' : '' ?>">Test2</a>
     </div>
     
     <div id="load">

@@ -35,3 +35,29 @@ window.addEventListener("popstate", function() {
       document.querySelector("#load").innerHTML = data;
    } );
 } );
+
+
+function setActiveLink() {
+    const current = window.location.pathname.split("/").pop(); // gets "test1.php"
+    
+    document.querySelectorAll("a[rel='page']").forEach(link => {
+        const linkPage = link.getAttribute("href").split("/").pop();
+        link.classList.toggle("active", linkPage === current);
+    });
+}
+
+document.querySelectorAll("a[rel='page']").forEach(link => {
+    link.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        fetch(this.href + "?rel=page")
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("load").innerHTML = html;
+                history.pushState({}, "", this.href);
+                setActiveLink(); // update active link after each navigation
+            });
+    });
+});
+
+setActiveLink(); // also run on first page load
