@@ -436,17 +436,18 @@
 /* Card Content */
 
 .card-content {
-    padding: 10px 5px;
+    padding: 10px 15px;
 }
 
 .card-title {
     color: var(--red);
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin: 0 0 10px 0;
 }
 
 .card-date {
+    font-size: 0.7rem;
     color: rgb(102, 102, 102);
 }
 
