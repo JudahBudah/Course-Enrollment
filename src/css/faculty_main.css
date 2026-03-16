@@ -51,8 +51,7 @@ body {
 }
 
 header {
-    font-family: "Poppins", sans-serif;
-    font-optical-sizing: auto;
+    font-family: "DM Sans", sans-serif;
     font-weight: 400;
 }
 
@@ -74,7 +73,7 @@ p {
 a {
     text-decoration: none;
     color: black;
-    }
+}
 
 ul {
     list-style: none;
@@ -169,9 +168,7 @@ header nav {
     position: fixed;
     top: 0;
     left: 0;
-    display: flex;
-    justify-content: center;
-    padding: 0 40px 0 25px;
+    padding-top: 95px;
     height: 100vh;
     width: 250px;
     background-color: white;
@@ -179,11 +176,15 @@ header nav {
     z-index: 50;
 }
 
+/* To check what consumes space
+* {
+  outline: 1px solid red;
+}
+*/
+
 .main-ul {
     display: flex;
     flex-direction: column;
-    margin-top: 80px;
-    gap: 30px;
 }
 
 .main-ul li {
@@ -192,8 +193,10 @@ header nav {
 }
 
 .main-ul li a {
+    position: relative;
     display: flex;
     align-items: center;
+    padding: 16px 32px;
     gap: 15px;
     color: var(--dark);
     transition: 0.3s;
@@ -201,17 +204,40 @@ header nav {
 
 .main-ul li a:hover {
     color: var(--text);
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
-.fa-display, .fa-id-badge, .fa-book {
-    font-size: 1.3rem;
+.logout-bg i, .logout-bg .li-name {
+    color: var(--text);
+}
+
+.main-ul li .logout-bg:hover {
+    background-color: rgba(181, 35, 50, 0.1);
+    color: var(--red)
+}
+
+/* Border-left when active */
+.main-ul li a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+}
+
+.main-ul li a.active::before {
+    background-color: var(--red);
+}
+
+.main-ul li a.active {
+    background-color: rgba(0, 0, 0, 0.06);
 }
 
 /*
 .li-name {
     display: none;
 }
-
 
 
 /* Media Query */
