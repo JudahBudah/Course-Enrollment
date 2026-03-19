@@ -1,19 +1,29 @@
+
+<?php
+    session_start(); 
+    
+    include("../../php/connection.php");
+    include("../../php/functions.php");
+
+    $user_data = check_login($con);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="icon" href="../assets/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="../css/faculty_home.css" />
-    <link rel="stylesheet" href="../css/faculty_main.css" />
-  </head>
-  <body>
+    <link rel="icon" href="../../assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/student/student_home.css">
+    <link rel="stylesheet" href="../../css/student/student_main.css">
+</head>
+<body>
     <header>
         <div class="nav-section">
             <div class="logo-container">
-                <img src="../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
                 <div class="title-container">
                     <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
                     <div class="logo-sub">University of the City of Manila</div>
@@ -22,10 +32,10 @@
 
             <div class="acc-display-container">
                 <div class="acc-name">
-                    Venedict Mendoza
+                    Judah Isaiah dela Cruz
                 </div>
                 <div class="acc-img">
-                    <img  src="../assets/test/faculty-profile.jpg">
+                    <img  src="../../assets/test/student-profile.webp">
                 </div>
             </div>
             <!-- Integrate Later
@@ -37,86 +47,96 @@
         <nav>
             <ul class="main-ul">
                 <li>
-                    <a href="faculty_home.html" class="active">
+                    <a href="student_home.php" class="active">
                         <i class="fa-solid fa-house"></i>
                         <div class="li-name">Dashboard</div>
                     </a>
                 </li>
                 <li>
-                    <a href="faculty_load.html">
+                    <a href="student_subjects.html">
                         <i class="fa-solid fa-calendar"></i>
                         <div class="li-name">Schedule</div>
                     </a>
                 </li>
                 <li>
-                    <a href="faculty_classlist.html">
-                        <i class="fa-solid fa-list"></i>
-                        <div class="li-name">Class List</div>
+                    <a href="student_enrollment.html">
+                        <i class="fa-solid fa-id-card"></i>
+                        <div class="li-name">Enrollment</div>
                     </a>
                 </li>
                 <li>
-                    <a href="faculty_spreadsheet.html">
-                        <i class="fa-solid fa-table"></i>
-                        <div class="li-name">Spreadsheet</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="faculty_gradebook.html">
+                    <a href="student_grades.html">
                         <i class="fa-solid fa-book"></i>
-                        <div class="li-name">Gradebook</div>
+                        <div class="li-name">Grades</div>
                     </a>
                 </li>
+                <li class="course-dropdown">
+                    <a href="#" id="acad-dropdown">
+                        <i class="fa-solid fa-school"></i>
+                        <div class="li-name chev-space">
+                            Academics
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </div>
+                    </a>
+                    <div class="acad-dropdown-menu" id="acad-dropdown-menu">
+                        <ul>
+                            <li><a href="student_info-program.html">Program</a></li>
+                            <li><a href="student_info-college.html">College</a></li>
+                            <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                        </ul>
+                    </div>
+                </li>
                 <li>
-                    <a href="faculty_profile.html">
+                    <a href="student_account.html">
                         <i class="fa-solid fa-user"></i>
                         <div class="li-name">Profile</div>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="logout-bg">
+                    <a href="../../php/logout.php" class="logout-bg">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         <div class="li-name">Logout</div>
                     </a>
                 </li>
             </ul> 
         </nav>
-    </header>
 
+    </header>
     <div class="main-flex">
     <div class="spacer"></div>
 
     <main>
-        <!-- FACULTY INFO CARD -->
+        <!-- STUDENT INFO CARD -->
         <div class="card">
             <div class="card-header">
-                <h2>Faculty Information</h2>
+                <h2>Student Information</h2>
             </div>
-            <div class="faculty-body">
+            <div class="student-body">
                 <div class="avatar-wrap">
-                    <img src="../assets/test/faculty-profile.jpg">
+                    <img src="../../assets/test/student-profile.webp">
                 </div>
-                <div class="faculty-title-content">
-                    <!-- <h3><?php echo $user_data["user_name"]; ?></h3> -->
-                    <h2>Venedict Mendoza</h2>
-                    <p>vemendoza2024@plm.edu.ph</p>
+                <div class="student-title-content">
+                    <h3><?php echo $user_data["user_name"]; ?></h3>
+                    <p>202412680</p>
+                    <p>jindelacruz2024@plm.edu.ph</p>
                 </div>
-                <div class="faculty-divider"></div>
-                <div class="faculty-details">
+                <div class="student-divider"></div>
+                <div class="student-details">
                     <div class="detail-item">
-                        <label>Code Number</label>
-                        <span>2024-12294</span>
+                        <label>Program</label>
+                        <span>Bachelor of Science in Computer Engineering</span>
                     </div>
                     <div class="detail-item">
-                        <label>Position</label>
-                        <span>Part-Time Faculty</span>
+                        <label>Year</label>
+                        <span>2nd Year</span>
                     </div>
                     <div class="detail-item">
-                        <label>College</label>
-                        <span>College of Engineering</span>
+                        <label>Registration Status</label>
+                        <span>Regular</span>
                     </div>
                     <div class="detail-item">
-                        <label>Department</label>
-                        <span>Computer Engineering</span>
+                        <label>Enrollment Status</label>
+                        <span>Enrolled</span>
                     </div>
                 </div>
             </div>
@@ -127,36 +147,29 @@
         <div class="content-grid">
             <div class="card">
                 <div class="card-header">
-                    <h2>Weekly Schedule</h2>
-                    <a href="faculty_load.html" class="link-small">View All</a>
+                    <h2>Today's Schedule</h2>
+                    <a href="student_schedule.php" class="link-small">View All</a>
                 </div>
                 <div class="schedule-list">
                     <div class="schedule-item">
-                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-time">08:00 - 10:00</div>
                         <div class="schedule-details">
-                            <h4>Software Design (Lecture)</h4>
-                            <p>GV 208 • BS CpE 2-1</p>
+                            <h4>Data Structures and Algorithms</h4>
+                            <p>Room 301 • Prof. Maria Santos</p>
                         </div>
                     </div>
                     <div class="schedule-item">
-                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-time">10:30 - 12:30</div>
                         <div class="schedule-details">
-                            <h4>Software Design (Lecture)</h4>
-                            <p>GV 208 • BS CpE 2-2</p>
+                            <h4>Database Management Systems</h4>
+                            <p>Room 205 • Prof. Roberto Cruz</p>
                         </div>
                     </div>
                     <div class="schedule-item">
-                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-time">14:00 - 16:00</div>
                         <div class="schedule-details">
-                            <h4>Software Design (Laboratory)</h4>
-                            <p>Comp Lab 1 • BS CpE 2-2</p>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">06:00 - 09:00</div>
-                        <div class="schedule-details">
-                            <h4>Software Design (Laboratory)</h4>
-                            <p>Comp Lab 1 • BS CpE 2-1</p>
+                            <h4>Software Engineering</h4>
+                            <p>Room 402 • Prof. Ana Reyes</p>
                         </div>
                     </div>
                 </div>
@@ -211,7 +224,7 @@
 
                     <div class="news-events-card">
                         <a href="#">
-                            <img src="../assets/student_home_slider/slider-sample01.webp" alt="PLM Campus" loading="lazy">
+                            <img src="../../assets/student_home_slider/slider-sample01.webp" alt="PLM Campus" loading="lazy">
 
                             <div class="card-content">
                                 <div class="card-title">
@@ -230,7 +243,7 @@
 
                     <div class="news-events-card">
                         <a href="#">
-                            <img src="../assets/student_home_slider/slider-sample02.webp" alt="PLM Campus" loading="lazy">
+                            <img src="../../assets/student_home_slider/slider-sample02.webp" alt="PLM Campus" loading="lazy">
 
                             <div class="card-content">
                                 <div class="card-title">
@@ -249,7 +262,7 @@
 
                     <div class="news-events-card">
                         <a href="#">
-                            <img src="../assets/student_home_slider/slider-sample03.webp" alt="PLM Campus" loading="lazy">
+                            <img src="../../assets/student_home_slider/slider-sample03.webp" alt="PLM Campus" loading="lazy">
 
                             <div class="card-content">
                                 <div class="card-title">
@@ -268,7 +281,7 @@
 
                     <div class="news-events-card">
                         <a href="#">
-                            <img src="../assets/student_home_slider/slider-sample04.webp" alt="PLM Campus" loading="lazy">
+                            <img src="../../assets/student_home_slider/slider-sample04.webp" alt="PLM Campus" loading="lazy">
 
                             <div class="card-content">
                                 <div class="card-title">
@@ -287,7 +300,7 @@
 
                     <div class="news-events-card">
                         <a href="#">
-                            <img src="../assets/student_home_slider/slider-sample05.webp" alt="PLM Campus" loading="lazy">
+                            <img src="../../assets/student_home_slider/slider-sample05.webp" alt="PLM Campus" loading="lazy">
 
                             <div class="card-content">
                                 <div class="card-title">
@@ -311,10 +324,7 @@
     </main>
 
     </div>
-
-    <footer></footer>
-
-    <script src="../js/faculty_home.js"></script>
-    <script src="../js/faculty_main.js"></script>
-  </body>
+    <script src="../../js/student/student_home.js"></script>
+    <script src="../../js/student/student_main.js"></script>
+</body>
 </html>
