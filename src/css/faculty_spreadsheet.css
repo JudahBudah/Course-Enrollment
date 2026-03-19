@@ -1,3 +1,20 @@
+:root {
+    --muted:            #8291a8;
+    --border:           #d6d0c4;
+    --row-alt:          #f5f2ec;
+
+    --folder-gold:      #e8a800;
+    --folder-gold-dk:   #c98f00;
+    --folder-gold-bg:   #fdf3d0;
+    --passed-green:     #1a6b3c;
+    --passed-bg:        #e5f5ec;
+    --pending-gold:     #c98f00;
+    --pending-bg:       #fff1c4;
+    --failed-bg:        #fce8ea;
+    --inc-orange:       #8a4f00;
+    --inc-bg:           #fff0d6;
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -77,7 +94,7 @@ hr {
 
 .spreadsheet-table-header {
     display: grid;
-    grid-template-columns: 40px 1fr 150px 105px 110px 110px 130px 100px 100px;
+    grid-template-columns: 30px 1fr 150px 105px 110px 110px 130px 110px 110px;
 
     background: var(--red);
     color: var(--white);
@@ -101,7 +118,7 @@ hr {
 
 .ss-row {
     display: grid;
-    grid-template-columns: 40px 1fr 150px 105px 110px 110px 130px 100px 100px;
+    grid-template-columns: 30px 1fr 150px 105px 110px 110px 130px 110px 110px;
 
     align-items: center;
     text-align: center;
@@ -135,6 +152,7 @@ hr {
     text-align: left;
     flex: 1;
     margin-left: 20px;
+    font-weight: 500;
 }
 
 .student-no {
@@ -146,20 +164,65 @@ hr {
     text-transform: uppercase;
 }
 
-.section-badge {
-    background: #e0e5f5;
-    color: var(--navy);
-    white-space: nowrap;
+
+/* Grade value */
+
+.col-tg {
     font-weight: 600;
-    font-size: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 6px;
+    font-size: .84rem;
+    color: var(--dark);
+}
+
+.col-fg  {
+    font-weight: 600;
+    font-size: .86rem;
+    color: var(--dark);
+}
+
+/* Remarks pills */
+
+.col-remark {
+    display: inline-block;
+    align-items: center;
+    gap: 5px;
+
+    padding: 6px 10px;
+    border-radius: 999px;
+    
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+}
+
+.col-remark.passed {
+    background: var(--passed-bg);
+    color: var(--passed-green);
+}
+
+.col-remark.failed {
+    background: var(--failed-bg);
+    color: var(--red);
+}
+
+.col-remark.incomplete {
+    background: var(--inc-bg);
+    color: var(--inc-orange);
+}
+
+.col-remark.ongoing {
+    background: #e8f0fb;
+    color: #1a3a8f;
+}
+
+.col-remark.pending {
+    background: var(--pending-bg);
+    color: var(--pending-gold);
 }
 
 
-/* Sched Footer */
+/* Spreadsheet Footer */
 
-.sec-table-footer {
+.spreadsheet-table-footer {
     display: flex;
     justify-content: flex-end;
 
@@ -171,6 +234,6 @@ hr {
     font-size: 0.75rem;
 }
 
-.sched-table-footer strong {
+.spreadsheet-table-footer strong {
     color: var(--red);
 }

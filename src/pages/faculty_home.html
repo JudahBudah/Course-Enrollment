@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
+    <title>Dashboard</title>
     <link rel="icon" href="../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="../css/faculty_home.css" />
@@ -37,33 +37,45 @@
         <nav>
             <ul class="main-ul">
                 <li>
-                    <a href="faculty_home.html">
-                        <i class="fa-solid fa-display"></i>
+                    <a href="faculty_home.html" class="active">
+                        <i class="fa-solid fa-house"></i>
                         <div class="li-name">Dashboard</div>
                     </a>
                 </li>
                 <li>
                     <a href="faculty_load.html">
-                        <i class="fa-solid fa-book"></i>
-                        <div class="li-name">Load / Schedule</div>
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
                     </a>
                 </li>
                 <li>
                     <a href="faculty_classlist.html">
-                        <i class="fa-regular fa-id-badge"></i>
+                        <i class="fa-solid fa-list"></i>
                         <div class="li-name">Class List</div>
                     </a>
                 </li>
                 <li>
                     <a href="faculty_spreadsheet.html">
-                        <i class="fa-regular fa-id-badge"></i>
+                        <i class="fa-solid fa-table"></i>
                         <div class="li-name">Spreadsheet</div>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fa-regular fa-id-badge"></i>
-                        <div class="li-name">Grading</div>
+                    <a href="faculty_gradebook.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Gradebook</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_profile.html">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
                     </a>
                 </li>
             </ul> 
@@ -74,62 +86,105 @@
     <div class="spacer"></div>
 
     <main>
-        <div class="faculty-calendar-container">
-            <div class="faculty-info-container">
-                <div class="faculty-title">
-                    <div class="img-container">
-                        <img src="../assets/test/faculty-profile.jpg">
-                    </div>
-                    <div class="faculty-title-content">
-                        <h1>Venedict Mendoza</h1>
-                    </div>
+        <!-- FACULTY INFO CARD -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Faculty Information</h2>
+            </div>
+            <div class="faculty-body">
+                <div class="avatar-wrap">
+                    <img src="../assets/test/faculty-profile.jpg">
                 </div>
-                <hr>
-                <div class="faculty-content">
-                    <div class="info-row">
-                        <p class="info-heading">CODE NUMBER</p>
-                        <p class="info-input">202419994</p>
+                <div class="faculty-title-content">
+                    <!-- <h3><?php echo $user_data["user_name"]; ?></h3> -->
+                    <h2>Venedict Mendoza</h2>
+                    <p>vemendoza2024@plm.edu.ph</p>
+                </div>
+                <div class="faculty-divider"></div>
+                <div class="faculty-details">
+                    <div class="detail-item">
+                        <label>Code Number</label>
+                        <span>2024-12294</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">EMAIL</p>
-                        <p class="info-input">vemendoza2024@plm.edu.ph</p>
+                    <div class="detail-item">
+                        <label>Position</label>
+                        <span>Part-Time Faculty</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">POSITION</p>
-                        <p class="info-input">Part-Time Faculty</p>
+                    <div class="detail-item">
+                        <label>College</label>
+                        <span>College of Engineering</span>
                     </div>
-                    <div class="info-row">
-                        <p class="info-heading">COLLEGE</p>
-                        <p class="info-input">College of Engineering</p>
+                    <div class="detail-item">
+                        <label>Department</label>
+                        <span>Computer Engineering</span>
                     </div>
                 </div>
             </div>
-
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <h2 id="cal-month-label"></h2>
-                    <div class="cal-nav">
-                        <button id="cal-prev"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button id="cal-next"><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-                </div>
-                <div class="calendar-days-of-week">
-                    <span>SUN</span><span>MON</span><span>TUE</span>
-                    <span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
-                </div>
-                <div class="calendar-grid" id="cal-grid"></div>
-                <div class="calendar-footer" id="cal-footer">No date selected</div>
-            </div>
-
         </div>
 
-        <div class="schedule-container">
-          <div class="schedule-header">
-            <div class="schedule-title">
-              <i class="fa-solid fa-book"></i>
-              <span>Load / Schedule</span>
+            
+
+        <div class="content-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Weekly Schedule</h2>
+                    <a href="faculty_load.html" class="link-small">View All</a>
+                </div>
+                <div class="schedule-list">
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-details">
+                            <h4>Software Design (Lecture)</h4>
+                            <p>GV 208 • BS CpE 2-1</p>
+                        </div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-details">
+                            <h4>Software Design (Lecture)</h4>
+                            <p>GV 208 • BS CpE 2-2</p>
+                        </div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-details">
+                            <h4>Software Design (Laboratory)</h4>
+                            <p>Comp Lab 1 • BS CpE 2-2</p>
+                        </div>
+                    </div>
+                    <div class="schedule-item">
+                        <div class="schedule-time">06:00 - 09:00</div>
+                        <div class="schedule-details">
+                            <h4>Software Design (Laboratory)</h4>
+                            <p>Comp Lab 1 • BS CpE 2-1</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Calendar</h2>
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span class="cal-month-label" id="cal-month-label"></span>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="calendar-wrap">
+                    <div class="cal-grid-header">
+                        <span>Sun</span><span>Mon</span><span>Tue</span>
+                        <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div class="cal-grid" id="cal-grid"></div>
+                </div>
+
+                <!-- Event tooltip -->
+                <div class="cal-event-peek" id="cal-event-peek">
+                    <p id="cal-event-text"></p>
+                </div>
+            </div>
         </div>
 
         <div class="news-events-section">
@@ -260,5 +315,6 @@
     <footer></footer>
 
     <script src="../js/faculty_home.js"></script>
+    <script src="../js/faculty_main.js"></script>
   </body>
 </html>

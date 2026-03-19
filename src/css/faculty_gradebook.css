@@ -15,7 +15,6 @@
     --inc-bg:           #fff0d6;
 }
 
-
 main {
     display: flex;
     flex-direction: column;
@@ -76,13 +75,13 @@ hr {
 }
 
 
-/* --- Sched Table --- */
+/* --- Gradebook Table --- */
 
-.sec-table-wrapper {
+.gradebook-table-wrapper {
     overflow-x: auto;
 }
 
-.sec-table {
+.gradebook-table {
     min-width: 900px;
     margin-top: 25px;
     border-radius: 15px;
@@ -91,11 +90,11 @@ hr {
 }
 
 
-/* Sched Header */
+/* Gradebook Header */
 
-.sec-table-header {
+.gradebook-table-header {
     display: grid;
-    grid-template-columns: 50px 160px 1fr 1fr 150px 150px;
+    grid-template-columns: 50px 160px 1fr 160px 160px 150px 130px;
 
     background: var(--red);
     color: var(--white);
@@ -112,14 +111,14 @@ hr {
 
 /* Rows */
 
-.sec-table-body {
+.gradebook-table-body {
     display: flex;
     flex-direction: column;
 }
 
-.sec-row {
+.ss-row {
     display: grid;
-    grid-template-columns: 50px 160px 1fr 1fr 150px 150px;
+    grid-template-columns: 50px 160px 1fr 160px 160px 150px 130px;
 
     align-items: center;
     text-align: center;
@@ -133,7 +132,7 @@ hr {
     color: var(--dark);
 }
 
-.sec-row:nth-child(even) {
+.ss-row:nth-child(even) {
     background-color: #faf9f7;
 }
 
@@ -146,18 +145,13 @@ hr {
 }
 
 .col-head-name {
-    margin-left: 50px;
+    flex: 1;
 }
 
 .col-side {
     text-align: left;
+    flex: 1;
     margin-left: 30px;
-    font-weight: 500;
-}
-
-.col-email {
-    text-align: left;
-    margin-left: 50px;
     font-weight: 500;
 }
 
@@ -170,55 +164,69 @@ hr {
     text-transform: uppercase;
 }
 
-.section-badge {
-    background: #e0e5f5;
-    color: var(--navy);
-    white-space: nowrap;
+/* Grade value */
+.col-cg {
     font-weight: 600;
-    font-size: 0.75rem;
-    padding: 3px 10px;
-    border-radius: 6px;
+    font-size: .84rem;
+    color: var(--dark);
 }
 
-/* Status Badge */
+.col-tg {
+    font-weight: 600;
+    font-size: .84rem;
+    color: var(--dark);
+}
 
-.status-badge {
+.col-fg  {
+    font-weight: 600;
+    font-size: .87rem;
+    color: var(--dark);
+}
+
+/* Remarks pills */
+
+.col-remark {
     display: inline-block;
     align-items: center;
     gap: 5px;
 
-    padding: 5px 15px;
+    padding: 6px 8px;
     border-radius: 999px;
     
-    font-size: 0.75rem;
+    font-size: .7rem;
     font-weight: 700;
     letter-spacing: .05em;
 }
 
-.status-badge.enrolled {
+.col-remark.passed {
     background: var(--passed-bg);
     color: var(--passed-green);
 }
 
-.status-badge.loa {
+.col-remark.failed {
     background: var(--failed-bg);
     color: var(--red);
 }
 
-.status-badge.incomplete {
+.col-remark.incomplete {
     background: var(--inc-bg);
     color: var(--inc-orange);
 }
 
-.status-badge.dropped {
+.col-remark.ongoing {
     background: #e8f0fb;
     color: #1a3a8f;
 }
 
+.col-remark.pending {
+    background: var(--pending-bg);
+    color: var(--pending-gold);
+}
 
-/* Classlist Footer */
 
-.classlist-table-footer {
+/* Gradebook Footer */
+
+.gradebook-table-footer {
     display: flex;
     justify-content: flex-end;
 
@@ -230,6 +238,6 @@ hr {
     font-size: 0.75rem;
 }
 
-.classlist-table-footer strong {
+.gradebook-table-footer strong {
     color: var(--red);
 }

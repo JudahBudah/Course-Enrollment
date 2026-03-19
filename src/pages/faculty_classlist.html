@@ -25,48 +25,55 @@
                     Venedict Mendoza
                 </div>
                 <div class="acc-img">
-                    <img  src="../assets/test/faculty-profile.jpg">
+                    <img src="../assets/test/faculty-profile.jpg">
                 </div>
             </div>
-            <!-- Integrate Later
-            <button class="nav-button">
-                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
-            </button>
-            -->
         </div>
         <nav>
             <ul class="main-ul">
                 <li>
                     <a href="faculty_home.html">
-                        <i class="fa-solid fa-display"></i>
+                        <i class="fa-solid fa-house"></i>
                         <div class="li-name">Dashboard</div>
                     </a>
                 </li>
                 <li>
                     <a href="faculty_load.html">
-                        <i class="fa-solid fa-book"></i>
-                        <div class="li-name">Load / Schedule</div>
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
                     </a>
                 </li>
                 <li>
-                    <a href="faculty_classlist.html">
-                        <i class="fa-regular fa-id-badge"></i>
+                    <a href="faculty_classlist.html" class="active">
+                        <i class="fa-solid fa-list"></i>
                         <div class="li-name">Class List</div>
                     </a>
                 </li>
                 <li>
                     <a href="faculty_spreadsheet.html">
-                        <i class="fa-regular fa-id-badge"></i>
+                        <i class="fa-solid fa-table"></i>
                         <div class="li-name">Spreadsheet</div>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <i class="fa-regular fa-id-badge"></i>
-                        <div class="li-name">Grading</div>
+                    <a href="faculty_gradebook.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Gradebook</div>
                     </a>
                 </li>
-            </ul> 
+                <li>
+                    <a href="faculty_profile.html">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
+                    </a>
+                </li>
+            </ul>
         </nav>
     </header>
 
@@ -77,13 +84,15 @@
 
         <div class="section-nav">
             <div class="section-opn-title">
-                Class List (Section / Block)
+                Course Code - Section - Subject Title
             </div>
             <hr>
             <div class="section-nav-options">
                 <select name="sec-block">
                     <option value="section">CPE 0222 - BSCpE 2-1 - Software Design (Lecture)</option>
                     <option value="section">CPE 0222 - BSCpE 2-2 - Software Design (Lecture)</option>
+                    <option value="section">CPE 0222.1 - BSCpE 2-1 - Software Design (Laboratory)</option>
+                    <option value="section">CPE 0222.1 - BSCpE 2-2 - Software Design (Laboratory)</option>
                 </select>
             </div>
         </div>
@@ -93,8 +102,10 @@
                 <div class="sec-table-header">
                     <span class="col-head-num">#</span>
                     <span class="col-head-stud-no">STUDENT NO.</span>
-                    <span class="col-head-sec">SECTION</span>
                     <span class="col-head-name">FULL NAME (LN, FN_MI)</span>
+                    <span class="col-head-email">EMAIL</span>
+                    <span class="col-head-sec">SECTION</span>
+                    <span class="col-head-stat">STATUS</span>
                 </div>
 
                 <div class="sec-table-body">
@@ -103,10 +114,14 @@
                         <span class="col-container">
                             <span class="student-no">202410579</span>
                         </span>
+                        <span class="col-side">Agote, Jimboy D.</span>
+                        <span class="col-email">jdagote2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Agote, Jimboy D.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -114,10 +129,14 @@
                         <span class="col-container">
                             <span class="student-no">202410914</span>
                         </span>
+                        <span class="col-side">Almario, John Basty J.</span>
+                        <span class="col-email">jbjalmario2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Almario, John Basty J.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -125,21 +144,29 @@
                         <span class="col-container">
                             <span class="student-no">202410385</span>
                         </span>
+                        <span class="col-side">Aniag, Samantha Nicole D.</span>
+                        <span class="col-email">sndaniag2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Aniag, Samantha Nicole D.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
                         <span class="col-num">4</span>
                         <span class="col-container">
                             <span class="student-no">202411711</span>
-                        </span>
+                        </span> 
+                        <span class="col-side">Antonino, Nelson Jr. M.</span>
+                        <span class="col-email">njmantonino2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Antonino, Nelson Jr. M.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -147,10 +174,14 @@
                         <span class="col-container">
                             <span class="student-no">202410304</span>
                         </span>
+                        <span class="col-side">Bagorio, Laimelyn R.</span>
+                        <span class="col-email">lrbagorio2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Bagorio, Laimelyn R.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -158,10 +189,14 @@
                         <span class="col-container">
                             <span class="student-no">202410061</span>
                         </span>
+                        <span class="col-side">Bautista, John Carlo E.</span>
+                        <span class="col-email">jcebautista2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Bautista, John Carlo E.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -169,10 +204,14 @@
                         <span class="col-container">
                             <span class="student-no">202411098</span>
                         </span>
+                        <span class="col-side">Blanco, Gabrielle Nicole S.</span>
+                        <span class="col-email">gnsblanco2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Blanco, Gabrielle Nicole S.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -180,10 +219,14 @@
                         <span class="col-container">
                             <span class="student-no">202333054</span>
                         </span>
+                        <span class="col-side">Celeste, Carl Isaac D.</span>
+                        <span class="col-email">cidceleste2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Celeste, Carl Isaac D.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -191,10 +234,14 @@
                         <span class="col-container">
                             <span class="student-no">202411727</span>
                         </span>
+                        <span class="col-side">Daez, Jiro A.</span>
+                        <span class="col-email">jadaez2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Daez, Jiro A.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -202,10 +249,14 @@
                         <span class="col-container">
                             <span class="student-no">202412680</span>
                         </span>
+                        <span class="col-side">Dela Cruz, Judah Isaiah N.</span>
+                        <span class="col-email">jindelacruz2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Dela Cruz, Judah Isaiah N.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -213,10 +264,14 @@
                         <span class="col-container">
                             <span class="student-no">202411126</span>
                         </span>
+                        <span class="col-side">Doria, Iresh Gail C.</span>
+                        <span class="col-email">igcdoria2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Doria, Iresh Gail C.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -224,10 +279,14 @@
                         <span class="col-container">
                             <span class="student-no">202411162</span>
                         </span>
+                        <span class="col-side">Era, Kent C.</span>
+                        <span class="col-email">kcera2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Era, Kent C.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -235,10 +294,14 @@
                         <span class="col-container">
                             <span class="student-no">202411110</span>
                         </span>
+                        <span class="col-side">Hernando, Francine Mica M.</span>
+                        <span class="col-email">fmmhernando2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Hernando, Francine Mica M.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -246,10 +309,14 @@
                         <span class="col-container">
                             <span class="student-no">202410876</span>
                         </span>
+                        <span class="col-side">Lewis, Pearl Nadine A.</span>
+                        <span class="col-email">pnalewis2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Lewis, Pearl Nadine A.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -257,10 +324,14 @@
                         <span class="col-container">
                             <span class="student-no">202410605</span>
                         </span>
+                        <span class="col-side">Lopez, Miguel Ross S.</span>
+                        <span class="col-email">mrslopez2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Lopez, Miguel Ross S.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -268,10 +339,14 @@
                         <span class="col-container">
                             <span class="student-no">202411443</span>
                         </span>
+                        <span class="col-side">Lumabi, Kevin G.</span>
+                        <span class="col-email">kglumabi2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Lumabi, Kevin G.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -279,10 +354,14 @@
                         <span class="col-container">
                             <span class="student-no">202411357</span>
                         </span>
+                        <span class="col-side">Martinez, Bryelle Eauxyrish V.</span>
+                        <span class="col-email">bevmartinez2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Martinez, Bryelle Eauxyrish V.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -290,10 +369,14 @@
                         <span class="col-container">
                             <span class="student-no">202412294</span>
                         </span>
+                        <span class="col-side">Mendoza, Venedict E.</span>
+                        <span class="col-email">vemendoza2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Mendoza, Venedict E.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -301,10 +384,14 @@
                         <span class="col-container">
                             <span class="student-no">202410544</span>
                         </span>
+                        <span class="col-side">Montalban, Amira Beatriz B.</span>
+                        <span class="col-email">abbmontalban2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Montalban, Amira Beatriz B.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -312,10 +399,14 @@
                         <span class="col-container">
                             <span class="student-no">202412685</span>
                         </span>
+                        <span class="col-side">Muncada, John Louie L.</span>
+                        <span class="col-email">jllmuncada2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Muncada, John Louie L.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -323,10 +414,14 @@
                         <span class="col-container">
                             <span class="student-no">202400348</span>
                         </span>
+                        <span class="col-side">Orongan, Princess Kyle E.</span>
+                        <span class="col-email">pkeorongan2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Orongan, Princess Kyle E.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -334,10 +429,14 @@
                         <span class="col-container">
                             <span class="student-no">202411846</span>
                         </span>
+                        <span class="col-side">Placio, Rheanne D.</span>
+                        <span class="col-email">rdplacio2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Placio, Rheanne D.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -345,10 +444,14 @@
                         <span class="col-container">
                             <span class="student-no">202412557</span>
                         </span>
+                        <span class="col-side">Porta, Rex Reu B.</span>
+                        <span class="col-email">rrbporta2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Porta, Rex Reu B.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -356,10 +459,14 @@
                         <span class="col-container">
                             <span class="student-no">202410103</span>
                         </span>
+                        <span class="col-side">Rodriguez, Ivanne Joshua L.</span>
+                        <span class="col-email">ijlrodriguez2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Rodriguez, Ivanne Joshua L.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -367,10 +474,14 @@
                         <span class="col-container">
                             <span class="student-no">202411077</span>
                         </span>
+                        <span class="col-side">Rollon, John Rupert M.</span>
+                        <span class="col-email">jrmrollon2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Rollon, John Rupert M.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -378,10 +489,14 @@
                         <span class="col-container">
                             <span class="student-no">202410565</span>
                         </span>
+                        <span class="col-side">Tiu, Khristian Gabriel R.</span>
+                        <span class="col-email">kgrtiu2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Tiu, Khristian Gabriel R.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
 
                     <div class="sec-row">
@@ -389,14 +504,18 @@
                         <span class="col-container">
                             <span class="student-no">202411104</span>
                         </span>
+                        <span class="col-side">Tulang, Humprey P.</span>
+                        <span class="col-email">hptulang2024@plm.edu.ph</span>
                         <span class="col-container">
                             <span class="section-badge">BSCpE 2-1</span>
                         </span>
-                        <span class="col-side">Tulang, Humprey P.</span>
+                        <span class="col-container">
+                            <span class="status-badge enrolled"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Enrolled</span>
+                        </span>
                     </div>
                 </div>
 
-                <div class="sec-table-footer">
+                <div class="classlist-table-footer">
                     
                 </div>
             </div>
@@ -406,5 +525,6 @@
     </div>
     
     <script src="../js/faculty_main.js"></script>
+    <script src="../js/faculty_classlist.js"></script>
   </body>
 </html>
