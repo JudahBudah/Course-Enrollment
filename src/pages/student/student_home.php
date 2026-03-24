@@ -1,4 +1,4 @@
-
+<!--
 <?php
     session_start(); 
     
@@ -7,7 +7,7 @@
 
     $user_data = check_login($con);
 ?>
-
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +45,7 @@
             -->
         </div>
         <nav>
+            <div class="nav-wrapper">
             <ul class="main-ul">
                 <li>
                     <a href="student_home.php" class="active">
@@ -99,8 +100,18 @@
                     </a>
                 </li>
             </ul> 
-        </nav>
+            </div>
 
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
     </header>
     <div class="main-flex">
     <div class="spacer"></div>

@@ -19,7 +19,7 @@ strong {
     border: 1px solid var(--off);
     border-radius: 10px;
     width: 100%;
-    background-color: var(--white);
+    background-color: #dcdddc;
 }
 
 .loc-box ul {

@@ -35,6 +35,7 @@
             -->
         </div>
         <nav>
+            <div class="nav-wrapper">
             <ul class="main-ul">
                 <li>
                     <a href="student_home.php">
@@ -89,8 +90,18 @@
                     </a>
                 </li>
             </ul> 
-        </nav>
+            </div>
 
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
     </header>
     <div class="main-flex">
     <div class="spacer"></div>
@@ -98,19 +109,39 @@
     <main>
         <!-- Schedule Navigation -->
         <div class="sched-nav">
-            <div class="sched-opn-title">
-                Year and Semester
+            <div class="sched-nav-left">
+                <div class="sched-opn-title">Academic Period</div>
+                <div class="sched-stats">
+                    <div class="sched-stat-chip">
+                        <span class="stat-value">10</span>
+                        <span class="stat-label">Subjects</span>
+                    </div>
+                    <div class="sched-stat-divider"></div>
+                    <div class="sched-stat-chip">
+                        <span class="stat-value">25</span>
+                        <span class="stat-label">Units</span>
+                    </div>
+                    <div class="sched-stat-divider"></div>
+                    <div class="sched-stat-chip">
+                        <span class="stat-value">2nd Year</span>
+                        <span class="stat-label">Level</span>
+                    </div>
+                </div>
             </div>
-            <hr>
-            <div class="sched-nav-options"> <!-- Selected na agad 'yong current year and sem ni student' -->
-                <select name="sched-year" >
-                    <option value="2025 - 2026">2025 - 2026</option>
-                </select>
-
-                <select name="admission_status" id="admission_status">
-                    <option value="First Semester">First Semester</option>
-                    <option value="Second Semester">Second Semester</option>
-                </select>
+            <div class="sched-nav-options"> <!-- Selected na agad 'yong current year and sem ni student -->
+                <div class="sched-label-container">
+                    <label>Year</label>
+                    <select name="sched-year" >
+                        <option value="2025 - 2026">2025 - 2026</option>
+                    </select>
+                </div>
+                <div class="sched-label-container">
+                    <label>Semester</label>
+                    <select name="admission_status" >
+                        <option value="First Semester">First Semester</option>
+                        <option value="Second Semester">Second Semester</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -401,10 +432,7 @@
         const DAYS       = ['M','T','W','TH','F','S'];
         const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT' };
 
-        const DEFAULT_COLOR  = { bg:'#1A3A8F', fg:'#fff' };  // red — all subjects
-        const COLORS = {
-            'PATHFIT 405': { bg:'#D4AF37', fg:'#fff' },   // navy — PATHFIT only
-        };
+        const COLOR_CLASSES = {'PATHFIT 405': 'wg-block--gold', };
 
         /* ─── Helpers ────────────────────────────────────────────────── */
         const toMin = t  => { const [h,m]=t.split(':').map(Number); return h*60+m; };
@@ -464,14 +492,15 @@
                 scheduleData.forEach(subj => {
                     subj.slots.forEach(slot => {
                         if (slot.day !== day) return;
-                        const c    = COLORS[subj.code] || DEFAULT_COLOR;
+                        const colorClass = COLOR_CLASSES[subj.code] || '';
                         const top  = toTop(slot.start);
                         const hgt  = toHgt(slot.start, slot.end);
                         const room = slot.room || subj.room;
                         const tag  = subj.tag ? ` (${subj.tag})` : '';
 
                         const block = el('div','wg-block');
-                        block.style.cssText = `top:${top}px;height:${hgt-4}px;background:${c.bg};color:${c.fg};`;
+                        block.style.cssText = `top:${top}px;height:${hgt-4}px;`;
+                        if (colorClass) block.classList.add(colorClass);
 
                         block.appendChild(el('div','wg-block-code', subj.code + tag));
                         if (hgt > 34) block.appendChild(el('div','wg-block-name', subj.shortName || subj.name));

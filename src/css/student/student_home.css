@@ -4,7 +4,7 @@
 /* ── STUDENT INFO CARD ── */
 
 .card {
-    background: white;
+    background: var(--white-pr);
     border-radius: 12px;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
     overflow: hidden;
@@ -68,7 +68,7 @@
 .student-title-content p {
     font-size: .8rem;
     font-weight: 400;
-    color: #888888;
+    color: var(--text);
     margin: 0;
 }
 
@@ -77,7 +77,7 @@
 .student-divider {
     width: 1px;
     align-self: stretch;
-    background-color: #e8e8e8;
+    background-color: var(--off);
     flex-shrink: 0;
 }
 
@@ -96,7 +96,7 @@
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: #888888;
+    color: var(--text-label);
     margin-bottom: 3px;
 }
 
@@ -135,13 +135,14 @@
 }
 
 .student-title-content h1 {
+    color: var(--dark);
     font-size: 1.3rem;
     margin: 0 0 10px 0;
 }
 
 .student-title-content p {
     font-size: 0.9rem;
-    color: #706f6f;
+    color: var(--text);
 }
 
 
@@ -163,15 +164,13 @@
 
 .link-small {
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--white);
-    text-decoration: none;
-    opacity: 0.75;
-    transition: opacity 0.2s;
+    opacity: 0.8;
 }
 
 .link-small:hover {
-    opacity: 1;
+    text-decoration: underline;
 }
 
 .schedule-list {
@@ -186,7 +185,7 @@
     gap: 20px;
     padding: 14px 20px;
     border-left: 3px solid var(--red);
-    background: #fafafa;
+    background: var(--white);
     margin: 0 24px;
     margin-bottom: 12px;
     transition: background 0.2s;
@@ -194,10 +193,6 @@
 
 .schedule-item:last-child {
     margin-bottom: 8px;
-}
-
-.schedule-item:hover {
-    background: #f3f3f3;
 }
 
 .schedule-time {
@@ -219,7 +214,7 @@
 
 .schedule-details p {
     font-size: .78rem;
-    color: #888888;
+    color: var(--text-label);
 }
 
 
@@ -272,7 +267,7 @@
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
-    color: #aaaaaa;
+    color: var(--text);
     padding: 4px 0;
 }
 
@@ -312,7 +307,7 @@
 }
 
 .cal-day.has-event:hover {
-    background: #f0f0f0;
+    background: var(--off);
 }
 
 .cal-day.today.has-event:hover {
@@ -335,7 +330,7 @@
 .cal-event-peek {
     margin: 0 20px 16px;
     padding: 10px 14px;
-    background: #fafafa;
+    background: var(--white);
     border-left: 3px solid var(--red);
     display: none;
 }
@@ -368,6 +363,7 @@
 }
 
 .news-events-title {
+    color: var(--dark-spc);
     display: flex;
     align-items: center;
 }
@@ -385,8 +381,9 @@
 .nav-buttons button {
     height: 30px;
     width: 30px;
-    background-color: white;
-    border: 2px solid #ddd;
+    color: var(--text);
+    background-color: var(--white-pr);
+    border: 2px solid var(--off-gray);
     border-radius: 4px;
     cursor: pointer;
     transition: 0.5s;
@@ -399,8 +396,9 @@
 .nav-buttons button:disabled {
     opacity: 0.4;
     cursor: default;
-    background-color: white;
-    border-color: #ddd;
+    /* for when hovered */
+    background-color: var(--white-pr);
+    border-color: var(--off-gray);
 }
 
 /* Slider */
@@ -423,7 +421,7 @@
     width: 25%;
     flex-shrink: 0;
     overflow: hidden;
-    background: white;
+    background: var(--white-pr);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -448,7 +446,7 @@
 
 .card-date {
     font-size: 0.7rem;
-    color: rgb(102, 102, 102);
+    color: var(--text);
 }
 
 /* Media Query */

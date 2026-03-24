@@ -17,7 +17,7 @@
         }
 
         //redirect to login
-        header("Location: student_login.php");
+        header("Location: ../student_login.php");
         die;
     }
 
