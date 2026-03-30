@@ -12,6 +12,11 @@
 <body>
     <header>
         <div class="nav-section">
+            <!-- Mobile Nav Button -->
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+
             <div class="logo-container">
                 <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
                 <div class="title-container">
@@ -28,13 +33,8 @@
                     <img  src="../../assets/test/student-profile.webp">
                 </div>
             </div>
-            <!-- Integrate Later
-            <button class="nav-button">
-                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
-            </button>
-            -->
         </div>
-        <nav>
+        <nav class="main-nav" id="navMenu">
             <div class="nav-wrapper">
             <ul class="main-ul">
                 <li>
@@ -95,9 +95,9 @@
             <div class="drk-mode-container">
                 <div class="drk-label">
                     <i class="fa-solid fa-moon" id="modeIcon"></i>
-                    <span id="modeLabel">Dark Mode</span>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
                 </div>
-                <div class="toggle-track" id="toggleTrack">
+                <div class="toggle-track li-name" id="toggleTrack">
                     <div class="toggle-thumb"></div>
                 </div>
             </div>

@@ -59,7 +59,7 @@
     --block-gold-fg: #ffffff;
 
     /* No change colors */
-    --perm-gold-dk: #a8881c;
+    --perm-gold-dk: #D4AF37;
     --text-label:   #888888;
     --perm-navy:         #0B1F5B;
     --perm-navy-dk:      #070f2e;
@@ -164,7 +164,8 @@ ul {
 }
 
 .nav-button {
-    font-size: 1.55rem;
+    display: none;
+    font-size: 1.25rem;
     border: none;
     background: none;
     cursor: pointer;
@@ -232,10 +233,11 @@ ul {
 }
 
 .nav-wrapper {
+    overflow-x:hidden;
     overflow-y: auto;
 }
 
-header nav {
+.main-nav {
     position: fixed;
     top: 0;
     left: 0;
@@ -245,6 +247,7 @@ header nav {
     background-color: var(--white-pr);
     box-shadow: 6px 0 10px rgba(0, 0, 0, 0.08);
     z-index: 50;
+    transition: 0.2s;
 
     display: flex;
     flex-direction: column;
@@ -264,6 +267,7 @@ header nav {
     white-space: nowrap;
     font-size: 1rem;
 }
+
 
 .main-ul li a {
     position: relative;
@@ -311,6 +315,10 @@ header nav {
 
 /* Academics Dropdown */
 
+.acad-dropdown-menu li a {
+    padding-left: 67px;
+}
+
 .acad-dropdown-menu {
     max-height: 0;
     overflow: hidden;
@@ -320,6 +328,7 @@ header nav {
 
 .acad-dropdown-menu.open {
     max-height: 200px;
+    padding: 0;
 }
 
 .course-dropdown a .fa-chevron-down {
@@ -329,12 +338,6 @@ header nav {
 .course-dropdown a.open .fa-chevron-down {
     transform: rotate(-180deg);
 }
-
-/* For account later
-.li-name {
-    display: none;
-}
-*/
 
 
 /* Dark Mode Container */
@@ -354,9 +357,9 @@ header nav {
     align-items: center;
     gap: 10px;
     color: var(--dark);
-    cursor: pointer;
     user-select: none;
     font-size: 0.9rem;
+    white-space: nowrap;
 }
 
 .toggle-track {
@@ -397,8 +400,54 @@ header nav {
 
 @media(max-width: 1100px) {
     main {
-            width: calc(98% - 250px);
-        }
+        width: calc(98% - 60px);
+    }
+
+    .main-nav {
+        max-width: 60px;
+    }
+    .spacer {
+        width: 60px;
+    }
+    .li-name {
+        display: none;
+    }
+    .main-ul li a {
+        height: 53px;
+    }
+
+    .main-ul li a i {
+        width: 0px; /* Para hindi nag jijitter if open */
+        padding-right: 20px;
+    }
+
+    .main-ul li a, .drk-mode-container {
+        padding-left: 20px;
+    }
+
+    /* Mobile Nav Button */
+    .logo-container {
+        display: none;
+    }
+
+    .nav-button {
+        display: block;
+    }
+
+
+    /* JS Functions */
+
+    .main-nav.open {
+        max-width: 200px;
+    }
+
+    .main-nav.open .li-name {
+        display: block;
+    }
+
+    .main-nav.open .main-ul li a, .drk-mode-container {
+       padding-right: 20px;
+    }
 }
 
 
@@ -408,9 +457,4 @@ header nav {
     }
 }
 
-@media(min-width: 1500px) {
-    main {
-        width: calc(98% - 250px);
-    }
-}
 

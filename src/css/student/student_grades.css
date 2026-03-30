@@ -1,19 +1,46 @@
-/* ── GRADES-SPECIFIC VARS (rest comes from student_main.css) ── */
 :root {
-    --muted:            #8291a8;
-    --border:           #d6d0c4;
-    --row-alt:          #f5f2ec;
-
     --folder-gold:      #e8a800;
     --folder-gold-dk:   #c98f00;
     --folder-gold-bg:   #fdf3d0;
-    --passed-green:     #1a6b3c;
-    --passed-bg:        #e5f5ec;
-    --failed-bg:        #fce8ea;
-    --inc-orange:       #8a4f00;
-    --inc-bg:           #fff0d6;
+    --folder-tab-hover: #d49a00;
+
+    --passed-green: #1a6b3c;
+    --passed-bg:    #e5f5ec;
+    --failed-bg:    #fce8ea;
+    --inc-orange:   #8a4f00;
+    --inc-bg:       #fff0d6;
+    --ongoing-bg:   #e8f0fb;
+    --ongoing-fg:   #1a3a8f;
+
+    --table-head-bg:   #8C1C24;
+    --table-head-fg:   #F2F3F2;
+    --sem-label-bg:    #5a1018;
+    --sem-label-fg:    #F2F3F2;
 }
 
+body.dark-mode {
+    /* Folder stays gold, just slightly deeper */
+    --folder-gold:      #c98f00;
+    --folder-gold-dk:   #a87500;
+    --folder-tab-hover: #b88200;
+
+    /* GWA row inside table — charcoal instead of gold */
+    --folder-gold-bg:   #2b2620;
+
+    /* Status pills */
+    --passed-green: #4caf82;
+    --passed-bg:    #0e2b1c;
+    --failed-bg:    #2a0e10;
+    --inc-orange:   #d4914a;
+    --inc-bg:       #2a1a08;
+    --ongoing-bg:   #1a2547;
+    --ongoing-fg:   #8fa4d8;
+
+    --table-head-bg:   #0d0a07;
+    --table-head-fg:   #f3f1eb;
+    --sem-label-bg:    #0d0a07;
+    --sem-label-fg:    #f3f1eb;
+}
 
 /* MAIN LAYOUT */
 main {
@@ -89,7 +116,7 @@ main {
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: #888888;
+    color: var(--text-label);
     margin-bottom: 3px;
 }
 
@@ -97,21 +124,6 @@ main {
     font-size: .9rem;
     font-weight: 500;
     color: var(--dark);
-}
-
-
-/* TABLE SECTION HEAD */
-
-.table-section-head {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--red);
-    background-color: var(--white-pr);
-
-    padding: 20px 24px 16px;
-    align-items: center;
-    justify-content: space-between;
 }
 
 
@@ -147,7 +159,7 @@ main {
 }
 
 .tab:not(.active):hover {
-    background: #d49a00;
+    background: var(--folder-tab-hover);
     color: rgba(255,255,255,.85);
 }
 
@@ -182,8 +194,8 @@ main {
     padding: 5px 18px;
     border-radius: 6px 6px 0 0;
 
-    background: var(--red-dk);
-    color: var(--white);
+    background: var(--sem-label-bg);
+    color: var(--sem-label-fg);
     font-size: .75rem;
     font-weight: 700;
     letter-spacing: .08em;
@@ -209,13 +221,13 @@ table {
 }
 
 thead tr {
-    background: var(--red);
+    background: var(--table-head-bg);
 }
 
 thead th {
     padding: 10px 16px;
 
-    color: var(--white);
+    color: var(--table-head-fg);
     font-size: .7rem;
     font-weight: 600;
     letter-spacing: .07em;
@@ -230,24 +242,20 @@ thead th {
 
 /* Table Body */
 
-tbody tr:not(:last-child) {
-    border-bottom: 1px solid var(--border);
-}
-
 tbody tr:nth-child(even) {
-    background: var(--row-alt);
+    background: var(--surface-alt);
 }
 
 td {
     padding: 10px 16px;
-    color: var(--dark);
+    color: var(--dark-spc);
 }
 
 
 /* Table Row Types */
 
 .row-num {
-    color: var(--muted);
+    color: var(--text);
     font-size: .78rem;
     font-weight: 500;
 }
@@ -268,7 +276,7 @@ td {
     font-size: 0.6rem;
     font-weight: 600;
     background: var(--off);
-    color: #666;
+    color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -315,8 +323,8 @@ td {
 }
 
 .grade-status.ongoing {
-    background: #e8f0fb;
-    color: #1a3a8f;
+    background: var(--ongoing-bg);
+    color: var(--ongoing-fg);
 }
 
 
@@ -353,7 +361,7 @@ td {
     gap: 60px;
     align-items: center;
     
-    background: var(--red-dk);
+    background: var(--sem-label-bg);
     border-radius: 12px;
     padding: 16px 24px;
 }
@@ -369,22 +377,22 @@ td {
     font-weight: 600;
     letter-spacing: .09em;
     text-transform: uppercase;
-    color: rgba(255,255,255,.45);
+    color: var(--text-label)
 }
 
 .summary-item .s-val {
     font-size: .92rem;
     font-weight: 700;
-    color: var(--white);
+    color: var(--sem-label-fg);
 }
 
 .summary-item .s-val.gold {
-    color: var(--gold);
+    color: var(--perm-gold-dk);
     font-size: 1.05rem;
 }
 
 
-/* RESPONSIVE */
+/* Media Query */
 
 @media (max-width: 700px) {
     .student-details { 
@@ -396,6 +404,21 @@ td {
     .tab { 
         padding: 9px 16px 12px; 
         font-size: .72rem; 
+    }
+}
+
+@media (max-width: 635px) {
+    .student-body {
+        flex-direction: column;
+    }
+
+    .student-details {
+        width: 100%;
+    }
+
+    .avatar-wrap {
+        height: 120px;
+        width: 120px;
     }
 }
 

@@ -404,3 +404,39 @@ select {
     background: var(--block-gold);
     color:      var(--block-gold-fg);
 }
+
+
+/* Media Query */
+
+@media(max-width: 698px) {
+    .sched-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .sched-nav-left {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .sched-nav-options {
+        width: 100%;
+    }
+
+    .sched-label-container {
+        width: 100%;
+    }
+
+}
+
+@media(max-width: 515px) {
+    .sched-nav-left {
+        flex-direction: column;
+    }
+
+    .sched-nav-options {
+        flex-direction: column;
+    }
+}

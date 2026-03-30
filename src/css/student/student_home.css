@@ -451,10 +451,42 @@
 
 /* Media Query */
 
-@media (max-width: 768px) {
+@media (max-width: 990px) {
+    .schedule-item {
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .student-body {
+        gap: 15px;
+    }
+
+    .student-title-content {
+        padding: 0;
+    }
+}
+
+@media (max-width: 769px) {
     .content-grid {
         display: flex;
         flex-direction: column;
+        gap: 3px;
+    }
+
+    .news-events-card {
+    width: 33.333%;
+    }
+}
+
+@media (max-width: 501px) {
+    .news-events-card {
+    width: 50%;
+    }
+}
+
+@media (max-width: 376px) {
+    .news-events-card {
+    width: 100%;
     }
 }
 

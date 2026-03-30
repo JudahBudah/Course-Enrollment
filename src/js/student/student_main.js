@@ -1,12 +1,36 @@
+/* Mobile Nav Button */
+const navButton = document.getElementById("navButton");
+const navIcon = document.getElementById("trans-bars");
+const navMenu = document.getElementById("navMenu");
+
+/* Acad Dropdown */
+const acadDropdown = document.getElementById("acad-dropdown");
+const acadDropdownMenu = document.getElementById("acad-dropdown-menu");
+
+
+/* Mobile Nav */
+navButton.addEventListener("click", event => {
+    if (navMenu.offsetWidth === 200 && acadDropdownMenu.offsetHeight > 0) {
+        acadDropdownMenu.classList.toggle("open");
+        acadDropdown.classList.toggle("open");
+        navMenu.classList.toggle("open");
+    } else {
+        navMenu.classList.toggle("open");
+    }
+});
+
+
 /* Academic Dropdown */
 
-const acad_dropdown = document.getElementById("acad-dropdown");
-const acad_dropdown_menu = document.getElementById("acad-dropdown-menu");
+acadDropdown.addEventListener("click", event => {
+    acadDropdown.classList.toggle("open");
+    acadDropdownMenu.classList.toggle("open");
 
-acad_dropdown.addEventListener("click", event => {
-    acad_dropdown_menu.classList.toggle("open");
-    acad_dropdown.classList.toggle("open");
+    if (navMenu.offsetWidth === 60) {
+        navMenu.classList.toggle("open");
+    }
 });
+
 
 
 /* Dark Mode Toggle */

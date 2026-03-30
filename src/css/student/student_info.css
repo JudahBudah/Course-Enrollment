@@ -1,5 +1,6 @@
 .main-title {
     font-weight: 500;
+    color: var(--dark-spc);
 }
 
 hr {
@@ -19,7 +20,8 @@ strong {
     border: 1px solid var(--off);
     border-radius: 10px;
     width: 100%;
-    background-color: #dcdddc;
+    background-color: var(--off-gray);
+    color: var(--dark);
 }
 
 .loc-box ul {
@@ -57,6 +59,7 @@ strong {
 
 .semi-title {
     font-weight: 500;
+    color: var(--dark);
 }
 
 .college-info {
