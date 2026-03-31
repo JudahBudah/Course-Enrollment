@@ -218,6 +218,173 @@
 }
 
 
+/* ── SCHEDULE TOGGLES ── */
+
+.sched-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.sched-toggle-btn {
+    padding: 5px 14px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.18);
+    color: var(--white);
+    transition: background 0.2s, color 0.2s;
+    line-height: 1.4;
+}
+
+.sched-toggle-btn.active,
+.sched-toggle-btn:hover {
+    background: rgba(255,255,255,0.38);
+    color: var(--white);
+}
+
+/* Day group label inside the week list view */
+
+.sched-day-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    padding: 10px 24px 4px;
+    border-top: 1px solid var(--off);
+    margin-top: 4px;
+}
+
+.sched-day-label:first-child {
+    border-top: none;
+    margin-top: 0;
+}
+
+/* Empty state */
+
+.sched-empty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 24px;
+    font-size: 0.85rem;
+    color: var(--text-label);
+    justify-content: center;
+}
+
+/* ── MINI WEEKLY GRID (Grid view) ── */
+
+.mini-weekly-grid {
+    font-size: 0.72rem;
+}
+
+/* Time column */
+
+.wg-time-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.wg-time-header {
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.wg-time-label {
+    position: absolute;
+    right: 4px;
+    font-size: 0.65rem;
+    color: var(--text-label);
+    transform: translateY(-50%);
+    white-space: nowrap;
+}
+
+/* Day column */
+
+.wg-day-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wg-day-header {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--text-label);
+    flex-shrink: 0;
+}
+
+/* Grid body area (holds hour lines + blocks) */
+
+.wg-body-area {
+    position: relative;
+    flex: 1;
+}
+
+.wg-hour-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--off);
+}
+
+.wg-half-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--off);
+    opacity: 0.45;
+    border-top: 1px dashed var(--off);
+}
+
+/* Class block inside grid */
+
+.wg-block {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    border-radius: 5px;
+    padding: 3px 5px;
+    overflow: hidden;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    cursor: default;
+}
+
+.wg-block-code {
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wg-block-name {
+    font-weight: 400;
+    color: rgba(255,255,255,0.88);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wg-block-room {
+    font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 /* ── CALENDAR ── */
 
 .cal-nav {
@@ -294,6 +461,16 @@
 
 .cal-day.empty {
     background: none;
+    cursor: default;
+}
+
+/* Days from previous/next month — dimmed, non-interactive */
+
+.cal-day.other-month {
+    color: var(--text-label);
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
 }
 
 .cal-day.today {
@@ -302,16 +479,29 @@
     font-weight: 700;
 }
 
+/* Selected day (clicked) */
+
+.cal-day.selected {
+    background: var(--red);
+    color: var(--white);
+    font-weight: 700;
+}
+
+.cal-day.today.selected {
+    background: var(--red-dk, #6e0e16);
+}
+
 .cal-day.has-event {
     cursor: pointer;
 }
 
-.cal-day.has-event:hover {
+.cal-day.has-event:not(.today):not(.selected):hover {
     background: var(--off);
 }
 
-.cal-day.today.has-event:hover {
-    background: var(--red-dk);
+.cal-day.today.has-event:hover,
+.cal-day.selected.has-event:hover {
+    background: var(--red-dk, #6e0e16);
 }
 
 .event-dot {
@@ -323,7 +513,8 @@
     bottom: 3px;
 }
 
-.cal-day.today .event-dot {
+.cal-day.today .event-dot,
+.cal-day.selected .event-dot {
     background: var(--white);
 }
 
@@ -396,7 +587,6 @@
 .nav-buttons button:disabled {
     opacity: 0.4;
     cursor: default;
-    /* for when hovered */
     background-color: var(--white-pr);
     border-color: var(--off-gray);
 }
@@ -474,39 +664,36 @@
     }
 
     .news-events-card {
-    width: 33.333%;
+        width: 33.333%;
     }
 }
 
 @media (max-width: 501px) {
     .news-events-card {
-    width: 50%;
+        width: 50%;
     }
 }
 
 @media (max-width: 376px) {
     .news-events-card {
-    width: 100%;
+        width: 100%;
     }
 }
 
 @media(min-width: 1400px) {
     .student-title-content h1 {
-    font-size: 1.4rem;
+        font-size: 1.4rem;
     }
-
 }
 
 @media(min-width: 1550px) {
-
     .news-events-card {
-    width: 20%;
+        width: 20%;
     }
 
     .student-title-content h1 {
-    font-size: 1.5rem;
+        font-size: 1.5rem;
     }
-
 }
 
 @media(min-width: 2000px) {

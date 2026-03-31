@@ -8,75 +8,79 @@
     <link rel="stylesheet" href="src/css/index.css">
 </head>
 <body>
-
+ 
 <!-- Nav -->
     <nav id="mainNav">
         <div class="nav-logo">
             <div class="nav-logo-emblem">
                 <img src="src/assets/plm-logo.png" >
             </div>
-
+ 
             <div class="nav-logo-text">
                 <div>PLM</div>
                 <div>EST. 1967</div>
             </div>
         </div>
-
+ 
         <div class="nav-actions">
-        <a class="nav-btn" href="src/pages/student_login.php">
+        <a class="nav-btn" href="src/pages/applicants/applicant_login.php">
+            <i class="fa-solid fa-user-plus"></i>
+            <div>APPLICANT</div>
+        </a>
+        <a class="nav-btn" href="src/pages/student/student_login.php">
             <i class="fa-solid fa-book"></i>
             <div>STUDENT</div>
         </a>
-        <a class="nav-btn">
+        <a class="nav-btn" href="src/pages/faculty/faculty_login.php">
             <i class="fa-solid fa-users"></i>
             <div>FACULTY</div>
         </a>
-        <a class="nav-btn">
+        <a class="nav-btn" href="src/pages/admin/admin_login.php">
             <i class="fa-solid fa-server"></i>
             <div>ADMIN</div>
         </a>
         </div>
     </nav>
-
+ 
 <!-- Main Section -->
     <section class="main">
         <div class="main-bg"></div>
         <div class="main-divider"></div>
-
+ 
 <!-- Left panel -->
         <div class="main-left">
             <div class="torch-container">
                 <img src="src/assets/plm-torch.webp">
             </div>
         </div>
-
+ 
 <!-- Right panel -->
         <div class="main-right">
             <div class="main-label">
                 UNIVERSITY OF THE CITY OF MANILA
             </div>
-
+ 
             <h1 class="main-title">
                 <div class="line">PAMANTASAN</div>
                 <div class="line">NG LUNGSOD</div>
                 <div class="line">ng Maynila</div>
             </h1>
-
+ 
             <p class="main-subtitle">
                 The premier free university dedicated to academic excellence, public service, and the holistic development of the Filipino youth.
             </p>
-
+ 
             <div class="main-actions">
-                <button class="btn-primary">
+                <a href="src/pages/applicants/applicant_login.php" class="btn-primary">
                     <div>ENROLL NOW</div>
                     <i class="fa-solid fa-arrow-right"></i>
-                </button>
-
+                </a>
+ 
                 <button class="btn-secondary">
                     DISCOVER PLM
                 </button>
             </div>
-
+ 
             <div class="main-stats">
                 <div class="stat">
                     <div class="stat-num">60+</div>
@@ -93,16 +97,29 @@
             </div>
         </div>
     </section>
-
+ 
 <!-- Portals Section -->
     <section class="portals">
         <div class="portals-header">
             <div class="section-label">ACCESS YOUR PORTAL</div>
             <h2>Welcome, <em>Iskolar ng Bayan</em></h2>
         </div>
-
+ 
         <div class="portals-grid">
-            <div class="portal-card">
+            <a class="portal-card" href="src/pages/applicants/applicant_login.php">
+                <div class="portal-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <div class="portal-title">Applicant</div>
+                <div class="portal-desc">
+                    Apply for admission, submit requirements, and track your application status.
+                </div>
+                <div class="portal-arrow">
+                    ACCESS <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+ 
+            <a class="portal-card" href="src/pages/student/student_login.php">
                 <div class="portal-icon">
                     <i class="fa-solid fa-user"></i>
                 </div>
@@ -113,9 +130,9 @@
                 <div class="portal-arrow">
                     ACCESS <i class="fa-solid fa-arrow-right"></i>
                 </div>
-            </div>
-
-            <div class="portal-card">
+            </a>
+ 
+            <a class="portal-card" href="src/pages/faculty/faculty_login.php">
                 <div class="portal-icon">
                     <i class="fa-solid fa-chalkboard-user"></i>
                 </div>
@@ -126,9 +143,9 @@
                 <div class="portal-arrow">
                     ACCESS <i class="fa-solid fa-arrow-right"></i>
                 </div>
-            </div>
-
-            <div class="portal-card">
+            </a>
+ 
+            <a class="portal-card" href="src/pages/admin/admin_login.php">
                 <div class="portal-icon">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
@@ -139,10 +156,10 @@
                 <div class="portal-arrow">
                     ACCESS <i class="fa-solid fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
-
+ 
 <!-- Footer -->
     <footer>
         <div class="footer-brand">
@@ -152,7 +169,7 @@
             © 2025 PLM. All rights reserved.
         </div>
     </footer>
-
+ 
     <script src="src/js/index.js"></script>
 </body>
 </html>

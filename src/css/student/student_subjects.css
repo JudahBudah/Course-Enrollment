@@ -97,14 +97,7 @@ select {
     outline: none;
     cursor: pointer;
     transition: border-color 0.2s;
-}
 
-select:focus {
-    border-color: var(--red);
-}
-
-/* Select chevron appearance */
-select {
     appearance: none;
     -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z'/%3E%3C/svg%3E");
@@ -112,6 +105,10 @@ select {
     background-position: right 12px center;
     background-size: 14px;
     padding-right: 36px;
+}
+
+select:focus {
+    border-color: var(--red);
 }
 
 
@@ -169,7 +166,7 @@ select {
 
     gap: 12px;
     padding: 12px 20px;
-    background-color: var(--white-pr);;
+    background-color: var(--white-pr);
     border-bottom: 1px solid var(--off);
 
     font-size: 0.8rem;
@@ -181,11 +178,21 @@ select {
 }
 
 
-/* Column */
+/* Columns */
 
 .col-num {
     font-weight: 700;
     opacity: 0.5;
+}
+
+.col-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.col-prof {
+    text-align: left;
 }
 
 .code-badge {
@@ -223,13 +230,26 @@ select {
     font-size: 0.6rem;
     font-weight: 600;
     background: var(--off);
-    color: var(--text); 
+    color: var(--text);
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
+/* Units circle badge — brought in from backend version */
 .units-badge {
-    /* Will do somthing later */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+
+    background: var(--navy);
+    color: var(--white);
+
+    font-weight: 700;
+    font-size: 0.75rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
 }
 
 
@@ -243,7 +263,7 @@ select {
     padding: 11px 20px;
 
     background: var(--off);
-    color: var(--text); 
+    color: var(--text);
     font-size: 0.75rem;
 }
 
@@ -287,14 +307,16 @@ select {
 
 
 /* Day Headers */
-.wg-day-header, .wg-time-header {
+
+.wg-day-header,
+.wg-time-header {
     display: flex;
     align-items: center;
     justify-content: center;
 
     background: var(--white-pr);
     color: var(--dark-spc);
-    
+
     height: 34px;
     border-bottom: solid 2px var(--red);
 
@@ -307,29 +329,30 @@ select {
     border-bottom: none;
 }
 
+
 /* Columns */
 
-.wg-time-col { 
-    position: relative; 
+.wg-time-col {
+    position: relative;
     background: var(--white-pr);
 }
 
-.wg-day-col  { 
-    background-color: var(--white-pr);;
-    border-left: 1px solid var(--off); 
-    position: relative; 
+.wg-day-col {
+    background-color: var(--white-pr);
+    border-left: 1px solid var(--off);
+    position: relative;
 }
 
 
 /* Grid body */
 
-.wg-body-area { 
-    position: relative; 
+.wg-body-area {
+    position: relative;
 }
 
 .wg-hour-line {
     position: absolute;
-    left: 0; 
+    left: 0;
     right: 0;
     border-top: 1px solid var(--off);
     pointer-events: none;
@@ -337,11 +360,12 @@ select {
 
 .wg-half-line {
     position: absolute;
-    left: 0; 
+    left: 0;
     right: 0;
     border-top: 1px dashed var(--off);
     pointer-events: none;
 }
+
 
 /* Time labels */
 
@@ -359,16 +383,17 @@ select {
 }
 
 
-/* Course blocks */
+/* Course blocks — colors applied via inline style from JS */
+
 .wg-block {
     position: absolute;
     margin: 3px 0;
-    left: 3px; 
+    left: 3px;
     right: 3px;
 
     border-radius: 6px;
     padding: 10px;
-    
+
     cursor: default;
     z-index: 1;
 }
@@ -394,21 +419,9 @@ select {
 }
 
 
-/* Course block color themes */
-.wg-block {
-    background: var(--block-blue);
-    color:      var(--block-blue-fg);
-}
-
-.wg-block.wg-block--gold {
-    background: var(--block-gold);
-    color:      var(--block-gold-fg);
-}
-
-
 /* Media Query */
 
-@media(max-width: 698px) {
+@media (max-width: 698px) {
     .sched-nav {
         flex-direction: column;
         align-items: flex-start;
@@ -428,10 +441,9 @@ select {
     .sched-label-container {
         width: 100%;
     }
-
 }
 
-@media(max-width: 515px) {
+@media (max-width: 515px) {
     .sched-nav-left {
         flex-direction: column;
     }

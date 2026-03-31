@@ -1,0 +1,280 @@
+/* Main */
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Student Info Card */
+
+.card {
+    background: var(--white-pr);
+    border-radius: 12px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 30px; /* Remove ko later */
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    background: var(--red);
+    padding: 14px 24px;
+}
+
+.card-header h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+}
+
+
+/* ── STUDENT INFO ── */
+
+.student-body {
+    display: flex;
+    align-items: center;
+    padding: 24px 28px;
+    gap: 40px;
+}
+
+.avatar-wrap {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.avatar-wrap img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center;
+}
+
+.student-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    flex: 1;
+}
+
+.detail-item label {
+    display: block;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 3px;
+}
+
+.detail-item span {
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--dark);
+}
+
+
+/* TABLE SECTION HEAD */
+
+.table-section-head {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--red);
+    background-color: var(--white-pr);
+
+    padding: 20px 24px 16px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* ── TABLE ── */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .84rem;
+}
+
+thead tr {
+    background: var(--red);
+}
+
+thead th {
+    padding: 11px 16px;
+    color: var(--off);
+    font-weight: 600;
+    font-size: .72rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+}
+
+thead th.center { 
+    text-align: center; 
+}
+
+.type-tag {
+    margin-left: 6px;
+    padding: 2px 7px;
+    border-radius: 4px;
+
+    font-size: 0.6rem;
+    font-weight: 600;
+    background: var(--off);
+    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+tbody tr:nth-child(even) { 
+    background: var(--surface-alt); 
+}
+
+td {
+    padding: 11px 16px;
+    vertical-align: middle;
+    color: var(--dark);
+}
+
+td.center, th.center {
+    vertical-align: middle;
+    text-align: center;
+}
+
+input[type="checkbox"] {
+    display: block;
+    margin: auto;
+}
+
+.cb-cell {
+    width: 40px;
+    padding: 11px 14px;
+}
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--navy);
+    cursor: pointer;
+}
+
+.subj-code {
+    font-weight: 700;
+    font-size: .82rem;
+    color: var(--navy);
+}
+
+/* type pills */
+.type-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+
+/* schedule tags */
+.sched-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--off);
+    color: var(--dark);
+    font-size: .72rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 6px;
+    margin: 2px 0;
+    white-space: nowrap;
+}
+.sched-cell { display: flex; flex-direction: column; gap: 3px; }
+
+.faculty-name { font-weight: 500; }
+
+/* ── SEARCH BAR ── */
+.search-bar-wrap {
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+.search-bar-wrap label {
+    font-size: .8rem;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--off);
+    border: 1px solid var(--dark);
+    border-radius: 8px;
+    padding: 7px 14px;
+    gap: 8px;
+}
+
+.search-bar:focus-within {
+    border-color: var(--red);
+}
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    color: var(--dark);
+    width: 220px;
+}
+.search-bar input::placeholder { 
+    color: var(--text); 
+}
+
+.search-bar i { 
+    color: var(--text); 
+    flex-shrink: 0; 
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+    .student-details { 
+        grid-template-columns: repeat(2,1fr); 
+    }
+
+    td, th { 
+        padding: 9px 10px; 
+    }
+
+    .sched-tag { 
+        font-size: .65rem; 
+    }
+}
+
+@media (max-width: 635px) {
+    .student-body {
+        flex-direction: column;
+    }
+
+    .student-details {
+        width: 100%;
+    }
+
+    .avatar-wrap {
+        height: 120px;
+        width: 120px;
+    }
+}

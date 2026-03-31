@@ -1,11 +1,11 @@
-<?php 
+<?php
+session_start();
 
-    session_start();
+if (isset($_SESSION['student_number'])) {
+    unset($_SESSION['student_number']);
+}
 
-    if (isset(($_SESSION["user_id"])))
-    {
-        unset($_SESSION["user_id"]);
-    }
-
-    header("Location: ../../index.php");
-    die;
+session_destroy();
+header("Location: ../pages/student_login.php");
+die;
+?>
