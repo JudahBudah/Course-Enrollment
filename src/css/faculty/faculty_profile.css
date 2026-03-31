@@ -1,58 +1,73 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
-/* 
-Red: #8C1C24
-Gold: #D4AF37
-White: #F2F3F2
-Blue: #0B1F5B
-
-    font-family: "Montserrat", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
-    font-style: normal;
-
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-*/
-
-
-.section-container {
-    display: flex;
-}
-
-h2 {
-    margin: 10px 0;
-}
-
 hr {
     margin: 20px 0 0 0;
-    border: solid 1px #8C1C24;
+    border: solid 1px var(--red);
 }
 
 
-/* Left Section Nav */
+/* ── Alert ── */
 
-.left-section-nav {
-    margin: 0 10px 0 0;
+.alert {
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: rgba(34, 139, 34, 0.1);
+    color: #1a7a1a;
+    border: 1px solid rgba(34, 139, 34, 0.25);
+}
+
+
+/* ── Account Tab Nav ── */
+
+.account-nav {
+    margin-bottom: 25px;
     border-radius: 15px;
-    background-color: white;
-    position: sticky;
-    top: 70px;
+    background-color: var(--white-pr);
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
-.left-section-nav li {
-    padding: 15px;
-    font-size: 1rem;
-    
-    font-family: "Poppins", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+.account-nav ul {
+    display: flex;
+    justify-content: center;
+}
+
+.account-nav li {
+    flex: 1;
+    text-align: center;
+}
+
+.account-nav li a {
+    display: block;
+    padding: 16px 10px;
+    font-size: 0.88rem;
+    color: var(--text-label);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+    white-space: nowrap;
+}
+
+.account-nav li a:hover {
+    color: var(--red);
+    background-color: rgba(140, 28, 36, 0.04);
+}
+
+.account-nav li a.active {
+    color: var(--red);
+    font-weight: 600;
+    border-bottom: 3px solid var(--red);
+    background-color: rgba(140, 28, 36, 0.05);
 }
 
 
-/* Input & Select Style */
+/* ── Input & Select Style ── */
 
 label {
     white-space: nowrap;
@@ -71,6 +86,16 @@ input, select {
     outline: none;   
 }
 
+input:focus, select:focus {
+    border-color: var(--red);
+}
+
+input[readonly] {
+    background-color: var(--surface-alt);
+    cursor: default;
+    opacity: 0.75;
+}
+
 select {
     appearance: none;
     -webkit-appearance: none;
@@ -82,24 +107,20 @@ select {
 }
 
 
-/* Right Section */
+/* ── Content Section ── */
 
-.right-section-content-container{
-    flex-grow: 1;
-}
-
-.right-section-content {
+.content-section {
     display: flex;
     flex-direction: column;
     border-radius: 20px;
-    background-color: white;
+    background-color: var(--white-pr);
     padding: 40px;
     margin: 0 0 20px 0;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 
-/* --- Main Info --- */
+/* ── Main Info ── */
 
 .main-info {
     display: flex;
@@ -161,16 +182,18 @@ select {
 }
 
 
-/* Personal Info */
+/* ── Personal Info ── */
 
 .personal-info h3 {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
     margin: 30px 0 10px 0;
+    color: var(--dark-spc);
 }
 
-.full-name, .birth-info, .sex-status, .contact-info, .background-info {
+.full-name, .birth-info, .sex-status,
+.contact-info, .background-info {
     display: flex;
     gap: 15px;
 }
@@ -183,13 +206,14 @@ select {
 }
 
 
-/* --- Permanent Address & Mailing Address --- */
+/* ── Permanent & Mailing Address ── */
 
-.complete-address h3, .mailing-address-header {
+.complete-address h3 {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
     margin: 30px 0 10px 0;
+    color: var(--dark-spc);
 }
 
 .mailing-address-header {
@@ -202,6 +226,8 @@ select {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
+    margin: 0;
+    color: var(--dark-spc);
 }
 
 .same-address-checkbox {
@@ -212,6 +238,17 @@ select {
 
 .same-address-checkbox label {
     margin: 0;
+    white-space: nowrap;
+}
+
+/* Override the global checkbox size so it doesn't inherit input styles */
+.same-address-checkbox input[type="checkbox"] {
+    width: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: none;
+    cursor: pointer;
 }
 
 .address-row-1, .address-row-2, .address-row-3 {
@@ -230,8 +267,14 @@ select {
     margin: 0;
 }
 
+/* Disabled state for mailing address when "same" is checked */
+#mailing-address-content.sync-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
 
-/* --- Save Changes --- */
+
+/* ── Save Changes ── */
 
 .save-changes {
     display: flex;
@@ -240,18 +283,18 @@ select {
 }
 
 .save-changes button {
-    padding: 13px 15px;
+    padding: 13px 24px;
     border-radius: 10px;
 
     background-color: var(--red);
-    color: white;
+    color: var(--white-pr);
     font-size: 0.85rem;
     letter-spacing: 0.5px;
     font-weight: 600;
     font-family: "DM Sans", sans-serif;
     border: none;
 
-    transition: 0.3s;
+    transition: background-color 0.3s;
     cursor: pointer;
 }
 
