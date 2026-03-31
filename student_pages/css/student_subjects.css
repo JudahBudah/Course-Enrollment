@@ -235,9 +235,21 @@ select:focus {
     letter-spacing: 0.04em;
 }
 
-/* Units circle badge — Will do something later */
+/* Units circle badge — brought in from backend version */
 .units-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
 
+    background: var(--navy);
+    color: var(--white);
+
+    font-weight: 700;
+    font-size: 0.75rem;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
 }
 
 

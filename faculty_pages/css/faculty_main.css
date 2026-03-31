@@ -1,0 +1,262 @@
+/* Font: Poppins, Montserrat, Playfair Display, DM Sans */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+
+/*
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    font-family: "Playfair Display", serif;
+    font-weight: <weight>;
+
+    font-family: "DM Sans", sans-serif;
+    font-weight: <weight>;
+*/
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --red:    #8C1C24;
+    --red-dk: #5a1018;
+    --red-lt: #b52332;
+    --gold:   #D4AF37;
+    --gold-lt:#f0d060;
+    --gold-dk:#a8881c;
+    --navy:   #0B1F5B;
+    --navy-dk:#070f2e;
+    --white:  #F2F3F2;
+    --off:    #e8e4d8;
+    --dark:   #0d0a07;
+    --text:   #4A4A4A;
+
+    --sidebar-width: 250px;
+}
+
+
+/* Details */
+
+body {
+    background-color: var(--white);
+}
+
+header {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+}
+
+main {
+    font-family: "Poppins", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    padding: 80px 0 0 0;
+    margin: 0 auto;
+    max-width: 2200px;
+    transition: width 0.5s;
+}
+
+p {
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+ul {
+    list-style: none;
+}
+
+
+/* Nav Section */
+
+.nav-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--red);
+    height: 60px;
+    width: 100%;
+    background-color: white;
+    z-index: 100;
+}
+
+.nav-button {
+    font-size: 1.55rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--dark);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-container img {
+    height: 2.4rem;
+    width: 2.4rem;
+}
+
+.logo-title {
+    font-family: "Playfair Display", serif;
+    font-weight: 700;
+    color: var(--gold-dk);
+    font-size: 0.9rem;
+}
+
+.logo-sub {
+    color: var(--navy);
+    font-size: 0.8rem;
+}
+
+.acc-display-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.acc-name{ 
+    font-size: 0.9rem;
+}
+
+.acc-img {
+    height: 40px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.acc-img img {
+    width: 100%;
+    object-fit: cover;  
+    object-position: center;
+}
+
+
+/* Nav Side */
+
+.main-flex {
+    display: flex;
+}
+
+.spacer {
+    width: 250px;
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+header nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 95px;
+    height: 100vh;
+    width: 250px;
+    background-color: white;
+    box-shadow: 6px 0 10px rgba(0, 0, 0, 0.08);
+    z-index: 50;
+}
+
+/* To check what consumes space
+* {
+  outline: 1px solid red;
+}
+*/
+
+.main-ul {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-ul li {
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+.main-ul li a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 16px 32px;
+    gap: 15px;
+    color: var(--dark);
+    transition: 0.3s;
+}
+
+.main-ul li a:hover {
+    color: var(--text);
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.logout-bg i, .logout-bg .li-name {
+    color: var(--text);
+}
+
+.main-ul li .logout-bg:hover {
+    background-color: rgba(181, 35, 50, 0.1);
+    color: var(--red)
+}
+
+/* Border-left when active */
+.main-ul li a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+}
+
+.main-ul li a.active::before {
+    background-color: var(--red);
+}
+
+.main-ul li a.active {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+/*
+.li-name {
+    display: none;
+}
+
+
+/* Media Query */
+
+@media(max-width: 1100px) {
+    main {
+            width: calc(98% - 250px);
+        }
+}
+
+
+@media(min-width: 1100px) {
+    main {
+        width: calc(98% - 250px);
+    }
+}
+
+@media(min-width: 1500px) {
+    main {
+        width: calc(98% - 250px);
+    }
+}

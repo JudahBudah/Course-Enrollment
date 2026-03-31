@@ -6,118 +6,55 @@ main {
 
 /* --- Input, Select Style --- */
 
-select {
-    width: 100%;
-    padding: 9px 36px 9px 14px;
-    border-radius: 9px;
-    border: 1.5px solid var(--off);
-    background-color: var(--surface-alt);
-    font-size: 0.85rem;
+input, select {
+    width: 100%;  
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: 1px solid #888888;
+    font-size: 0.9rem;
     font-family: inherit;
-    color: var(--dark);
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
+    outline: none;   
+}
 
+select {
     appearance: none;
     -webkit-appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 14px;
-    padding-right: 36px;
-}
-
-select:focus {
-    border-color: var(--red);
+    background-position: right 15px center;
+    background-size: 17px;
+    padding-right: 40px;
+    text-align: center;
 }
 
 
-/* --- sched-nav --- */
+/* sched-nav & Header*/
 
 .sched-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 14px 25px;
+    padding: 15px;
     border-radius: 15px;
-    background-color: var(--white-pr);
+    background-color: white;
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 .sched-opn-title {
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--red);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.sched-nav-left {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.sched-stats {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.sched-stat-chip {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-}
-
-.stat-value {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--red);
-    font-family: "DM Sans", sans-serif;
-    line-height: 1;
-}
-
-.stat-label {
-    font-size: 0.6rem;
+    text-align: center;
+    font-size: 1.2rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text);
 }
 
-.sched-stat-divider {
-    width: 1px;
-    height: 24px;
-    background-color: var(--off);
-    flex-shrink: 0;
+hr {
+    border: solid 1px var(--red);
+    margin: 5px 0 20px 0;
 }
 
 .sched-nav-options {
     display: flex;
-    gap: 12px;
-    align-items: flex-end;
+    gap: 20px;
 }
 
-.sched-label-container {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 160px;
-}
-
-.sched-label-container label {
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text);
-    padding-left: 2px;
+.sched-nav select {
+    flex: 1;
 }
 
 
@@ -140,11 +77,11 @@ select:focus {
 
 .sched-table-header {
     display: grid;
-    grid-template-columns: 40px 130px 120px 1fr 60px 160px;
+    grid-template-columns: 40px 130px 120px 1fr 60px 200px;
 
     background: var(--red);
     color: var(--white);
-
+    
     padding: 11px 20px;
     gap: 12px;
 
@@ -168,14 +105,14 @@ select:focus {
 
 .sched-row {
     display: grid;
-    grid-template-columns: 40px 130px 120px 1fr 60px 160px;
+    grid-template-columns: 40px 130px 120px 1fr 60px 200px;
 
     align-items: center;
     text-align: center;
 
     gap: 12px;
-    padding: 12px 20px;
-    background-color: var(--white-pr);
+    padding: 11px 20px;
+    background-color: white;
     border-bottom: 1px solid var(--off);
 
     font-size: 0.8rem;
@@ -183,27 +120,15 @@ select:focus {
 }
 
 .sched-row:nth-child(even) {
-    background-color: var(--surface-alt);
+    background-color: #faf9f7;
 }
 
 
-/* Columns */
+/* Column */
+
 
 .col-num {
     font-weight: 700;
-    opacity: 0.5;
-}
-
-.col-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.col-students {
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .code-badge {
@@ -216,8 +141,8 @@ select:focus {
 }
 
 .section-badge {
-    background: var(--badge-navy);
-    color: var(--perm-navy);
+    background: #e0e5f5;
+    color: var(--navy);
     white-space: nowrap;
     font-weight: 600;
     font-size: 0.75rem;
@@ -234,12 +159,11 @@ select:focus {
     font-size: 0.6rem;
     font-weight: 600;
     background: var(--off);
-    color: var(--text);
+    color: #666;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
-/* Units circle badge */
 .units-badge {
     display: flex;
     align-items: center;
@@ -247,24 +171,13 @@ select:focus {
     margin: auto;
 
     background: var(--navy);
-    color: var(--white-pr);
-
+    color: var(--white);
+    
     font-weight: 700;
     font-size: 0.75rem;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-}
-
-/* Enrollment count chip */
-.enroll-chip {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--text);
-    background: var(--off);
-    padding: 3px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
 }
 
 
@@ -278,7 +191,7 @@ select:focus {
     padding: 11px 20px;
 
     background: var(--off);
-    color: var(--text);
+    color: #555;
     font-size: 0.75rem;
 }
 
@@ -315,23 +228,21 @@ select:focus {
 .weekly-grid {
     min-width: 680px;
     padding: 0 0 20px 0;
-    background-color: var(--white-pr);
+    background-color: var(--off);
     display: grid;
     grid-template-columns: 50px repeat(6, 1fr);
 }
 
 
 /* Day Headers */
-
-.wg-day-header,
-.wg-time-header {
+.wg-day-header, .wg-time-header {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: var(--white-pr);
-    color: var(--dark-spc);
-
+    background: var(--off);
+    color: var(--navy);
+    
     height: 34px;
     border-bottom: solid 2px var(--red);
 
@@ -344,30 +255,29 @@ select:focus {
     border-bottom: none;
 }
 
-
 /* Columns */
 
-.wg-time-col {
-    position: relative;
-    background: var(--white-pr);
+.wg-time-col { 
+    position: relative; 
+    background: var(--off);
 }
 
-.wg-day-col {
-    background-color: var(--white-pr);
-    border-left: 1px solid var(--off);
-    position: relative;
+.wg-day-col  { 
+    background-color: white;
+    border-left: 1px solid var(--off); 
+    position: relative; 
 }
 
 
 /* Grid body */
 
-.wg-body-area {
-    position: relative;
+.wg-body-area { 
+    position: relative; 
 }
 
 .wg-hour-line {
     position: absolute;
-    left: 0;
+    left: 0; 
     right: 0;
     border-top: 1px solid var(--off);
     pointer-events: none;
@@ -375,12 +285,11 @@ select:focus {
 
 .wg-half-line {
     position: absolute;
-    left: 0;
+    left: 0; 
     right: 0;
     border-top: 1px dashed var(--off);
     pointer-events: none;
 }
-
 
 /* Time labels */
 
@@ -390,7 +299,7 @@ select:focus {
 
     font-size: 0.6rem;
     font-weight: 700;
-    color: var(--dark-spc);
+    color: var(--dark);
     line-height: 1;
     white-space: nowrap;
     transform: translateY(-50%);
@@ -399,16 +308,15 @@ select:focus {
 
 
 /* Course blocks */
-
 .wg-block {
     position: absolute;
     margin: 3px 0;
-    left: 3px;
+    left: 3px; 
     right: 3px;
 
     border-radius: 6px;
     padding: 10px;
-
+    
     cursor: default;
     z-index: 1;
 }
@@ -431,39 +339,4 @@ select:focus {
     font-size: 0.5rem;
     opacity: 0.82;
     margin-top: 3px;
-}
-
-
-/* Media Query */
-
-@media (max-width: 698px) {
-    .sched-nav {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .sched-nav-left {
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    .sched-nav-options {
-        width: 100%;
-    }
-
-    .sched-label-container {
-        width: 100%;
-    }
-}
-
-@media (max-width: 515px) {
-    .sched-nav-left {
-        flex-direction: column;
-    }
-
-    .sched-nav-options {
-        flex-direction: column;
-    }
 }

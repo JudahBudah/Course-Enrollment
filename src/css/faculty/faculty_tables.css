@@ -1,0 +1,424 @@
+/* ============================================================
+   faculty_tables.css
+   Shared styles for: faculty_classlist, faculty_spreadsheet,
+   faculty_gradebook
+   ============================================================ */
+
+:root {
+    --passed-green: #1a6b3c;
+    --passed-bg:    #e5f5ec;
+    --pending-gold: #c98f00;
+    --pending-bg:   #fff1c4;
+    --failed-bg:    #fce8ea;
+    --inc-orange:   #8a4f00;
+    --inc-bg:       #fff0d6;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ── Class Selector Card ─────────────────────────────────── */
+
+.class-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    padding: 14px 25px;
+    border-radius: 15px;
+    background-color: var(--white-pr);
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+}
+
+.class-nav-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.class-nav-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    white-space: nowrap;
+}
+
+.class-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.class-meta-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.class-meta-badge.code {
+    background: var(--badge-navy);
+    color: var(--perm-navy);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.class-meta-badge.section {
+    background: var(--badge-gold);
+    color: var(--perm-gold-dk);
+}
+
+.class-meta-sep {
+    font-size: 0.55rem;
+    color: var(--text-label);
+}
+
+.class-meta-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.class-nav-right {
+    flex-shrink: 0;
+}
+
+.sched-label-container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 300px;
+}
+
+.sched-label-container label {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text);
+    padding-left: 2px;
+}
+
+select {
+    width: 100%;
+    padding: 9px 36px 9px 14px;
+    border-radius: 9px;
+    border: 1.5px solid var(--off);
+    background-color: var(--surface-alt);
+    font-size: 0.85rem;
+    font-family: inherit;
+    color: var(--dark);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath d='M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+select:focus {
+    border-color: var(--red);
+}
+
+
+/* ── Shared table helpers ─────────────────────────────────── */
+
+.col-head {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+}
+
+.col-align-left {
+    text-align: left;
+}
+
+.col-num {
+    font-weight: 700;
+    opacity: 0.5;
+    text-align: center;
+}
+
+.col-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.col-side {
+    text-align: left;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.student-no {
+    color: var(--perm-navy);
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+}
+
+.section-badge {
+    background: var(--badge-navy);
+    color: var(--perm-navy);
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+/* Status badges (classlist) */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.status-badge i,
+.col-remark i {
+    font-size: 0.6rem;
+}
+
+.status-badge.enrolled {
+    background: var(--passed-bg);
+    color: var(--passed-green);
+}
+
+.status-badge.loa {
+    background: var(--failed-bg);
+    color: var(--red);
+}
+
+.status-badge.incomplete {
+    background: var(--inc-bg);
+    color: var(--inc-orange);
+}
+
+.status-badge.dropped {
+    background: #e8f0fb;
+    color: var(--perm-navy);
+}
+
+/* Remark pills (spreadsheet / gradebook) */
+.col-remark {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.col-remark.passed    { background: var(--passed-bg); color: var(--passed-green); }
+.col-remark.failed    { background: var(--failed-bg); color: var(--red); }
+.col-remark.incomplete{ background: var(--inc-bg);    color: var(--inc-orange); }
+.col-remark.ongoing   { background: #e8f0fb;           color: var(--perm-navy); }
+.col-remark.pending   { background: var(--pending-bg); color: var(--pending-gold); }
+
+/* Grade value cells */
+.col-grade,
+.col-cg,
+.col-tg,
+.col-fg {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--dark);
+}
+
+/* Email (classlist) */
+.col-email {
+    text-align: left;
+    font-size: 0.78rem;
+    color: var(--text);
+}
+
+/* Shared footer */
+.table-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+    padding: 11px 20px;
+    background: var(--off);
+    color: var(--text);
+    font-size: 0.75rem;
+}
+
+.table-footer strong {
+    color: var(--red);
+}
+
+
+/* ── Class List Table ─────────────────────────────────────── */
+
+.sec-table-wrapper { overflow-x: auto; }
+
+.sec-table {
+    min-width: 900px;
+    margin-top: 25px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+}
+
+.sec-table-header,
+.sec-row {
+    display: grid;
+    grid-template-columns: 40px 140px 1fr 1fr 130px 130px;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+}
+
+.sec-table-header {
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+}
+
+.sec-table-body { display: flex; flex-direction: column; }
+
+.sec-row {
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.sec-row:nth-child(even) { background-color: var(--surface-alt); }
+
+
+/* ── Spreadsheet Table ────────────────────────────────────── */
+
+.ss-table-wrapper { overflow-x: auto; }
+
+.ss-table {
+    min-width: 1050px;
+    margin-top: 25px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+}
+
+.ss-table-header,
+.ss-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 130px 100px 110px 110px 130px 110px 120px;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+}
+
+.ss-table-header {
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+}
+
+.ss-table-body { display: flex; flex-direction: column; }
+
+.ss-row {
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.ss-row:nth-child(even) { background-color: var(--surface-alt); }
+
+
+/* ── Gradebook Table ──────────────────────────────────────── */
+
+.gb-table-wrapper { overflow-x: auto; }
+
+.gb-table {
+    min-width: 900px;
+    margin-top: 25px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+}
+
+.gb-table-header,
+.gb-row {
+    display: grid;
+    grid-template-columns: 40px 150px 1fr 150px 155px 140px 130px;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 20px;
+}
+
+.gb-table-header {
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+}
+
+.gb-table-body { display: flex; flex-direction: column; }
+
+.gb-row {
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.gb-row:nth-child(even) { background-color: var(--surface-alt); }
+
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 698px) {
+    .class-nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .class-nav-right,
+    .sched-label-container {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .class-meta-name {
+        white-space: normal;
+    }
+}

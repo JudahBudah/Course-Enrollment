@@ -1,4 +1,4 @@
-// Simulated admin events — replace with PHP/DB data later
+// Simulated admin events — replace with PHP/DB data
 const events = {
     "2026-03-14": "University Foundation Day — No Classes",
     "2026-03-16": "Midterm Examinations Begin",
@@ -8,7 +8,7 @@ const events = {
 let current = new Date();
 
 function renderCalendar(date) {
-    const year  = date.getFullYear();
+    const year = date.getFullYear();
     const month = date.getMonth();
     const today = new Date();
 
@@ -18,20 +18,18 @@ function renderCalendar(date) {
     const grid = document.getElementById("cal-grid");
     grid.innerHTML = "";
 
-    const firstDay    = new Date(year, month, 1).getDay();
+    const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const daysInPrev  = new Date(year, month, 0).getDate();
 
-    // Trailing days from previous month
-    for (let i = firstDay - 1; i >= 0; i--) {
-        const el = document.createElement("div");
-        el.className = "cal-day other-month empty";
-        el.textContent = daysInPrev - i;
-        grid.appendChild(el);
+    // Empty leading cells
+    for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement("div");
+        empty.className = "cal-day empty";
+        grid.appendChild(empty);
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
-        const key  = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
         const cell = document.createElement("div");
         cell.className = "cal-day";
         cell.textContent = d;
@@ -46,9 +44,6 @@ function renderCalendar(date) {
             cell.appendChild(dot);
 
             cell.addEventListener("click", () => {
-                document.querySelectorAll('.cal-day.selected').forEach(el => el.classList.remove('selected'));
-                cell.classList.add('selected');
-
                 const peek = document.getElementById("cal-event-peek");
                 const text = document.getElementById("cal-event-text");
                 text.textContent = `${key} — ${events[key]}`;
@@ -57,15 +52,6 @@ function renderCalendar(date) {
         }
 
         grid.appendChild(cell);
-    }
-
-    // Leading days for next month
-    const trailing = (firstDay + daysInMonth) % 7;
-    for (let d = 1; d <= (trailing === 0 ? 0 : 7 - trailing); d++) {
-        const el = document.createElement("div");
-        el.className = "cal-day other-month empty";
-        el.textContent = d;
-        grid.appendChild(el);
     }
 
     document.getElementById("cal-event-peek").style.display = "none";
@@ -78,21 +64,20 @@ function changeMonth(dir) {
 
 renderCalendar(current);
 
-
-/* ── News Card Slider ── */
-
 const container = document.querySelector('.news-events-container');
-const wrapper   = document.querySelector('.news-events-card-wrapper');
-const prevBtn   = document.getElementById('news-prev');
-const nextBtn   = document.getElementById('news-next');
+const wrapper = document.querySelector('.news-events-card-wrapper');
+const prevBtn = document.querySelector('.nav-buttons button:first-child');
+const nextBtn = document.querySelector('.nav-buttons button:last-child');
 
 let currentIndex = 0;
 
+// --- Calculate how many cards are visible and total slides ---
 function getVisibleCount() {
     const card = container.querySelector('.news-events-card');
     if (!card) return 1;
+    const cardWidth = card.offsetWidth;
     const gap = parseFloat(getComputedStyle(container).gap) || 0;
-    return Math.round(wrapper.offsetWidth / (card.offsetWidth + gap));
+    return Math.round(wrapper.offsetWidth / (cardWidth + gap));
 }
 
 function getTotalCards() {
@@ -103,37 +88,51 @@ function getMaxIndex() {
     return Math.max(0, getTotalCards() - getVisibleCount());
 }
 
+// --- Move to a specific index ---
 function goTo(index) {
     const card = container.querySelector('.news-events-card');
     if (!card) return;
+
+    const cardWidth = card.offsetWidth;
     const gap = parseFloat(getComputedStyle(container).gap) || 0;
+
     currentIndex = Math.max(0, Math.min(index, getMaxIndex()));
-    container.style.transform = `translateX(-${currentIndex * (card.offsetWidth + gap)}px)`;
+    const offset = currentIndex * (cardWidth + gap);
+    container.style.transform = `translateX(-${offset}px)`;
+
     updateButtons();
 }
 
+// --- Update disabled state ---
 function updateButtons() {
     prevBtn.disabled = currentIndex <= 0;
     nextBtn.disabled = currentIndex >= getMaxIndex();
 }
 
+// --- Button click ---
 prevBtn.addEventListener('click', () => goTo(currentIndex - 1));
 nextBtn.addEventListener('click', () => goTo(currentIndex + 1));
 
+// --- Drag / Swipe support (mouse & touch) ---
+let isDragging = false;
+let startX = 0;
+let endX = 0;
+let startTranslate = 0;
+const DRAG_THRESHOLD = 50; // px before registering as a swipe
 
-/* ── Drag / Swipe ── */
-
-let isDragging = false, startX = 0, endX = 0, startTranslate = 0;
-const DRAG_THRESHOLD = 50;
-
-const getClientX = e => e.touches ? e.touches[0].clientX : e.clientX;
+function getClientX(e) {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+}
 
 function dragStart(e) {
     isDragging = true;
-    startX = endX = getClientX(e);
+    startX = getClientX(e);
+    endX = startX;
+
     const card = container.querySelector('.news-events-card');
-    const gap  = parseFloat(getComputedStyle(container).gap) || 0;
-    startTranslate = currentIndex * ((card?.offsetWidth || 0) + gap);
+    const gap = parseFloat(getComputedStyle(container).gap) || 0;
+    startTranslate = currentIndex * (card.offsetWidth + gap);
+
     container.style.transition = 'none';
     container.style.cursor = 'grabbing';
 }
@@ -141,7 +140,8 @@ function dragStart(e) {
 function dragMove(e) {
     if (!isDragging) return;
     endX = getClientX(e);
-    container.style.transform = `translateX(-${startTranslate - (endX - startX)}px)`;
+    const deltaX = endX - startX;
+    container.style.transform = `translateX(-${startTranslate - deltaX}px)`;
 }
 
 function dragEnd() {
@@ -149,18 +149,34 @@ function dragEnd() {
     isDragging = false;
     container.style.transition = '';
     container.style.cursor = '';
-    const delta = endX - startX;
-    goTo(Math.abs(delta) >= DRAG_THRESHOLD ? (delta < 0 ? currentIndex + 1 : currentIndex - 1) : currentIndex);
+
+    // Positive deltaX = dragged right = go to previous
+    // Negative deltaX = dragged left  = go to next
+    const deltaX = endX - startX;
+
+    if (Math.abs(deltaX) >= DRAG_THRESHOLD) {
+        goTo(deltaX < 0 ? currentIndex + 1 : currentIndex - 1);
+    } else {
+        // Snap back to current position
+        goTo(currentIndex);
+    }
 }
 
+// Mouse events
 container.addEventListener('mousedown', dragStart);
-container.addEventListener('dragstart', e => e.preventDefault());
-container.addEventListener('touchstart', dragStart, { passive: true });
-container.addEventListener('touchmove',  dragMove,  { passive: true });
-container.addEventListener('touchend',   dragEnd);
-
 window.addEventListener('mousemove', dragMove);
-window.addEventListener('mouseup',   dragEnd);
+window.addEventListener('mouseup', dragEnd);
+
+// Prevent image/link drag interference
+container.addEventListener('dragstart', (e) => e.preventDefault());
+
+// Touch events
+container.addEventListener('touchstart', dragStart, { passive: true });
+container.addEventListener('touchmove', dragMove, { passive: true });
+container.addEventListener('touchend', dragEnd);
+
+// --- Recalculate on resize ---
 window.addEventListener('resize', () => goTo(currentIndex));
 
+// --- Init ---
 updateButtons();

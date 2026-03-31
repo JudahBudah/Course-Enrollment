@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Information</title>
+    <link rel="icon" href="../../assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/faculty/faculty_profile.css">
+    <link rel="stylesheet" href="../../css/faculty/faculty_main.css">
+</head>
+<body>
+    <header>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
+            </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Venedict Mendoza
+                </div>
+                <div class="acc-img">
+                    <img  src="../../assets/test/faculty-profile.jpg">
+                </div>
+            </div>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="faculty_home.html">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_load.html">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_classlist.html">
+                        <i class="fa-solid fa-list"></i>
+                        <div class="li-name">Class List</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_spreadsheet.html">
+                        <i class="fa-solid fa-table"></i>
+                        <div class="li-name">Spreadsheet</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_gradebook.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Gradebook</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_profile.html">
+                        <i class="fa-solid fa-user" class="active"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
+                    </a>
+                </li>
+            </ul> 
+        </nav>
+    </header>
+
+    <div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+        <h2>Personal Information</h2>
+        <div class="section-container">
+
+            <!-- Left Section -->
+            <div class="left-section-nav-container">
+                <div class="left-section-nav">
+                    <ul>
+                        <li><a href="#">Faculty Information</a></li>
+                        <li><a href="#">Educational Background</a></li>
+                        <li><a href="#">Emergency Contacts</a></li>
+                        <li><a href="#">Documents / ID Photo</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Rigth Section -->
+            <div class="right-section-content-container">
+                <div class="right-section-content">
+
+
+                    <!-- Main Info -->
+                    <div class="main-info">
+                        <div class="img-container">
+                            <img src="../../assets/test/faculty-profile.jpg" id="profile-img">
+                            <div class="change-photo" id="change-photo-btn">
+                                <i class="fa-solid fa-camera"></i>
+                                <span>Change Photo</span>
+                                <input type="file" id="photo-input" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="main-info-content">
+
+                            <div class="main-row-1">
+                                <div class="info-input">
+                                    <label type="" for="faculty_id">Faculty ID</label>
+                                    <input name="faculty_id" id="faculty_id" required >
+                                </div>
+
+                                <div class="info-input">
+                                    <label type="" for="position">Position</label>
+                                    <select name="position" id="position" required >
+                                        <option value="" disabled selected>Select Position</option>
+                                        <option value="dean">Dean</option>
+                                        <option value="chairperson">Chairperson</option>
+                                        <option value="full-time">Full-Time Faculty</option>
+                                        <option value="part-time">Part-Time Faculty</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="main-row-2">
+                                <div class="info-input">
+                                    <label for="college">College</label>
+                                    <select name="college" id="college">
+                                        <option value="" disabled selected>Select College</option>
+                                        <option value="ce">College of Engineering</option>
+                                        <option value="cas">College of Information Systems and Technology Management</option>
+                                    </select>
+                                </div>
+                                <div class="info-input">
+                                    <label for="department">Department</label>
+                                    <select name="department" id="department">
+                                        <option value="" disabled selected>Select Department</option>
+                                        <option value="cpe">Computer Engineering</option>
+                                        <option value="cs">Computer Science</option>
+                                        <option value="it">Information Technology</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Personal Information -->
+                    <div class="personal-info">
+                        <h3>Personal Information</h3>
+
+                        <div class="personal-info-content">
+                            <div class="full-name">
+                                <div class="info-input">
+                                    <label for="last_name" type="text">Last Name</label>
+                                    <input name="last_name" id="last_name" type="text" placeholder="Dela Cruz" required>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="first_name" type="text">First Name</label>
+                                    <input name="first_name" id="first_name" type="text" placeholder="Juan" required>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="middle_name" type="text">Middle Name</label>
+                                    <input name="middle_name" id="middle_name" type="text" placeholder="Santos" required>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="suffix_name">Suffix Name</label>
+                                    <select name="suffix_name" id="suffix_name">
+                                        <option value="" disabled selected>Select Suffix</option>
+                                        <option value="none">None</option>
+                                        <option value="jr">Jr.</option>
+                                        <option value="jr">Sr.</option>
+                                        <option value="ii">II</option>
+                                        <option value="iii">III</option>
+                                        <option value="iv">IV</option>
+                                        <option value="v">V</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="birth-info">
+                                <div class="info-input">
+                                    <label for="birth">Date of Birth</label>
+                                    <input name="birth" id="birth" type="date" required>
+                                </div>
+                                <div class="info-input">
+                                    <label for="birth-place">Place of Birth</label>
+                                    <input name="birth-place" id="birth-place" type="text" required>
+                                </div>
+                            </div>
+
+                            <div class="sex-status">
+                                <div class="info-input">
+                                    <label for="sex">Sex</label>
+                                    <select name="sex" id="sex">
+                                        <option value="" disabled selected>Select Sex</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="na">Prefer not to say</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="civil-status">Civil Status</label>
+                                    <select name="civil-status" id="civil-status">
+                                        <option value="" disabled selected>Select Civil Status</option>
+                                        <option value="single">Single</option>
+                                        <option value="married">Married</option>
+                                        <option value="widowed">Widowed</option>
+                                        <option value="separated">Separated</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="contact-info">
+                                <div class="info-input">
+                                    <label for="contact-no">Contact Number</label>
+                                    <input name="contact-no" id="contact-no" required>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="email">Personal Email</label>
+                                    <input name="email" id="email" type="email" required>
+                                </div>
+                            </div>
+
+                            <div class="background-info">
+                                <div class="info-input">
+                                    <label for="religion">Religion</label>
+                                    <select name="religion" id="religion">
+                                        <option value="" disabled selected>Select Religion</option>
+                                        <option value="roman-catholic">Roman Catholic</option>
+                                        <option value="protestant">Protestant</option>
+                                        <option value="iglesia-ni-cristo">Iglesia ni Cristo</option>
+                                        <option value="islam">Islam</option>
+                                        <option value="buddhism">Buddhism</option>
+                                        <option value="hinduism">Hinduism</option>
+                                        <option value="none">None</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="nationality">Nationality</label>
+                                    <select name="nationality" id="nationality">
+                                        <option value="" disabled selected>Select Nationality</option>
+                                        <option value="filipino">Filipino</option>
+                                        <option value="american">American</option>
+                                        <option value="japanese">Japanese</option>
+                                        <option value="korean">Korean</option>
+                                        <option value="canadian">Canadian</option>
+                                        <option value="australian">Australian</option>
+                                        <option value="british">British</option>
+                                        <option value="indian">Indian</option>
+                                        <option value="chinese">Chinese</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="disability">Disability</label>
+                                    <select name="disability" id="disability">
+                                        <option value="" disabled selected>Select Option</option>
+                                        <option value="none">None</option>
+                                        <option value="physical">Physical Disability</option>
+                                        <option value="visual">Visual Impairment</option>
+                                        <option value="hearing">Hearing Impairment</option>
+                                        <option value="intellectual">Intellectual Disability</option>
+                                        <option value="psychosocial">Psychosocial Disability</option>
+                                        <option value="learning">Learning Disability</option>
+                                        <option value="other">Other</option>
+                                        <option value="prefer-not-to-say">Prefer not to say</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Permanent Address -->
+                    <div class="complete-address">
+                        <h3>Permanent Address</h3>
+
+                        <div class="complete-address-content">
+                            <div class="address-row-1">
+                                <div class="info-input">
+                                    <label for="region">Region</label>
+                                    <select name="region" id="region" required>
+                                        <option value="" disabled selected>Select Region</option>
+                                        <option value="ncr">NCR</option>
+                                        <option value="region-i">Region I</option>
+                                        <option value="region-ii">Region II</option>
+                                        <option value="region-iii">Region III</option>
+                                        <option value="region-iv-a">Region IV-A</option>
+                                        <option value="region-v">Region V</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            
+                                <div class="info-input">
+                                    <label for="province">Province</label>
+                                    <select name="province" id="province" required>
+                                        <option value="" disabled selected>Select Province</option>
+                                    </select>
+                                </div>
+                            
+                                <div class="info-input">
+                                    <label for="municipality">Municipality</label>
+                                    <select name="municipality" id="municipality" required>
+                                        <option value="" disabled selected>Select Municipality</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="address-row-2">
+                                <div class="info-input">
+                                    <label for="street-address">
+                                        Complete Address (House No. / Unit Bldg No. / Street Name)
+                                    </label>
+                                    <input type="text" name="street-address" id="street-address" required>
+                                </div>
+                            </div>
+
+                            <div class="address-row-3">
+                                <div class="info-input">
+                                    <label for="barangay">Barangay</label>
+                                    <select name="barangay" id="barangay" required>
+                                        <option value="" disabled selected>Select Barangay</option>
+                                    </select>
+                                </div>
+                            
+                                <div class="info-input">
+                                    <label for="zip-code">Zip Code</label>
+                                    <input type="text" name="zip-code" id="zip-code" maxlength="4" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mailing Address -->
+
+                    <div class="mailing-address">
+                        <div class="mailing-address-header">
+                            <h3>Mailing Address</h3>
+
+                            <div class="same-address-checkbox">
+                                <input type="checkbox" name="same-address" id="same-address">
+                                <label for="same-address">Same as Permanent Address</label>
+                            </div>
+                        </div>
+
+                        <div class="complete-address-content" id="mailing-address-content">
+                            <div class="address-row-1">
+                                <div class="info-input">
+                                    <label for="mailing-region">Region</label>
+                                    <select name="mailing-region" id="mailing-region" required>
+                                        <option value="" disabled selected>Select Region</option>
+                                        <option value="ncr">NCR</option>
+                                        <option value="region-i">Region I</option>
+                                        <option value="region-ii">Region II</option>
+                                        <option value="region-iii">Region III</option>
+                                        <option value="region-iv-a">Region IV-A</option>
+                                        <option value="region-v">Region V</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="mailing-province">Province</label>
+                                    <select name="mailing-province" id="mailing-province" required>
+                                        <option value="" disabled selected>Select Province</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="mailing-municipality">Municipality</label>
+                                    <select name="mailing-municipality" id="mailing-municipality" required>
+                                        <option value="" disabled selected>Select Municipality</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="address-row-2">
+                                <div class="info-input">
+                                    <label for="mailing-street-address">
+                                        Complete Address (House No. / Unit Bldg No. / Street Name)
+                                    </label>
+                                    <input type="text" name="mailing-street-address" id="mailing-street-address" required>
+                                </div>
+                            </div>
+
+                            <div class="address-row-3">
+                                <div class="info-input">
+                                    <label for="mailing-barangay">Barangay</label>
+                                    <select name="mailing-barangay" id="mailing-barangay" required>
+                                        <option value="" disabled selected>Select Barangay</option>
+                                    </select>
+                                </div>
+
+                                <div class="info-input">
+                                    <label for="mailing-zip-code">Zip Code</label>
+                                    <input type="text" name="mailing-zip-code" id="mailing-zip-code" maxlength="4" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="save-changes">
+                        <button type="button" id="save-changes-btn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </div>
+    <script src="../../js/faculty/faculty_profile.js"></script>
+    <script src="../../js/faculty/faculty_main.js"></script>
+</body>
+</html>

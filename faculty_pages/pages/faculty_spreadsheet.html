@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spreadsheet</title>
+    <link rel="icon" href="../../assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../../css/faculty/faculty_spreadsheet.css" />
+    <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
+  </head>
+  <body>
+    <header>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
+            </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Venedict Mendoza
+                </div>
+                <div class="acc-img">
+                    <img  src="../../assets/test/faculty-profile.jpg">
+                </div>
+            </div>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="faculty_home.html">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_load.html">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_classlist.html">
+                        <i class="fa-solid fa-list"></i>
+                        <div class="li-name">Class List</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_spreadsheet.html" class="active">
+                        <i class="fa-solid fa-table"></i>
+                        <div class="li-name">Spreadsheet</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_gradebook.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Gradebook</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_profile.html">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
+                    </a>
+                </li>
+            </ul> 
+        </nav>
+    </header>
+
+    <div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+
+        <div class="section-nav">
+            <div class="section-opn-title">
+                Course Code - Section - Subject Title
+            </div>
+            <hr>
+            <div class="section-nav-options">
+                <select name="sec-block">
+                    <option value="section">CPE 0222 - BSCpE 2-1 - Software Design (Lecture)</option>
+                    <option value="section">CPE 0222 - BSCpE 2-2 - Software Design (Lecture)</option>
+                    <option value="section">CPE 0222.1 - BSCpE 2-1 - Software Design (Laboratory)</option>
+                    <option value="section">CPE 0222.1 - BSCpE 2-2 - Software Design (Laboratory)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="spreadsheet-table-wrapper">
+            <div class="spreadsheet-table">
+                <div class="spreadsheet-table-header">
+                    <span class="col-head-num">#</span>
+                    <span class="col-head-name">FULL NAME</span>
+                    <span class="col-head-class">CLASS STANDING (30%)</span>
+                    <span class="col-head-quiz">QUIZ (30%)</span>
+                    <span class="col-head-me">MIDTERMS (20%)</span>
+                    <span class="col-head-fe">FINALS (20%)</span>
+                    <span class="col-head-tg">TRANSMUTED GRADE</span>
+                    <span class="col-head-fg">POINT GRADE</span>
+                    <span class="col-head-remark">REMARKS</span>
+                </div>
+
+                <div class="spreadsheet-table-body">
+                    <div class="ss-row">
+                        <span class="col-num">1</span>
+                        <span class="col-side">Agote, Jimboy D.</span>
+                        <span class="col-class">100</span>
+                        <span class="col-quiz">85</span>
+                        <span class="col-me">95</span>
+                        <span class="col-fe">80</span>
+                        <span class="col-tg">95</span>
+                        <span class="col-fg">1.25</span>
+                        <span class="col-remark passed"><i class="fa-solid fa-circle-check" style="font-size:.65rem"></i> Passed</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">2</span>
+                        <span class="col-side">Almario, John Basty J.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">3</span>
+                        <span class="col-side">Aniag, Samantha Nicole D.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">4</span>
+                        <span class="col-side">Antonino, Nelson Jr. M.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">5</span>
+                        <span class="col-side">Bagorio, Laimelyn R.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">6</span>
+                        <span class="col-side">Bautista, John Carlo E.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">7</span>
+                        <span class="col-side">Blanco, Gabrielle Nicole S.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">8</span>
+                        <span class="col-side">Celeste, Carl Isaac D.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">9</span>
+                        <span class="col-side">Daez, Jiro A.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">10</span>
+                        <span class="col-side">Dela Cruz, Judah Isaiah N.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">11</span>
+                        <span class="col-side">Doria, Iresh Gail C.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">12</span>
+                        <span class="col-side">Era, Kent C.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">13</span>
+                        <span class="col-side">Hernando, Francine Mica M.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">14</span>
+                        <span class="col-side">Lewis, Pearl Nadine A.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">15</span>
+                        <span class="col-side">Lopez, Miguel Ross S.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">16</span>
+                        <span class="col-side">Lumabi, Kevin G.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">17</span>
+                        <span class="col-side">Martinez, Bryelle Eauxyrish V.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">18</span>
+                        <span class="col-side">Mendoza, Venedict E.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">19</span>
+                        <span class="col-side">Montalban, Amira Beatriz B.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">20</span>
+                        <span class="col-side">Muncada, John Louie L.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">21</span>
+                        <span class="col-side">Orongan, Princess Kyle E.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">22</span>
+                        <span class="col-side">Placio, Rheanne D.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">23</span>
+                        <span class="col-side">Porta, Rex Reu B.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">24</span>
+                        <span class="col-side">Rodriguez, Ivanne Joshua L.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">25</span>
+                        <span class="col-side">Rollon, John Rupert M.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">26</span>
+                        <span class="col-side">Tiu, Khristian Gabriel R.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+
+                    <div class="ss-row">
+                        <span class="col-num">27</span>
+                        <span class="col-side">Tulang, Humprey P.</span>
+                        <span class="col-class">-</span>
+                        <span class="col-quiz">-</span>
+                        <span class="col-me">-</span>
+                        <span class="col-fe">-</span>
+                        <span class="col-tg">-</span>
+                        <span class="col-fg">-</span>
+                        <span class="col-remark pending"><i class="fa-solid fa-clock" style="font-size:.65rem"></i> Pending</span>
+                    </div>
+                </div>
+
+                <div class="spreadsheet-table-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    </div>
+    
+    <script src="../../js/faculty/faculty_main.js"></script>
+    <script src="../../js/faculty/faculty_spreadsheet.js"></script>
+
+  </body>
+</html>

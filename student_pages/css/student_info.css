@@ -1,0 +1,68 @@
+.main-title {
+    font-weight: 500;
+    color: var(--dark-spc);
+}
+
+hr {
+    border: 1px solid var(--red);
+}
+
+.br-space {
+    margin: 7px 0;
+}
+
+strong {
+    font-weight: 500;
+}
+
+.loc-box {
+    padding: 20px;
+    border: 1px solid var(--off);
+    border-radius: 10px;
+    width: 100%;
+    background-color: var(--off-gray);
+    color: var(--dark);
+}
+
+.loc-box ul {
+    padding-left: 25px;
+}
+
+.cust-li {
+    position: relative;
+}
+
+.cust-li::before {
+    content: "•";
+    position: absolute;
+    left: -18px;
+    top: 0;
+    font-size: 16px;
+}
+
+
+/* --- Paragraph ---*/
+
+.cust-ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 25px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin: 35px 0;
+}
+
+.semi-title {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.college-info {
+    color: var(--text);
+    line-height: 1.8;
+}

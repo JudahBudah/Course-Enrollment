@@ -1,15 +1,120 @@
+<?php
+session_start();
+include("../../php/connection.php");
+include("../../php/functions.php");
+
+$user_data = check_login($con);
+
+$profile_src = !empty($user_data['profile_photo'])
+    ? '../../' . $user_data['profile_photo']
+    : '../../assets/test/student-profile.webp';
+
+$program = htmlspecialchars($user_data['course'] ?? 'N/A');
+
+function formatYear($year) {
+    return match($year) {
+        1 => "1st Year", 2 => "2nd Year", 3 => "3rd Year", 4 => "4th Year",
+        default => "N/A",
+    };
+}
+$year_display = formatYear($user_data['year_level'] ?? null);
+
+// Fetch enrolled subjects from DB
+$stmt = mysqli_prepare($con, "
+    SELECT s.subject_code, s.subject_name, s.units, s.lab_hours,
+           c.section, c.schedule_day, c.schedule_time, c.room,
+           CONCAT(f.first_name, ' ', f.last_name) AS faculty_name
+    FROM enrollments e
+    JOIN classes c ON e.class_id = c.class_id
+    JOIN subjects s ON c.subject_id = s.subject_id
+    LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
+    WHERE e.student_id = ? AND e.status IN ('confirmed','ongoing')
+    ORDER BY s.subject_code
+");
+mysqli_stmt_bind_param($stmt, "i", $user_data['student_id']);
+mysqli_stmt_execute($stmt);
+$rows = mysqli_stmt_get_result($stmt);
+
+$subjects = [];
+while ($row = mysqli_fetch_assoc($rows)) {
+    $subjects[] = $row;
+}
+mysqli_stmt_close($stmt);
+
+$total_subjects = count($subjects);
+$total_units    = array_sum(array_column($subjects, 'units'));
+
+// Build scheduleData for the weekly grid
+function parseDays(string $day_str): array {
+    $day_str = trim($day_str);
+    $map = [
+        'Monday'    => 'M',  'Tuesday' => 'T',  'Wednesday' => 'W',
+        'Thursday'  => 'TH', 'Friday'  => 'F',  'Saturday'  => 'S', 'Sunday' => 'SU',
+        'Mon' => 'M', 'Tue' => 'T', 'Wed' => 'W', 'Thu' => 'TH', 'Fri' => 'F', 'Sat' => 'S',
+        'MW'  => ['M','W'],  'TTH' => ['T','TH'], 'MWF' => ['M','W','F'],
+        'TF'  => ['T','F'],  'MTH' => ['M','TH'],
+    ];
+    if (isset($map[$day_str])) {
+        return is_array($map[$day_str]) ? $map[$day_str] : [$map[$day_str]];
+    }
+    $parts  = preg_split('/[,\/]/', $day_str);
+    $result = [];
+    foreach ($parts as $p) {
+        $p        = trim($p);
+        $result[] = $map[$p] ?? $p;
+    }
+    return $result;
+}
+
+function parseTime(string $time_str): array {
+    $parts = preg_split('/\s*-\s*/', $time_str);
+    if (count($parts) < 2) return ['start' => '08:00', 'end' => '09:00'];
+    $to24 = function(string $t): string {
+        $t = trim($t);
+        if (preg_match('/(\d+):(\d+)\s*(AM|PM)/i', $t, $m)) {
+            $h = (int)$m[1]; $min = $m[2]; $ampm = strtoupper($m[3]);
+            if ($ampm === 'PM' && $h !== 12) $h += 12;
+            if ($ampm === 'AM' && $h === 12) $h  =  0;
+            return sprintf('%02d:%s', $h, $min);
+        }
+        return $t;
+    };
+    return ['start' => $to24($parts[0]), 'end' => $to24($parts[1])];
+}
+
+$schedule_data = [];
+foreach ($subjects as $subj) {
+    if (empty($subj['schedule_day']) || empty($subj['schedule_time'])) continue;
+    $days  = parseDays($subj['schedule_day']);
+    $time  = parseTime($subj['schedule_time']);
+    $slots = [];
+    foreach ($days as $d) {
+        $slots[] = ['day' => $d, 'start' => $time['start'], 'end' => $time['end']];
+    }
+    $schedule_data[] = [
+        'code'      => $subj['subject_code'],
+        'name'      => $subj['subject_name'],
+        'shortName' => mb_strlen($subj['subject_name']) > 18
+                         ? mb_substr($subj['subject_name'], 0, 18) . '…'
+                         : $subj['subject_name'],
+        'room'      => $subj['room'] ?? 'TBA',
+        'tag'       => ($subj['lab_hours'] > 0) ? 'Lab' : '',
+        'slots'     => $slots,
+    ];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Faculty Load</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
     <link rel="icon" href="../../assets/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
-    <link rel="stylesheet" href="../../css/faculty/faculty_load.css" />
-    <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="../../css/student/student_subjects.css">
+    <link rel="stylesheet" href="../../css/student/student_main.css">
+</head>
+<body>
     <header>
         <div class="nav-section">
             <!-- Mobile Nav Button -->
@@ -26,9 +131,11 @@
             </div>
 
             <div class="acc-display-container">
-                <div class="acc-name">Venedict Mendoza</div>
+                <div class="acc-name">
+                    <?php echo htmlspecialchars(trim(($user_data['first_name'] ?? '') . ' ' . ($user_data['last_name'] ?? ''))); ?>
+                </div>
                 <div class="acc-img">
-                    <img src="../../assets/test/faculty-profile.jpg" alt="Profile">
+                    <img src="<?php echo htmlspecialchars($profile_src); ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -37,43 +144,53 @@
             <div class="nav-wrapper">
                 <ul class="main-ul">
                     <li>
-                        <a href="faculty_home.html">
+                        <a href="student_home.php">
                             <i class="fa-solid fa-house"></i>
                             <div class="li-name">Dashboard</div>
                         </a>
                     </li>
                     <li>
-                        <a href="faculty_load.html" class="active">
+                        <a href="student_subjects.php" class="active">
                             <i class="fa-solid fa-calendar"></i>
                             <div class="li-name">Schedule</div>
                         </a>
                     </li>
                     <li>
-                        <a href="faculty_classlist.html">
-                            <i class="fa-solid fa-list"></i>
-                            <div class="li-name">Class List</div>
+                        <a href="student_enrollment.php">
+                            <i class="fa-solid fa-id-card"></i>
+                            <div class="li-name">Enrollment</div>
                         </a>
                     </li>
                     <li>
-                        <a href="faculty_spreadsheet.html">
-                            <i class="fa-solid fa-table"></i>
-                            <div class="li-name">Spreadsheet</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="faculty_gradebook.html">
+                        <a href="student_grades.php">
                             <i class="fa-solid fa-book"></i>
-                            <div class="li-name">Gradebook</div>
+                            <div class="li-name">Grades</div>
                         </a>
                     </li>
+                    <li class="course-dropdown">
+                        <a href="#" id="acad-dropdown">
+                            <i class="fa-solid fa-school"></i>
+                            <div class="li-name chev-space">
+                                Academics
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                        </a>
+                        <div class="acad-dropdown-menu" id="acad-dropdown-menu">
+                            <ul>
+                                <li><a href="student_info-program.php">Program</a></li>
+                                <li><a href="student_info-college.php">College</a></li>
+                                <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                            </ul>
+                        </div>
+                    </li>
                     <li>
-                        <a href="faculty_profile.html">
+                        <a href="student_account.php">
                             <i class="fa-solid fa-user"></i>
                             <div class="li-name">Profile</div>
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="logout-bg">
+                        <a href="../../php/student_logout.php" class="logout-bg">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                             <div class="li-name">Logout</div>
                         </a>
@@ -98,25 +215,24 @@
         <div class="spacer"></div>
 
         <main>
-
-            <!-- Load Navigation -->
+            <!-- Schedule Navigation -->
             <div class="sched-nav">
                 <div class="sched-nav-left">
-                    <div class="sched-opn-title">Teaching Load</div>
+                    <div class="sched-opn-title">Academic Period</div>
                     <div class="sched-stats">
                         <div class="sched-stat-chip">
-                            <span class="stat-value">4</span>
-                            <span class="stat-label">Classes</span>
+                            <span class="stat-value"><?php echo $total_subjects; ?></span>
+                            <span class="stat-label">Subjects</span>
                         </div>
                         <div class="sched-stat-divider"></div>
                         <div class="sched-stat-chip">
-                            <span class="stat-value">8</span>
+                            <span class="stat-value"><?php echo $total_units; ?></span>
                             <span class="stat-label">Units</span>
                         </div>
                         <div class="sched-stat-divider"></div>
                         <div class="sched-stat-chip">
-                            <span class="stat-value">College of Engineering</span>
-                            <span class="stat-label">Department</span>
+                            <span class="stat-value"><?php echo $year_display; ?></span>
+                            <span class="stat-label">Level</span>
                         </div>
                     </div>
                 </div>
@@ -137,7 +253,7 @@
                 </div>
             </div>
 
-            <!-- Load Table -->
+            <!-- Schedule Table -->
             <div class="sched-table-wrapper">
                 <div class="sched-table">
                     <div class="sched-table-header">
@@ -146,90 +262,44 @@
                         <span class="col-head">SECTION</span>
                         <span class="col-side">SUBJECT NAME</span>
                         <span class="col-head">UNITS</span>
-                        <span class="col-head">STUDENTS</span>
+                        <span class="col-head">PROFESSOR</span>
                     </div>
 
                     <div class="sched-table-body">
+                        <?php if (empty($subjects)): ?>
+                        <div class="sched-row" style="justify-content:center;color:var(--text-label);padding:2rem;">
+                            No enrolled subjects found.
+                        </div>
+                        <?php else: ?>
+                        <?php foreach ($subjects as $i => $subj): ?>
                         <div class="sched-row">
-                            <span class="col-num">1</span>
+                            <span class="col-num"><?php echo $i + 1; ?></span>
                             <span class="col-container">
-                                <span class="code-badge">CPE 0222</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-side">Software Design
-                                <span class="type-tag">Lecture</span>
+                                <span class="code-badge"><?php echo htmlspecialchars($subj['subject_code']); ?></span>
                             </span>
                             <span class="col-container">
-                                <span class="units-badge">3</span>
+                                <span class="section-badge <?php echo (stripos($subj['subject_code'], 'PATHFIT') !== false) ? 'alt' : ''; ?>">
+                                    <?php echo htmlspecialchars($subj['section'] ?? 'TBA'); ?>
+                                </span>
                             </span>
-                            <span class="col-students">
-                                <span class="enroll-chip">42 enrolled</span>
+                            <span class="col-side">
+                                <?php echo htmlspecialchars($subj['subject_name']); ?>
+                                <?php if (!empty($subj['lab_hours']) && $subj['lab_hours'] > 0): ?>
+                                    <span class="type-tag">Laboratory</span>
+                                <?php endif; ?>
+                            </span>
+                            <span class="units-badge"><?php echo $subj['units']; ?></span>
+                            <span class="col-prof">
+                                <?php echo htmlspecialchars($subj['faculty_name'] ?? 'TBA'); ?>
                             </span>
                         </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">2</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0222</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-2</span>
-                            </span>
-                            <span class="col-side">Software Design
-                                <span class="type-tag">Lecture</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="units-badge">3</span>
-                            </span>
-                            <span class="col-students">
-                                <span class="enroll-chip">39 enrolled</span>
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">3</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0222.1</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-1</span>
-                            </span>
-                            <span class="col-side">Software Design
-                                <span class="type-tag">Laboratory</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="units-badge">1</span>
-                            </span>
-                            <span class="col-students">
-                                <span class="enroll-chip">42 enrolled</span>
-                            </span>
-                        </div>
-
-                        <div class="sched-row">
-                            <span class="col-num">4</span>
-                            <span class="col-container">
-                                <span class="code-badge">CPE 0222.1</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="section-badge">BSCpE 2-2</span>
-                            </span>
-                            <span class="col-side">Software Design
-                                <span class="type-tag">Laboratory</span>
-                            </span>
-                            <span class="col-container">
-                                <span class="units-badge">1</span>
-                            </span>
-                            <span class="col-students">
-                                <span class="enroll-chip">39 enrolled</span>
-                            </span>
-                        </div>
+                        <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
 
                     <div class="sched-table-footer">
-                        <span>Total Classes: <strong>4</strong></span>
-                        <span>Total Units: <strong>8</strong></span>
+                        <span>Total Subjects: <strong><?php echo $total_subjects; ?></strong></span>
+                        <span>Total Units: <strong><?php echo $total_units; ?></strong></span>
                     </div>
                 </div>
             </div>
@@ -241,48 +311,19 @@
                     <div class="weekly-grid" id="weeklyGrid"></div>
                 </div>
             </div>
-
         </main>
     </div>
 
-    <script src="../../js/faculty/faculty_main.js"></script>
+    <script src="../../js/student/student_main.js"></script>
     <script>
     (function () {
 
-        const scheduleData = [
-            {
-                code:'CPE 0222', name:'Software Design',
-                shortName:'Soft. Design', tag:'Lec', room:'GV 208',
-                slots:[
-                    {day:'T', start:'18:00', end:'21:00'}
-                ]
-            },
-            {
-                code:'CPE 0222', name:'Software Design',
-                shortName:'Soft. Design', tag:'Lec', room:'GV 208',
-                slots:[
-                    {day:'W', start:'18:00', end:'21:00'}
-                ]
-            },
-            {
-                code:'CPE 0222.1', name:'Software Design',
-                shortName:'Soft. Design', tag:'Lab', room:'COMP LAB 1',
-                slots:[
-                    {day:'F', start:'18:00', end:'21:00'}
-                ]
-            },
-            {
-                code:'CPE 0222.1', name:'Software Design',
-                shortName:'Soft. Design', tag:'Lab', room:'COMP LAB 1',
-                slots:[
-                    {day:'TH', start:'18:00', end:'21:00'}
-                ]
-            },
-        ];
+        const scheduleData = <?php echo json_encode($schedule_data, JSON_UNESCAPED_UNICODE); ?>;
 
-        /* ─── Config ─────────────────────────────────────────────────── */
+        /* ─── Config ──────────────────────────────────────────────── */
         const PX_PER_MIN = 1.1;
 
+        // Guard: if no schedule data, render empty state
         if (!scheduleData.length) {
             const grid = document.getElementById('weeklyGrid');
             if (grid) {
@@ -302,9 +343,17 @@
         const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT' };
 
         const DEFAULT_COLOR = { bg:'#1A3A8F', fg:'#fff' };
-        const COLORS = {};
+        const COLORS = {
+            // Add custom overrides by subject code here, e.g.:
+            // 'PATHFIT 405': { bg:'#D4AF37', fg:'#4a2e00' },
+        };
 
-        /* ─── Helpers ────────────────────────────────────────────────── */
+        // Auto-color PATHFIT subjects gold
+        scheduleData.forEach(s => {
+            if (/^PATHFIT/i.test(s.code)) COLORS[s.code] = { bg:'#D4AF37', fg:'#fff' };
+        });
+
+        /* ─── Helpers ─────────────────────────────────────────────── */
         const toMin = t      => { const [h,m] = t.split(':').map(Number); return h*60+m; };
         const toTop = t      => (toMin(t) - START_HOUR*60) * PX_PER_MIN;
         const toHgt = (s,e)  => (toMin(e) - toMin(s)) * PX_PER_MIN;
@@ -316,7 +365,7 @@
             return e;
         }
 
-        /* ─── Render ─────────────────────────────────────────────────── */
+        /* ─── Render ──────────────────────────────────────────────── */
         function renderGrid() {
             const grid = document.getElementById('weeklyGrid');
             if (!grid) return;
@@ -387,6 +436,5 @@
         renderGrid();
     })();
     </script>
-
-  </body>
+</body>
 </html>

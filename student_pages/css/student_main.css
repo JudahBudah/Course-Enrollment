@@ -47,8 +47,10 @@
     --text:   #4A4A4A;
     --dark-spc: #0d0a07;
 
+    /* Student Home */
     --off-gray: #ddd;
 
+    /* Student Subjects */
     --badge-navy:   #e0e5f5;
     --badge-gold:   #f7efc5;
     --block-blue:    #2a52b8;
@@ -90,14 +92,16 @@ body.dark-mode {
     --dark:     #f0ece4;
     --text:     #9e9484;
     --dark-spc: #9e9484;
-
+    
+    /* Student Home */
     --off-gray: #3d3935;
 
+    /* Student Subjects */
     --badge-navy:  #d0d8f0c9;
     --badge-gold:  #fae173;
-    --block-blue:    #1e3a7a;
+    --block-blue:    #1e3a7a;  
     --block-blue-fg: #c8d4f0;
-    --block-gold:    #7a5c00;
+    --block-gold:    #7a5c00;   
     --block-gold-fg: #f0d060;
 }
 
@@ -135,7 +139,7 @@ p {
 a {
     text-decoration: none;
     color: black;
-}
+    }
 
 ul {
     list-style: none;
@@ -197,7 +201,7 @@ ul {
     gap: 20px;
 }
 
-.acc-name {
+.acc-name{ 
     color: var(--dark);
     font-size: 0.9rem;
 }
@@ -211,7 +215,7 @@ ul {
 
 .acc-img img {
     width: 100%;
-    object-fit: cover;
+    object-fit: cover;  
     object-position: center;
 }
 
@@ -229,7 +233,7 @@ ul {
 }
 
 .nav-wrapper {
-    overflow-x: hidden;
+    overflow-x:hidden;
     overflow-y: auto;
 }
 
@@ -264,6 +268,7 @@ ul {
     font-size: 1rem;
 }
 
+
 .main-ul li a {
     position: relative;
     display: flex;
@@ -285,7 +290,7 @@ ul {
 
 .main-ul li .logout-bg:hover {
     background-color: rgba(181, 35, 50, 0.1);
-    color: var(--red);
+    color: var(--red)
 }
 
 
@@ -308,12 +313,39 @@ ul {
 }
 
 
+/* Academics Dropdown */
+
+.acad-dropdown-menu li a {
+    padding-left: 67px;
+}
+
+.acad-dropdown-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding-left: 35px;
+}
+
+.acad-dropdown-menu.open {
+    max-height: 200px;
+    padding: 0;
+}
+
+.course-dropdown a .fa-chevron-down {
+    transition: transform 0.1s ease;
+}
+
+.course-dropdown a.open .fa-chevron-down {
+    transform: rotate(-180deg);
+}
+
+
 /* Dark Mode Container */
 
 .drk-mode-container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; 
     height: 55px;
     padding: 16px 28px;
     border-top: solid var(--red-dk) 1px;
@@ -374,21 +406,18 @@ ul {
     .main-nav {
         max-width: 60px;
     }
-
     .spacer {
         width: 60px;
     }
-
     .li-name {
         display: none;
     }
-
     .main-ul li a {
         height: 53px;
     }
 
     .main-ul li a i {
-        width: 0px;
+        width: 0px; /* Para hindi nag jijitter if open */
         padding-right: 20px;
     }
 
@@ -417,7 +446,7 @@ ul {
     }
 
     .main-nav.open .main-ul li a, .drk-mode-container {
-        padding-right: 20px;
+       padding-right: 20px;
     }
 }
 
@@ -427,3 +456,5 @@ ul {
         width: calc(98% - 250px);
     }
 }
+
+

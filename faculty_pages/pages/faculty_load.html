@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule</title>
+    <link rel="icon" href="../../assets/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    <link rel="stylesheet" href="../../css/faculty/faculty_load.css" />
+    <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
+  </head>
+  <body>
+    <header>
+        <div class="nav-section">
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
+            </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    Venedict Mendoza
+                </div>
+                <div class="acc-img">
+                    <img  src="../../assets/test/faculty-profile.jpg">
+                </div>
+            </div>
+            <!-- Integrate Later
+            <button class="nav-button">
+                <i class="fa-solid fa-bars trans-bars" id="trans-bars"></i>
+            </button>
+            -->
+        </div>
+        <nav>
+            <ul class="main-ul">
+                <li>
+                    <a href="faculty_home.html">
+                        <i class="fa-solid fa-house"></i>
+                        <div class="li-name">Dashboard</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_load.html" class="active">
+                        <i class="fa-solid fa-calendar"></i>
+                        <div class="li-name">Schedule</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_classlist.html">
+                        <i class="fa-solid fa-list"></i>
+                        <div class="li-name">Class List</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_spreadsheet.html">
+                        <i class="fa-solid fa-table"></i>
+                        <div class="li-name">Spreadsheet</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_gradebook.html">
+                        <i class="fa-solid fa-book"></i>
+                        <div class="li-name">Gradebook</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="faculty_profile.html">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="li-name">Profile</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="logout-bg">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        <div class="li-name">Logout</div>
+                    </a>
+                </li>
+            </ul> 
+        </nav>
+    </header>
+
+    <div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+
+        <div class="sched-nav">
+            <div class="sched-opn-title">
+                Year and Semester
+            </div>
+            <hr>
+            <div class="sched-nav-options"> <!-- Selected na agad 'yong current year and sem ni student' -->
+                <select name="sched-year" >
+                    <option value="2025 - 2026">2025 - 2026</option>
+                </select>
+
+                <select name="admission_status" id="admission_status">
+                    <option value="First Semester">First Semester</option>
+                    <option value="Second Semester">Second Semester</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="sched-table-wrapper">
+            <div class="sched-table">
+                <div class="sched-table-header">
+                    <span class="col-head">#</span>
+                    <span class="col-head">SUBJECT CODE</span>
+                    <span class="col-head">SECTION</span>
+                    <span class="col-side">SUBJECT NAME</span>
+                    <span class="col-head">UNITS</span>
+                    <span class="col-head">PROFESSOR</span>
+                </div>
+
+                <div class="sched-table-body">
+                    <div class="sched-row">
+                        <span class="col-num">1</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-1</span>
+                        </span>
+                        <span class="col-side">Software Design
+                            <span class="type-tag">Lecture</span>
+                        </span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Venedict Mendoza
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">2</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222</span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge">BSCpE 2-2</span>
+                        </span>
+                        <span class="col-side">Software Design
+                            <span class="type-tag">Lecture</span>
+                        </span>
+                        <span class="units-badge">3</span>
+                        <span class="col-prof">
+                            Prof. Venedict Mendoza
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">3</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222.1</span>
+                        </span>
+                        <span class="col-container"><span class="section-badge">BSCpE 2-1</span></span>
+                        <span class="col-side">Software Design 
+                            <span class="type-tag">Laboratory</span>
+                        </span>
+                        <span class="units-badge">1</span>
+                        <span class="col-prof">
+                            Prof. Venedict Mendoza
+                        </span>
+                    </div>
+
+                    <div class="sched-row">
+                        <span class="col-num">4</span>
+                        <span class="col-container">
+                            <span class="code-badge">CPE 0222.1</span>
+                        </span>
+                        <span class="col-container"><span class="section-badge">BSCpE 2-2</span></span>
+                        <span class="col-side">Software Design 
+                            <span class="type-tag">Laboratory</span>
+                        </span>
+                        <span class="units-badge">1</span>
+                        <span class="col-prof">
+                            Prof. Venedict Mendoza
+                        </span>
+                    </div>
+                </div>
+
+                <div class="sched-table-footer">
+                    <span>Total Subjects: <strong>4</strong></span>
+                    <span>Total Units: <strong>8</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="sched-time">
+            <div class="weekly-sched-titlebar">WEEKLY SCHEDULE</div>
+            <div class="weekly-sched-wrapper">
+                <div class="weekly-grid" id="weeklyGrid"></div>
+            </div>
+        </div>
+
+    </main>
+
+    </div>
+    
+    <script src="../../js/student/faculty_main.js"></script>
+    <script>
+        
+(function () {
+
+         /*  Schedule Data  */
+        /*  PHP: const scheduleData = <?php echo json_encode($rows); ?>;  */
+        const scheduleData = [
+            {
+                code:'CPE 0222', name:'Software Design',
+                shortName:'Soft. Design', tag:'Lec', room:'GV 208',
+                slots:[
+                    {day:'T', start:'18:00', end:'21:00'}
+                ]
+            },
+            {
+                code:'CPE 0222', name:'Software Design',
+                shortName:'Soft. Design', tag:'Lec', room:'GV 208',
+                slots:[
+                    {day:'W', start:'18:00', end:'21:00'}
+                ]
+            },
+            {
+                code:'CPE 0222.1', name:'Software Design',
+                shortName:'Soft. Design', tag:'Lab', room:'COMP LAB 1',
+                slots:[
+                    {day:'F', start:'18:00', end:'21:00'}
+                ]
+            },
+            {
+                code:'CPE 0222.1', name:'Software Design',
+                shortName:'Soft. Design', tag:'Lab', room:'COMP LAB 1',
+                slots:[
+                    {day:'TH', start:'18:00', end:'21:00'}
+                ]
+            },
+        ];
+
+        /* ─── Config ─────────────────────────────────────────────────── */
+        const PX_PER_MIN = 1.1;
+        const allStarts = scheduleData.flatMap(s => s.slots.map(sl => parseInt(sl.start)));
+        const allEnds   = scheduleData.flatMap(s => s.slots.map(sl => Math.ceil(parseInt(sl.end))));
+
+        const START_HOUR = Math.max(0,  Math.min(...allStarts) - 1);
+        const END_HOUR   = Math.min(24, Math.max(...allEnds)   + 1); 
+        const GRID_H     = (END_HOUR - START_HOUR) * 60 * PX_PER_MIN;
+
+        const DAYS       = ['M','T','W','TH','F','S'];
+        const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT' };
+
+        const DEFAULT_COLOR  = { bg:'#1A3A8F', fg:'#fff' };  // red — all subjects
+        const COLORS = {
+            'PATHFIT 405': { bg:'#D4AF37', fg:'#fff' },   // navy — PATHFIT only
+        };
+
+        /* ─── Helpers ────────────────────────────────────────────────── */
+        const toMin = t  => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+        const toTop = t  => (toMin(t) - START_HOUR*60) * PX_PER_MIN;
+        const toHgt = (s,e) => (toMin(e)-toMin(s)) * PX_PER_MIN;
+
+        function el(tag, cls, txt) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (txt !== undefined) e.textContent = txt;
+            return e;
+        }
+
+        /* ─── Render ─────────────────────────────────────────────────── */
+        function renderGrid() {
+            const grid   = document.getElementById('weeklyGrid');
+            if (!grid) return;
+
+            /* Time column */
+            const tcol  = el('div','wg-time-col');
+            tcol.appendChild(el('div','wg-time-header'));
+
+            const tbody = el('div');
+            tbody.style.cssText = `position:relative;height:${GRID_H}px;`;
+
+            for (let h = START_HOUR; h <= END_HOUR; h++) {
+                const lbl = el('div','wg-time-label');
+                lbl.style.top = `${(h - START_HOUR) * 60 * PX_PER_MIN}px`;
+                const dh  = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+                lbl.textContent = `${dh}${h >= 12 ? 'PM' : 'AM'}`;
+                tbody.appendChild(lbl);
+            }
+            tcol.appendChild(tbody);
+            grid.appendChild(tcol);
+
+            /* Day columns */
+            DAYS.forEach(day => {
+                const col  = el('div','wg-day-col');
+                col.appendChild(el('div','wg-day-header', DAY_LABELS[day]));
+
+                const body = el('div','wg-body-area');
+                body.style.height = `${GRID_H}px`;
+
+                /* Gridlines */
+                for (let h = START_HOUR; h < END_HOUR; h++) {
+                    const min = (h - START_HOUR) * 60;
+                    const hl  = el('div','wg-hour-line');
+                    hl.style.top = `${min * PX_PER_MIN}px`;
+                    body.appendChild(hl);
+
+                    const half = el('div','wg-half-line');
+                    half.style.top = `${(min + 30) * PX_PER_MIN}px`;
+                    body.appendChild(half);
+                }
+
+                /* Course blocks */
+                scheduleData.forEach(subj => {
+                    subj.slots.forEach(slot => {
+                        if (slot.day !== day) return;
+                        const c    = COLORS[subj.code] || DEFAULT_COLOR;
+                        const top  = toTop(slot.start);
+                        const hgt  = toHgt(slot.start, slot.end);
+                        const room = slot.room || subj.room;
+                        const tag  = subj.tag ? ` (${subj.tag})` : '';
+
+                        const block = el('div','wg-block');
+                        block.style.cssText = `top:${top}px;height:${hgt-4}px;background:${c.bg};color:${c.fg};`;
+
+                        block.appendChild(el('div','wg-block-code', subj.code + tag));
+                        if (hgt > 34) block.appendChild(el('div','wg-block-name', subj.shortName || subj.name));
+                        if (hgt > 58) block.appendChild(el('div','wg-block-room', room));
+
+                        body.appendChild(block);
+                    });
+                });
+
+                col.appendChild(body);
+                grid.appendChild(col);
+            });
+        }
+
+        renderGrid();
+    })();
+
+    </script>
+
+  </body>
+</html>
