@@ -239,21 +239,8 @@ select:focus {
     letter-spacing: 0.04em;
 }
 
-/* Units circle badge */
 .units-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-
-    background: var(--navy);
-    color: var(--white-pr);
-
-    font-weight: 700;
-    font-size: 0.75rem;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+    /* Wala muna */
 }
 
 /* Enrollment count chip */

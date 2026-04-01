@@ -25,15 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
     /* ── Form Validation ────────────────────────────────────── */
 
     const saveBtn = document.getElementById('save-changes-btn');
-    const form    = document.getElementById('profile-form');
 
-    if (saveBtn && form) {
-        form.addEventListener('submit', function (e) {
-            const required = form.querySelectorAll('[required]');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function () {
+            const inputs = document.querySelectorAll('input[required], select[required]');
             let valid = true;
 
-            required.forEach(field => {
-                // Skip disabled mailing fields when same-address is checked
+            inputs.forEach(field => {
+                // Skip disabled fields (e.g. mailing when "same" is checked, or read-only employee ID)
                 if (field.disabled) return;
 
                 if (!field.value.trim()) {
@@ -45,71 +44,16 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (!valid) {
-                e.preventDefault();
                 alert('Please fill in all required fields.');
             }
         });
     }
 
-
-    /* ── Same as Permanent Address ────────────────────────────── */
-
-    const sameAddressCheckbox = document.getElementById('same-address');
-    const mailingContent      = document.getElementById('mailing-address-content');
-
-    if (!sameAddressCheckbox || !mailingContent) return;
-
-    const permanentFields = {
-        region:       () => document.getElementById('region')?.value        ?? '',
-        province:     () => document.getElementById('province')?.value      ?? '',
-        municipality: () => document.getElementById('municipality')?.value  ?? '',
-        street:       () => document.getElementById('street-address')?.value ?? '',
-        barangay:     () => document.getElementById('barangay')?.value      ?? '',
-        zip:          () => document.getElementById('zip-code')?.value      ?? '',
-    };
-
-    function syncMailingAddress() {
-        const m = id => document.getElementById(id);
-        m('mailing-region').value        = permanentFields.region();
-        m('mailing-province').value      = permanentFields.province();
-        m('mailing-municipality').value  = permanentFields.municipality();
-        m('mailing-street-address').value = permanentFields.street();
-        m('mailing-barangay').value      = permanentFields.barangay();
-        m('mailing-zip-code').value      = permanentFields.zip();
-    }
-
-    function clearMailingAddress() {
-        const m = id => document.getElementById(id);
-        m('mailing-region').value        = '';
-        m('mailing-province').value      = '';
-        m('mailing-municipality').value  = '';
-        m('mailing-street-address').value = '';
-        m('mailing-barangay').value      = '';
-        m('mailing-zip-code').value      = '';
-    }
-
-    sameAddressCheckbox.addEventListener('change', function () {
-        const isChecked = this.checked;
-
-        mailingContent.querySelectorAll('input, select').forEach(el => {
-            el.disabled = isChecked;
-        });
-
-        mailingContent.classList.toggle('sync-disabled', isChecked);
-
-        if (isChecked) {
-            syncMailingAddress();
-        } else {
-            clearMailingAddress();
-        }
-    });
-
-    // Keep mailing in sync while checkbox is checked and permanent fields change
-    ['region', 'province', 'municipality', 'street-address', 'barangay', 'zip-code'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener('input',  () => { if (sameAddressCheckbox.checked) syncMailingAddress(); });
-        el.addEventListener('change', () => { if (sameAddressCheckbox.checked) syncMailingAddress(); });
-    });
+    /*
+     * NOTE: The "Same as Permanent Address" checkbox logic (blur/copy behaviour)
+     * is handled directly in the inline <script> block in faculty_profile.php,
+     * using the correct f_permanent_* and f_mailing_* field IDs.
+     * No duplicate logic needed here.
+     */
 
 });

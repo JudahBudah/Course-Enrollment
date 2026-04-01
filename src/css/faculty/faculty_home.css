@@ -49,7 +49,6 @@
     object-position: center;
 }
 
-
 /* Name, email block */
 
 .faculty-title-content {
@@ -108,7 +107,7 @@
 }
 
 
-/* --- Schedule and Calendar --- */
+/* ── SCHEDULE & CALENDAR GRID ── */
 
 .content-grid {
     display: grid;
@@ -117,7 +116,7 @@
 }
 
 
-/* SCHEDULE */
+/* ── SCHEDULE ── */
 
 .link-small {
     font-size: 0.8rem;
@@ -128,7 +127,75 @@
 
 .link-small:hover {
     text-decoration: underline;
+    opacity: 1;
 }
+
+/* Range / View toggles */
+
+.sched-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 2px;
+}
+
+.sched-toggle-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+}
+
+.sched-toggle-btn.active {
+    background: var(--white);
+    color: var(--red);
+}
+
+.sched-toggle-btn:not(.active):hover {
+    color: var(--white);
+}
+
+/* Day label (week view) */
+
+.sched-day-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--red);
+    padding: 10px 24px 4px;
+    border-top: 1px solid var(--off);
+}
+
+.sched-day-label:first-child {
+    border-top: none;
+}
+
+/* Empty state */
+
+.sched-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-label);
+    font-size: 0.88rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sched-empty i {
+    font-size: 1.4rem;
+}
+
+/* Schedule list items */
 
 .schedule-list {
     display: flex;
@@ -152,6 +219,10 @@
     margin-bottom: 8px;
 }
 
+.schedule-item:hover {
+    background: var(--off);
+}
+
 .schedule-time {
     font-size: .75rem;
     font-weight: 600;
@@ -173,6 +244,24 @@
     font-size: .78rem;
     color: var(--text-label);
 }
+
+/* Mini weekly grid (grid view) */
+
+.mini-weekly-grid {
+    min-width: 420px;
+    background: var(--off);
+    display: grid;
+    grid-template-columns: 36px repeat(6, 1fr);
+    padding-bottom: 12px;
+}
+
+.mini-weekly-grid .wg-day-header,
+.mini-weekly-grid .wg-time-header { height: 28px; font-size: 0.58rem; }
+.mini-weekly-grid .wg-time-label  { font-size: 0.55rem; }
+.mini-weekly-grid .wg-block       { padding: 4px 5px; border-radius: 4px; }
+.mini-weekly-grid .wg-block-code  { font-size: 0.55rem; }
+.mini-weekly-grid .wg-block-name  { font-size: 0.55rem; }
+.mini-weekly-grid .wg-block-room  { font-size: 0.5rem; }
 
 
 /* ── CALENDAR ── */
@@ -267,9 +356,10 @@
     font-weight: 700;
 }
 
-.cal-day.selected {
-    background: var(--red);
-    color: var(--white);
+/* Selected (non-today) shows a subtle highlight */
+.cal-day.selected:not(.today) {
+    background: var(--off);
+    color: var(--dark);
     font-weight: 700;
 }
 
@@ -318,7 +408,7 @@
 }
 
 
-/* News & Updates Carousel */
+/* ── NEWS & EVENTS CAROUSEL ── */
 
 .news-events-section {
     margin: 30px 0;
@@ -327,8 +417,6 @@
 .news-events-section hr {
     border: 1.5px solid var(--red);
 }
-
-/* News Header */
 
 .news-events-header {
     display: flex;
@@ -376,8 +464,6 @@
     border-color: var(--off-gray);
 }
 
-/* Slider */
-
 .news-events-card-wrapper {
     margin: 40px 0 0 0;
     overflow: hidden;
@@ -388,8 +474,6 @@
     transition: transform 0.5s ease-in-out;
     gap: 5px;
 }
-
-/* Slider Card */
 
 .news-events-card {
     width: 25%;
@@ -403,8 +487,6 @@
     width: 100%;
     aspect-ratio: 16 / 9;
 }
-
-/* Card Content */
 
 .card-content {
     padding: 10px 15px;
@@ -422,7 +504,8 @@
     color: var(--text);
 }
 
-/* Media Query */
+
+/* ── MEDIA QUERIES ── */
 
 @media (max-width: 990px) {
     .schedule-item {
@@ -463,7 +546,7 @@
     }
 }
 
-@media(min-width: 1550px) {
+@media (min-width: 1550px) {
     .news-events-card {
         width: 20%;
     }

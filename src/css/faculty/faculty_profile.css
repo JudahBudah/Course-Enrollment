@@ -77,13 +77,16 @@ label {
 }
 
 input, select {
-    width: 100%;  
+    width: 100%;
     padding: 13px 15px;
     border-radius: 10px;
-    border: 1px solid #888888;
+    border: 1px solid var(--text-label);
     font-size: 0.9rem;
     font-family: inherit;
-    outline: none;   
+    outline: none;
+    background-color: var(--white-pr);
+    color: var(--dark);
+    transition: border-color 0.2s;
 }
 
 input:focus, select:focus {

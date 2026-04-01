@@ -278,6 +278,167 @@ select:focus {
 }
 
 
+/* ── Empty State ─────────────────────────────────────────── */
+
+.sched-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 25px;
+    padding: 3rem;
+    color: var(--text);
+    opacity: 0.45;
+    font-size: 0.9rem;
+}
+
+.sched-empty i {
+    font-size: 2.5rem;
+}
+
+
+/* ── Classlist Toolbar (stats + search + export) ─────────── */
+
+.cl-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.cl-summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.cl-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.cl-stat-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--red);
+    font-family: "DM Sans", sans-serif;
+    line-height: 1;
+}
+
+.cl-stat-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text);
+}
+
+.sched-stat-divider {
+    width: 1px;
+    height: 24px;
+    background-color: var(--off);
+    flex-shrink: 0;
+}
+
+.cl-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cl-search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cl-search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 0.7rem;
+    color: var(--text);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.cl-search {
+    padding: 9px 14px 9px 32px;
+    border-radius: 9px;
+    border: 1.5px solid var(--off);
+    background-color: var(--surface-alt);
+    font-size: 0.82rem;
+    font-family: inherit;
+    color: var(--dark);
+    outline: none;
+    min-width: 210px;
+    transition: border-color 0.2s;
+}
+
+.cl-search:focus {
+    border-color: var(--red);
+}
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 9px 16px;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 9px;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.btn-export:hover {
+    opacity: 0.85;
+}
+
+
+/* ── Filter Tabs ─────────────────────────────────────────── */
+
+.filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.filter-tab {
+    padding: 5px 18px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid var(--off);
+    background: var(--white-pr);
+    color: var(--text);
+    transition: 0.18s;
+    font-family: inherit;
+}
+
+.filter-tab:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.filter-tab.active {
+    background: var(--red);
+    color: var(--white);
+    border-color: var(--red);
+}
+
+
 /* ── Class List Table ─────────────────────────────────────── */
 
 .sec-table-wrapper { overflow-x: auto; }
@@ -404,6 +565,191 @@ select:focus {
 .gb-row:nth-child(even) { background-color: var(--surface-alt); }
 
 
+/* ── Spreadsheet: Toolbar + Legend ──────────────────────── */
+
+.ss-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.ss-legend {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 0.72rem;
+    color: var(--text);
+}
+
+.ss-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ss-legend-hint {
+    font-style: italic;
+    opacity: 0.55;
+    margin-left: auto;
+}
+
+/* Editable grade input */
+.cell-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-size: 0.8rem;
+    font-family: inherit;
+    color: var(--dark);
+    padding: 0;
+    outline: none;
+    border-radius: 0;
+}
+
+.cell-input:focus {
+    background: #fffbe6;
+    border-bottom: 2px solid var(--red);
+}
+
+.cell-input::-webkit-inner-spin-button,
+.cell-input::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
+/* Computed columns */
+.col-computed {
+    font-weight: 600;
+    color: var(--perm-navy);
+}
+
+/* Conditional remark variant */
+.col-remark.conditional {
+    background: #e8f0fb;
+    color: var(--perm-navy);
+}
+
+/* Save toast */
+.save-indicator {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--passed-green);
+    color: #fff;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 999;
+}
+
+.save-indicator.show  { opacity: 1; }
+.save-indicator.error { background: var(--red); }
+
+/* Header small text */
+.ss-table-header small {
+    font-weight: 400;
+    opacity: 0.8;
+    font-size: 0.65em;
+    display: block;
+    margin-top: 2px;
+}
+
+
+/* ── Gradebook: Toolbar + Summary ───────────────────────── */
+
+.gb-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.gb-summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.gb-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.gb-stat-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--red);
+    font-family: "DM Sans", sans-serif;
+    line-height: 1;
+}
+
+.gb-stat-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text);
+}
+
+.gb-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Computed grade cell */
+.col-cg {
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--perm-navy);
+}
+
+/* Pending / missing grade dash */
+.no-grade {
+    color: var(--text);
+    opacity: 0.35;
+    font-style: italic;
+}
+
+/* "Edit in Spreadsheet" footer link */
+.gb-edit-link {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--red);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gb-edit-link:hover {
+    opacity: 0.75;
+}
+
+/* Gradebook header small text */
+.gb-table-header small {
+    font-weight: 400;
+    opacity: 0.8;
+    font-size: 0.65em;
+    display: block;
+    margin-top: 2px;
+}
+
+
 /* ── Responsive ──────────────────────────────────────────── */
 
 @media (max-width: 698px) {
@@ -420,5 +766,31 @@ select:focus {
 
     .class-meta-name {
         white-space: normal;
+    }
+
+    .cl-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cl-toolbar-right {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .cl-search {
+        flex: 1;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 500px) {
+    .cl-summary {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-tabs {
+        flex-wrap: wrap;
     }
 }

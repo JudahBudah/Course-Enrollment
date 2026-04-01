@@ -1,0 +1,195 @@
+/* ── Stats Grid ────────────────────────────────────────── */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-card {
+    background: var(--white-pr);
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.07);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: transform 0.25s, box-shadow 0.25s;
+    border-left: 4px solid transparent;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+.stat-card.blue   { border-left-color: #3b82f6; }
+.stat-card.gold   { border-left-color: #D4AF37; }
+.stat-card.red    { border-left-color: #8C1C24; }
+.stat-card.green  { border-left-color: #22c55e; }
+.stat-card.purple { border-left-color: #a855f7; }
+.stat-card.navy   { border-left-color: #0B1F5B; }
+
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.stat-card.blue   .stat-icon { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+.stat-card.gold   .stat-icon { background: rgba(212,175,55,0.15);  color: #a8881c; }
+.stat-card.red    .stat-icon { background: rgba(140,28,36,0.12);   color: #8C1C24; }
+.stat-card.green  .stat-icon { background: rgba(34,197,94,0.12);   color: #16a34a; }
+.stat-card.purple .stat-icon { background: rgba(168,85,247,0.12);  color: #a855f7; }
+.stat-card.navy   .stat-icon { background: rgba(11,31,91,0.12);    color: #0B1F5B; }
+
+.stat-content h3 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 0.4rem;
+}
+
+.stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 0.2rem;
+}
+
+.stat-content small {
+    font-size: 0.75rem;
+    color: var(--text-label);
+}
+
+/* ── Content Grid (table + quick actions) ──────────────── */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Quick Actions ─────────────────────────────────────── */
+
+.quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    border-radius: 8px;
+    color: var(--dark);
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.action-btn:hover {
+    background: rgba(140,28,36,0.06);
+    border-color: var(--red);
+    transform: translateX(4px);
+    color: var(--red);
+}
+
+.action-btn i {
+    font-size: 1.1rem;
+    color: var(--red);
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ── Activity List ─────────────────────────────────────── */
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0.5rem 1.25rem 1.25rem;
+}
+
+.activity-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--off);
+    align-items: flex-start;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.activity-icon.blue   { background: rgba(59,130,246,0.12);  color: #3b82f6; }
+.activity-icon.green  { background: rgba(34,197,94,0.12);   color: #16a34a; }
+.activity-icon.gold   { background: rgba(212,175,55,0.15);  color: #a8881c; }
+.activity-icon.red    { background: rgba(140,28,36,0.12);   color: #8C1C24; }
+
+.activity-content p {
+    font-size: 0.88rem;
+    margin-bottom: 0.2rem;
+    color: var(--dark);
+}
+
+.activity-content small {
+    font-size: 0.75rem;
+    color: var(--text-label);
+}
+
+/* ── Recent Table padding ──────────────────────────────── */
+
+.card .table-responsive {
+    padding: 0;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 420px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

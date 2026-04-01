@@ -1,6 +1,6 @@
 <?php
 function admin_bootstrap($con){
-    $q="CREATE TABLE IF NOT EXISTS admins (admin_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) UNIQUE, email VARCHAR(100) UNIQUE, password VARCHAR(255) NOT NULL, role VARCHAR(20) DEFAULT 'admin', created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci";
+    $q="CREATE TABLE IF NOT EXISTS admins (admin_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, username VARCHAR(50) UNIQUE, email VARCHAR(100) UNIQUE, password VARCHAR(255) NOT NULL, role VARCHAR(20) DEFAULT 'admin', created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
     mysqli_query($con,$q);
     $r=mysqli_query($con,"SELECT COUNT(*) AS c FROM admins");
     $count=0;

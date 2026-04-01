@@ -1,0 +1,414 @@
+/* Fonts: Poppins, Montserrat, Playfair Display, DM Sans */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+
+/* ── Reset ──────────────────────────────────────────────── */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* ── CSS Variables ──────────────────────────────────────── */
+
+:root {
+    --red:    #8C1C24;
+    --red-dk: #5a1018;
+    --red-lt: #b52332;
+
+    --gold:   #D4AF37;
+    --gold-lt:#f0d060;
+    --gold-dk:#a8881c;
+
+    --navy:   #0B1F5B;
+    --navy-dk:#070f2e;
+
+    --white-pr: white;
+    --white:  #F2F3F2;
+    --off:    #e8e4d8;
+    --surface-alt: #f3f1eb;
+
+    --dark:   #0d0a07;
+    --text:   #4A4A4A;
+    --dark-spc: #0d0a07;
+
+    --off-gray: #ddd;
+
+    /* Permanent (never swap in dark mode) */
+    --perm-gold-dk: #D4AF37;
+    --text-label:   #888888;
+    --perm-navy:    #0B1F5B;
+    --perm-navy-dk: #070f2e;
+}
+
+
+/* ── Dark Mode ──────────────────────────────────────────── */
+
+body.dark-mode {
+
+    /* Gold primary accent */
+    --red:    #D4AF37;
+    --red-dk: #a8881c;
+    --red-lt: #f0d060;
+
+    /* Red becomes secondary */
+    --gold:    #8C1C24;
+    --gold-lt: #b52332;
+    --gold-dk: #5a1018;
+
+    /* Navy lightens for readability */
+    --navy:    #8fa4d8;
+    --navy-dk: #c8d4f0;
+
+    --white-pr: #1f1b16;
+    --white:    #161310;
+    --off:      #2b2620;
+    --surface-alt: #252118;
+
+    --dark:     #f0ece4;
+    --text:     #9e9484;
+    --dark-spc: #9e9484;
+
+    --off-gray: #3d3935;
+}
+
+body.dark-mode select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 640 640'%3E%3Cpath fill='%239e9484' d='M297.4 470.6C309.9 483.1 330.2 483.1 342.7 470.6L534.7 278.6C547.2 266.1 547.2 245.8 534.7 233.3C522.2 220.8 501.9 220.8 489.4 233.3L320 402.7L150.6 233.4C138.1 220.9 117.8 220.9 105.3 233.4C92.8 245.9 92.8 266.2 105.3 278.7L297.3 470.7z'/%3E%3C/svg%3E");
+}
+
+
+/* ── Base ───────────────────────────────────────────────── */
+
+body {
+    background-color: var(--white);
+    transition: background-color 0.1s;
+}
+
+header {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+}
+
+main {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    padding: 80px 0 0 0;
+    margin: 0 auto;
+    max-width: 2200px;
+    transition: width 0.5s;
+}
+
+p { line-height: 1.5; }
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+ul { list-style: none; }
+
+
+/* ── Top Nav Section ────────────────────────────────────── */
+
+.nav-section {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid var(--red);
+    height: 60px;
+    width: 100%;
+    background-color: var(--white-pr);
+    z-index: 100;
+}
+
+.nav-button {
+    display: none;
+    font-size: 1.25rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--dark);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-container img {
+    height: 2.4rem;
+    width: 2.4rem;
+}
+
+.logo-title {
+    font-family: "Playfair Display", serif;
+    font-weight: 700;
+    color: var(--perm-gold-dk);
+    font-size: 0.9rem;
+}
+
+.logo-sub {
+    color: var(--navy);
+    font-size: 0.8rem;
+}
+
+.acc-display-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.acc-name {
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.acc-img {
+    height: 40px;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.acc-img img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Avatar initials fallback (applicants don't always have a photo) */
+.acc-initials {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+
+/* ── Side Nav Layout ────────────────────────────────────── */
+
+.main-flex {
+    display: flex;
+}
+
+.spacer {
+    width: 250px;
+    height: 100vh;
+    flex-shrink: 0;
+}
+
+.nav-wrapper {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 95px;
+    height: 100vh;
+    width: 250px;
+    background-color: var(--white-pr);
+    box-shadow: 6px 0 10px rgba(0, 0, 0, 0.08);
+    z-index: 50;
+    transition: 0.2s;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.main-ul {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-ul li {
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+.main-ul li a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 16px 32px;
+    gap: 15px;
+    color: var(--dark);
+    transition: 0.3s;
+}
+
+.main-ul li a:hover {
+    color: var(--dark);
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Active indicator */
+.main-ul li a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+}
+
+.main-ul li a.active::before {
+    background-color: var(--red);
+}
+
+.main-ul li a.active {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+/* Logout link */
+.logout-link i,
+.logout-link .li-name {
+    color: var(--text);
+}
+
+.main-ul li .logout-link:hover {
+    background-color: rgba(181, 35, 50, 0.1);
+    color: var(--red);
+}
+
+.main-ul li .logout-link:hover i,
+.main-ul li .logout-link:hover .li-name {
+    color: var(--red);
+}
+
+
+/* ── Dark Mode Toggle ───────────────────────────────────── */
+
+.drk-mode-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 55px;
+    padding: 16px 28px;
+    border-top: solid var(--red-dk) 1px;
+    font-size: 1rem;
+}
+
+.drk-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--dark);
+    user-select: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.toggle-track {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    background: #ddd;
+    border-radius: 999px;
+    border: 1.5px solid #ccc;
+    cursor: pointer;
+    transition: background 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+}
+
+.toggle-track.active {
+    background: var(--red);
+    border-color: var(--red);
+}
+
+.toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle-track.active .toggle-thumb {
+    transform: translateX(18px);
+}
+
+
+/* ── Responsive ─────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    main {
+        width: calc(98% - 60px);
+    }
+
+    .main-nav {
+        max-width: 60px;
+    }
+
+    .spacer {
+        width: 60px;
+    }
+
+    .li-name {
+        display: none;
+    }
+
+    .main-ul li a {
+        height: 53px;
+    }
+
+    .main-ul li a i {
+        width: 0px;
+        padding-right: 20px;
+    }
+
+    .main-ul li a,
+    .drk-mode-container {
+        padding-left: 20px;
+    }
+
+    .logo-container {
+        display: none;
+    }
+
+    .nav-button {
+        display: block;
+    }
+
+    /* JS-toggled open state */
+    .main-nav.open {
+        max-width: 200px;
+    }
+
+    .main-nav.open .li-name {
+        display: block;
+    }
+
+    .main-nav.open .main-ul li a,
+    .main-nav.open .drk-mode-container {
+        padding-right: 20px;
+    }
+}
+
+@media (min-width: 1100px) {
+    main {
+        width: calc(98% - 250px);
+    }
+}

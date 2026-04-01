@@ -7,22 +7,31 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $password = $_POST['password'];
 
     if (!empty($email) && !empty($password)) {
-        $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE email = ? LIMIT 1");
+        $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE email = ? LIMIT 1");
         mysqli_stmt_bind_param($stmt, "s", $email);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
 
         if ($result && mysqli_num_rows($result) > 0) {
-            $applicant_data = mysqli_fetch_assoc($result);
+            $user_data = mysqli_fetch_assoc($result);
             
-            if (password_verify($password, $applicant_data['password'])) {
-                $_SESSION['applicant_id'] = $applicant_data['applicant_id'];
-                header("Location: applicant_home.php");
-                die;
+            // Check if password is correct
+            if (password_verify($password, $user_data['password'])) {
+                // Check if faculty account is active
+                if ($user_data['status'] === 'active') {
+                    $_SESSION['email'] = $user_data['email'];
+                    $_SESSION['faculty_id'] = $user_data['faculty_id'];
+                    header("Location: faculty_home.php");
+                    die;
+                } else {
+                    $error = "Your account is currently " . htmlspecialchars($user_data['status']) . ". Please contact administration.";
+                }
+            } else {
+                $error = "Invalid email or password";
             }
+        } else {
+            $error = "Invalid email or password";
         }
-        
-        $error = "Invalid email or password";
     } else {
         $error = "Please enter both email and password";
     }
@@ -33,9 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applicant Login - PLM</title>
+    <title>Faculty Login - PLM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/applicant/applicant_login.css">
+    <link rel="stylesheet" href="../../css/faculty/faculty_login.css">
 </head>
 <body>
     <div class="login-container">
@@ -44,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <img src="../../assets/plm-logo.png" alt="PLM Logo">
                 <div>
                     <h1>PLM</h1>
-                    <p>Applicant Portal</p>
+                    <p>Faculty Portal</p>
                 </div>
             </div>
             <div class="login-illustration">
@@ -53,29 +62,32 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </div>
 
         <div class="login-right">
-            <div class="login-tabs">
-                <button class="tab-btn active" onclick="showTab('login')">Login</button>
-                <button class="tab-btn" onclick="window.location.href='applicant_register.php'">Create Account</button>
-            </div>
-
-            <form class="login-form" id="loginForm" method="POST">
+            <form class="login-form" method="POST">
                 <h2>Welcome Back</h2>
-                <p class="login-subtitle">Sign in to check your application status</p>
+                <p class="login-subtitle">Sign in to access your faculty portal</p>
 
                 <?php if (isset($error)): ?>
-                    <div class="error-message">
+                    <div style="background: rgba(220,38,38,0.2); color: #ef4444; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; font-size: 0.85rem;">
                         <?php echo htmlspecialchars($error); ?>
                     </div>
                 <?php endif; ?>
 
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" name="email" placeholder="your.email@example.com" required>
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
                 </div>
 
                 <div class="form-group">
                     <label>Password</label>
                     <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="faculty_forgot.php" class="link">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="btn-login">
@@ -84,20 +96,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 </button>
 
                 <div class="login-footer">
-                    <p style="color: rgba(242,243,242,0.6); font-size: 0.85rem; margin-bottom: 0.5rem;">
-                        Don't have an account? <a href="applicant_register.php" class="link">Create Account</a>
-                    </p>
                     <a href="../../../index.html" class="link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
                 </div>
             </form>
         </div>
     </div>
-
-    <script>
-        // Remove tab switching functionality
-    </script>
 </body>
 </html>
+
+
 
 
 
