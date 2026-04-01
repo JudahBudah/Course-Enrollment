@@ -9,10 +9,10 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 
 // Flash messages
 $flash_errors = [
-    'missing_fields'          => 'Please fill in all required fields.',
-    'duplicate_email'         => 'That email is already used by another student.',
-    'duplicate_student_number'=> 'That student number is already taken.',
-    'update_failed'           => 'Update failed. Please try again.',
+    'missing_fields'           => 'Please fill in all required fields.',
+    'duplicate_email'          => 'That email is already used by another student.',
+    'duplicate_student_number' => 'That student number is already taken.',
+    'update_failed'            => 'Update failed. Please try again.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
@@ -23,10 +23,10 @@ if (isset($_GET['success']) && $_GET['success'] === 'updated') {
 }
 
 // Stats
-$total_students    = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
-$enrolled_count    = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status != 'Not Enrolled'"))['c'];
-$not_enrolled      = $total_students - $enrolled_count;
-$irregular_count   = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE registration_status = 'Irregular'"))['c'];
+$total_students  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
+$enrolled_count  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status != 'Not Enrolled'"))['c'];
+$not_enrolled    = $total_students - $enrolled_count;
+$irregular_count = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE registration_status = 'Irregular'"))['c'];
 
 // Search & filter
 $search = trim($_GET['search'] ?? '');
@@ -51,10 +51,17 @@ $students_query = mysqli_query($con, "
 
 // All blocks for dropdowns
 $blocks_list = mysqli_query($con, "SELECT block_id, block_name, course, year_level FROM blocks ORDER BY block_name");
-$blocks_arr = [];
+$blocks_arr  = [];
 while ($b = mysqli_fetch_assoc($blocks_list)) $blocks_arr[] = $b;
 
-$courses = ['BS Computer Science','BS Information Technology','BS Business Administration','BS Accountancy','BS Civil Engineering','BS Electrical Engineering'];
+$courses = [
+    'BS Computer Science',
+    'BS Information Technology',
+    'BS Business Administration',
+    'BS Accountancy',
+    'BS Civil Engineering',
+    'BS Electrical Engineering',
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,175 +69,286 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students Management - PLM Admin</title>
+    <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/admin.css">
-    <style>
-        .modal-content { max-width: 700px; max-height: 90vh; overflow-y: auto; }
-        .modal-content.wide { max-width: 860px; }
-        .view-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem 2rem; margin-bottom: 1rem; }
-        .view-grid .full { grid-column: 1 / -1; }
-        .view-item label { font-size: 0.75rem; color: rgba(242,243,242,0.5); display: block; margin-bottom: 0.2rem; }
-        .view-item span { font-size: 0.9rem; color: var(--white); }
-        .section-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 0.4rem; margin: 1.2rem 0 0.8rem; grid-column: 1 / -1; }
-        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
-        .student-avatar-lg { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--red), var(--gold)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; color: white; flex-shrink: 0; }
-        .modal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
-        .modal-header-info h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 0; }
-        .modal-header-info p { font-size: 0.85rem; color: rgba(242,243,242,0.5); margin: 0.2rem 0 0; }
-        .badge.enrolled { background: rgba(34,197,94,0.2); color: #4ade80; }
-        .badge.not-enrolled { background: rgba(156,163,175,0.2); color: #9ca3af; }
-        .badge.blue { background: rgba(59,130,246,0.2); color: #60a5fa; }
-        .filter-tabs { flex-wrap: wrap; }
-        .card-header { flex-wrap: wrap; gap: 1rem; }
-    </style>
+    <link rel="stylesheet" href="../../css/admin/admin_main.css">
+    <link rel="stylesheet" href="../../css/admin/admin_students.css">
 </head>
-<body class="dashboard">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">
-            <img src="../../assets/plm-logo.png" alt="PLM">
-            <span>PLM Admin Portal</span>
-        </div>
-        <div class="nav-user">
-            <span><?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?></span>
-            <div class="user-avatar"><?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?></div>
-        </div>
-    </nav>
+<body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="admin_home.php" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
-            <a href="admin_applicants.php" class="sidebar-link">
-                <i class="fa-solid fa-user-plus"></i><span>Applicants</span>
-                <?php if ($pending_applicants > 0): ?><span class="badge"><?php echo $pending_applicants; ?></span><?php endif; ?>
-            </a>
-            <a href="admin_students.php" class="sidebar-link active"><i class="fa-solid fa-users"></i><span>Students</span></a>
-            <a href="admin_blocks.php" class="sidebar-link"><i class="fa-solid fa-layer-group"></i><span>Blocks</span></a>
-            <a href="admin_faculty.php" class="sidebar-link"><i class="fa-solid fa-chalkboard-user"></i><span>Faculty</span></a>
-            <a href="admin_subjects.php" class="sidebar-link"><i class="fa-solid fa-book"></i><span>Subjects</span></a>
-            <a href="admin_classes.php" class="sidebar-link"><i class="fa-solid fa-door-open"></i><span>Classes</span></a>
-            <a href="admin_enrollments.php" class="sidebar-link"><i class="fa-solid fa-file-lines"></i><span>Enrollments</span></a>
-            <a href="admin_announcements.php" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></a>
-            <a href="admin_calendar.php" class="sidebar-link"><i class="fa-solid fa-calendar-days"></i><span>Calendar</span></a>
-            <a href="admin_accounts.php" class="sidebar-link"><i class="fa-solid fa-user-shield"></i><span>Admin Accounts</span></a>
-            <a href="../../php/admin_logout.php" class="sidebar-link logout"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
-        </aside>
+    <!-- ── Top Nav Bar ────────────────────────────────── -->
+    <header>
+        <div class="nav-section">
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars" id="trans-bars"></i>
+            </button>
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Students Management</h1>
-                <p>View, edit, and manage all student records</p>
-            </div>
-
-            <?php echo $flash; ?>
-
-            <!-- Stat Cards -->
-            <div class="stats-grid" style="margin-bottom:1.5rem;">
-                <div class="stat-card blue">
-                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
-                    <div class="stat-content"><h3>Total Students</h3><p class="stat-number"><?php echo $total_students; ?></p></div>
-                </div>
-                <div class="stat-card green">
-                    <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
-                    <div class="stat-content"><h3>Enrolled</h3><p class="stat-number"><?php echo $enrolled_count; ?></p></div>
-                </div>
-                <div class="stat-card gold">
-                    <div class="stat-icon"><i class="fa-solid fa-user-clock"></i></div>
-                    <div class="stat-content"><h3>Not Enrolled</h3><p class="stat-number"><?php echo $not_enrolled; ?></p></div>
-                </div>
-                <div class="stat-card purple">
-                    <div class="stat-icon"><i class="fa-solid fa-shuffle"></i></div>
-                    <div class="stat-content"><h3>Irregular</h3><p class="stat-number"><?php echo $irregular_count; ?></p></div>
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>All Students</h2>
-                    <form method="GET" class="search-form">
-                        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
-                        <input type="text" name="search" placeholder="Search name, ID, email, course..." value="<?php echo htmlspecialchars($search); ?>">
-                        <button type="submit"><i class="fa-solid fa-search"></i></button>
-                        <?php if ($search): ?><a href="?filter=<?php echo $filter; ?>" class="btn-secondary" style="padding:0.5rem 0.75rem;">Clear</a><?php endif; ?>
-                    </form>
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    <?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?>
+                </div>
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Side Nav ───────────────────────────────── -->
+        <nav class="main-nav" id="navMenu">
+            <div class="nav-wrapper">
+                <ul class="main-ul">
+                    <li>
+                        <a href="admin_home.php">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="li-name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_applicants.php">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span class="li-name">Applicants</span>
+                            <?php if ($pending_applicants > 0): ?>
+                                <span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_students.php" class="active">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="li-name">Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_blocks.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="li-name">Blocks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_faculty.php">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span class="li-name">Faculty</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_subjects.php">
+                            <i class="fa-solid fa-book"></i>
+                            <span class="li-name">Subjects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_classes.php">
+                            <i class="fa-solid fa-door-open"></i>
+                            <span class="li-name">Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_enrollments.php">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_announcements.php">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span class="li-name">Announcements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span class="li-name">Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_accounts.php">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span class="li-name">Admin Accounts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../../php/admin_logout.php" class="logout-bg">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track li-name" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ── Page Body ──────────────────────────────────── -->
+    <div class="main-flex">
+        <div class="spacer"></div>
+
+        <main>
+            <div class="main-content">
+
+                <div class="page-header">
+                    <h1>Students Management</h1>
+                    <p>View, edit, and manage all student records</p>
                 </div>
 
-                <div class="filter-tabs">
-                    <a href="?filter=all&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
-                    <a href="?filter=enrolled&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='enrolled'?'active':''; ?>">Enrolled</a>
-                    <a href="?filter=not_enrolled&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='not_enrolled'?'active':''; ?>">Not Enrolled</a>
-                    <a href="?filter=irregular&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='irregular'?'active':''; ?>">Irregular</a>
+                <?php echo $flash; ?>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-content">
+                            <h3>Total Students</h3>
+                            <p class="stat-number"><?php echo $total_students; ?></p>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+                        <div class="stat-content">
+                            <h3>Enrolled</h3>
+                            <p class="stat-number"><?php echo $enrolled_count; ?></p>
+                        </div>
+                    </div>
+                    <div class="stat-card gold">
+                        <div class="stat-icon"><i class="fa-solid fa-user-clock"></i></div>
+                        <div class="stat-content">
+                            <h3>Not Enrolled</h3>
+                            <p class="stat-number"><?php echo $not_enrolled; ?></p>
+                        </div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon"><i class="fa-solid fa-shuffle"></i></div>
+                        <div class="stat-content">
+                            <h3>Irregular</h3>
+                            <p class="stat-number"><?php echo $irregular_count; ?></p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
+                <div class="card">
+                    <div class="card-header">
+                        <h2>All Students</h2>
+                        <form method="GET" class="search-form">
+                            <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
+                            <input type="text" name="search" placeholder="Search name, ID, email, course..." value="<?php echo htmlspecialchars($search); ?>">
+                            <button type="submit"><i class="fa-solid fa-search"></i></button>
+                            <?php if ($search): ?>
+                                <a href="?filter=<?php echo $filter; ?>" class="btn-secondary clear-btn">Clear</a>
+                            <?php endif; ?>
+                        </form>
+                    </div>
+
+                    <div class="filter-tabs">
+                        <a href="?filter=all&search=<?php echo urlencode($search); ?>"         class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
+                        <a href="?filter=enrolled&search=<?php echo urlencode($search); ?>"    class="filter-tab <?php echo $filter==='enrolled'?'active':''; ?>">Enrolled</a>
+                        <a href="?filter=not_enrolled&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='not_enrolled'?'active':''; ?>">Not Enrolled</a>
+                        <a href="?filter=irregular&search=<?php echo urlencode($search); ?>"   class="filter-tab <?php echo $filter==='irregular'?'active':''; ?>">Irregular</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student No.</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Course</th>
+                                    <th>Year</th>
+                                    <th>Block</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTable">
+                            <?php while ($student = mysqli_fetch_assoc($students_query)):
+                                $initials     = strtoupper(substr($student['first_name'] ?? '', 0, 1) . substr($student['last_name'] ?? '', 0, 1));
+                                $photo        = $student['profile_photo'] ? '../../' . $student['profile_photo'] : null;
+                                $fullname     = htmlspecialchars(trim(
+                                    ($student['first_name'] ?? '') . ' ' .
+                                    ($student['middle_name'] ? $student['middle_name'] . ' ' : '') .
+                                    ($student['last_name'] ?? '') .
+                                    ($student['suffix_name'] ? ' ' . $student['suffix_name'] : '')
+                                ));
+                                $status_class = strtolower(str_replace(' ', '-', $student['status'] ?? ''));
+                                $js_data      = htmlspecialchars(json_encode($student), ENT_QUOTES);
+                            ?>
                             <tr>
-                                <th>Student No.</th>
-                                <th>Photo</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Course</th>
-                                <th>Year</th>
-                                <th>Block</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                                <th>Actions</th>
+                                <td><strong><?php echo htmlspecialchars($student['student_number']); ?></strong></td>
+                                <td>
+                                    <?php if ($photo): ?>
+                                        <img src="<?php echo htmlspecialchars($photo); ?>"
+                                             class="student-thumb"
+                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                    <?php endif; ?>
+                                    <div class="student-initials" style="display:<?php echo $photo ? 'none' : 'flex'; ?>;">
+                                        <?php echo $initials; ?>
+                                    </div>
+                                </td>
+                                <td><?php echo $fullname; ?></td>
+                                <td><?php echo htmlspecialchars($student['email'] ?? ''); ?></td>
+                                <td><?php echo htmlspecialchars($student['course'] ?? 'N/A'); ?></td>
+                                <td><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></td>
+                                <td>
+                                    <?php if ($student['block_name']): ?>
+                                        <span class="badge blue"><?php echo htmlspecialchars($student['block_name']); ?></span>
+                                    <?php else: ?>
+                                        <span class="badge no-block">No Block</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <span class="badge <?php echo $student['registration_status']==='Irregular' ? 'pending' : 'approved'; ?>">
+                                        <?php echo htmlspecialchars($student['registration_status'] ?? 'Regular'); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge <?php echo $status_class; ?>">
+                                        <?php echo htmlspecialchars($student['status'] ?? 'N/A'); ?>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js_data; ?>')">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Edit Student" onclick="openEdit('<?php echo $js_data; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <a href="admin_manual_enroll.php?student_id=<?php echo $student['student_id']; ?>" class="btn-icon" title="Manual Enrollment">
+                                            <i class="fa-solid fa-user-pen"></i>
+                                        </a>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody id="studentsTable">
-                        <?php while ($student = mysqli_fetch_assoc($students_query)):
-                            $initials = strtoupper(substr($student['first_name'] ?? '', 0, 1) . substr($student['last_name'] ?? '', 0, 1));
-                            $photo    = $student['profile_photo'] ? '../../' . $student['profile_photo'] : null;
-                            $fullname = htmlspecialchars(trim(($student['first_name'] ?? '') . ' ' . ($student['middle_name'] ? $student['middle_name'] . ' ' : '') . ($student['last_name'] ?? '') . ($student['suffix_name'] ? ' ' . $student['suffix_name'] : '')));
-                            $status_class = strtolower(str_replace(' ', '-', $student['status'] ?? ''));
-
-                            // Encode all student data for JS
-                            $js_data = htmlspecialchars(json_encode($student), ENT_QUOTES);
-                        ?>
-                        <tr>
-                            <td><strong><?php echo htmlspecialchars($student['student_number']); ?></strong></td>
-                            <td>
-                                <?php if ($photo): ?>
-                                    <img src="<?php echo htmlspecialchars($photo); ?>" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                <?php endif; ?>
-                                <div style="display:<?php echo $photo ? 'none' : 'flex'; ?>;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--gold));color:white;align-items:center;justify-content:center;font-size:13px;font-weight:700;"><?php echo $initials; ?></div>
-                            </td>
-                            <td><?php echo $fullname; ?></td>
-                            <td><?php echo htmlspecialchars($student['email'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($student['course'] ?? 'N/A'); ?></td>
-                            <td><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></td>
-                            <td>
-                                <?php if ($student['block_name']): ?>
-                                    <span class="badge blue"><?php echo htmlspecialchars($student['block_name']); ?></span>
-                                <?php else: ?>
-                                    <span class="badge incomplete">No Block</span>
-                                <?php endif; ?>
-                            </td>
-                            <td><span class="badge <?php echo $student['registration_status']==='Irregular'?'pending':'approved'; ?>"><?php echo htmlspecialchars($student['registration_status'] ?? 'Regular'); ?></span></td>
-                            <td><span class="badge <?php echo $status_class; ?>"><?php echo htmlspecialchars($student['status'] ?? 'N/A'); ?></span></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js_data; ?>')">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button class="btn-icon" title="Edit Student" onclick="openEdit('<?php echo $js_data; ?>')">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <a href="admin_manual_enroll.php?student_id=<?php echo $student['student_id']; ?>" class="btn-icon" title="Manual Enrollment">
-                                        <i class="fa-solid fa-user-pen"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                            <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </main>
-    </div>
 
-    <!-- ===== VIEW MODAL ===== -->
+            </div><!-- /.main-content -->
+        </main>
+    </div><!-- /.main-flex -->
+
+    <!-- ── View Modal ───────────────────────────────── -->
     <div id="viewModal" class="modal">
         <div class="modal-content wide">
             <span class="close" onclick="closeModal('viewModal')">&times;</span>
@@ -268,23 +386,23 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
                 <div class="view-item"><label>Date Created</label><span id="vw_created_at"></span></div>
             </div>
 
-            <div style="margin-top:1.5rem;text-align:right;">
+            <div class="modal-actions" style="margin-top:1.5rem;">
                 <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- ===== EDIT MODAL ===== -->
+    <!-- ── Edit Modal ───────────────────────────────── -->
     <div id="editModal" class="modal">
         <div class="modal-content wide">
             <span class="close" onclick="closeModal('editModal')">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;">Edit Student Record</h2>
+            <h2>Edit Student Record</h2>
 
             <form method="POST" action="../../php/admin_update_student.php">
                 <input type="hidden" name="student_id" id="edit_student_id">
 
-                <p class="section-title" style="font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--gold);border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:0.4rem;margin-bottom:1rem;">Academic Info</p>
                 <div class="form-grid-2">
+                    <div class="form-section-title">Academic Info</div>
                     <div class="form-group">
                         <label>Student Number <span style="color:var(--red)">*</span></label>
                         <input type="text" name="student_number" id="edit_student_number" required>
@@ -316,7 +434,9 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
                         <select name="block_id" id="edit_block_id">
                             <option value="">No Block (Irregular)</option>
                             <?php foreach ($blocks_arr as $b): ?>
-                                <option value="<?php echo $b['block_id']; ?>"><?php echo htmlspecialchars($b['block_name'] . ' — ' . $b['course'] . ' Yr' . $b['year_level']); ?></option>
+                                <option value="<?php echo $b['block_id']; ?>">
+                                    <?php echo htmlspecialchars($b['block_name'] . ' — ' . $b['course'] . ' Yr' . $b['year_level']); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -344,10 +464,8 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
                             <option value="inactive">Inactive</option>
                         </select>
                     </div>
-                </div>
 
-                <p class="section-title" style="font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--gold);border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:0.4rem;margin:1.2rem 0 1rem;">Personal Info</p>
-                <div class="form-grid-2">
+                    <div class="form-section-title">Personal Info</div>
                     <div class="form-group">
                         <label>First Name <span style="color:var(--red)">*</span></label>
                         <input type="text" name="first_name" id="edit_first_name" required>
@@ -377,10 +495,8 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
                         <label>Birthdate</label>
                         <input type="date" name="birthdate" id="edit_birthdate">
                     </div>
-                </div>
 
-                <p class="section-title" style="font-family:'Playfair Display',serif;font-size:0.95rem;color:var(--gold);border-bottom:1px solid rgba(212,175,55,0.2);padding-bottom:0.4rem;margin:1.2rem 0 1rem;">Contact Info</p>
-                <div class="form-grid-2">
+                    <div class="form-section-title">Contact Info</div>
                     <div class="form-group">
                         <label>Email <span style="color:var(--red)">*</span></label>
                         <input type="email" name="email" id="edit_email" required>
@@ -391,56 +507,15 @@ $courses = ['BS Computer Science','BS Information Technology','BS Business Admin
                     </div>
                 </div>
 
-                <div style="display:flex;gap:1rem;margin-top:1.5rem;">
-                    <button type="submit" class="btn-submit" style="flex:1;">Save Changes</button>
-                    <button type="button" class="btn-secondary" onclick="closeModal('editModal')" style="flex:1;">Cancel</button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('editModal')">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script>
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        window.onclick = function(e) {
-            ['viewModal','editModal'].forEach(id => {
-                const m = document.getElementById(id);
-                if (e.target === m) m.style.display = 'none';
-            });
-        }
-
-        function openView(raw) {
-            const s = JSON.parse(raw);
-            const initials = ((s.first_name||'')[0]||'') + ((s.last_name||'')[0]||'');
-            document.getElementById('view_avatar').textContent = initials.toUpperCase();
-            document.getElementById('view_fullname').textContent = [s.first_name, s.middle_name, s.last_name, s.suffix_name].filter(Boolean).join(' ');
-            document.getElementById('view_student_number').textContent = 'Student No: ' + (s.student_number || 'N/A');
-            document.getElementById('view_status_badge').innerHTML = '<span class="badge ' + (s.status||'').toLowerCase().replace(/ /g,'-') + '">' + (s.status||'N/A') + '</span>';
-
-            const fields = ['first_name','last_name','middle_name','suffix_name','gender','birthdate','email','contact_number','college','course','year_level','registration_status','status','account_status','created_at'];
-            fields.forEach(f => {
-                const el = document.getElementById('vw_' + f);
-                if (el) el.textContent = s[f] || '—';
-            });
-            document.getElementById('vw_block').textContent = s.block_name || 'No Block';
-            document.getElementById('viewModal').style.display = 'block';
-        }
-
-        function openEdit(raw) {
-            const s = JSON.parse(raw);
-            const fields = ['student_id','student_number','first_name','last_name','middle_name','suffix_name','gender','birthdate','email','contact_number','college','course','year_level','registration_status','account_status','status'];
-            fields.forEach(f => {
-                const el = document.getElementById('edit_' + f);
-                if (!el) return;
-                el.value = s[f] || '';
-            });
-            // block_id select
-            const blockSel = document.getElementById('edit_block_id');
-            blockSel.value = s.block_id || '';
-            document.getElementById('editModal').style.display = 'block';
-        }
-    </script>
+    <script src="../../js/admin/admin_main.js"></script>
+    <script src="../../js/admin/admin_students.js"></script>
 </body>
 </html>

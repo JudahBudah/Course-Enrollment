@@ -5,7 +5,6 @@ include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
 
-
 // Handle delete
 if (isset($_POST['delete_applicant'])) {
     $applicant_id = (int)$_POST['applicant_id'];
@@ -18,16 +17,14 @@ if (isset($_POST['delete_applicant'])) {
 // Handle status update
 if (isset($_POST['update_status'])) {
     $applicant_id = $_POST['applicant_id'];
-    $new_status = $_POST['status'];
-    
+    $new_status   = $_POST['status'];
     $stmt = mysqli_prepare($con, "UPDATE applicants SET application_status = ? WHERE applicant_id = ?");
     mysqli_stmt_bind_param($stmt, "si", $new_status, $applicant_id);
     mysqli_stmt_execute($stmt);
-    
     $success = "Application status updated successfully!";
 }
 
-// Handle flash messages from convert_to_student.php
+// Flash messages from convert_to_student.php
 $error_messages = [
     'missing_fields'           => 'Please fill in all required fields.',
     'not_found'                => 'Applicant not found or not yet approved.',
@@ -52,8 +49,8 @@ if (isset($_GET['exam_error'])) {
     $error = 'Please fill in all required exam schedule fields and select at least one applicant.';
 }
 
-// Ensure exam columns exist (compatible with MySQL 5.x)
-$cols = [];
+// Ensure exam columns exist
+$cols    = [];
 $col_res = mysqli_query($con, "SHOW COLUMNS FROM applicants");
 while ($c = mysqli_fetch_assoc($col_res)) $cols[] = $c['Field'];
 if (!in_array('exam_schedule_id', $cols))
@@ -70,15 +67,10 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS exam_schedules (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
-// Get statistics
-$total_students = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM students"))['count'];
-$total_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants"))['count'];
+// Stats
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
-$total_faculty = 0; // Faculty table not yet created
-$total_subjects = 0; // Subjects table not yet created
-$total_classes = 0; // Classes table not yet created
 
-// Get filter
+// Filter & search
 $filter = $_GET['filter'] ?? 'all';
 $search = $_GET['search'] ?? '';
 
@@ -92,10 +84,10 @@ if ($filter === 'all') {
     $query .= " AND a.application_status = '$filter'";
 }
 if (!empty($search)) {
-    $query .= " AND (a.first_name LIKE '%$search%' OR a.last_name LIKE '%$search%' OR a.email LIKE '%$search%' OR a.lrn LIKE '%$search%')";
+    $s = mysqli_real_escape_string($con, $search);
+    $query .= " AND (a.first_name LIKE '%$s%' OR a.last_name LIKE '%$s%' OR a.email LIKE '%$s%' OR a.lrn LIKE '%$s%')";
 }
 $query .= " ORDER BY a.created_at DESC";
-
 $applicants = mysqli_query($con, $query);
 ?>
 <!DOCTYPE html>
@@ -104,194 +96,273 @@ $applicants = mysqli_query($con, $query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Applicants - PLM Admin</title>
+    <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin/admin_main.css">
+    <link rel="stylesheet" href="../../css/admin/admin_applicants.css">
 </head>
-<body class="dashboard">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">
-            <img src="../../assets/plm-logo.png" alt="PLM">
-            <span>PLM Admin Portal</span>
-        </div>
-       <div class="nav-user">
-            <span><?php echo htmlspecialchars(($admin_data['username'] ?? 'Admin')); ?></span>
-            <div class="user-avatar"><?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?></div>
-        </div>
-    </nav>
+<body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="admin_home.php" class="sidebar-link">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-           <a href="admin_applicants.php" class="sidebar-link active">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Applicants</span>
-                <?php if ($pending_applicants > 0): ?>
-                    <span class="badge"><?php echo $pending_applicants; ?></span>
-                <?php endif; ?>
-            </a>
-            <a href="admin_students.php" class="sidebar-link">
-                <i class="fa-solid fa-users"></i>
-                <span>Students</span>
-            </a>
-               </a>
-            <a href="admin_blocks.php" class="sidebar-link">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>Blocks</span>
-            </a>
-            <a href="admin_faculty.php" class="sidebar-link">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <span>Faculty</span>
-            </a>
-            <a href="admin_subjects.php" class="sidebar-link">
-                <i class="fa-solid fa-book"></i>
-                <span>Subjects</span>
-            </a>
-            <a href="admin_classes.php" class="sidebar-link">
-                <i class="fa-solid fa-door-open"></i>
-                <span>Classes</span>
-            </a>
-            <a href="admin_enrollments.php" class="sidebar-link">
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Enrollments</span>
-            </a>
-            <a href="admin_announcements.php" class="sidebar-link">
-                <i class="fa-solid fa-bullhorn"></i>
-                <span>Announcements</span>
-            </a>
-            <a href="admin_calendar.php" class="sidebar-link">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendar</span>
-            </a>
-            <a href="admin_accounts.php" class="sidebar-link">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Admin Accounts</span>
-            </a>
-            <a href="../../php/admin_logout.php" class="sidebar-link logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </aside>
+    <!-- ── Top Nav Bar ────────────────────────────────── -->
+    <header>
+        <div class="nav-section">
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars" id="trans-bars"></i>
+            </button>
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Manage Applicants</h1>
-                <p>Review and manage student applications</p>
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
             </div>
 
-            <?php if (isset($success)): ?>
-                <div class="success-message"><i class="fa-solid fa-check-circle"></i> <?php echo htmlspecialchars($success); ?></div>
-            <?php endif; ?>
-            <?php if (isset($error)): ?>
-                <div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> <?php echo htmlspecialchars($error); ?></div>
-            <?php endif; ?>
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    <?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?>
+                </div>
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?>
+                </div>
+            </div>
+        </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Applicants List</h2>
-                    <div class="header-actions">
-                        <form method="GET" class="search-form">
-                            <input type="text" name="search" placeholder="Search applicants..." value="<?php echo htmlspecialchars($search); ?>">
-                            <button type="submit"><i class="fa-solid fa-search"></i></button>
-                        </form>
-                        <button class="btn-primary" onclick="openExamModal()" style="margin-left:0.5rem;"><i class="fa-solid fa-calendar-plus"></i> Schedule Exam</button>
+        <!-- ── Side Nav ───────────────────────────────── -->
+        <nav class="main-nav" id="navMenu">
+            <div class="nav-wrapper">
+                <ul class="main-ul">
+                    <li>
+                        <a href="admin_home.php">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="li-name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_applicants.php" class="active">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span class="li-name">Applicants</span>
+                            <?php if ($pending_applicants > 0): ?>
+                                <span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_students.php">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="li-name">Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_blocks.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="li-name">Blocks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_faculty.php">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span class="li-name">Faculty</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_subjects.php">
+                            <i class="fa-solid fa-book"></i>
+                            <span class="li-name">Subjects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_classes.php">
+                            <i class="fa-solid fa-door-open"></i>
+                            <span class="li-name">Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_enrollments.php">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_announcements.php">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span class="li-name">Announcements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span class="li-name">Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_accounts.php">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span class="li-name">Admin Accounts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../../php/admin_logout.php" class="logout-bg">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track li-name" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ── Page Body ──────────────────────────────────── -->
+    <div class="main-flex">
+        <div class="spacer"></div>
+
+        <main>
+            <div class="main-content">
+
+                <div class="page-header">
+                    <h1>Manage Applicants</h1>
+                    <p>Review and manage student applications</p>
+                </div>
+
+                <?php if (isset($success)): ?>
+                    <div class="success-message"><i class="fa-solid fa-check-circle"></i> <?php echo htmlspecialchars($success); ?></div>
+                <?php endif; ?>
+                <?php if (isset($error)): ?>
+                    <div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> <?php echo htmlspecialchars($error); ?></div>
+                <?php endif; ?>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Applicants List</h2>
+                        <div class="header-actions">
+                            <form method="GET" class="search-form">
+                                <input type="text" name="search" placeholder="Search applicants..." value="<?php echo htmlspecialchars($search); ?>">
+                                <button type="submit"><i class="fa-solid fa-search"></i></button>
+                            </form>
+                            <button class="btn-primary" onclick="openExamModal()">
+                                <i class="fa-solid fa-calendar-plus"></i>
+                                <span class="li-name">Schedule Exam</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Batch Action Bar -->
+                    <div class="batch-bar" id="batchBar">
+                        <span class="batch-count" id="batchCount">0 selected</span>
+                        <button class="btn-primary" onclick="openExamModal()" style="padding:0.4rem 0.9rem;font-size:0.82rem;">
+                            <i class="fa-solid fa-calendar-plus"></i> Assign Exam Schedule
+                        </button>
+                        <button class="btn-secondary" onclick="clearExam()" style="padding:0.4rem 0.9rem;font-size:0.82rem;">
+                            <i class="fa-solid fa-calendar-xmark"></i> Clear Exam
+                        </button>
+                        <button class="btn-secondary" onclick="deselectAll()" style="padding:0.4rem 0.9rem;font-size:0.82rem;">
+                            Deselect All
+                        </button>
+                    </div>
+
+                    <div class="filter-tabs">
+                        <a href="?filter=all"        class="filter-tab <?php echo $filter==='all'        ? 'active':''; ?>">All</a>
+                        <a href="?filter=incomplete" class="filter-tab <?php echo $filter==='incomplete' ? 'active':''; ?>">Incomplete</a>
+                        <a href="?filter=pending"    class="filter-tab <?php echo $filter==='pending'    ? 'active':''; ?>">Pending</a>
+                        <a href="?filter=approved"   class="filter-tab <?php echo $filter==='approved'   ? 'active':''; ?>">Approved</a>
+                        <a href="?filter=rejected"   class="filter-tab <?php echo $filter==='rejected'   ? 'active':''; ?>">Rejected</a>
+                        <a href="?filter=enrolled"   class="filter-tab <?php echo $filter==='enrolled'   ? 'active':''; ?>">Converted</a>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" id="selectAll" onchange="toggleAll(this)" title="Select all"></th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>LRN</th>
+                                    <th>First Choice</th>
+                                    <th>Status</th>
+                                    <th>Exam Schedule</th>
+                                    <th>Applied Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($applicant = mysqli_fetch_assoc($applicants)): ?>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="row-check" value="<?php echo $applicant['applicant_id']; ?>" onchange="updateBatch()">
+                                    </td>
+                                    <td><?php echo $applicant['applicant_id']; ?></td>
+                                    <td><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></td>
+                                    <td>
+                                        <span class="badge <?php echo strtolower($applicant['application_status']); ?>">
+                                            <?php echo htmlspecialchars(ucfirst($applicant['application_status'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <?php if ($applicant['exam_schedule_id']): ?>
+                                            <div class="exam-cell">
+                                                <div class="exam-cell-date"><?php echo date('M j, Y', strtotime($applicant['exam_date'])); ?></div>
+                                                <div class="exam-cell-time"><?php echo htmlspecialchars($applicant['exam_time']); ?></div>
+                                                <div class="exam-cell-loc"><?php echo htmlspecialchars($applicant['exam_location']); ?></div>
+                                            </div>
+                                        <?php else: ?>
+                                            <span class="exam-cell-empty">—</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button onclick="updateStatus(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="Update Status">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                            <?php if ($applicant['application_status'] === 'approved'): ?>
+                                            <button onclick="openConvertModal(<?php echo $applicant['applicant_id']; ?>, '<?php echo htmlspecialchars(addslashes($applicant['first_name'] . ' ' . $applicant['last_name'])); ?>', '<?php echo htmlspecialchars(addslashes($applicant['first_choice'] ?? '')); ?>')" class="btn-icon convert" title="Convert to Student">
+                                                <i class="fa-solid fa-user-graduate"></i>
+                                            </button>
+                                            <?php endif; ?>
+                                            <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this applicant? This cannot be undone.')">
+                                                <input type="hidden" name="applicant_id" value="<?php echo $applicant['applicant_id']; ?>">
+                                                <button type="submit" name="delete_applicant" class="btn-icon danger" title="Delete">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- Batch action bar -->
-                <div id="batchBar" style="display:none;background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);border-radius:6px;padding:0.6rem 1rem;margin:0.75rem 1.5rem;display:none;align-items:center;gap:1rem;flex-wrap:wrap;">
-                    <span id="batchCount" style="font-size:0.85rem;color:var(--gold);">0 selected</span>
-                    <button class="btn-primary" onclick="openExamModal()" style="padding:0.4rem 0.9rem;font-size:0.82rem;"><i class="fa-solid fa-calendar-plus"></i> Assign Exam Schedule</button>
-                    <button class="btn-secondary" onclick="clearExam()" style="padding:0.4rem 0.9rem;font-size:0.82rem;"><i class="fa-solid fa-calendar-xmark"></i> Clear Exam</button>
-                    <button class="btn-secondary" onclick="deselectAll()" style="padding:0.4rem 0.9rem;font-size:0.82rem;">Deselect All</button>
-                </div>
-
-                <div class="filter-tabs">
-                    <a href="?filter=all" class="filter-tab <?php echo $filter == 'all' ? 'active' : ''; ?>">All</a>
-                    <a href="?filter=incomplete" class="filter-tab <?php echo $filter == 'incomplete' ? 'active' : ''; ?>">Incomplete</a>
-                    <a href="?filter=pending" class="filter-tab <?php echo $filter == 'pending' ? 'active' : ''; ?>">Pending</a>
-                    <a href="?filter=approved" class="filter-tab <?php echo $filter == 'approved' ? 'active' : ''; ?>">Approved</a>
-                    <a href="?filter=rejected" class="filter-tab <?php echo $filter == 'rejected' ? 'active' : ''; ?>">Rejected</a>
-                    <a href="?filter=enrolled" class="filter-tab <?php echo $filter == 'enrolled' ? 'active' : ''; ?>">Converted</a>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox" id="selectAll" onchange="toggleAll(this)" title="Select all"></th>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>LRN</th>
-                                <th>First Choice</th>
-                                <th>Status</th>
-                                <th>Exam Schedule</th>
-                                <th>Applied Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($applicant = mysqli_fetch_assoc($applicants)): ?>
-                            <tr>
-                                <td><input type="checkbox" class="row-check" value="<?php echo $applicant['applicant_id']; ?>" onchange="updateBatch()"></td>
-                                <td><?php echo $applicant['applicant_id']; ?></td>
-                                <td><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></td>
-                                <td><?php echo htmlspecialchars($applicant['email']); ?></td>
-                                <td><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></td>
-                                <td><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></td>
-                                <td><span class="badge <?php echo strtolower($applicant['application_status']); ?>"><?php echo htmlspecialchars(ucfirst($applicant['application_status'])); ?></span></td>
-                                <td>
-                                    <?php if ($applicant['exam_schedule_id']): ?>
-                                        <div style="font-size:0.8rem;line-height:1.5;">
-                                            <div style="color:var(--gold);font-weight:600;"><?php echo date('M j, Y', strtotime($applicant['exam_date'])); ?></div>
-                                            <div style="color:rgba(242,243,242,0.6);"><?php echo htmlspecialchars($applicant['exam_time']); ?></div>
-                                            <div style="color:rgba(242,243,242,0.5);font-size:0.75rem;"><?php echo htmlspecialchars($applicant['exam_location']); ?></div>
-                                        </div>
-                                    <?php else: ?>
-                                        <span style="color:rgba(242,243,242,0.3);font-size:0.8rem;">—</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <button onclick="updateStatus(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="Update Status">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <?php if ($applicant['application_status'] === 'approved'): ?>
-                                        <button onclick="openConvertModal(<?php echo $applicant['applicant_id']; ?>, '<?php echo htmlspecialchars(addslashes($applicant['first_name'] . ' ' . $applicant['last_name'])); ?>', '<?php echo htmlspecialchars(addslashes($applicant['first_choice'] ?? '')); ?>')" class="btn-icon" title="Convert to Student" style="color:#4ade80;border-color:#4ade80;">
-                                            <i class="fa-solid fa-user-graduate"></i>
-                                        </button>
-                                        <?php endif; ?>
-                                        <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this applicant? This cannot be undone.')">
-                                            <input type="hidden" name="applicant_id" value="<?php echo $applicant['applicant_id']; ?>">
-                                            <button type="submit" name="delete_applicant" class="btn-icon" title="Delete" style="color:#ef4444;border-color:#ef4444;">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            </div><!-- /.main-content -->
         </main>
-    </div>
+    </div><!-- /.main-flex -->
 
-    <!-- Exam Schedule Modal -->
+    <!-- ── Exam Schedule Modal ──────────────────────── -->
     <div id="examModal" class="modal">
-        <div class="modal-content" style="max-width:520px;">
+        <div class="modal-content exam-modal">
             <span class="close" onclick="document.getElementById('examModal').style.display='none'">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:0.5rem;">Schedule Exam</h2>
-            <p id="examModalDesc" style="font-size:0.85rem;color:rgba(242,243,242,0.5);margin-bottom:1.5rem;"></p>
+            <h2>Schedule Exam</h2>
+            <p class="modal-desc" id="examModalDesc"></p>
             <form method="POST" action="../../php/admin_exam_schedule_handler.php" id="examForm">
                 <input type="hidden" name="action" value="assign_exam">
                 <div id="examApplicantInputs"></div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0 1rem;">
+                <div class="form-grid-2">
                     <div class="form-group">
                         <label>Exam Date <span style="color:var(--red)">*</span></label>
                         <input type="date" name="exam_date" id="exam_date" required>
@@ -306,29 +377,31 @@ $applicants = mysqli_query($con, $query);
                     <input type="text" name="location" id="exam_location" placeholder="e.g. PLM Main Building, Room 201" required>
                 </div>
                 <div class="form-group">
-                    <label>Notes <small style="color:rgba(242,243,242,0.4);">(optional)</small></label>
+                    <label>Notes <small style="font-weight:400;text-transform:none;">(optional)</small></label>
                     <textarea name="notes" rows="2" placeholder="Additional instructions for applicants…"></textarea>
                 </div>
-                <div style="display:flex;gap:1rem;margin-top:0.5rem;">
-                    <button type="submit" class="btn-submit" style="flex:1;">Assign Schedule</button>
-                    <button type="button" class="btn-secondary" onclick="document.getElementById('examModal').style.display='none'" style="flex:1;">Cancel</button>
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Assign Schedule</button>
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('examModal').style.display='none'">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Clear Exam Form (hidden) -->
+    <!-- Clear Exam (hidden form) -->
     <form method="POST" action="../../php/admin_exam_schedule_handler.php" id="clearExamForm">
         <input type="hidden" name="action" value="clear_exam">
         <div id="clearExamInputs"></div>
     </form>
 
-    <!-- Convert to Student Modal -->
+    <!-- ── Convert to Student Modal ─────────────────── -->
     <div id="convertModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content convert-modal">
             <span class="close" onclick="document.getElementById('convertModal').style.display='none'">&times;</span>
             <h2>Convert to Student</h2>
-            <p style="color:rgba(242,243,242,0.6);font-size:0.9rem;margin-bottom:1.5rem;">Applicant: <strong id="convertName" style="color:var(--gold);"></strong></p>
+            <p style="font-size:0.9rem;color:var(--text);margin-bottom:1.5rem;">
+                Applicant: <strong class="convert-name" id="convertName"></strong>
+            </p>
             <form method="POST" action="../../php/convert_to_student.php">
                 <input type="hidden" name="applicant_id" id="convert_applicant_id">
                 <div class="form-group">
@@ -360,15 +433,15 @@ $applicants = mysqli_query($con, $query);
                         <option value="4">4th Year</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-submit" style="background:linear-gradient(135deg,#16a34a,#15803d);">Convert to Student</button>
+                <button type="submit" class="btn-submit-green">Convert to Student</button>
             </form>
         </div>
     </div>
 
-    <!-- Status Update Modal -->
+    <!-- ── Status Update Modal ───────────────────────── -->
     <div id="statusModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
+            <span class="close" onclick="document.getElementById('statusModal').style.display='none'">&times;</span>
             <h2>Update Application Status</h2>
             <form method="POST">
                 <input type="hidden" name="applicant_id" id="applicant_id">
@@ -381,95 +454,15 @@ $applicants = mysqli_query($con, $query);
                         <option value="rejected">Rejected</option>
                     </select>
                 </div>
-                <button type="submit" name="update_status" class="btn-submit">Update Status</button>
+                <div class="modal-actions">
+                    <button type="submit" name="update_status" class="btn-primary">Update Status</button>
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('statusModal').style.display='none'">Cancel</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <script>
-        function updateStatus(id) {
-            document.getElementById('applicant_id').value = id;
-            document.getElementById('statusModal').style.display = 'block';
-        }
-
-        function openConvertModal(id, name, course) {
-            document.getElementById('convert_applicant_id').value = id;
-            document.getElementById('convertName').textContent = name;
-            const courseSelect = document.getElementById('convert_course');
-            for (let opt of courseSelect.options) {
-                if (opt.value === course) { opt.selected = true; break; }
-            }
-            document.getElementById('convertModal').style.display = 'block';
-        }
-
-        window.onclick = function(event) {
-            ['statusModal', 'convertModal', 'examModal'].forEach(id => {
-                const modal = document.getElementById(id);
-                if (event.target == modal) modal.style.display = 'none';
-            });
-        }
-
-        /* ── Batch selection ── */
-        function getSelected() {
-            return [...document.querySelectorAll('.row-check:checked')].map(c => c.value);
-        }
-
-        function updateBatch() {
-            const sel = getSelected();
-            const bar = document.getElementById('batchBar');
-            bar.style.display = sel.length > 0 ? 'flex' : 'none';
-            document.getElementById('batchCount').textContent = sel.length + ' selected';
-            document.getElementById('selectAll').indeterminate =
-                sel.length > 0 && sel.length < document.querySelectorAll('.row-check').length;
-            document.getElementById('selectAll').checked =
-                sel.length === document.querySelectorAll('.row-check').length;
-        }
-
-        function toggleAll(cb) {
-            document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
-            updateBatch();
-        }
-
-        function deselectAll() {
-            document.querySelectorAll('.row-check').forEach(c => c.checked = false);
-            document.getElementById('selectAll').checked = false;
-            updateBatch();
-        }
-
-        /* ── Exam modal ── */
-        function openExamModal() {
-            const sel = getSelected();
-            if (sel.length === 0) {
-                alert('Please select at least one applicant first.');
-                return;
-            }
-            document.getElementById('examModalDesc').textContent =
-                'Assigning exam schedule to ' + sel.length + ' applicant(s).';
-            // Populate hidden inputs
-            const wrap = document.getElementById('examApplicantInputs');
-            wrap.innerHTML = sel.map(id =>
-                `<input type="hidden" name="applicant_ids[]" value="${id}">`
-            ).join('');
-            document.getElementById('examModal').style.display = 'block';
-        }
-
-        function clearExam() {
-            const sel = getSelected();
-            if (sel.length === 0) return;
-            if (!confirm('Clear exam schedule for ' + sel.length + ' applicant(s)?')) return;
-            const wrap = document.getElementById('clearExamInputs');
-            wrap.innerHTML = sel.map(id =>
-                `<input type="hidden" name="applicant_ids[]" value="${id}">`
-            ).join('');
-            document.getElementById('clearExamForm').submit();
-        }
-    </script>
+    <script src="../../js/admin/admin_main.js"></script>
+    <script src="../../js/admin/admin_applicants.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-

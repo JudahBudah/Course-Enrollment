@@ -5,17 +5,8 @@ include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
 
-// Get all blocks
-$blocks_query = mysqli_query($con, "SELECT * FROM blocks ORDER BY course, year_level, block_name");
-
-// Get statistics
-$total_students = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM students"))['count'];
-$total_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants"))['count'];
+$blocks_query       = mysqli_query($con, "SELECT * FROM blocks ORDER BY course, year_level, block_name");
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
-$total_faculty = 0; // Faculty table not yet created
-$total_subjects = 0; // Subjects table not yet created
-$total_classes = 0; // Classes table not yet created
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,137 +14,213 @@ $total_classes = 0; // Classes table not yet created
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blocks Management - PLM Admin</title>
+    <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin/admin_main.css">
+    <link rel="stylesheet" href="../../css/admin/admin_blocks.css">
 </head>
-<body class="dashboard">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">
-            <img src="../../assets/plm-logo.png" alt="PLM">
-            <span>PLM Admin Portal</span>
-        </div>
-        <div class="nav-user">
-            <span><?php echo htmlspecialchars(($admin_data['username'] ?? 'Admin')); ?></span>
-            <div class="user-avatar"><?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?></div>
-        </div>
-    </nav>
+<body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="admin_home.php" class="sidebar-link">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="admin_applicants.php" class="sidebar-link">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Applicants</span>
-                <?php if ($pending_applicants > 0): ?>
-                    <span class="badge"><?php echo $pending_applicants; ?></span>
-                <?php endif; ?>
-            </a>
-            <a href="admin_students.php" class="sidebar-link">
-                <i class="fa-solid fa-users"></i>
-                <span>Students</span>
-            </a>
-            <a href="admin_blocks.php" class="sidebar-link active">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>Blocks</span>
-            </a>
-            <a href="admin_faculty.php" class="sidebar-link">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <span>Faculty</span>
-            </a>
-            <a href="admin_subjects.php" class="sidebar-link">
-                <i class="fa-solid fa-book"></i>
-                <span>Subjects</span>
-            </a>
-            <a href="admin_classes.php" class="sidebar-link">
-                <i class="fa-solid fa-door-open"></i>
-                <span>Classes</span>
-            </a>
-            <a href="admin_enrollments.php" class="sidebar-link">
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Enrollments</span>
-            </a>
-            <a href="admin_announcements.php" class="sidebar-link">
-                <i class="fa-solid fa-bullhorn"></i>
-                <span>Announcements</span>
-            </a>
-            <a href="admin_calendar.php" class="sidebar-link">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Calendar</span>
-            </a>
-            <a href="admin_accounts.php" class="sidebar-link">
-                <i class="fa-solid fa-user-shield"></i>
-                <span>Admin Accounts</span>
-            </a>
-            <a href="../../php/admin_logout.php" class="sidebar-link logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </aside>
+    <!-- ── Top Nav Bar ────────────────────────────────── -->
+    <header>
+        <div class="nav-section">
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars" id="trans-bars"></i>
+            </button>
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Blocks Management</h1>
-                <p>Create and manage student blocks with assigned subjects</p>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h2>All Blocks</h2>
-                    <button class="btn-secondary" onclick="document.getElementById('createBlockModal').style.display='block'">
-                        <i class="fa-solid fa-plus"></i> Create New Block
-                    </button>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Block Name</th>
-                                <th>Course</th>
-                                <th>Year Level</th>
-                                <th>Semester</th>
-                                <th>School Year</th>
-                                <th>Students</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($block = mysqli_fetch_assoc($blocks_query)): ?>
-                            <tr>
-                                <td><strong><?php echo htmlspecialchars($block['block_name']); ?></strong></td>
-                                <td><?php echo htmlspecialchars($block['course']); ?></td>
-                                <td><?php echo htmlspecialchars($block['year_level']); ?></td>
-                                <td><?php echo htmlspecialchars($block['semester']); ?></td>
-                                <td><?php echo htmlspecialchars($block['school_year']); ?></td>
-                                <td><?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?></td>
-                                <td><span class="badge <?php echo strtolower($block['status']); ?>"><?php echo htmlspecialchars(ucfirst($block['status'])); ?></span></td>
-                                <td>
-                                    <a href="admin_block_subjects.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="Manage Subjects">
-                                        <i class="fa-solid fa-book"></i>
-                                    </a>
-                                    <a href="admin_block_students.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="View Students">
-                                        <i class="fa-solid fa-users"></i>
-                                    </a>
-                                    <button class="btn-icon" title="Edit" onclick="editBlock(<?php echo $block['block_id']; ?>)">
-                                        <i class="fa-solid fa-edit"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
                 </div>
             </div>
+
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    <?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?>
+                </div>
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Side Nav ───────────────────────────────── -->
+        <nav class="main-nav" id="navMenu">
+            <div class="nav-wrapper">
+                <ul class="main-ul">
+                    <li>
+                        <a href="admin_home.php">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="li-name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_applicants.php">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span class="li-name">Applicants</span>
+                            <?php if ($pending_applicants > 0): ?>
+                                <span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_students.php">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="li-name">Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_blocks.php" class="active">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="li-name">Blocks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_faculty.php">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span class="li-name">Faculty</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_subjects.php">
+                            <i class="fa-solid fa-book"></i>
+                            <span class="li-name">Subjects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_classes.php">
+                            <i class="fa-solid fa-door-open"></i>
+                            <span class="li-name">Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_enrollments.php">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_announcements.php">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span class="li-name">Announcements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span class="li-name">Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_accounts.php">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span class="li-name">Admin Accounts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../../php/admin_logout.php" class="logout-bg">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track li-name" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ── Page Body ──────────────────────────────────── -->
+    <div class="main-flex">
+        <div class="spacer"></div>
+
+        <main>
+            <div class="main-content">
+
+                <div class="page-header">
+                    <h1>Blocks Management</h1>
+                    <p>Create and manage student blocks with assigned subjects</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>All Blocks</h2>
+                        <button class="btn-secondary" onclick="document.getElementById('createBlockModal').style.display='block'">
+                            <i class="fa-solid fa-plus"></i>
+                            <span class="li-name">Create New Block</span>
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Block Name</th>
+                                    <th>Course</th>
+                                    <th>Year Level</th>
+                                    <th>Semester</th>
+                                    <th>School Year</th>
+                                    <th>Students</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($block = mysqli_fetch_assoc($blocks_query)): ?>
+                                <tr>
+                                    <td><strong><?php echo htmlspecialchars($block['block_name']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($block['course']); ?></td>
+                                    <td><?php echo htmlspecialchars($block['year_level']); ?></td>
+                                    <td><?php echo htmlspecialchars($block['semester']); ?></td>
+                                    <td><?php echo htmlspecialchars($block['school_year']); ?></td>
+                                    <td>
+                                        <span class="student-count <?php echo ($block['current_students'] >= $block['max_students']) ? 'full' : ''; ?>">
+                                            <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge <?php echo strtolower($block['status']); ?>">
+                                            <?php echo htmlspecialchars(ucfirst($block['status'])); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="admin_block_subjects.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="Manage Subjects">
+                                                <i class="fa-solid fa-book"></i>
+                                            </a>
+                                            <a href="admin_block_students.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="View Students">
+                                                <i class="fa-solid fa-users"></i>
+                                            </a>
+                                            <button class="btn-icon" title="Edit" onclick="editBlock(<?php echo $block['block_id']; ?>)">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div><!-- /.main-content -->
         </main>
-    </div>
+    </div><!-- /.main-flex -->
 
-    <!-- Create Block Modal -->
+    <!-- ── Create Block Modal ─────────────────────────── -->
     <div id="createBlockModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content block-modal">
             <span class="close" onclick="document.getElementById('createBlockModal').style.display='none'">&times;</span>
             <h2>Create New Block</h2>
             <form method="POST" action="../../php/create_block.php">
@@ -203,20 +270,7 @@ $total_classes = 0; // Classes table not yet created
         </div>
     </div>
 
-    <script>
-        window.onclick = function(event) {
-            const modal = document.getElementById('createBlockModal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
+    <script src="../../js/admin/admin_main.js"></script>
+    <script src="../../js/admin/admin_blocks.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-

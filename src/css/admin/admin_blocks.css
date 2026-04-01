@@ -1,0 +1,76 @@
+/* ── Card Header (Create button on right) ─────────────── */
+
+.card-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* btn-secondary in card header needs white-tinted style
+   since the header background is var(--red)              */
+.card-header .btn-secondary {
+    border-color: rgba(255,255,255,0.5);
+    color: var(--white);
+    background: rgba(255,255,255,0.1);
+    font-size: 0.85rem;
+    padding: 0.45rem 1rem;
+}
+
+.card-header .btn-secondary:hover {
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.75);
+}
+
+/* ── Blocks table specifics ───────────────────────────── */
+
+/* Student count cell  e.g. "30 / 40" */
+.student-count {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.88rem;
+    color: var(--dark);
+}
+
+.student-count.full {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+/* ── Create Block Modal ───────────────────────────────── */
+
+.modal-content.block-modal {
+    max-width: 480px;
+}
+
+/* Submit button inside modal */
+.btn-submit {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
+    border: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 0.25rem;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(140,28,36,0.3);
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-header .btn-secondary {
+        width: 100%;
+        justify-content: center;
+    }
+}

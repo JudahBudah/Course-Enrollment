@@ -1,0 +1,224 @@
+/* ── Card Header (search + button row) ────────────────── */
+
+.card-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Search form inside the card header */
+.search-form {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.search-form input {
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    min-width: 220px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.search-form input::placeholder {
+    color: rgba(242,243,242,0.5);
+}
+
+.search-form input:focus {
+    outline: none;
+    background: rgba(255,255,255,0.18);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.search-form button {
+    padding: 0.5rem 0.9rem;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: var(--white);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 0.85rem;
+}
+
+.search-form button:hover {
+    background: rgba(255,255,255,0.28);
+}
+
+/* ── Filter Tabs (inside card, no outer padding) ───────── */
+
+.filter-tabs {
+    padding: 1rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--off);
+    margin-bottom: 0;
+}
+
+/* ── Batch Action Bar ──────────────────────────────────── */
+
+.batch-bar {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    background: rgba(212,175,55,0.07);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 8px;
+    padding: 0.65rem 1.25rem;
+    margin: 0.75rem 1.5rem;
+}
+
+.batch-bar.visible {
+    display: flex;
+}
+
+.batch-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold, #D4AF37);
+    margin-right: 0.25rem;
+}
+
+/* ── Exam Schedule Cell ────────────────────────────────── */
+
+.exam-cell {
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.exam-cell-date {
+    font-weight: 600;
+    color: var(--gold, #D4AF37);
+}
+
+.exam-cell-time {
+    color: var(--text);
+}
+
+.exam-cell-loc {
+    font-size: 0.73rem;
+    color: var(--text-label);
+}
+
+.exam-cell-empty {
+    color: var(--text-label);
+    font-size: 0.8rem;
+}
+
+/* ── Convert button variant (green) ───────────────────── */
+
+.btn-icon.convert {
+    color: #16a34a;
+    border-color: #16a34a;
+}
+
+.btn-icon.convert:hover {
+    background: rgba(22,163,74,0.1);
+    border-color: #16a34a;
+    color: #16a34a;
+}
+
+/* ── Delete button variant (red) ──────────────────────── */
+
+.btn-icon.danger {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-icon.danger:hover {
+    background: rgba(220,38,38,0.1);
+    border-color: #dc2626;
+    color: #dc2626;
+}
+
+/* ── Modals (wide exam + convert + status) ─────────────── */
+
+.modal-content.exam-modal  { max-width: 520px; }
+.modal-content.convert-modal { max-width: 480px; }
+
+/* Convert modal applicant name highlight */
+.convert-name {
+    font-weight: 700;
+    color: var(--red);
+}
+
+/* Exam modal sub-description */
+.modal-desc {
+    font-size: 0.85rem;
+    color: var(--text-label);
+    margin-bottom: 1.5rem;
+}
+
+/* Two-column form grid inside modals */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1rem;
+}
+
+/* Convert button (green submit) */
+.btn-submit-green {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    border: none;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-submit-green:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(22,163,74,0.3);
+}
+
+/* Modal action row */
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary,
+.modal-actions .btn-submit-green {
+    flex: 1;
+    justify-content: center;
+}
+
+/* ── Checkbox column ───────────────────────────────────── */
+
+.data-table th:first-child,
+.data-table td:first-child {
+    width: 40px;
+    text-align: center;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .search-form input {
+        min-width: 140px;
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-tabs {
+        padding: 0.75rem 1rem 0;
+    }
+}
