@@ -792,7 +792,7 @@ main {
 
     /* When open via JS */
     .main-nav.open {
-        max-width: 250px;
+        max-width: 200px;
     }
 
     .main-nav.open .li-name {

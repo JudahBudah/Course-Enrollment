@@ -270,6 +270,5 @@ $status_icon = match($status) {
 </div><!-- /.main-flex -->
 
 <script src="../../js/applicant/applicant_main.js"></script>
-<script src="../../js/applicant/applicant.js"></script>
 </body>
 </html>

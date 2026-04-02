@@ -5,221 +5,241 @@ include("../../php/applicant_functions.php");
 
 $applicant_data = check_applicant_login($con);
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $applicant_id = $applicant_data['applicant_id'];
-    
-    // Handle file uploads
-    $upload_dir = "uploads/applicants/" . $applicant_id . "/";
+
+    $upload_dir = "uploads/applicants/{$applicant_id}/";
     if (!file_exists($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
-    
-    $files_uploaded = true;
-    
-    // Update documents_submitted status
-    $stmt = mysqli_prepare($con, "UPDATE applicants SET documents_submitted = 1 WHERE applicant_id = ?");
+
+    $stmt = mysqli_prepare($con,
+        "UPDATE applicants SET documents_submitted = 1 WHERE applicant_id = ?"
+    );
     mysqli_stmt_bind_param($stmt, "i", $applicant_id);
     mysqli_stmt_execute($stmt);
-    
+
     $success = "Documents submitted successfully!";
+    $applicant_data = check_applicant_login($con);
 }
+
+$initials  = strtoupper(
+    substr($applicant_data['first_name'] ?? 'A', 0, 1) .
+    substr($applicant_data['last_name']  ?? 'P', 0, 1)
+);
+$full_name = htmlspecialchars(
+    trim(($applicant_data['first_name'] ?? '') . ' ' . ($applicant_data['last_name'] ?? ''))
+);
+
+$documents = [
+    [
+        'name'  => 'form138',
+        'label' => 'Report Card (Form 138)',
+        'desc'  => 'Senior High School Report Card',
+    ],
+    [
+        'name'  => 'birth_cert',
+        'label' => 'PSA Issued Birth Certificate',
+        'desc'  => 'Original or certified true copy',
+    ],
+    [
+        'name'  => 'good_moral',
+        'label' => 'Good Moral Character',
+        'desc'  => 'Certificate from previous school',
+    ],
+    [
+        'name'  => 'our_au001',
+        'label' => 'OUR Waiver and Notice of Undertaking',
+        'desc'  => 'OUR AU001 Form',
+    ],
+    [
+        'name'  => 'our_au002',
+        'label' => 'OUR Admission Data & Personal Information',
+        'desc'  => 'OUR AU002 Form',
+    ],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Documents - PLM Applicant Portal</title>
+    <title>Submit Documents – PLM Applicant Portal</title>
+    <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/applicant.css">
+    <link rel="stylesheet" href="../../css/applicant/applicant_main.css">
+    <link rel="stylesheet" href="../../css/applicant/applicant_submit.css">
 </head>
-<body class="dashboard">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">
-            <img src="../../assets/plm-logo.png" alt="PLM">
-            <span>PLM Applicant Portal</span>
-        </div>
-        <div class="nav-user">
-            <span><?php echo htmlspecialchars(($applicant_data['first_name'] ?? '') . ' ' . ($applicant_data['last_name'] ?? '')); ?></span>
-            <div class="user-avatar"><?php echo strtoupper(substr($applicant_data['first_name'] ?? 'A', 0, 1) . substr($applicant_data['last_name'] ?? 'P', 0, 1)); ?></div>
-        </div>
-    </nav>
+<body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="applicant_home.php" class="sidebar-link">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="applicant_apply.php" class="sidebar-link">
-                <i class="fa-solid fa-file-pen"></i>
-                <span>Application Form</span>
-            </a>
-            <a href="applicant_submit.php" class="sidebar-link active">
-                <i class="fa-solid fa-file-arrow-up"></i>
-                <span>Submit Documents</span>
-            </a>
-            <a href="applicant_exam.php" class="sidebar-link">
-                <i class="fa-solid fa-calendar-check"></i>
-                <span>Exam Schedule</span>
-            </a>
-            <a href="../../php/applicant_logout.php" class="sidebar-link logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </aside>
+<!-- ── Top Nav ─────────────────────────────────────────── -->
+<header>
+    <div class="nav-section">
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Submit Required Documents</h1>
-                <p>Upload all required documents for your application</p>
+        <button class="nav-button" id="navButton">
+            <i class="fa-solid fa-bars" id="trans-bars"></i>
+        </button>
+
+        <div class="logo-container">
+            <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+            <div class="title-container">
+                <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                <div class="logo-sub">University of the City of Manila</div>
             </div>
+        </div>
 
-            <?php if (isset($success)): ?>
-                <div class="success-message">
-                    <i class="fa-solid fa-check-circle"></i>
-                    <?php echo htmlspecialchars($success); ?>
-                </div>
-            <?php endif; ?>
+        <div class="acc-display-container">
+            <div class="acc-name"><?php echo $full_name; ?></div>
+            <div class="acc-initials"><?php echo $initials; ?></div>
+        </div>
 
-            <?php if ($applicant_data['documents_submitted'] ?? 0): ?>
-                <div class="info-message">
-                    <i class="fa-solid fa-info-circle"></i>
-                    You have already submitted your documents. You can re-upload if needed.
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" enctype="multipart/form-data" class="documents-form">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Required Documents</h2>
-                    </div>
-
-                    <div class="documents-list">
-                        <div class="document-item">
-                            <div class="document-info">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <div>
-                                    <h4>Report Card (Form 138)</h4>
-                                    <p>Senior High School Report Card</p>
-                                </div>
-                            </div>
-                            <div class="document-upload">
-                                <input type="file" name="form138" id="form138" accept=".pdf,.jpg,.jpeg,.png">
-                                <label for="form138" class="upload-btn">
-                                    <i class="fa-solid fa-upload"></i> Choose File
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="document-item">
-                            <div class="document-info">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <div>
-                                    <h4>PSA Issued Birth Certificate</h4>
-                                    <p>Original or certified true copy</p>
-                                </div>
-                            </div>
-                            <div class="document-upload">
-                                <input type="file" name="birth_cert" id="birth_cert" accept=".pdf,.jpg,.jpeg,.png">
-                                <label for="birth_cert" class="upload-btn">
-                                    <i class="fa-solid fa-upload"></i> Choose File
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="document-item">
-                            <div class="document-info">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <div>
-                                    <h4>Good Moral Character</h4>
-                                    <p>Certificate from previous school</p>
-                                </div>
-                            </div>
-                            <div class="document-upload">
-                                <input type="file" name="good_moral" id="good_moral" accept=".pdf,.jpg,.jpeg,.png">
-                                <label for="good_moral" class="upload-btn">
-                                    <i class="fa-solid fa-upload"></i> Choose File
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="document-item">
-                            <div class="document-info">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <div>
-                                    <h4>OUR Waiver and Notice of Undertaking</h4>
-                                    <p>OUR AU001 Form</p>
-                                </div>
-                            </div>
-                            <div class="document-upload">
-                                <input type="file" name="our_au001" id="our_au001" accept=".pdf,.jpg,.jpeg,.png">
-                                <label for="our_au001" class="upload-btn">
-                                    <i class="fa-solid fa-upload"></i> Choose File
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="document-item">
-                            <div class="document-info">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <div>
-                                    <h4>OUR Admission Data & Personal Information</h4>
-                                    <p>OUR AU002 Form</p>
-                                </div>
-                            </div>
-                            <div class="document-upload">
-                                <input type="file" name="our_au002" id="our_au002" accept=".pdf,.jpg,.jpeg,.png">
-                                <label for="our_au002" class="upload-btn">
-                                    <i class="fa-solid fa-upload"></i> Choose File
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Important Notes</h2>
-                    </div>
-                    <div class="notes-list">
-                        <div class="note-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <p>All documents must be clear and readable</p>
-                        </div>
-                        <div class="note-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <p>Accepted formats: PDF, JPG, PNG (Max 5MB per file)</p>
-                        </div>
-                        <div class="note-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <p>Ensure all information is visible and not cut off</p>
-                        </div>
-                        <div class="note-item">
-                            <i class="fa-solid fa-circle-check"></i>
-                            <p>Submit all documents within 7 days of application</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <span>Submit Documents</span>
-                    </button>
-                </div>
-            </form>
-        </main>
     </div>
 
-    <script src="../../js/applicant.js"></script>
+    <!-- ── Side Nav ──────────────────────────────────────── -->
+    <nav class="main-nav" id="navMenu">
+        <div class="nav-wrapper">
+            <ul class="main-ul">
+                <li>
+                    <a href="applicant_home.php">
+                        <i class="fa-solid fa-house"></i>
+                        <span class="li-name">Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="applicant_apply.php">
+                        <i class="fa-solid fa-file-pen"></i>
+                        <span class="li-name">Application Form</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="applicant_submit.php" class="active">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                        <span class="li-name">Submit Documents</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="applicant_exam.php">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span class="li-name">Exam Schedule</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../../php/applicant_logout.php" class="logout-link">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span class="li-name">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="drk-mode-container">
+            <div class="drk-label">
+                <i class="fa-solid fa-moon" id="modeIcon"></i>
+                <span class="li-name" id="modeLabel">Dark Mode</span>
+            </div>
+            <div class="toggle-track li-name" id="toggleTrack">
+                <div class="toggle-thumb"></div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
+<!-- ── Page Body ───────────────────────────────────────── -->
+<div class="main-flex">
+    <div class="spacer"></div>
+
+    <main>
+
+        <div class="page-header">
+            <h1>Submit Required Documents</h1>
+            <p>Upload all required documents for your application</p>
+        </div>
+
+        <?php if (isset($success)): ?>
+            <div class="success-message">
+                <i class="fa-solid fa-circle-check"></i>
+                <?php echo htmlspecialchars($success); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($applicant_data['documents_submitted'] ?? 0): ?>
+            <div class="info-message">
+                <i class="fa-solid fa-circle-info"></i>
+                You have already submitted your documents. You can re-upload if needed.
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <!-- Required Documents -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Required Documents</h2>
+                </div>
+
+                <div class="documents-list">
+                    <?php foreach ($documents as $doc): ?>
+                    <div class="document-item">
+                        <div class="document-info">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <div>
+                                <h4><?php echo htmlspecialchars($doc['label']); ?></h4>
+                                <p><?php echo htmlspecialchars($doc['desc']); ?></p>
+                            </div>
+                        </div>
+                        <div class="document-upload">
+                            <input type="file"
+                                   name="<?php echo $doc['name']; ?>"
+                                   id="<?php echo $doc['name']; ?>"
+                                   accept=".pdf,.jpg,.jpeg,.png">
+                            <label for="<?php echo $doc['name']; ?>" class="upload-btn">
+                                <i class="fa-solid fa-upload"></i>
+                                Choose File
+                            </label>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Important Notes</h2>
+                </div>
+                <div class="notes-list">
+                    <div class="note-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>All documents must be clear and readable</p>
+                    </div>
+                    <div class="note-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>Accepted formats: PDF, JPG, PNG (Max 5MB per file)</p>
+                    </div>
+                    <div class="note-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>Ensure all information is visible and not cut off</p>
+                    </div>
+                    <div class="note-item">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>Submit all documents within 7 days of application</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Submit Documents</span>
+                </button>
+            </div>
+
+        </form>
+    </main>
+</div><!-- /.main-flex -->
+
+<script src="../../js/applicant/applicant_main.js"></script>
+<script src="../../js/applicant/applicant_submit.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-

@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Account - PLM Applicant Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/applicant.css">
+    <link rel="stylesheet" href="../../css/applicant/applicant_auth.css">
 </head>
 <body>
     <div class="login-container">
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 </div>
             </div>
             <div class="login-illustration">
-                <img src="../../assets/plm-torch.png" alt="PLM Torch">
+                <img src="../../assets/plm-torch.webp" alt="PLM Torch">
             </div>
         </div>
 
@@ -113,11 +113,3 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
