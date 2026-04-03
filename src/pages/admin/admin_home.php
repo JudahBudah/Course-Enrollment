@@ -274,10 +274,6 @@ $total_classes      = 0; // Classes table not yet created
                                 <i class="fa-solid fa-bullhorn"></i>
                                 <span>Post Announcement</span>
                             </a>
-                            <a href="admin_reports.php" class="action-btn">
-                                <i class="fa-solid fa-file-export"></i>
-                                <span>Generate Reports</span>
-                            </a>
                         </div>
                     </div>
                 </div>

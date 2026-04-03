@@ -68,7 +68,6 @@ if (isset($_GET['error'])) {
         <a href="admin_classes.php" class="sidebar-link"><i class="fa-solid fa-door-open"></i><span>Classes</span></a>
         <a href="admin_enrollments.php" class="sidebar-link"><i class="fa-solid fa-file-lines"></i><span>Enrollments</span></a>
         <a href="admin_announcements.php" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></a>
-        <a href="admin_reports.php" class="sidebar-link"><i class="fa-solid fa-chart-bar"></i><span>Reports</span></a>
         <a href="../../php/admin_logout.php" class="sidebar-link logout"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
     </aside>
 
