@@ -1,0 +1,109 @@
+/* ── Content Grid (2-col: assigned + add panel) ────────── */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Page header extras ────────────────────────────────── */
+
+.page-header .block-meta {
+    font-size: 0.88rem;
+    color: var(--text);
+    margin-top: 0.25rem;
+}
+
+.page-header .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--red);
+    text-decoration: none;
+    margin-top: 0.75rem;
+    transition: color 0.2s;
+}
+
+.page-header .back-link:hover {
+    color: var(--red-dk);
+    text-decoration: underline;
+}
+
+/* ── Remove btn-icon variant ───────────────────────────── */
+
+.btn-icon.remove {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-icon.remove:hover {
+    background: rgba(220,38,38,0.1);
+}
+
+/* ── Add Subject card form body ────────────────────────── */
+
+.add-subject-body {
+    padding: 1.25rem;
+}
+
+.add-subject-body label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 0.5rem;
+}
+
+.add-subject-body select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+.add-subject-body select:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+/* Add Subject submit button */
+.btn-add-subject {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
+    border: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-add-subject:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(140,28,36,0.3);
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}

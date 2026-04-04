@@ -1,0 +1,283 @@
+/* ── Content Grid (2-col: assigned + assign panel) ─────── */
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Page header extras ────────────────────────────────── */
+
+.page-header .block-meta {
+    font-size: 0.88rem;
+    color: var(--text);
+    margin-top: 0.25rem;
+}
+
+.page-header .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--red);
+    text-decoration: none;
+    margin-top: 0.75rem;
+    transition: color 0.2s;
+}
+
+.page-header .back-link:hover {
+    color: var(--red-dk);
+    text-decoration: underline;
+}
+
+/* ── Registration badge variants ───────────────────────── */
+
+.badge.regular   { background: rgba(34,197,94,0.12);  color: #16a34a; }
+.badge.irregular { background: rgba(251,191,36,0.12); color: #d97706; }
+
+/* ── Remove from block btn-icon ────────────────────────── */
+
+.btn-icon.remove {
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-icon.remove:hover {
+    background: rgba(220,38,38,0.1);
+}
+
+/* ── Assign panel filter bar ───────────────────────────── */
+
+.assign-filter-bar {
+    padding: 1.25rem;
+    background: var(--surface-alt);
+    border-bottom: 1px solid var(--off);
+}
+
+.assign-filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    align-items: flex-end;
+}
+
+.assign-filter-bar label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-label);
+    margin-bottom: 0.4rem;
+}
+
+.assign-filter-bar input,
+.assign-filter-bar select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    background: var(--white-pr);
+    border: 1px solid var(--off);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+.assign-filter-bar input:focus,
+.assign-filter-bar select:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+.assign-filter-note {
+    font-size: 0.78rem;
+    color: var(--text-label);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.assign-filter-note i {
+    color: var(--red);
+    flex-shrink: 0;
+}
+
+.student-count-note {
+    font-weight: 600;
+    color: var(--red);
+    margin-left: 0.75rem;
+}
+
+/* ── Individual assignment form ────────────────────────── */
+
+.assign-section {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--off);
+}
+
+.assign-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--red);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.assign-select-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    align-items: center;
+}
+
+.assign-select-row select {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+.assign-select-row select:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+/* ── Batch assignment form ─────────────────────────────── */
+
+.batch-section {
+    padding: 1.25rem;
+}
+
+.batch-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--red);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Regular-only toggle */
+.batch-option-box {
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.batch-option-box label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.batch-option-box input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--red);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Info callout box */
+.batch-info-box {
+    background: rgba(59,130,246,0.07);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-left: 3px solid #3b82f6;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.65;
+}
+
+.batch-info-box .info-title {
+    font-weight: 700;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Batch submit button */
+.btn-submit {
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
+    border: none;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(140,28,36,0.3);
+}
+
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.capacity-full-note {
+    text-align: center;
+    color: #dc2626;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+/* ── Responsive ────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .assign-filter-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .assign-filter-grid > div:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .assign-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .assign-select-row {
+        grid-template-columns: 1fr;
+    }
+}

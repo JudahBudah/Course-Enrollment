@@ -4,21 +4,20 @@ include("../../php/connection.php");
 include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
+$pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM applicants WHERE application_status='pending'"))['c'];
 
-$block_id = $_GET['block_id'] ?? 0;
+$block_id = (int)($_GET['block_id'] ?? 0);
 
 // Get block info
-$block_query = mysqli_query($con, "SELECT * FROM blocks WHERE block_id = $block_id");
-$block = mysqli_fetch_assoc($block_query);
-
+$block = mysqli_fetch_assoc(mysqli_query($con, "SELECT * FROM blocks WHERE block_id = $block_id"));
 if (!$block) {
     header("Location: admin_blocks.php");
     exit;
 }
 
-// Get subjects assigned to this block
+// Subjects assigned to this block
 $assigned_query = mysqli_query($con, "
-    SELECT bs.*, c.*, s.subject_code, s.subject_name, s.units, 
+    SELECT bs.*, c.*, s.subject_code, s.subject_name, s.units,
            f.first_name, f.last_name
     FROM block_subjects bs
     JOIN classes c ON bs.class_id = c.class_id
@@ -27,7 +26,9 @@ $assigned_query = mysqli_query($con, "
     WHERE bs.block_id = $block_id
 ");
 
-// Get available classes not yet assigned to this block
+// Available classes not yet assigned to this block
+$sy_esc  = mysqli_real_escape_string($con, $block['school_year']);
+$sem_esc = mysqli_real_escape_string($con, $block['semester']);
 $available_query = mysqli_query($con, "
     SELECT c.*, s.subject_code, s.subject_name, s.units,
            f.first_name, f.last_name
@@ -37,9 +38,9 @@ $available_query = mysqli_query($con, "
     WHERE c.class_id NOT IN (
         SELECT class_id FROM block_subjects WHERE block_id = $block_id
     )
-    AND c.school_year = '{$block['school_year']}'
-    AND c.semester = '{$block['semester']}'
-    AND c.status = 'open'
+    AND c.school_year = '$sy_esc'
+    AND c.semester    = '$sem_esc'
+    AND c.status      = 'open'
     ORDER BY s.subject_code
 ");
 ?>
@@ -48,153 +49,252 @@ $available_query = mysqli_query($con, "
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Block Subjects - PLM Admin</title>
+    <title>Block Subjects - PLM Admin</title>
+    <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin/admin_main.css">
+    <link rel="stylesheet" href="../../css/admin/admin_block_subjects.css">
 </head>
-<body class="dashboard">
-    <nav class="dashboard-nav">
-        <div class="nav-brand">
-            <img src="../../assets/plm-logo.png" alt="PLM">
-            <span>PLM Admin Portal</span>
-        </div>
-        <div class="nav-user">
-            <span><?php echo htmlspecialchars(($admin_data['username'] ?? 'Admin')); ?></span>
-            <div class="user-avatar"><?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?></div>
-        </div>
-    </nav>
+<body>
 
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <a href="admin_home.php" class="sidebar-link">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="admin_applicants.php" class="sidebar-link">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>Applicants</span>
-            </a>
-            <a href="admin_students.php" class="sidebar-link">
-                <i class="fa-solid fa-users"></i>
-                <span>Students</span>
-            </a>
-            <a href="admin_blocks.php" class="sidebar-link active">
-                <i class="fa-solid fa-layer-group"></i>
-                <span>Blocks</span>
-            </a>
-            <a href="admin_faculty.php" class="sidebar-link">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <span>Faculty</span>
-            </a>
-            <a href="admin_subjects.php" class="sidebar-link">
-                <i class="fa-solid fa-book"></i>
-                <span>Subjects</span>
-            </a>
-            <a href="admin_classes.php" class="sidebar-link">
-                <i class="fa-solid fa-door-open"></i>
-                <span>Classes</span>
-            </a>
-            <a href="admin_enrollments.php" class="sidebar-link">
-                <i class="fa-solid fa-file-lines"></i>
-                <span>Enrollments</span>
-            </a>
-            <a href="admin_announcements.php" class="sidebar-link">
-                <i class="fa-solid fa-bullhorn"></i>
-                <span>Announcements</span>
-            </a>
-            <a href="../../php/admin_logout.php" class="sidebar-link logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
-            </a>
-        </aside>
+    <!-- ── Top Nav Bar ────────────────────────────────── -->
+    <header>
+        <div class="nav-section">
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars" id="trans-bars"></i>
+            </button>
 
-        <main class="main-content">
-            <div class="page-header">
-                <h1>Block <?php echo htmlspecialchars($block['block_name']); ?> - Subjects</h1>
-                <p><?php echo htmlspecialchars($block['course']); ?> | Year <?php echo $block['year_level']; ?> | <?php echo $block['semester']; ?> Semester <?php echo $block['school_year']; ?></p>
-                <a href="admin_blocks.php" class="link"><i class="fa-solid fa-arrow-left"></i> Back to Blocks</a>
+            <div class="logo-container">
+                <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
+                <div class="title-container">
+                    <div class="logo-title">PAMANTASAN NG LUNGSOD NG MAYNILA</div>
+                    <div class="logo-sub">University of the City of Manila</div>
+                </div>
             </div>
 
-            <div class="content-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Assigned Subjects</h2>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject Code</th>
-                                    <th>Subject Name</th>
-                                    <th>Units</th>
-                                    <th>Schedule</th>
-                                    <th>Instructor</th>
-                                    <th>Room</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (mysqli_num_rows($assigned_query) > 0): ?>
-                                    <?php while ($subject = mysqli_fetch_assoc($assigned_query)): ?>
-                                    <tr>
-                                        <td><strong><?php echo htmlspecialchars($subject['subject_code']); ?></strong></td>
-                                        <td><?php echo htmlspecialchars($subject['subject_name']); ?></td>
-                                        <td><?php echo $subject['units']; ?></td>
-                                        <td><?php echo htmlspecialchars($subject['schedule_day'] . ' ' . $subject['schedule_time']); ?></td>
-                                        <td><?php echo htmlspecialchars(($subject['first_name'] ?? '') . ' ' . ($subject['last_name'] ?? 'TBA')); ?></td>
-                                        <td><?php echo htmlspecialchars($subject['room'] ?? 'TBA'); ?></td>
-                                        <td>
-                                            <form method="POST" action="../../php/remove_block_subject.php" style="display:inline;">
-                                                <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
-                                                <input type="hidden" name="class_id" value="<?php echo $subject['class_id']; ?>">
-                                                <button type="submit" class="btn-icon" title="Remove" onclick="return confirm('Remove this subject from block?')">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <?php endwhile; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="7" style="text-align:center; color: rgba(242,243,242,0.5);">No subjects assigned yet</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="acc-display-container">
+                <div class="acc-name">
+                    <?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?>
+                </div>
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Side Nav ───────────────────────────────── -->
+        <nav class="main-nav" id="navMenu">
+            <div class="nav-wrapper">
+                <ul class="main-ul">
+                    <li>
+                        <a href="admin_home.php">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="li-name">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_applicants.php">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span class="li-name">Applicants</span>
+                            <?php if ($pending_applicants > 0): ?>
+                                <span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_students.php">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="li-name">Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_blocks.php" class="active">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span class="li-name">Blocks</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_faculty.php">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                            <span class="li-name">Faculty</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_subjects.php">
+                            <i class="fa-solid fa-book"></i>
+                            <span class="li-name">Subjects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_classes.php">
+                            <i class="fa-solid fa-door-open"></i>
+                            <span class="li-name">Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_enrollments.php">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_announcements.php">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span class="li-name">Announcements</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_calendar.php">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <span class="li-name">Calendar</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_accounts.php">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span class="li-name">Admin Accounts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../../php/admin_logout.php" class="logout-bg">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <div class="drk-mode-container">
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track li-name" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ── Page Body ──────────────────────────────────── -->
+    <div class="main-flex">
+        <div class="spacer"></div>
+
+        <main>
+            <div class="main-content">
+
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h1>Block <?php echo htmlspecialchars($block['block_name']); ?> — Subjects</h1>
+                    <p class="block-meta">
+                        <?php echo htmlspecialchars($block['course']); ?> |
+                        Year <?php echo htmlspecialchars($block['year_level']); ?> |
+                        <?php echo htmlspecialchars($block['semester']); ?> Semester
+                        <?php echo htmlspecialchars($block['school_year']); ?>
+                    </p>
+                    <a href="admin_blocks.php" class="back-link">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Blocks
+                    </a>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Add Subjects</h2>
-                    </div>
-                    <form method="POST" action="../../php/add_block_subject.php">
-                        <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
-                        <div class="form-group" style="padding: 20px;">
-                            <label>Select Class to Add</label>
-                            <select name="class_id" required style="width: 100%; padding: 0.75rem; background: var(--gray-lt); border: 1px solid rgba(212,175,55,0.2); color: var(--white);">
-                                <option value="">Choose a class...</option>
-                                <?php while ($class = mysqli_fetch_assoc($available_query)): ?>
-                                    <option value="<?php echo $class['class_id']; ?>">
-                                        <?php echo htmlspecialchars($class['subject_code'] . ' - ' . $class['subject_name'] . ' | Section ' . $class['section'] . ' | ' . $class['schedule_day'] . ' ' . $class['schedule_time']); ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
-                            <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%;">
-                                <i class="fa-solid fa-plus"></i> Add Subject to Block
-                            </button>
+                <div class="content-grid">
+
+                    <!-- ── Assigned Subjects Table ──────── -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Assigned Subjects</h2>
                         </div>
-                    </form>
-                </div>
-            </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject Code</th>
+                                        <th>Subject Name</th>
+                                        <th>Units</th>
+                                        <th>Schedule</th>
+                                        <th>Instructor</th>
+                                        <th>Room</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (mysqli_num_rows($assigned_query) > 0): ?>
+                                        <?php while ($sub = mysqli_fetch_assoc($assigned_query)): ?>
+                                        <tr>
+                                            <td><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></td>
+                                            <td><?php echo htmlspecialchars($sub['subject_name']); ?></td>
+                                            <td><?php echo htmlspecialchars($sub['units']); ?></td>
+                                            <td>
+                                                <?php echo htmlspecialchars(
+                                                    trim(($sub['schedule_day'] ?? '') . ' ' . ($sub['schedule_time'] ?? '')) ?: 'TBA'
+                                                ); ?>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $fname = $sub['first_name'] ?? '';
+                                                $lname = $sub['last_name']  ?? '';
+                                                echo htmlspecialchars(trim("$fname $lname") ?: 'TBA');
+                                                ?>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($sub['room'] ?? 'TBA'); ?></td>
+                                            <td>
+                                                <form method="POST" action="../../php/remove_block_subject.php"
+                                                      style="display:inline;">
+                                                    <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
+                                                    <input type="hidden" name="class_id" value="<?php echo $sub['class_id']; ?>">
+                                                    <button type="submit" class="btn-icon remove" title="Remove"
+                                                            onclick="return confirm('Remove this subject from block?')">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <?php endwhile; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="7" style="text-align:center;color:var(--text-label);padding:1.5rem;">
+                                                No subjects assigned yet.
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ── Add Subject Panel ────────────── -->
+                    <div class="card">
+                        <div class="card-header"><h2>Add Subject</h2></div>
+                        <form method="POST" action="../../php/add_block_subject.php">
+                            <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
+                            <div class="add-subject-body">
+                                <label>Select Class to Add</label>
+                                <select name="class_id" required>
+                                    <option value="">Choose a class…</option>
+                                    <?php while ($cls = mysqli_fetch_assoc($available_query)): ?>
+                                        <option value="<?php echo $cls['class_id']; ?>">
+                                            <?php echo htmlspecialchars(
+                                                $cls['subject_code'] . ' — ' . $cls['subject_name'] .
+                                                ' | Sec ' . $cls['section'] . ' | ' .
+                                                ($cls['schedule_day'] ?? 'TBA') . ' ' . ($cls['schedule_time'] ?? '')
+                                            ); ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                                <button type="submit" class="btn-add-subject">
+                                    <i class="fa-solid fa-plus"></i> Add Subject to Block
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div><!-- /.content-grid -->
+
+            </div><!-- /.main-content -->
         </main>
-    </div>
+    </div><!-- /.main-flex -->
+
+    <script src="../../js/admin/admin_main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
