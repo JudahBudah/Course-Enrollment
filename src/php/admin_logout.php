@@ -6,6 +6,6 @@ if (isset($_SESSION['admin_id'])) {
 }
 
 session_destroy();
-header("Location:../pages/admin/admin_login.php");
+header("Location: ../pages/admin/admin_login.php");
 die;
 ?>
