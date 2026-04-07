@@ -38,7 +38,7 @@ nav {
     justify-content: space-between;
 
     padding: 0 40px;
-    height: 70px;
+    height: 60px;
 
     background: linear-gradient(180deg, rgba(13,10,7,0.95) 0%, rgba(13,10,7,0.0) 100%); /* Change Color */
 
@@ -49,7 +49,7 @@ nav {
 nav.scrolled {
   background: rgba(10, 6, 4, 0.92);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(212,175,55,0.12); /* Change to main color */
+  border-bottom: 1px solid rgba(212,175,55,0.12);
 }
 
 
@@ -62,8 +62,8 @@ nav.scrolled {
 }
 
 .nav-logo-emblem {
-    width: 48px; 
-    height: 48px;
+    width: 43px; 
+    height: 43px;
     border-radius: 50%;
 }
 
