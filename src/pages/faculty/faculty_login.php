@@ -92,21 +92,21 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <p>Sign in to continue to your account</p>
                 </div>
 
-                <!-- Portal Tabs — hook data-portal for future routing -->
+                <!-- Portal Tabs -->
                 <div class="portal-wrapper">
                     <div class="portal-tabs">
-                        <button class="portal-tab" type="button" data-portal="applicant">
+                        <a class="portal-tab" href="../../pages/applicant/applicant_login.php" data-portal="applicant">
                             <i class="fa-solid fa-user-plus"></i> Applicant
-                        </button>
-                        <button class="portal-tab" type="button" data-portal="student">
+                        </a>
+                        <a class="portal-tab" href="../../pages/student/student_login.php" data-portal="student">
                             <i class="fa-solid fa-user-graduate"></i> Student
-                        </button>
-                        <button class="portal-tab active" type="button" data-portal="faculty">
+                        </a>
+                        <a class="portal-tab active" href="#" data-portal="faculty">
                             <i class="fa-solid fa-chalkboard-user"></i> Faculty
-                        </button>
-                        <button class="portal-tab" type="button" data-portal="admin">
+                        </a>
+                        <a class="portal-tab" href="../../pages/admin/admin_login.php" data-portal="admin">
                             <i class="fa-solid fa-shield-halved"></i> Admin
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -188,15 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </div>
 
     <script>
-        // Portal tab switching — data-portal attribute ready for future routing logic
-        document.querySelectorAll('.portal-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-            });
-        });
-
-        // Password visibility toggle
+         // Password visibility toggle
         function togglePw() {
             const input = document.getElementById('password');
             const icon  = document.getElementById('pw-icon');
