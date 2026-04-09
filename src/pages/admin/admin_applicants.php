@@ -69,6 +69,15 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS exam_schedules (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )");
 
+// Fetch courses for convert modal
+$courses_map = []; // course_name => college_name
+$courses_by_college = []; // college_name => [course_name, ...]
+$cr = mysqli_query($con, "SELECT course_name, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
+while ($row = mysqli_fetch_assoc($cr)) {
+    $courses_map[$row['course_name']] = $row['college_name'];
+    $courses_by_college[$row['college_name']][] = $row['course_name'];
+}
+
 // Stats
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
 
@@ -417,18 +426,22 @@ $applicants = mysqli_query($con, $query);
                 </div>
                 <div class="form-group">
                     <label>College <span style="color:var(--red)">*</span></label>
-                    <input type="text" name="college" placeholder="e.g., CE, CBA, CLA" required>
+                    <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
                 </div>
                 <div class="form-group">
                     <label>Course <span style="color:var(--red)">*</span></label>
                     <select name="course" id="convert_course" required>
                         <option value="">Select Course</option>
-                        <option value="BS Computer Science">BS Computer Science</option>
-                        <option value="BS Information Technology">BS Information Technology</option>
-                        <option value="BS Business Administration">BS Business Administration</option>
-                        <option value="BS Accountancy">BS Accountancy</option>
-                        <option value="BS Civil Engineering">BS Civil Engineering</option>
-                        <option value="BS Electrical Engineering">BS Electrical Engineering</option>
+                        <?php foreach ($courses_by_college as $college => $programs): ?>
+                            <optgroup label="<?php echo htmlspecialchars($college); ?>">
+                                <?php foreach ($programs as $p): ?>
+                                    <option value="<?php echo htmlspecialchars($p); ?>"
+                                            data-college="<?php echo htmlspecialchars($college); ?>">
+                                        <?php echo htmlspecialchars($p); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </optgroup>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group">

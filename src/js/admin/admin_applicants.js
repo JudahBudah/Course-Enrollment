@@ -158,10 +158,19 @@ function openConvertModal(id, name, course) {
     document.getElementById('convertName').textContent = name;
     const courseSelect = document.getElementById('convert_course');
     for (const opt of courseSelect.options) {
-        if (opt.value === course) { opt.selected = true; break; }
+        if (opt.value === course) {
+            opt.selected = true;
+            document.getElementById('convert_college').value = opt.dataset.college || '';
+            break;
+        }
     }
     document.getElementById('convertModal').style.display = 'block';
 }
+
+document.getElementById('convert_course').addEventListener('change', function() {
+    const selected = this.options[this.selectedIndex];
+    document.getElementById('convert_college').value = selected.dataset.college || '';
+});
 
 // Handle convert form submission
 document.getElementById('convertForm').addEventListener('submit', function(e) {
@@ -172,8 +181,15 @@ document.getElementById('convertForm').addEventListener('submit', function(e) {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(res => res.text())
+    .then(text => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch(e) {
+            alert('Server error: ' + text.substring(0, 300));
+            return;
+        }
         if (data.success) {
             alert(data.message);
             document.getElementById('convertModal').style.display = 'none';

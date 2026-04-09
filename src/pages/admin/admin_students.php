@@ -24,6 +24,19 @@ if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
 if (isset($_GET['success']) && $_GET['success'] === 'updated') {
     $flash = '<div class="success-message"><i class="fa-solid fa-check-circle"></i> Student record updated successfully.</div>';
 }
+if (isset($_GET['success']) && $_GET['success'] === 'deleted') {
+    $flash = '<div class="success-message"><i class="fa-solid fa-check-circle"></i> Student deleted successfully.</div>';
+}
+
+// Handle delete
+if (isset($_POST['delete_student'])) {
+    $del_id = (int)$_POST['student_id'];
+    $stmt = mysqli_prepare($con, "DELETE FROM students WHERE student_id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $del_id);
+    mysqli_stmt_execute($stmt);
+    header('Location: admin_students.php?success=deleted');
+    exit;
+}
 
 // Stats
 $total_students  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
@@ -362,6 +375,9 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                         <a href="admin_manual_enroll.php?student_id=<?php echo $student['student_id']; ?>" class="btn-icon" title="Manual Enrollment">
                                             <i class="fa-solid fa-user-pen"></i>
                                         </a>
+                                        <button class="btn-icon danger" title="Delete Student" onclick="deleteStudent(<?php echo $student['student_id']; ?>, '<?php echo htmlspecialchars(addslashes($fullname)); ?>')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -389,33 +405,88 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                 </div>
             </div>
 
-            <div class="view-grid">
-                <div class="section-title">Personal Information</div>
-                <div class="view-item"><label>First Name</label><span id="vw_first_name"></span></div>
-                <div class="view-item"><label>Last Name</label><span id="vw_last_name"></span></div>
-                <div class="view-item"><label>Middle Name</label><span id="vw_middle_name"></span></div>
-                <div class="view-item"><label>Suffix</label><span id="vw_suffix_name"></span></div>
-                <div class="view-item"><label>Gender</label><span id="vw_gender"></span></div>
-                <div class="view-item"><label>Birthdate</label><span id="vw_birthdate"></span></div>
+            <!-- Tabs -->
+            <div class="view-tabs">
+                <button class="view-tab active" onclick="switchTab('tab-info', this)"><i class="fa-solid fa-id-card"></i> Personal Info</button>
+                <button class="view-tab" onclick="switchTab('tab-address', this)"><i class="fa-solid fa-location-dot"></i> Address</button>
+                <button class="view-tab" onclick="switchTab('tab-docs', this)"><i class="fa-solid fa-file-arrow-up"></i> Documents</button>
+            </div>
 
-                <div class="section-title">Contact Information</div>
-                <div class="view-item"><label>Email</label><span id="vw_email"></span></div>
-                <div class="view-item"><label>Contact Number</label><span id="vw_contact_number"></span></div>
+            <!-- Tab: Personal Info -->
+            <div id="tab-info" class="tab-panel active">
+                <div class="view-grid">
+                    <div class="section-title">Personal Information</div>
+                    <div class="view-item"><label>First Name</label><span id="vw_first_name"></span></div>
+                    <div class="view-item"><label>Last Name</label><span id="vw_last_name"></span></div>
+                    <div class="view-item"><label>Middle Name</label><span id="vw_middle_name"></span></div>
+                    <div class="view-item"><label>Suffix</label><span id="vw_suffix_name"></span></div>
+                    <div class="view-item"><label>Married Name</label><span id="vw_married_name"></span></div>
+                    <div class="view-item"><label>Gender</label><span id="vw_gender"></span></div>
+                    <div class="view-item"><label>Birthdate</label><span id="vw_birthdate"></span></div>
+                    <div class="view-item"><label>Place of Birth</label><span id="vw_place_of_birth"></span></div>
+                    <div class="view-item"><label>Civil Status</label><span id="vw_civil_status"></span></div>
+                    <div class="view-item"><label>Religion</label><span id="vw_religion"></span></div>
+                    <div class="view-item"><label>Nationality</label><span id="vw_nationality"></span></div>
+                    <div class="view-item"><label>Disability</label><span id="vw_disability"></span></div>
 
-                <div class="section-title">Academic Information</div>
-                <div class="view-item"><label>College</label><span id="vw_college"></span></div>
-                <div class="view-item"><label>Course</label><span id="vw_course"></span></div>
-                <div class="view-item"><label>Year Level</label><span id="vw_year_level"></span></div>
-                <div class="view-item"><label>Block</label><span id="vw_block"></span></div>
-                <div class="view-item"><label>Registration Type</label><span id="vw_registration_status"></span></div>
-                <div class="view-item"><label>Enrollment Status</label><span id="vw_status"></span></div>
-                <div class="view-item"><label>Account Status</label><span id="vw_account_status"></span></div>
-                <div class="view-item"><label>Date Created</label><span id="vw_created_at"></span></div>
+                    <div class="section-title">Contact Information</div>
+                    <div class="view-item"><label>Email</label><span id="vw_email"></span></div>
+                    <div class="view-item"><label>Contact Number</label><span id="vw_contact_number"></span></div>
+
+                    <div class="section-title">Academic Information</div>
+                    <div class="view-item"><label>Student No.</label><span id="vw_student_number"></span></div>
+                    <div class="view-item"><label>LRN</label><span id="vw_lrn"></span></div>
+                    <div class="view-item"><label>College</label><span id="vw_college"></span></div>
+                    <div class="view-item"><label>Course</label><span id="vw_course"></span></div>
+                    <div class="view-item"><label>Year Level</label><span id="vw_year_level"></span></div>
+                    <div class="view-item"><label>Block</label><span id="vw_block"></span></div>
+                    <div class="view-item"><label>Registration Type</label><span id="vw_registration_status"></span></div>
+                    <div class="view-item"><label>Enrollment Status</label><span id="vw_status"></span></div>
+                    <div class="view-item"><label>Account Status</label><span id="vw_account_status"></span></div>
+                    <div class="view-item"><label>Date Created</label><span id="vw_created_at"></span></div>
+                </div>
+            </div>
+
+            <!-- Tab: Address -->
+            <div id="tab-address" class="tab-panel">
+                <div class="view-grid">
+                    <div class="section-title">Permanent Address</div>
+                    <div class="view-item"><label>Region</label><span id="vw_perm_region"></span></div>
+                    <div class="view-item"><label>Province</label><span id="vw_perm_province"></span></div>
+                    <div class="view-item"><label>Municipality</label><span id="vw_perm_municipality"></span></div>
+                    <div class="view-item"><label>Barangay</label><span id="vw_perm_barangay"></span></div>
+                    <div class="view-item"><label>Zip Code</label><span id="vw_perm_zipcode"></span></div>
+                    <div class="view-item view-item-full"><label>Complete Address</label><span id="vw_perm_address"></span></div>
+
+                    <div class="section-title">Mailing Address</div>
+                    <div class="view-item"><label>Region</label><span id="vw_mail_region"></span></div>
+                    <div class="view-item"><label>Province</label><span id="vw_mail_province"></span></div>
+                    <div class="view-item"><label>Municipality</label><span id="vw_mail_municipality"></span></div>
+                    <div class="view-item"><label>Barangay</label><span id="vw_mail_barangay"></span></div>
+                    <div class="view-item"><label>Zip Code</label><span id="vw_mail_zipcode"></span></div>
+                    <div class="view-item view-item-full"><label>Complete Address</label><span id="vw_mail_address"></span></div>
+                </div>
+            </div>
+
+            <!-- Tab: Documents -->
+            <div id="tab-docs" class="tab-panel">
+                <div class="doc-list" id="vw_doc_list"></div>
             </div>
 
             <div class="modal-actions" style="margin-top:1.5rem;">
                 <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
             </div>
+        </div>
+    </div>
+
+    <!-- ── Document Viewer Modal ──────────────────────── -->
+    <div id="docModal" class="modal">
+        <div class="modal-content doc-viewer-modal">
+            <div class="doc-viewer-header">
+                <span id="docModalName"></span>
+                <button class="close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="doc-viewer-body" id="docModalBody"></div>
         </div>
     </div>
 

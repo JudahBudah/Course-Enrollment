@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 09, 2026 at 08:29 AM
+-- Generation Time: Apr 09, 2026 at 12:07 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `applicants` (
 
 INSERT INTO `applicants` (`applicant_id`, `email`, `password`, `lrn`, `first_choice`, `second_choice`, `third_choice`, `last_name`, `first_name`, `middle_name`, `suffix`, `married_name`, `birthdate`, `nationality`, `place_of_birth`, `civil_status`, `contact_number`, `religion`, `gender`, `disability`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `application_status`, `documents_submitted`, `exam_scheduled`, `exam_date`, `exam_time`, `exam_venue`, `exam_room`, `exam_taken`, `exam_result`, `exam_score`, `created_at`, `updated_at`, `exam_schedule_id`, `exam_notified`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`) VALUES
 (2, '124@gmail.com', '$2y$10$KMppsxxZUlKrSE74rS6qvu.iCxO9HbLfwso3emP5.jVoVoAUKif0S', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'approved', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-03-27 12:02:16', '2026-03-30 04:55:54', 1, 0, NULL, NULL, NULL, NULL, NULL),
-(4, 'softdevset@gmail.com', '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', '123456789123', 'BS Computer Science', 'BS Information Technology', 'BS Business Administration', 'Muncada', 'Louie', 'Lopez', '', '', '2005-11-17', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'approved', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-08 09:12:06', '2026-04-08 16:15:27', NULL, 0, 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png');
+(4, 'softdevset@gmail.com', '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', '123456789123', 'BS Computer Science', 'BS Information Technology', 'BS Business Administration', 'Muncada', 'Louie', 'Lopez', '', '', '2005-11-17', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-08 09:12:06', '2026-04-09 12:03:23', NULL, 0, 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png');
 
 -- --------------------------------------------------------
 
@@ -181,31 +181,6 @@ CREATE TABLE IF NOT EXISTS `blocks` (
 INSERT INTO `blocks` (`block_id`, `block_name`, `course`, `year_level`, `semester`, `school_year`, `max_students`, `current_students`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'panget', 'BSCpE', '1', '1st', '2026-2027', 40, 3, 'active', '2026-03-12 02:43:43', '2026-04-09 03:33:23'),
 (2, 'asdas', 'BS Information Technology', '2', '1st', 'asda', 40, 0, 'active', '2026-04-08 16:22:10', '2026-04-08 16:22:10');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `block_subjects`
---
-
-DROP TABLE IF EXISTS `block_subjects`;
-CREATE TABLE IF NOT EXISTS `block_subjects` (
-  `block_subject_id` int NOT NULL AUTO_INCREMENT,
-  `block_id` int NOT NULL COMMENT 'Foreign key to blocks table',
-  `class_id` int NOT NULL COMMENT 'Foreign key to classes table',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`block_subject_id`),
-  UNIQUE KEY `unique_block_class` (`block_id`,`class_id`),
-  KEY `block_id` (`block_id`),
-  KEY `class_id` (`class_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `block_subjects`
---
-
-INSERT INTO `block_subjects` (`block_subject_id`, `block_id`, `class_id`, `created_at`) VALUES
-(2, 1, 6, '2026-04-08 18:27:42');
 
 -- --------------------------------------------------------
 
@@ -615,6 +590,7 @@ DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
   `student_id` int NOT NULL AUTO_INCREMENT,
   `student_number` varchar(20) NOT NULL,
+  `lrn` varchar(12) DEFAULT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) DEFAULT NULL,
@@ -633,19 +609,43 @@ CREATE TABLE IF NOT EXISTS `students` (
   `suffix_name` varchar(20) DEFAULT NULL,
   `registration_status` enum('Regular','Irregular') DEFAULT 'Regular',
   `status` varchar(50) NOT NULL DEFAULT 'Not Enrolled',
+  `place_of_birth` varchar(200) DEFAULT NULL,
+  `civil_status` varchar(20) DEFAULT NULL,
+  `religion` varchar(100) DEFAULT NULL,
+  `nationality` varchar(50) DEFAULT NULL,
+  `disability` varchar(200) DEFAULT NULL,
+  `married_name` varchar(100) DEFAULT NULL,
+  `perm_region` varchar(100) DEFAULT NULL,
+  `perm_province` varchar(100) DEFAULT NULL,
+  `perm_municipality` varchar(100) DEFAULT NULL,
+  `perm_barangay` varchar(100) DEFAULT NULL,
+  `perm_address` text,
+  `perm_zipcode` varchar(10) DEFAULT NULL,
+  `mail_region` varchar(100) DEFAULT NULL,
+  `mail_province` varchar(100) DEFAULT NULL,
+  `mail_municipality` varchar(100) DEFAULT NULL,
+  `mail_barangay` varchar(100) DEFAULT NULL,
+  `mail_address` text,
+  `mail_zipcode` varchar(10) DEFAULT NULL,
+  `doc_form138` varchar(255) DEFAULT NULL,
+  `doc_birth_cert` varchar(255) DEFAULT NULL,
+  `doc_good_moral` varchar(255) DEFAULT NULL,
+  `doc_our_au001` varchar(255) DEFAULT NULL,
+  `doc_our_au002` varchar(255) DEFAULT NULL,
+  `applicant_id` int DEFAULT NULL,
   PRIMARY KEY (`student_id`),
   UNIQUE KEY `student_number` (`student_number`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `student_number`, `first_name`, `last_name`, `middle_name`, `gender`, `birthdate`, `email`, `contact_number`, `college`, `course`, `year_level`, `block_id`, `password`, `account_status`, `profile_photo`, `created_at`, `suffix_name`, `registration_status`, `status`) VALUES
-(1, '202412685', 'John Louie', 'Muncada', 'Lopez', 'Male', '2005-11-17', 'xsurethingx@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69c1b0f24fe16_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-03-04 09:48:58', '', 'Regular', 'Enrolled'),
-(2, '2024-1244', 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', '', 'Not Enrolled'),
-(3, 'b,', 'Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'b,', 'BSCpE', 1, 1, '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', 'active', NULL, '2026-04-08 16:15:26', '', '', 'Not Enrolled');
+INSERT INTO `students` (`student_id`, `student_number`, `lrn`, `first_name`, `last_name`, `middle_name`, `gender`, `birthdate`, `email`, `contact_number`, `college`, `course`, `year_level`, `block_id`, `password`, `account_status`, `profile_photo`, `created_at`, `suffix_name`, `registration_status`, `status`, `place_of_birth`, `civil_status`, `religion`, `nationality`, `disability`, `married_name`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`, `applicant_id`) VALUES
+(1, '202412685', NULL, 'John Louie', 'Muncada', 'Lopez', 'Male', '2005-11-17', 'xsurethingx@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69c1b0f24fe16_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-03-04 09:48:58', '', 'Regular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, '2024-1244', NULL, 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', '', 'Not Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, '123', '123456789123', 'Louie', 'Muncada', 'Lopez', 'male', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 1, NULL, '$2y$10$SRt3SGIcvvdnlXntYDcLIOAtOvbEK7nOCrvEtx3PMUY96F9eUyxXi', 'active', NULL, '2026-04-09 12:03:23', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png', 4);
 
 -- --------------------------------------------------------
 
@@ -1223,13 +1223,6 @@ CREATE TABLE IF NOT EXISTS `subject_blocks` (
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `block_subjects`
---
-ALTER TABLE `block_subjects`
-  ADD CONSTRAINT `block_subjects_ibfk_1` FOREIGN KEY (`block_id`) REFERENCES `blocks` (`block_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `block_subjects_ibfk_2` FOREIGN KEY (`class_id`) REFERENCES `classes` (`class_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `classes`

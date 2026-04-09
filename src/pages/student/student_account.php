@@ -7,6 +7,7 @@ $user_data = check_login($con);
 
 $full_name      = htmlspecialchars(trim(($user_data['first_name'] ?? '') . ' ' . ($user_data['last_name'] ?? '')));
 $student_number = htmlspecialchars($user_data['student_number'] ?? '');
+$lrn            = htmlspecialchars($user_data['lrn']            ?? '');
 $first_name     = htmlspecialchars($user_data['first_name']     ?? '');
 $last_name      = htmlspecialchars($user_data['last_name']      ?? '');
 $middle_name    = htmlspecialchars($user_data['middle_name']    ?? '');
@@ -14,8 +15,25 @@ $suffix_name    = htmlspecialchars($user_data['suffix_name']    ?? '');
 $email          = htmlspecialchars($user_data['email']          ?? '');
 $contact_number = htmlspecialchars($user_data['contact_number'] ?? '');
 $birthdate      = htmlspecialchars($user_data['birthdate']      ?? '');
+$place_of_birth = htmlspecialchars($user_data['place_of_birth'] ?? '');
 $gender         = htmlspecialchars($user_data['gender']         ?? '');
+$civil_status   = htmlspecialchars($user_data['civil_status']   ?? '');
+$religion       = htmlspecialchars($user_data['religion']       ?? '');
+$nationality    = htmlspecialchars($user_data['nationality']    ?? '');
+$disability     = htmlspecialchars($user_data['disability']     ?? '');
 $account_status = htmlspecialchars($user_data['account_status'] ?? 'active');
+$perm_region       = htmlspecialchars($user_data['perm_region']       ?? '');
+$perm_province     = htmlspecialchars($user_data['perm_province']     ?? '');
+$perm_municipality = htmlspecialchars($user_data['perm_municipality'] ?? '');
+$perm_barangay     = htmlspecialchars($user_data['perm_barangay']     ?? '');
+$perm_address      = htmlspecialchars($user_data['perm_address']      ?? '');
+$perm_zipcode      = htmlspecialchars($user_data['perm_zipcode']      ?? '');
+$mail_region       = htmlspecialchars($user_data['mail_region']       ?? '');
+$mail_province     = htmlspecialchars($user_data['mail_province']     ?? '');
+$mail_municipality = htmlspecialchars($user_data['mail_municipality'] ?? '');
+$mail_barangay     = htmlspecialchars($user_data['mail_barangay']     ?? '');
+$mail_address      = htmlspecialchars($user_data['mail_address']      ?? '');
+$mail_zipcode      = htmlspecialchars($user_data['mail_zipcode']      ?? '');
 
 $profile_photo  = $user_data['profile_photo'] ?? '';
 $profile_src    = $profile_photo
@@ -28,24 +46,6 @@ $course_info = get_course_info($con, $user_data['course'] ?? '');
 $curriculum_url = $course_info['curriculum_url'] ?? '';
 
 // TODO (backend): map these fields from $user_data when available in DB
-// $lrn             = htmlspecialchars($user_data['lrn']             ?? '');
-// $birth_place     = htmlspecialchars($user_data['birth_place']     ?? '');
-// $civil_status    = htmlspecialchars($user_data['civil_status']    ?? '');
-// $religion        = htmlspecialchars($user_data['religion']        ?? '');
-// $nationality     = htmlspecialchars($user_data['nationality']     ?? '');
-// $disability      = htmlspecialchars($user_data['disability']      ?? '');
-// $perm_region     = htmlspecialchars($user_data['perm_region']     ?? '');
-// $perm_province   = htmlspecialchars($user_data['perm_province']   ?? '');
-// $perm_municipality = htmlspecialchars($user_data['perm_municipality'] ?? '');
-// $perm_street     = htmlspecialchars($user_data['perm_street']     ?? '');
-// $perm_barangay   = htmlspecialchars($user_data['perm_barangay']   ?? '');
-// $perm_zip        = htmlspecialchars($user_data['perm_zip']        ?? '');
-// $mail_region     = htmlspecialchars($user_data['mail_region']     ?? '');
-// $mail_province   = htmlspecialchars($user_data['mail_province']   ?? '');
-// $mail_municipality = htmlspecialchars($user_data['mail_municipality'] ?? '');
-// $mail_street     = htmlspecialchars($user_data['mail_street']     ?? '');
-// $mail_barangay   = htmlspecialchars($user_data['mail_barangay']   ?? '');
-// $mail_zip        = htmlspecialchars($user_data['mail_zip']        ?? '');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -160,10 +160,10 @@ $curriculum_url = $course_info['curriculum_url'] ?? '';
             <!-- Section Tab Nav -->
             <div class="account-nav">
                 <ul>
-                    <li><a href="#" class="active">Student Information</a></li>
-                    <li><a href="#">Academic Information</a></li>
-                    <li><a href="#">Family Information</a></li>
-                    <li><a href="#">Documents / ID Photo</a></li>
+                    <li><a href="#section-student" class="active">Student Information</a></li>
+                    <li><a href="#section-academic">Personal Information</a></li>
+                    <li><a href="#section-family">Address</a></li>
+                    <li><a href="#section-documents">Documents</a></li>
                 </ul>
             </div>
 
@@ -176,11 +176,12 @@ $curriculum_url = $course_info['curriculum_url'] ?? '';
             <div class="content-section">
                 <form method="POST" action="../../php/update_student_profile.php" enctype="multipart/form-data" id="profile-form">
 
-                    <!-- Hidden file input for photo upload -->
+                    <!-- Hidden file input for photo upload only -->
                     <input type="file" name="profile_photo" id="photo-input" accept="image/*" style="display:none;">
+                    <input type="hidden" name="photo_only" value="1">
 
                     <!-- Profile Photo + IDs -->
-                    <div class="main-info">
+                    <div class="main-info" id="section-student">
                         <div class="img-container">
                             <img src="<?php echo htmlspecialchars($profile_src); ?>" id="profile-img" alt="Profile">
                             <div class="change-photo" id="change-photo-btn">
@@ -199,8 +200,7 @@ $curriculum_url = $course_info['curriculum_url'] ?? '';
 
                                 <div class="info-input">
                                     <label for="lrn">LRN</label>
-                                    <!-- TODO (backend): bind $lrn when available -->
-                                    <input name="lrn" id="lrn" value="">
+                                    <input id="lrn" value="<?php echo $lrn; ?>" readonly>
                                 </div>
                             </div>
 
@@ -220,283 +220,148 @@ $curriculum_url = $course_info['curriculum_url'] ?? '';
                         </div>
                     </div>
 
-                    <hr>
-
                     <!-- Personal Information -->
-                    <div class="personal-info">
+                    <div class="personal-info" id="section-academic">
                         <h3>Personal Information</h3>
 
                         <div class="personal-info-content">
 
                             <div class="full-name">
-                                <div class="info-input">
-                                    <label for="last_name">Last Name</label>
-                                    <input name="last_name" id="last_name" type="text"
-                                           value="<?php echo $last_name; ?>" required>
-                                </div>
-                                <div class="info-input">
-                                    <label for="first_name">First Name</label>
-                                    <input name="first_name" id="first_name" type="text"
-                                           value="<?php echo $first_name; ?>" required>
-                                </div>
-                                <div class="info-input">
-                                    <label for="middle_name">Middle Name</label>
-                                    <input name="middle_name" id="middle_name" type="text"
-                                           value="<?php echo $middle_name; ?>">
-                                </div>
-                                <div class="info-input">
-                                    <label for="suffix_name">Suffix Name</label>
-                                    <select name="suffix_name" id="suffix_name">
-                                        <option value="" disabled <?php echo empty($suffix_name) ? 'selected' : ''; ?>>Select Suffix</option>
-                                        <option value="none"  <?php echo $suffix_name === 'none'  ? 'selected' : ''; ?>>None</option>
-                                        <option value="jr"    <?php echo $suffix_name === 'jr'    ? 'selected' : ''; ?>>Jr.</option>
-                                        <option value="sr"    <?php echo $suffix_name === 'sr'    ? 'selected' : ''; ?>>Sr.</option>
-                                        <option value="ii"    <?php echo $suffix_name === 'ii'    ? 'selected' : ''; ?>>II</option>
-                                        <option value="iii"   <?php echo $suffix_name === 'iii'   ? 'selected' : ''; ?>>III</option>
-                                        <option value="iv"    <?php echo $suffix_name === 'iv'    ? 'selected' : ''; ?>>IV</option>
-                                        <option value="v"     <?php echo $suffix_name === 'v'     ? 'selected' : ''; ?>>V</option>
-                                    </select>
-                                </div>
+                                <div class="info-input"><label>Last Name</label><input value="<?php echo $last_name; ?>" readonly></div>
+                                <div class="info-input"><label>First Name</label><input value="<?php echo $first_name; ?>" readonly></div>
+                                <div class="info-input"><label>Middle Name</label><input value="<?php echo $middle_name; ?>" readonly></div>
+                                <div class="info-input"><label>Suffix Name</label><input value="<?php echo $suffix_name ?: 'None'; ?>" readonly></div>
                             </div>
 
                             <div class="birth-info">
-                                <div class="info-input">
-                                    <label for="birth">Date of Birth</label>
-                                    <input name="birth" id="birth" type="date"
-                                           value="<?php echo $birthdate; ?>">
-                                </div>
-                                <div class="info-input">
-                                    <label for="birth-place">Place of Birth</label>
-                                    <!-- TODO (backend): bind $birth_place when available -->
-                                    <input name="birth-place" id="birth-place" type="text" value="">
-                                </div>
+                                <div class="info-input"><label>Date of Birth</label><input value="<?php echo $birthdate; ?>" readonly></div>
+                                <div class="info-input"><label>Place of Birth</label><input value="<?php echo $place_of_birth; ?>" readonly></div>
                             </div>
 
                             <div class="sex-status">
-                                <div class="info-input">
-                                    <label for="sex">Sex</label>
-                                    <select name="sex" id="sex">
-                                        <option value="" disabled <?php echo empty($gender) ? 'selected' : ''; ?>>Select Sex</option>
-                                        <option value="male"   <?php echo strtolower($gender) === 'male'   ? 'selected' : ''; ?>>Male</option>
-                                        <option value="female" <?php echo strtolower($gender) === 'female' ? 'selected' : ''; ?>>Female</option>
-                                        <option value="na"     <?php echo strtolower($gender) === 'na'     ? 'selected' : ''; ?>>Prefer not to say</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="civil-status">Civil Status</label>
-                                    <!-- TODO (backend): bind $civil_status when available -->
-                                    <select name="civil-status" id="civil-status">
-                                        <option value="" disabled selected>Select Civil Status</option>
-                                        <option value="single">Single</option>
-                                        <option value="married">Married</option>
-                                        <option value="widowed">Widowed</option>
-                                        <option value="separated">Separated</option>
-                                    </select>
-                                </div>
+                                <div class="info-input"><label>Sex</label><input value="<?php echo ucfirst($gender); ?>" readonly></div>
+                                <div class="info-input"><label>Civil Status</label><input value="<?php echo ucfirst($civil_status); ?>" readonly></div>
                             </div>
 
                             <div class="contact-info">
-                                <div class="info-input">
-                                    <label for="contact-no">Contact Number</label>
-                                    <input name="contact-no" id="contact-no" type="text"
-                                           value="<?php echo $contact_number; ?>">
-                                </div>
-                                <div class="info-input">
-                                    <label for="email">Personal Email</label>
-                                    <input name="email" id="email" type="email"
-                                           value="<?php echo $email; ?>">
-                                </div>
+                                <div class="info-input"><label>Contact Number</label><input value="<?php echo $contact_number; ?>" readonly></div>
+                                <div class="info-input"><label>Personal Email</label><input value="<?php echo $email; ?>" readonly></div>
                             </div>
 
                             <div class="background-info">
-                                <div class="info-input">
-                                    <label for="religion">Religion</label>
-                                    <!-- TODO (backend): bind $religion when available -->
-                                    <select name="religion" id="religion">
-                                        <option value="" disabled selected>Select Religion</option>
-                                        <option value="roman-catholic">Roman Catholic</option>
-                                        <option value="protestant">Protestant</option>
-                                        <option value="iglesia-ni-cristo">Iglesia ni Cristo</option>
-                                        <option value="islam">Islam</option>
-                                        <option value="buddhism">Buddhism</option>
-                                        <option value="hinduism">Hinduism</option>
-                                        <option value="none">None</option>
-                                        <option value="other">Other</option>
-                                        <option value="prefer-not-to-say">Prefer not to say</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="nationality">Nationality</label>
-                                    <!-- TODO (backend): bind $nationality when available -->
-                                    <select name="nationality" id="nationality">
-                                        <option value="" disabled selected>Select Nationality</option>
-                                        <option value="filipino">Filipino</option>
-                                        <option value="american">American</option>
-                                        <option value="japanese">Japanese</option>
-                                        <option value="korean">Korean</option>
-                                        <option value="canadian">Canadian</option>
-                                        <option value="australian">Australian</option>
-                                        <option value="british">British</option>
-                                        <option value="indian">Indian</option>
-                                        <option value="chinese">Chinese</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="disability">Disability</label>
-                                    <!-- TODO (backend): bind $disability when available -->
-                                    <select name="disability" id="disability">
-                                        <option value="" disabled selected>Select Option</option>
-                                        <option value="none">None</option>
-                                        <option value="physical">Physical Disability</option>
-                                        <option value="visual">Visual Impairment</option>
-                                        <option value="hearing">Hearing Impairment</option>
-                                        <option value="intellectual">Intellectual Disability</option>
-                                        <option value="psychosocial">Psychosocial Disability</option>
-                                        <option value="learning">Learning Disability</option>
-                                        <option value="other">Other</option>
-                                        <option value="prefer-not-to-say">Prefer not to say</option>
-                                    </select>
-                                </div>
+                                <div class="info-input"><label>Religion</label><input value="<?php echo ucfirst(str_replace('-', ' ', $religion)); ?>" readonly></div>
+                                <div class="info-input"><label>Nationality</label><input value="<?php echo ucfirst($nationality); ?>" readonly></div>
+                                <div class="info-input"><label>Disability</label><input value="<?php echo ucfirst($disability ?: 'None'); ?>" readonly></div>
                             </div>
 
                         </div>
                     </div>
 
-                    <hr>
-
                     <!-- Permanent Address -->
-                    <div class="complete-address">
+                    <div class="complete-address" id="section-family">
                         <h3>Permanent Address</h3>
-
                         <div class="complete-address-content">
                             <div class="address-row-1">
-                                <div class="info-input">
-                                    <label for="region">Region</label>
-                                    <!-- TODO (backend): bind $perm_region + selected state when available -->
-                                    <select name="region" id="region" required>
-                                        <option value="" disabled selected>Select Region</option>
-                                        <option value="ncr">NCR</option>
-                                        <option value="region-i">Region I</option>
-                                        <option value="region-ii">Region II</option>
-                                        <option value="region-iii">Region III</option>
-                                        <option value="region-iv-a">Region IV-A</option>
-                                        <option value="region-v">Region V</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="province">Province</label>
-                                    <!-- TODO (backend): populate dynamically based on region -->
-                                    <select name="province" id="province" required>
-                                        <option value="" disabled selected>Select Province</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="municipality">Municipality</label>
-                                    <!-- TODO (backend): populate dynamically based on province -->
-                                    <select name="municipality" id="municipality" required>
-                                        <option value="" disabled selected>Select Municipality</option>
-                                    </select>
-                                </div>
+                                <div class="info-input"><label>Region</label><input value="<?php echo $perm_region; ?>" readonly></div>
+                                <div class="info-input"><label>Province</label><input value="<?php echo $perm_province; ?>" readonly></div>
+                                <div class="info-input"><label>Municipality</label><input value="<?php echo $perm_municipality; ?>" readonly></div>
                             </div>
-
                             <div class="address-row-2">
-                                <div class="info-input">
-                                    <label for="street-address">
-                                        Complete Address (House No. / Unit Bldg No. / Street Name)
-                                    </label>
-                                    <!-- TODO (backend): bind $perm_street when available -->
-                                    <input type="text" name="street-address" id="street-address" required>
-                                </div>
+                                <div class="info-input"><label>Complete Address</label><input value="<?php echo $perm_address; ?>" readonly></div>
                             </div>
-
                             <div class="address-row-3">
-                                <div class="info-input">
-                                    <label for="barangay">Barangay</label>
-                                    <!-- TODO (backend): populate dynamically based on municipality -->
-                                    <select name="barangay" id="barangay" required>
-                                        <option value="" disabled selected>Select Barangay</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="zip-code">Zip Code</label>
-                                    <!-- TODO (backend): bind $perm_zip when available -->
-                                    <input type="text" name="zip-code" id="zip-code" maxlength="4" required>
-                                </div>
+                                <div class="info-input"><label>Barangay</label><input value="<?php echo $perm_barangay; ?>" readonly></div>
+                                <div class="info-input"><label>Zip Code</label><input value="<?php echo $perm_zipcode; ?>" readonly></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Mailing Address -->
-                    <div class="mailing-address">
-                        <div class="mailing-address-header">
-                            <h3>Mailing Address</h3>
-                            <div class="same-address-checkbox">
-                                <input type="checkbox" name="same-address" id="same-address">
-                                <label for="same-address">Same as Permanent Address</label>
-                            </div>
-                        </div>
-
-                        <div class="complete-address-content" id="mailing-address-content">
+                    <div class="mailing-address" id="section-mailing">
+                        <h3>Mailing Address</h3>
+                        <div class="complete-address-content">
                             <div class="address-row-1">
-                                <div class="info-input">
-                                    <label for="mailing-region">Region</label>
-                                    <!-- TODO (backend): bind $mail_region + selected state when available -->
-                                    <select name="mailing-region" id="mailing-region" required>
-                                        <option value="" disabled selected>Select Region</option>
-                                        <option value="ncr">NCR</option>
-                                        <option value="region-i">Region I</option>
-                                        <option value="region-ii">Region II</option>
-                                        <option value="region-iii">Region III</option>
-                                        <option value="region-iv-a">Region IV-A</option>
-                                        <option value="region-v">Region V</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="mailing-province">Province</label>
-                                    <select name="mailing-province" id="mailing-province" required>
-                                        <option value="" disabled selected>Select Province</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="mailing-municipality">Municipality</label>
-                                    <select name="mailing-municipality" id="mailing-municipality" required>
-                                        <option value="" disabled selected>Select Municipality</option>
-                                    </select>
-                                </div>
+                                <div class="info-input"><label>Region</label><input value="<?php echo $mail_region; ?>" readonly></div>
+                                <div class="info-input"><label>Province</label><input value="<?php echo $mail_province; ?>" readonly></div>
+                                <div class="info-input"><label>Municipality</label><input value="<?php echo $mail_municipality; ?>" readonly></div>
                             </div>
-
                             <div class="address-row-2">
-                                <div class="info-input">
-                                    <label for="mailing-street-address">
-                                        Complete Address (House No. / Unit Bldg No. / Street Name)
-                                    </label>
-                                    <input type="text" name="mailing-street-address" id="mailing-street-address" required>
-                                </div>
+                                <div class="info-input"><label>Complete Address</label><input value="<?php echo $mail_address; ?>" readonly></div>
                             </div>
-
                             <div class="address-row-3">
-                                <div class="info-input">
-                                    <label for="mailing-barangay">Barangay</label>
-                                    <select name="mailing-barangay" id="mailing-barangay" required>
-                                        <option value="" disabled selected>Select Barangay</option>
-                                    </select>
-                                </div>
-                                <div class="info-input">
-                                    <label for="mailing-zip-code">Zip Code</label>
-                                    <input type="text" name="mailing-zip-code" id="mailing-zip-code" maxlength="4" required>
-                                </div>
+                                <div class="info-input"><label>Barangay</label><input value="<?php echo $mail_barangay; ?>" readonly></div>
+                                <div class="info-input"><label>Zip Code</label><input value="<?php echo $mail_zipcode; ?>" readonly></div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="save-changes">
-                        <button type="submit" id="save-changes-btn">Save Changes</button>
                     </div>
 
                 </form>
+
+                <!-- Documents Section -->
+                <?php
+                $docs = [
+                    'doc_form138'   => 'Form 138',
+                    'doc_birth_cert'=> 'Birth Certificate',
+                    'doc_good_moral'=> 'Good Moral',
+                    'doc_our_au001' => 'OUR AU001',
+                    'doc_our_au002' => 'OUR AU002',
+                ];
+                // Resolve applicant_id linked to this student (stored after conversion)
+                $applicant_id = $user_data['applicant_id'] ?? null;
+                $doc_data = [];
+                if ($applicant_id) {
+                    $doc_stmt = mysqli_prepare($con, "SELECT " . implode(',', array_keys($docs)) . " FROM applicants WHERE applicant_id = ? LIMIT 1");
+                    mysqli_stmt_bind_param($doc_stmt, 'i', $applicant_id);
+                    mysqli_stmt_execute($doc_stmt);
+                    $doc_data = mysqli_fetch_assoc(mysqli_stmt_get_result($doc_stmt)) ?? [];
+                }
+                ?>
+                <div id="section-documents" class="documents-section">
+                    <h3>Submitted Documents</h3>
+                    <div class="doc-list">
+                    <?php foreach ($docs as $key => $label):
+                        $filename = $doc_data[$key] ?? null;
+                    ?>
+                        <div class="doc-item">
+                            <div class="doc-info">
+                                <?php if ($filename): ?>
+                                    <i class="fa-solid fa-file-image"></i>
+                                    <div>
+                                        <strong><?php echo $label; ?></strong>
+                                        <span><?php echo htmlspecialchars($filename); ?></span>
+                                    </div>
+                                <?php else: ?>
+                                    <i class="fa-solid fa-file" style="opacity:0.3;"></i>
+                                    <div>
+                                        <strong><?php echo $label; ?></strong>
+                                        <span class="doc-not-uploaded">Not uploaded</span>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($filename): ?>
+                                <?php
+                                $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                $file_path = '../../uploads/applicants/' . $applicant_id . '/' . $filename;
+                                ?>
+                                <button type="button" class="doc-view-btn" onclick="viewDoc('<?php echo htmlspecialchars($file_path); ?>', '<?php echo htmlspecialchars($filename); ?>', '<?php echo $ext; ?>')">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Document Preview Modal -->
+                <div id="docPreviewModal" class="doc-preview-modal" style="display:none;">
+                    <div class="doc-preview-content">
+                        <div class="doc-preview-header">
+                            <span id="docPreviewName"></span>
+                            <button onclick="closeDocPreview()">&times;</button>
+                        </div>
+                        <div class="doc-preview-body" id="docPreviewBody"></div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>

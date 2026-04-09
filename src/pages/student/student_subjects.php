@@ -19,19 +19,44 @@ function formatYear($year) {
 }
 $year_display = formatYear($user_data['year_level'] ?? null);
 
-// Fetch enrolled subjects from DB
+// Determine the student's current block semester for default filter
+$block_semester = null;
+if (!empty($user_data['block_id'])) {
+    $bstmt = mysqli_prepare($con, "SELECT semester FROM blocks WHERE block_id = ? LIMIT 1");
+    mysqli_stmt_bind_param($bstmt, 'i', $user_data['block_id']);
+    mysqli_stmt_execute($bstmt);
+    $brow = mysqli_fetch_assoc(mysqli_stmt_get_result($bstmt));
+    $block_semester = $brow['semester'] ?? null; // e.g. '1st', '2nd', 'summer'
+    mysqli_stmt_close($bstmt);
+}
+
+// Map block semester to display label and back
+$semester_map = [
+    '1st'    => 'First Semester',
+    '2nd'    => 'Second Semester',
+    'summer' => 'Summer',
+];
+$semester_reverse_map = array_flip($semester_map);
+
+// Determine selected semester from GET param or default to student's block semester
+$selected_semester_label = $_GET['semester'] ?? ($semester_map[$block_semester] ?? 'First Semester');
+$selected_semester_db    = $semester_reverse_map[$selected_semester_label] ?? '1st';
+
+// Fetch enrolled subjects filtered by semester
 $stmt = mysqli_prepare($con, "
     SELECT s.subject_code, s.subject_name, s.units, s.lab_hours,
            c.section, c.schedule_day, c.schedule_time, c.room,
+           c.semester AS class_semester,
            CONCAT(f.first_name, ' ', f.last_name) AS faculty_name
     FROM enrollments e
     JOIN classes c ON e.class_id = c.class_id
     JOIN subjects s ON c.subject_id = s.subject_id
     LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
     WHERE e.student_id = ? AND e.status IN ('confirmed','ongoing')
+      AND c.semester = ?
     ORDER BY s.subject_code
 ");
-mysqli_stmt_bind_param($stmt, "i", $user_data['student_id']);
+mysqli_stmt_bind_param($stmt, "is", $user_data['student_id'], $selected_semester_db);
 mysqli_stmt_execute($stmt);
 $rows = mysqli_stmt_get_result($stmt);
 
@@ -317,6 +342,7 @@ foreach ($subjects as $subj) {
                         </div>
                     </div>
                 </div>
+                <form method="GET" action="" id="schedFilterForm">
                 <div class="sched-nav-options">
                     <div class="sched-label-container">
                         <label>Year</label>
@@ -326,12 +352,17 @@ foreach ($subjects as $subj) {
                     </div>
                     <div class="sched-label-container">
                         <label>Semester</label>
-                        <select name="admission_status">
-                            <option value="First Semester">First Semester</option>
-                            <option value="Second Semester">Second Semester</option>
+                        <select name="semester" id="semesterSelect" onchange="this.form.submit()">
+                            <?php foreach ($semester_map as $db_val => $label): ?>
+                            <option value="<?php echo htmlspecialchars($label); ?>"
+                                <?php echo ($selected_semester_label === $label) ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($label); ?>
+                            </option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
+                </form>
             </div>
 
             <!-- Schedule Table -->

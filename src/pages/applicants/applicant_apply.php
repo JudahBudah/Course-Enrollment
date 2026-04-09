@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_choice     = $_POST['first_choice'];
     $second_choice    = $_POST['second_choice'];
     $third_choice     = $_POST['third_choice'];
+    $department       = $_POST['department'] ?? '';
     $last_name        = $_POST['last_name'];
     $first_name       = $_POST['first_name'];
     $middle_name      = $_POST['middle_name'];
@@ -47,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = mysqli_prepare($con,
         "UPDATE applicants SET
-            lrn=?, first_choice=?, second_choice=?, third_choice=?,
+            lrn=?, first_choice=?, second_choice=?, third_choice=?, department=?,
             last_name=?, first_name=?, middle_name=?, suffix=?, married_name=?,
             birthdate=?, nationality=?, place_of_birth=?, civil_status=?,
             contact_number=?, religion=?, gender=?, disability=?,
@@ -59,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE applicant_id=?"
     );
 
-    mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssssssssi",
-        $lrn, $first_choice, $second_choice, $third_choice,
+    mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssssssssssssi",
+        $lrn, $first_choice, $second_choice, $third_choice, $department,
         $last_name, $first_name, $middle_name, $suffix, $married_name,
         $birthdate, $nationality, $place_of_birth, $civil_status,
         $contact_number, $religion, $gender, $disability,
@@ -95,20 +96,25 @@ function sel($field, $value, $applicant_data) {
     return ($applicant_data[$field] ?? '') === $value ? 'selected' : '';
 }
 
-$programs = [
-    'BS Computer Science',
-    'BS Information Technology',
-    'BS Business Administration',
-    'BS Accountancy',
-    'BS Nursing',
-    'BS Psychology',
-];
+// Fetch courses from DB grouped by college
+$courses_result = mysqli_query($con, "SELECT course_name, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
+$courses = [];
+$course_college_map = [];
+while ($row = mysqli_fetch_assoc($courses_result)) {
+    $courses[$row['college_name']][] = $row['course_name'];
+    $course_college_map[$row['course_name']] = $row['college_name'];
+}
 
-function programOptions($field, $applicant_data, $programs) {
+function programOptions($field, $applicant_data, $courses) {
+    $current = $applicant_data[$field] ?? '';
     $out = '<option value="">Select Program</option>';
-    foreach ($programs as $p) {
-        $sel = ($applicant_data[$field] ?? '') === $p ? ' selected' : '';
-        $out .= "<option value=\"{$p}\"{$sel}>{$p}</option>";
+    foreach ($courses as $college => $programs) {
+        $out .= '<optgroup label="' . htmlspecialchars($college) . '">';
+        foreach ($programs as $p) {
+            $sel = $current === $p ? ' selected' : '';
+            $out .= '<option value="' . htmlspecialchars($p) . '" data-college="' . htmlspecialchars($college) . '"' . $sel . '>' . htmlspecialchars($p) . '</option>';
+        }
+        $out .= '</optgroup>';
     }
     return $out;
 }
@@ -256,23 +262,24 @@ function programOptions($field, $applicant_data, $programs) {
                 <div class="form-row">
                     <div class="form-group">
                         <label>First Choice Program <span class="required">*</span></label>
-                        <select name="first_choice" required <?php echo $dis; ?>>
-                            <?php echo programOptions('first_choice', $applicant_data, $programs); ?>
+                        <select name="first_choice" id="first_choice" required <?php echo $dis; ?>>
+                            <?php echo programOptions('first_choice', $applicant_data, $courses); ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Second Choice Program</label>
-                        <select name="second_choice" <?php echo $dis; ?>>
-                            <?php echo programOptions('second_choice', $applicant_data, $programs); ?>
+                        <select name="second_choice" id="second_choice" <?php echo $dis; ?>>
+                            <?php echo programOptions('second_choice', $applicant_data, $courses); ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Third Choice Program</label>
-                        <select name="third_choice" <?php echo $dis; ?>>
-                            <?php echo programOptions('third_choice', $applicant_data, $programs); ?>
+                        <select name="third_choice" id="third_choice" <?php echo $dis; ?>>
+                            <?php echo programOptions('third_choice', $applicant_data, $courses); ?>
                         </select>
                     </div>
                 </div>
+                <input type="hidden" name="department" id="department" value="<?php echo htmlspecialchars($applicant_data['department'] ?? $course_college_map[$applicant_data['first_choice'] ?? ''] ?? ''); ?>">
             </div>
 
             <!-- ── Personal Information ───────────────────── -->
@@ -480,6 +487,12 @@ function programOptions($field, $applicant_data, $programs) {
 </div><!-- /.main-flex -->
 
 <script>
+    const courseCollegeMap = <?php echo json_encode($course_college_map); ?>;
+
+    document.getElementById('first_choice')?.addEventListener('change', function() {
+        document.getElementById('department').value = courseCollegeMap[this.value] || '';
+    });
+
     function copyAddress() {
         if (!document.getElementById('sameAddress').checked) return;
         const pairs = [
