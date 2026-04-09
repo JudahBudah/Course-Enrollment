@@ -418,13 +418,16 @@
                                 <?php endforeach; ?>
                             <?php endforeach; ?>
                             <?php if (!$has_any): ?>
-                                <div class="sched-empty"><i class="fa-solid fa-calendar-xmark"></i> No classes this week.</div>
+                                <div class="sched-empty test"><i class="fa-solid fa-calendar-xmark"></i> No classes this week.</div>
                             <?php endif; ?>
                         </div>
                     </div>
 
                     <!-- GRID VIEW -->
                     <div id="schedGridView" style="display:none;overflow-x:auto;">
+                        <div id="gridEmpty" class="sched-empty" style="display:none;">
+                            <i class="fa-solid fa-calendar-xmark"></i> No classes to display.
+                        </div>
                         <div class="mini-weekly-grid" id="miniWeeklyGrid"></div>
                     </div>
                 </div>

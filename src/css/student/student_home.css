@@ -274,6 +274,7 @@
     justify-content: center;
 }
 
+
 /* ── MINI WEEKLY GRID (Grid view) ── */
 
 .mini-weekly-grid {
@@ -505,8 +506,8 @@
 }
 
 .event-dot {
-    width: 4px;
-    height: 4px;
+    width: 15px;
+    height: 2px;
     border-radius: 50%;
     background: var(--red);
     position: absolute;
@@ -549,7 +550,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.4rem;
+    font-size: clamp(1.2rem, 1.1rem + 1vw, 1.4rem);
     margin: 0 0 10px 0;
 }
 
@@ -665,6 +666,22 @@
 
     .news-events-card {
         width: 33.333%;
+    }
+}
+
+@media (max-width: 660px) {
+    .student-divider {
+        height: 1px;
+        width: 100%;
+    }
+
+    .student-body {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avatar-wrap {
+        align-self: center;
     }
 }
 

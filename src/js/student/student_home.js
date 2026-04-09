@@ -67,7 +67,6 @@ function addCell(label, otherMonth, isToday = false, evs = []) {
         if (evs.length > 0) {
             const dot = document.createElement('span');
             dot.className = 'event-dot';
-            dot.style.background = evs[0].color || '#8C1C24';
             el.appendChild(dot);
         }
     }
@@ -225,6 +224,8 @@ function renderMiniGrid() {
     if (!container) return;
     container.innerHTML = '';
 
+    document.getElementById('gridEmpty').style.display = 'none';
+
     const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
     const to24  = t => {
         t = t.trim();
@@ -274,7 +275,7 @@ function renderMiniGrid() {
     });
 
     if (!scheduleData.length) {
-        container.innerHTML = '<div class="sched-empty" style="padding:2rem;"><i class="fa-solid fa-calendar-xmark"></i> No schedule data.</div>';
+        document.getElementById('gridEmpty').style.display = ''; 
         return;
     }
 
