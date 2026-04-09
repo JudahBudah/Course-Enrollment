@@ -19,7 +19,7 @@ while ($_r = mysqli_fetch_assoc($_q)) $_anns[] = $_r;
 $_media_base = '../../uploads/announcements/';
 
 // Priority colours
-$_pri_colors = ['urgent'=>'#ef4444','important'=>'#f59e0b','normal'=>'#3b82f6'];
+$_pri_colors = ['urgent'=>'var(--red)','important'=>'var(--red)','normal'=>'var(----block-blue)'];
 $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info','normal'=>'fa-bullhorn'];
 ?>
 
@@ -82,7 +82,7 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 <?php endif; ?>
 
 <style>
-.ann-feed-empty { color:#aaa; font-size:0.9rem; padding:1.5rem 0; text-align:center; }
+.ann-feed-empty { color:var(--off); font-size:0.9rem; padding:1.5rem 0; text-align:center; }
 
 /* Cards row */
 .ann-news-wrapper { overflow:hidden; margin-top:16px; }
@@ -93,45 +93,45 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 .ann-news-card {
     flex-shrink:0;
     width:220px;
-    background:#fff;
+    background:var(--white-pr);
     border-radius:10px;
     overflow:hidden;
     box-shadow:0 2px 10px rgba(0,0,0,0.08);
     cursor:pointer;
     transition:transform 0.2s, box-shadow 0.2s;
 }
-.ann-news-card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.13); }
+.ann-news-card:hover { transform:translateY(-2px); }
 
 .ann-news-thumb {
     position:relative;
     width:100%;
     aspect-ratio:16/9;
-    background:#f3f3f3;
+    background:var(--white);
     overflow:hidden;
 }
 .ann-news-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
 .ann-news-thumb-placeholder {
     width:100%; height:100%;
     display:flex; align-items:center; justify-content:center;
-    font-size:2rem; background:#f8f8f8;
+    font-size:2rem; background:var(--white);
 }
 .ann-news-badge {
     position:absolute; top:8px; left:8px;
-    color:#fff; font-size:0.65rem; font-weight:700;
+    color:var(--white-pr); font-size:0.65rem; font-weight:700;
     padding:2px 8px; border-radius:20px; letter-spacing:0.04em;
 }
 .ann-news-media-count {
     position:absolute; bottom:6px; right:8px;
-    background:rgba(0,0,0,0.55); color:#fff;
+    background:rgba(0,0,0,0.55); color:var(--white-pr);
     font-size:0.68rem; padding:2px 7px; border-radius:20px;
 }
 .ann-news-body { padding:10px 12px 12px; }
 .ann-news-title {
-    font-size:0.82rem; font-weight:600; color:#1a1a1a;
+    font-size:0.82rem; font-weight:600; color:var(--dark);
     margin:0 0 5px; line-height:1.4;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
 }
-.ann-news-date { font-size:0.7rem; color:#999; margin:0; }
+.ann-news-date { font-size:0.7rem; color:var(--text); margin:0; }
 
 /* Modal overlay */
 .ann-modal-overlay {
@@ -141,7 +141,7 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 }
 .ann-modal-overlay.open { display:flex; }
 .ann-modal-box {
-    background:#fff; border-radius:12px;
+    background:var(--white-pr); border-radius:12px;
     width:100%; max-width:640px; max-height:90vh;
     overflow-y:auto; position:relative;
     box-shadow:0 20px 60px rgba(0,0,0,0.3);
@@ -157,11 +157,11 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 .ann-modal-close:hover { background:rgba(0,0,0,0.15); }
 
 /* Modal inner content */
-.ann-detail-hero { width:100%; max-height:420px; object-fit:contain; display:block; background:#f5f5f5; }
+.ann-detail-hero { width:100%; max-height:420px; object-fit:contain; display:block; background:var(--off); }
 .ann-detail-hero-placeholder {
     width:100%; height:180px;
     display:flex; align-items:center; justify-content:center;
-    font-size:3rem; background:#f5f5f5;
+    font-size:3rem; background:var(--off);
 }
 .ann-detail-body { padding:1.25rem 1.5rem 1.5rem; }
 .ann-detail-badges { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:0.75rem; }
@@ -169,9 +169,9 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
     font-size:0.7rem; font-weight:700; padding:3px 10px;
     border-radius:20px; letter-spacing:0.04em;
 }
-.ann-detail-title { font-size:1.2rem; font-weight:700; color:#111; margin:0 0 0.4rem; line-height:1.4; }
-.ann-detail-meta  { font-size:0.78rem; color:#999; margin:0 0 1rem; }
-.ann-detail-message { font-size:0.92rem; color:#333; line-height:1.7; white-space:pre-wrap; margin:0 0 1.25rem; }
+.ann-detail-title { font-size:1.2rem; font-weight:700; color:var(--dark); margin:0 0 0.4rem; line-height:1.4; }
+.ann-detail-meta  { font-size:0.78rem; color:var(--text); margin:0 0 1rem; }
+.ann-detail-message { font-size:0.92rem; color:var(--text); line-height:1.7; white-space:pre-wrap; margin:0 0 1.25rem; }
 
 /* Media grid inside modal */
 .ann-detail-media { display:grid; gap:4px; border-radius:8px; overflow:hidden; margin-top:0.75rem; }
@@ -180,12 +180,12 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 .ann-detail-media.mc-3 { grid-template-columns:1fr 1fr; }
 .ann-detail-media.mc-3 .ann-dm-item:first-child { grid-column:1/-1; }
 .ann-detail-media.mc-4, .ann-detail-media.mc-many { grid-template-columns:1fr 1fr; }
-.ann-dm-item { position:relative; overflow:hidden; background:#000; cursor:pointer; }
+.ann-dm-item { position:relative; overflow:hidden; background:var(--dark); cursor:pointer; }
 .ann-dm-item img { width:100%; height:180px; object-fit:cover; display:block; transition:0.2s; }
 .ann-dm-item:hover img { opacity:0.85; }
 .ann-dm-item video { width:100%; max-height:220px; display:block; }
 .ann-dm-more {
-    height:180px; background:rgba(0,0,0,0.65); color:#fff;
+    height:180px; background:rgba(0,0,0,0.65); color:var(--white-pr);
     display:flex; align-items:center; justify-content:center;
     font-size:1.5rem; font-weight:700; cursor:pointer;
 }
@@ -203,7 +203,7 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 .ann-lb-counter { color:rgba(255,255,255,0.6); margin-top:0.75rem; font-size:0.85rem; }
 .ann-lb-btn {
     position:absolute; background:none; border:none;
-    color:#fff; font-size:2rem; cursor:pointer; padding:1rem;
+    color:var(--white-pr); font-size:2rem; cursor:pointer; padding:1rem;
 }
 .ann-lb-btn.close { top:0.5rem; right:0.5rem; }
 .ann-lb-btn.prev  { left:0; top:50%; transform:translateY(-50%); }
@@ -221,7 +221,7 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 
 <script>
 const _annMediaBase = '<?php echo $_media_base; ?>';
-const _priColors = {urgent:'#ef4444', important:'#f59e0b', normal:'#3b82f6'};
+const _priColors = {urgent:'var(--red-lt)', important:'var(--red)', normal:'var(--block-blue)'};
 const _priLabels = {urgent:'Urgent', important:'Important', normal:'Normal'};
 const _audLabels = {all:'All Users', students:'Students', faculty:'Faculty', applicants:'Applicants'};
 
@@ -243,8 +243,8 @@ function openAnnModal(ann, media) {
     // Badges
     const audLabel = _audLabels[ann.target_audience] || ann.target_audience;
     const badges = `
-        <span class="ann-detail-badge" style="background:${color};color:#fff">${_priLabels[pri]}</span>
-        <span class="ann-detail-badge" style="background:#f0f0f0;color:#555">${audLabel}</span>`;
+        <span class="ann-detail-badge" style="background:${color};color:var(--white-pr)">${_priLabels[pri]}</span>
+        <span class="ann-detail-badge" style="background:var(--white);color:var(--text)">${audLabel}</span>`;
 
     // Date
     const d = new Date(ann.created_at);
