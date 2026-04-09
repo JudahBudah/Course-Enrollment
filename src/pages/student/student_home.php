@@ -418,7 +418,7 @@
                                 <?php endforeach; ?>
                             <?php endforeach; ?>
                             <?php if (!$has_any): ?>
-                                <div class="sched-empty test"><i class="fa-solid fa-calendar-xmark"></i> No classes this week.</div>
+                                <div class="sched-empty"><i class="fa-solid fa-calendar-xmark"></i> No classes this week.</div>
                             <?php endif; ?>
                         </div>
                     </div>
