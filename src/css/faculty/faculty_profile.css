@@ -70,7 +70,6 @@ hr {
 /* ── Input & Select Style ── */
 
 label {
-    white-space: nowrap;
     margin: 0 0 4px 0;
     font-size: 0.9rem;
     color: #888888;
@@ -241,7 +240,6 @@ select {
 
 .same-address-checkbox label {
     margin: 0;
-    white-space: nowrap;
 }
 
 /* Override the global checkbox size so it doesn't inherit input styles */
@@ -303,4 +301,182 @@ select {
 
 .save-changes button:hover {
     background-color: var(--red-lt);
+}
+
+
+/* ============================================================
+   RESPONSIVE — append to (or @import after) faculty_profile.css
+   ============================================================ */
+
+/* ── Tablet  (≤ 900px) ───────────────────────────────────── */
+@media (max-width: 900px) {
+
+    /* Collapse main-info photo + fields side-by-side → stack */
+    .main-info {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .img-container {
+        margin-bottom: 20px;
+    }
+
+    .main-info-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Row pairs → single column */
+    .main-row-1,
+    .main-row-2,
+    .full-name,
+    .birth-info,
+    .sex-status,
+    .contact-info,
+    .background-info,
+    .address-row-1,
+    .address-row-2,
+    .address-row-3 {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Mailing header — keep on one row but allow wrap */
+    .mailing-address-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    /* Tab nav — allow wrapping on tablet */
+    .account-nav ul {
+        flex-wrap: wrap;
+    }
+
+    .account-nav li {
+        flex: 1 1 45%;
+    }
+
+    /* Content section padding */
+    .content-section {
+        padding: 24px 20px;
+    }
+}
+
+
+/* ── Mobile  (≤ 600px) ───────────────────────────────────── */
+@media (max-width: 600px) {
+
+    /* Tab nav — stack into 2-column grid for tight screens */
+    .account-nav ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .account-nav li {
+        flex: unset;
+    }
+
+    .account-nav li a {
+        font-size: 0.78rem;
+        padding: 12px 6px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    /* Content section */
+    .content-section {
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+
+    /* Name section — 2-column grid for Last / First,
+       then Middle / Suffix each get their own row */
+    .full-name {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 12px;
+    }
+
+    /* Middle name and suffix still stack individually */
+    .full-name .info-input:nth-child(3),
+    .full-name .info-input:nth-child(4) {
+        grid-column: span 1;
+    }
+
+    /* All other row groups → single column (already set above,
+       reinforce in case specificity fight) */
+    .birth-info,
+    .sex-status,
+    .contact-info,
+    .background-info,
+    .address-row-1,
+    .address-row-2,
+    .address-row-3 {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Input & select sizing */
+    input,
+    select {
+        padding: 11px 13px;
+        font-size: 0.88rem;
+    }
+
+    label {
+        font-size: 0.82rem;
+    }
+
+    /* Section headings */
+    .personal-info h3,
+    .complete-address h3,
+    .mailing-address-header h3 {
+        font-size: 1rem;
+        margin-top: 20px;
+    }
+
+    /* Same-address checkbox */
+    .mailing-address-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-top: 30px;
+    }
+
+    /* Save button — full width on phone */
+    .save-changes {
+        margin-top: 30px;
+    }
+
+    .save-changes button {
+        width: 100%;
+        text-align: center;
+        padding: 13px;
+    }
+
+    /* HR */
+    hr {
+        margin: 10px 0 0 0;
+    }
+}
+
+
+/* ── Extra-small  (≤ 380px) ──────────────────────────────── */
+@media (max-width: 380px) {
+
+    /* Tab nav — full single column */
+    .account-nav ul {
+        grid-template-columns: 1fr;
+    }
+
+    /* Full-name rows — also single column */
+    .full-name {
+        grid-template-columns: 1fr;
+    }
+
+    .content-section {
+        padding: 14px 10px;
+    }
 }

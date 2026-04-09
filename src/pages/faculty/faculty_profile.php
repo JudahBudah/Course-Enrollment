@@ -164,7 +164,7 @@ function sel($faculty, $key, $option) {
                             <div class="info-input">
                                 <!-- Employee ID is read-only / pulled from DB -->
                                 <label for="faculty_id">Faculty ID</label>
-                                <input name="faculty_id" id="faculty_id" value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background:#f5f5f5; color:#888;">
+                                <input name="faculty_id" id="faculty_id" value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background-color: var(--white);  color:var(--text); cursor: not-allowed;">
                             </div>
 
                             <div class="info-input">
@@ -203,7 +203,7 @@ function sel($faculty, $key, $option) {
                             <div class="info-input">
                                 <!-- PLM Email is read-only -->
                                 <label for="plm_email">PLM Email</label>
-                                <input type="email" id="plm_email" value="<?php echo val($faculty, 'email'); ?>" disabled style="background:#f5f5f5; color:#888;">
+                                <input type="email" id="plm_email" value="<?php echo val($faculty, 'email'); ?>" disabled style="background-color: var(--white);  color:var(--text); cursor: not-allowed;">
                             </div>
                         </div>
 

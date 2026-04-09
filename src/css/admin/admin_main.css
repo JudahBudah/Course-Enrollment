@@ -182,8 +182,15 @@ p {
 
 /* ── Layout ────────────────────────────────────────────── */
 
+
+main {
+    min-width: 0; 
+    overflow: hidden; 
+}
+
 .main-flex {
     display: flex;
+    overflow: hidden;
 }
 
 .spacer {

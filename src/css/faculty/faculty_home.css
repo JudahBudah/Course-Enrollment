@@ -85,9 +85,15 @@
 
 .faculty-details {
     display: grid;
+    min-width: 315px;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px 32px;
     flex: 1;
+}
+
+.faculty-details-wrapper {
+    overflow-x: auto;
+    width: 100%;
 }
 
 .detail-item label {
@@ -249,7 +255,7 @@
 
 .mini-weekly-grid {
     min-width: 420px;
-    background: var(--off);
+    background: var(--white-pr);
     display: grid;
     grid-template-columns: 36px repeat(6, 1fr);
     padding-bottom: 12px;
@@ -381,9 +387,9 @@
 }
 
 .event-dot {
-    width: 4px;
+    width: 16px;
     height: 4px;
-    border-radius: 50%;
+    border-radius: 2px;
     background: var(--red);
     position: absolute;
     bottom: 3px;
@@ -422,7 +428,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1.4rem;
+    font-size: clamp(1.2rem, 1.1rem + 1vw, 1.4rem);
     margin: 0 0 10px 0;
 }
 
@@ -519,6 +525,22 @@
 
     .faculty-title-content {
         padding: 0;
+    }
+}
+
+@media (max-width: 785px) {
+    .faculty-divider {
+        height: 1px;
+        width: 100%;
+    }
+
+    .faculty-body {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .avatar-wrap {
+        align-self: center;
     }
 }
 

@@ -653,9 +653,9 @@ if ($student_block_id) {
                         </tr>
                         <?php endwhile; ?>
                         <?php if ($count === 0): ?>
-                        <tr>
-                            <td colspan="7" class="center" style="padding:2rem;color:var(--text-label);">
-                                <i class="fa-solid fa-info-circle" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                        <tr class="avail-center-tr">
+                            <td colspan="7" class="avail-center" style="padding:2rem;color:var(--text-label);">
+                                <i class="fa-solid fa-info-circle" ></i>
                                 No available subjects to enroll. You are enrolled in all available subjects.
                             </td>
                         </tr>

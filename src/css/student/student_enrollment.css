@@ -152,6 +152,11 @@ td.center, th.center {
     text-align: center;
 }
 
+.avail-center {
+    text-align: center;
+    vertical-align: middle;
+}
+
 input[type="checkbox"] {
     display: block;
     margin: auto;

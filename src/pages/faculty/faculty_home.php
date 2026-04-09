@@ -207,30 +207,32 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                         <p><?php echo htmlspecialchars($faculty_data['email']); ?></p>
                     </div>
                     <div class="faculty-divider"></div>
-                    <div class="faculty-details">
-                        <div class="detail-item">
-                            <label>Employee ID</label>
-                            <span><?php echo htmlspecialchars($faculty_data['employee_id']); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Position</label>
-                            <span><?php echo htmlspecialchars($faculty_data['position'] ?? 'N/A'); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <label>College</label>
-                            <span><?php echo htmlspecialchars($faculty_data['college'] ?? 'N/A'); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Department</label>
-                            <span><?php echo htmlspecialchars($faculty_data['department'] ?? 'N/A'); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Employment Status</label>
-                            <span><?php echo htmlspecialchars(ucfirst($faculty_data['employment_status'] ?? 'N/A')); ?></span>
-                        </div>
-                        <div class="detail-item">
-                            <label>Specialization</label>
-                            <span><?php echo htmlspecialchars($faculty_data['specialization'] ?? 'N/A'); ?></span>
+                    <div class="faculty-details-wrapper">
+                        <div class="faculty-details">
+                            <div class="detail-item">
+                                <label>Employee ID</label>
+                                <span><?php echo htmlspecialchars($faculty_data['employee_id']); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Position</label>
+                                <span><?php echo htmlspecialchars($faculty_data['position'] ?? 'N/A'); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>College</label>
+                                <span><?php echo htmlspecialchars($faculty_data['college'] ?? 'N/A'); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Department</label>
+                                <span><?php echo htmlspecialchars($faculty_data['department'] ?? 'N/A'); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Employment Status</label>
+                                <span><?php echo htmlspecialchars(ucfirst($faculty_data['employment_status'] ?? 'N/A')); ?></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Specialization</label>
+                                <span><?php echo htmlspecialchars($faculty_data['specialization'] ?? 'N/A'); ?></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -300,6 +302,9 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
 
                     <!-- GRID VIEW -->
                     <div id="schedGridView" style="display:none;overflow-x:auto;">
+                        <div id="gridEmpty" class="sched-empty" style="display:none;">
+                            <i class="fa-solid fa-calendar-xmark"></i> No classes to display.
+                        </div>
                         <div class="mini-weekly-grid" id="miniWeeklyGrid"></div>
                     </div>
                 </div>
@@ -329,14 +334,20 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                 </div>
             </div>
 
-            <!-- ANNOUNCEMENTS (replaces static News & Events) -->
-            <div class="card" style="margin-top:1.5rem;">
-                <div class="card-header">
-                    <h2><i class="fa-solid fa-bullhorn" style="color:var(--gold);margin-right:0.5rem;"></i>Announcements</h2>
+            <!-- NEWS & EVENTS -->
+            <div class="news-events-section">
+                <div class="news-events-header">
+                    <div class="news-events-title">
+                        <i class="fa-regular fa-newspaper"></i>
+                        <span>News & Events</span>
+                    </div>
+                    <div class="nav-buttons">
+                        <button onclick="annScroll(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="annScroll(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
                 </div>
-                <div style="padding:0.5rem 0;">
-                    <?php $ann_audience = 'faculty'; include('../../php/announcement_feed.php'); ?>
-                </div>
+                <hr>
+                <?php $ann_audience = 'students'; include('../../php/announcement_feed.php'); ?>
             </div>
         </main>
     </div>

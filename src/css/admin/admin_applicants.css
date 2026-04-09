@@ -312,6 +312,75 @@
     }
 
     .filter-tabs {
-        padding: 0.75rem 1rem 0;
+        padding: 0.75rem 1rem 0.75rem;
+    }
+}
+
+
+/* ── Responsive Table → Card layout (≤ 600px) ─── */
+
+@media (max-width: 600px) {
+
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table,
+    .data-table tbody,
+    .data-table tr,
+    .data-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .data-table tr {
+        border: 1px solid var(--off);
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: var(--white-pr);
+    }
+
+    .data-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid var(--off);
+        font-size: clamp(0.78rem, 3vw, 0.88rem);
+        min-height: 0;
+    }
+
+    .data-table td:last-child {
+        border-bottom: none;
+    }
+
+    /* Hide the checkbox column entirely on mobile */
+    .data-table td:first-child {
+        display: none;
+    }
+
+    /* Inject labels via data-label attribute */
+    .data-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: clamp(0.7rem, 2.5vw, 0.78rem);
+        color: var(--text-label);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding-top: 0.1rem;
+    }
+
+    .data-table .action-buttons {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .batch-bar {
+        margin: 0.5rem;
+        padding: 0.5rem 0.75rem;
     }
 }
