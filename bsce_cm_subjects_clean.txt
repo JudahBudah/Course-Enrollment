@@ -1,0 +1,78 @@
+BSCE-CM|CET 0111|Calculus 1|3|3|0|CET|1|1st|
+BSCE-CM|CET 0112|Chemistry for Engineers|3|3|0|CET|1|1st|
+BSCE-CM|CET 0112.1|Chemistry for Engineers|1|0|1|CET|1|1st|
+BSCE-CM|CIV 0111|Civil Engineering Orientation|2|2|0|CIV|1|1st|
+BSCE-CM|MMW 001|Mathematics in the Modern World|3|3|0|MMW|1|1st|
+BSCE-CM|STS 002|Science, Technology and Society|3|3|0|STS|1|1st|
+BSCE-CM|ITE 0001|Living in the IT ERA|3|3|0|ITE|1|1st|
+BSCE-CM|PED 0001|Foundation of Physical Activities|2|2|0|PED|1|1st|
+BSCE-CM|NSTP 1|National Service Training Program - ROTC 1/CWTS 1|3|3|0|NSTP|1|1st|
+BSCE-CM|CET 0121|Calculus 2|2|2|0|CET|1|2nd|CET 0111
+BSCE-CM|CET 0122A|Physics for Engineers|4|4|0|CET|1|2nd|CET 0111, CET 0121
+BSCE-CM|CET 0122.1|Physics for Engineers|1|0|1|CET|1|2nd|CET 0122
+BSCE-CM|CIV 0121|Engineering Drawing and Plans|1|1|0|CIV|1|2nd|
+BSCE-CM|EIT 0121.1|Computer Fundamentals and Programming 1|1|1|0|EIT|1|2nd|
+BSCE-CM|UTS 0003|Understanding the Self|3|3|0|UTS|1|2nd|
+BSCE-CM|TCW 0005|The Contemporary World|3|3|0|TCW|1|2nd|
+BSCE-CM|PCM 0006|Purposive Communication|3|3|0|PCM|1|2nd|
+BSCE-CM|IPP 0010A|Interdisiplinaryong Pagbasa at Pagsulat sa mga Diskurso ng Pagpapahayag|3|3|0|IPP|1|2nd|
+BSCE-CM|PED 0012|PE Elective (12, 13, or 14)|2|2|0|PED|1|2nd|PED 0001
+BSCE-CM|NSTP2|National Service Training Program - ROTC 1/CWTS 1|3|3|0|NSTP|1|2nd|NSTP1
+BSCE-CM|CET 0214|Statics of Rigid Bodies|3|3|0|CET|2|1st|CET 0121, CET 0122
+BSCE-CM|CET 0216|Engineering Economics|3|3|0|CET|2|1st|2nd Year Standing
+BSCE-CM|CIV 0211A|Fundamentals of Surveying|4|4|0|CIV|2|1st|CIV 0121
+BSCE-CM|CIV 0211.1|Fundamentals of Surveying|1|0|1|CIV|2|1st|CIV 0211
+BSCE-CM|EIT 0211.1|Computer Fundamentals and Programming 2|1|1|0|EIT|2|1st|EIT 0121.1
+BSCE-CM|ETH 0008|Ethics|3|3|0|ETH|2|1st|
+BSCE-CM|LWR 0009|Life and Works of Rizal|3|3|0|LWR|2|1st|
+BSCE-CM|RPH 0004|Readings in Philippine History|3|3|0|RPH|2|1st|
+BSCE-CM|PED 0013|PE Elective (12, 13, or 14)|2|2|0|PED|2|1st|PED 0001
+BSCE-CM|CET 0123.1|Computer-Aided Drafting|1|1|0|CET|2|2nd|CIV 0121
+BSCE-CM|CET 0211|Differential Equations|3|3|0|CET|2|2nd|CET 0121
+BSCE-CM|CET 0212|Engineering Data Analysis|3|3|0|CET|2|2nd|
+BSCE-CM|CET 0221|Engineering Management|2|2|0|CET|2|2nd|
+BSCE-CM|CET 0223|Dynamics of Rigid Bodies|2|2|0|CET|2|2nd|CET 0214
+BSCE-CM|CIV 0221|Geology for Civil Engineers|2|2|0|CIV|2|2nd|CET 0112
+BSCE-CM|CIV 0222|Mechanics of Deformable Bodies|4|4|0|CIV|2|2nd|CET 0214
+BSCE-CM|AAP 0007|Art Appreciation|3|3|0|AAP|2|2nd|
+BSCE-CM|PED 0014|PE Elective (12, 13, OR 14)|2|2|0|PED|2|2nd|PED 001
+BSCE-CM|GTB 121|Great Books|3|3|0|GTB|3|1st|
+BSCE-CM|CIV 0311|Highway and Railroad Engineering|3|3|0|CIV|3|1st|CIV 0211
+BSCE-CM|CIV 0312|Hydrology|2|2|0|CIV|3|1st|
+BSCE-CM|CIV 0313|Numerical Solutions to CE Problems|2|2|0|CIV|3|1st|CET 0121
+BSCE-CM|CIV 0313.1|Numerical Solutions to CE Problems|1|0|1|CIV|3|1st|CET 0313
+BSCE-CM|CIV 0314|Structural Theory|3|3|0|CIV|3|1st|CIV 0222
+BSCE-CM|CIV 0314.1|Structural Theory|1|0|1|CIV|3|1st|CET 0314
+BSCE-CM|ELE 0318|Engineering Utilities 1|3|3|0|ELE|3|1st|CET 0122
+BSCE-CM|MEC 0317|Engineering Utilities 2|3|3|0|MEC|3|1st|CET 0122
+BSCE-CM|CET 0411|Technopreneurship 101|3|3|0|CET|3|2nd|3rd Year Standing
+BSCE-CM|CIV 0321|Building Systems Design|2|2|0|CIV|3|2nd|CIV 0121
+BSCE-CM|CIV 0321.1|Building Systems Design|1|0|1|CIV|3|2nd|CIV 0321
+BSCE-CM|CIV 0322|Civil Engineering Law, Ethics and Contracts|2|2|0|CIV|3|2nd|3rd Year Standing
+BSCE-CM|CIV 0323A|Hydraulics|5|5|0|CIV|3|2nd|CET 0223
+BSCE-CM|CIV 0323.1|Hydraulics|1|0|1|CIV|3|2nd|CIV 0323
+BSCE-CM|CIV 0324|Principles of Reinforced and Prestressed Concrete|3|3|0|CIV|3|2nd|CIV 0314
+BSCE-CM|CIV 0324.1|Principles of Reinforced and Prestressed Concrete|1|0|1|CIV|3|2nd|CIV 0324
+BSCE-CM|CIV 0325|Principles of Transportation Engineering|3|3|0|CIV|3|2nd|CIV 0311
+BSCE-CM|CIV 0331A|On-the-Job Training -240 hrs|3|3|0|CIV|3|summer|Incoming 4th Year Standing
+BSCE-CM|CIV 0331.1|On-the-Job Training -240 hrs|1|0|1|CIV|3|summer|CIV 0331
+BSCE-CM|PPC 122|Philippine Popular Culture|3|3|0|PPC|4|1st|
+BSCE-CM|CIV 0411|CE Project 1|1|1|0|CIV|4|1st|4th Year Standing
+BSCE-CM|CIV 0411.1|CE Project 1|1|0|1|CIV|4|1st|CIV 0411
+BSCE-CM|CIV 0412A|Geotechnical Engineering 1 - Soil Mechanics|4|4|0|CIV|4|1st|CIV 0221, CIV 0222
+BSCE-CM|CIV 0412.1|Geotechnical Engineering 1 - Soil Mechanics|1|0|1|CIV|4|1st|CIV 0412
+BSCE-CM|CIV 0413|Quantity Surveying|1|1|0|CIV|4|1st|CIV 0321
+BSCE-CM|CIV 0413.1|Quantity Surveying|1|0|1|CIV|4|1st|CIV 0413
+BSCE-CM|CIV 0414|Principles of Steel Design|2|2|0|CIV|4|1st|CIV 0314
+BSCE-CM|CIV 0414.1|Principles of Steel Design|1|0|1|CIV|4|1st|CIV 0414
+BSCE-CM|CIVCM 0415|Construction Cost Engineering|3|3|0|CIVCM|4|1st|4th Year Standing
+BSCE-CM|CIVCM 0416|Advanced Construction Methods and Equipment|3|3|0|CIVCM|4|1st|4th Year Standing
+BSCE-CM|CIV 0421|CE Project 2|1|1|0|CIV|4|2nd|CIV 0411
+BSCE-CM|CIV 0421.1|CE Project 2|1|0|1|CIV|4|2nd|CIV 0421
+BSCE-CM|CIV 0422|Construction Methods and Project Management|3|3|0|CIV|4|2nd|4th Year Standing
+BSCE-CM|CIV 0423|Construction Materials and Testing|3|3|0|CIV|4|2nd|CIV 0222
+BSCE-CM|CIV 0423.1|Construction Materials and Testing|2|0|2|CIV|4|2nd|CIV 0423
+BSCE-CM|CIVCM 0424|Project Construction and Management|3|3|0|CIVCM|4|2nd|4th Year Standing
+BSCE-CM|CIVCM 0425|Total Quantity Management|3|3|0|CIVCM|4|2nd|4th Year Standing
+BSCE-CM|CIVCM 0426|Construction Occupational Safety and Health|3|3|0|CIVCM|4|2nd|4th Year Standing
+BSCE-CM|CIV 0427.1|Special Topics in Civil Engineering|1|1|0|CIV|4|2nd|Graduating Status

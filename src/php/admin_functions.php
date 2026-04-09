@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/no_cache.php';
 
 function check_admin_login($con) 
 {
@@ -17,7 +18,7 @@ function check_admin_login($con)
         }
     }
 
-    header("Location: admin_login.php");
+    header("Location: ../../pages/login_hub.php?portal=admin");
     die;
 }
 

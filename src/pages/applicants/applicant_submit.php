@@ -5,22 +5,81 @@ include("../../php/applicant_functions.php");
 
 $applicant_data = check_applicant_login($con);
 
+// Ensure upload columns exist
+$doc_names = ['form138', 'birth_cert', 'good_moral', 'our_au001', 'our_au002'];
+$cols = [];
+$col_res = mysqli_query($con, "SHOW COLUMNS FROM applicants");
+while ($c = mysqli_fetch_assoc($col_res)) $cols[] = $c['Field'];
+foreach ($doc_names as $dn) {
+    if (!in_array('doc_' . $dn, $cols))
+        mysqli_query($con, "ALTER TABLE applicants ADD COLUMN doc_{$dn} VARCHAR(255) DEFAULT NULL");
+}
+// Re-fetch after possible ALTER
+$applicant_data = check_applicant_login($con);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $applicant_id = $applicant_data['applicant_id'];
+    $upload_dir   = __DIR__ . "/../../uploads/applicants/{$applicant_id}/";
 
-    $upload_dir = "uploads/applicants/{$applicant_id}/";
-    if (!file_exists($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
+    if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+
+    $allowed_ext  = ['pdf', 'jpg', 'jpeg', 'png'];
+    $max_size     = 5 * 1024 * 1024; // 5 MB
+    $saved        = [];
+    $errors       = [];
+
+    foreach ($doc_names as $dn) {
+        if (empty($_FILES[$dn]['name'])) continue;
+
+        $file     = $_FILES[$dn];
+        $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $errors[] = "Upload error for {$dn}.";
+            continue;
+        }
+        if (!in_array($ext, $allowed_ext)) {
+            $errors[] = "{$dn}: Invalid file type. Allowed: PDF, JPG, PNG.";
+            continue;
+        }
+        if ($file['size'] > $max_size) {
+            $errors[] = "{$dn}: File exceeds 5MB limit.";
+            continue;
+        }
+
+        $filename = $dn . '_' . time() . '.' . $ext;
+        if (move_uploaded_file($file['tmp_name'], $upload_dir . $filename)) {
+            $saved[$dn] = $filename;
+        } else {
+            $errors[] = "Failed to save {$dn}. Check server permissions.";
+        }
     }
 
-    $stmt = mysqli_prepare($con,
-        "UPDATE applicants SET documents_submitted = 1 WHERE applicant_id = ?"
-    );
-    mysqli_stmt_bind_param($stmt, "i", $applicant_id);
-    mysqli_stmt_execute($stmt);
+    if (!empty($errors)) {
+        $error = implode('<br>', $errors);
+    }
 
-    $success = "Documents submitted successfully!";
-    $applicant_data = check_applicant_login($con);
+    if (!empty($saved)) {
+        $set_parts = [];
+        $types     = '';
+        $values    = [];
+        foreach ($saved as $dn => $fname) {
+            $set_parts[] = "doc_{$dn} = ?";
+            $types      .= 's';
+            $values[]    = $fname;
+        }
+        $set_parts[] = 'documents_submitted = 1';
+        $types      .= 'i';
+        $values[]    = $applicant_id;
+
+        $stmt = mysqli_prepare($con, "UPDATE applicants SET " . implode(', ', $set_parts) . " WHERE applicant_id = ?");
+        mysqli_stmt_bind_param($stmt, $types, ...$values);
+        mysqli_stmt_execute($stmt);
+        $success = "Documents uploaded successfully!";
+        $applicant_data = check_applicant_login($con);
+    } elseif (empty($errors)) {
+        $error = "Please select at least one file to upload.";
+    }
 }
 
 $initials  = strtoupper(
@@ -156,6 +215,13 @@ $documents = [
             <p>Upload all required documents for your application</p>
         </div>
 
+        <?php if (isset($error)): ?>
+            <div class="error-message">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <?php echo $error; ?>
+            </div>
+        <?php endif; ?>
+
         <?php if (isset($success)): ?>
             <div class="success-message">
                 <i class="fa-solid fa-circle-check"></i>
@@ -179,23 +245,39 @@ $documents = [
                 </div>
 
                 <div class="documents-list">
-                    <?php foreach ($documents as $doc): ?>
+                    <?php foreach ($documents as $doc): 
+                        $uploaded = $applicant_data['doc_' . $doc['name']] ?? null;
+                    ?>
                     <div class="document-item">
                         <div class="document-info">
-                            <i class="fa-solid fa-file-pdf"></i>
+                            <i class="fa-solid fa-file"></i>
                             <div>
                                 <h4><?php echo htmlspecialchars($doc['label']); ?></h4>
                                 <p><?php echo htmlspecialchars($doc['desc']); ?></p>
+                                <?php if ($uploaded): ?>
+                                    <p style="color:var(--green);font-size:0.85rem;margin-top:0.25rem;">
+                                        <i class="fa-solid fa-check-circle"></i> Uploaded: <?php echo htmlspecialchars($uploaded); ?>
+                                    </p>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="document-upload">
+                            <?php if ($uploaded): ?>
+                                <button type="button" class="upload-btn view-btn"
+                                    data-src="../../uploads/applicants/<?php echo $applicant_data['applicant_id']; ?>/<?php echo htmlspecialchars($uploaded); ?>"
+                                    data-name="<?php echo htmlspecialchars($uploaded); ?>"
+                                    data-ext="<?php echo strtolower(pathinfo($uploaded, PATHINFO_EXTENSION)); ?>"
+                                    onclick="openFileModal(this)">
+                                    <i class="fa-solid fa-eye"></i> View File
+                                </button>
+                            <?php endif; ?>
                             <input type="file"
                                    name="<?php echo $doc['name']; ?>"
                                    id="<?php echo $doc['name']; ?>"
                                    accept=".pdf,.jpg,.jpeg,.png">
                             <label for="<?php echo $doc['name']; ?>" class="upload-btn">
                                 <i class="fa-solid fa-upload"></i>
-                                Choose File
+                                <?php echo $uploaded ? 'Replace File' : 'Choose File'; ?>
                             </label>
                         </div>
                     </div>
@@ -239,7 +321,40 @@ $documents = [
     </main>
 </div><!-- /.main-flex -->
 
+<!-- ── File Preview Modal ──────────────────────────────── -->
+<div class="file-modal" id="fileModal">
+    <div class="file-modal-box">
+        <div class="file-modal-header">
+            <span id="fileModalName"></span>
+            <button class="file-modal-close" onclick="closeFileModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="file-modal-body" id="fileModalBody"></div>
+    </div>
+</div>
+
 <script src="../../js/applicant/applicant_main.js"></script>
 <script src="../../js/applicant/applicant_submit.js"></script>
+<script>
+    function openFileModal(btn) {
+        const src  = btn.dataset.src;
+        const name = btn.dataset.name;
+        const ext  = btn.dataset.ext;
+        document.getElementById('fileModalName').textContent = name;
+        const body = document.getElementById('fileModalBody');
+        body.innerHTML = ext === 'pdf'
+            ? `<iframe src="${src}"></iframe>`
+            : `<img src="${src}" alt="${name}">`;
+        document.getElementById('fileModal').classList.add('open');
+    }
+    function closeFileModal() {
+        document.getElementById('fileModal').classList.remove('open');
+        document.getElementById('fileModalBody').innerHTML = '';
+    }
+    document.getElementById('fileModal').addEventListener('click', function(e) {
+        if (e.target === this) closeFileModal();
+    });
+</script>
 </body>
 </html>

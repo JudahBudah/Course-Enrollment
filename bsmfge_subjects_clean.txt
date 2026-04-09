@@ -1,0 +1,79 @@
+BSMfgE|CET 0111|Calculus 1|3|3|0|CET|1|1st|
+BSMfgE|CET 0112|Chemistry for Engineers|4|3|0|CET|1|1st|CET 0112
+BSMfgE|CET 0112.1|Chemistry for Engineers|0|0|1|CET|1|1st|CET 0112
+BSMfgE|CET 0113.1|Engineering Drawing|1|1|0|CET|1|1st|
+BSMfgE|PCM 0006|Purposive Communication|3|3|0|PCM|1|1st|
+BSMfgE|MMW 0001|Mathematics in the Modern World|3|3|0|MMW|1|1st|
+BSMfgE|UTS 0003|Understanding the Self|3|3|0|UTS|1|1st|
+BSMfgE|IPP 0010|Interdisiplinaryong Pagbasa at Pagsulat Tungo|3|3|0|IPP|1|1st|
+BSMfgE|PED 0001|Foundation of Physical Activities|2|2|0|PED|1|1st|
+BSMfgE|NSTP 01|National Service Training Program 1- ROTC 1/ CWTS 1|3|3|0|NSTP|1|1st|
+BSMfgE|CET 0121|Calculus 2|3|3|0|CET|1|2nd|CET 0111
+BSMfgE|CET 0122A|Physics for Engineers|5|4|0|CET|1|2nd|CET 0111, CET 0121
+BSMfgE|CET 0122.1|Physics for Engineers|0|0|1|CET|1|2nd|CET 0122
+BSMfgE|CET 0123.1|Computer-Aided Drafting|1|1|0|CET|1|2nd|
+BSMfgE|AAP 0007|Art Appreciation|3|3|0|AAP|1|2nd|
+BSMfgE|LWR 0009|Life and Works of Rizal|3|3|0|LWR|1|2nd|
+BSMfgE|RPH 0004|Readings in Philippine History|3|3|0|RPH|1|2nd|
+BSMfgE|TCW 0005|The Contemporary World|3|3|0|TCW|1|2nd|
+BSMfgE|ITE 0001|Living in the IT Era|3|3|0|ITE|1|2nd|
+BSMfgE|PED 0012|PE Elective (12, 13, or 14)|2|2|0|PED|1|2nd|PED 0001
+BSMfgE|NSTP 02|National Service Training Program 2- ROTC 2/ CWTS 2|3|3|0|NSTP|1|2nd|NSTP 1
+BSMfgE|CET 0211|Differential Equations|3|3|0|CET|2|1st|CET 0121
+BSMfgE|CET 0214|Statics of Rigid Bodies|3|3|0|CET|2|1st|CET 0122, CET 0121
+BSMfgE|STS 0002|Science, Technology and Society|3|3|0|STS|2|1st|
+BSMfgE|ELE 0219|Basic Electrical Engineering|3|2|0|ELE|2|1st|CET 0122, CET 0121
+BSMfgE|ELE 0219.1|Basic Electrical Engineering|0|0|1|ELE|2|1st|ELE 0219
+BSMfgE|MEC 0211|Thermodynamics 1|3|3|0|MEC|2|1st|CET 0122, CET 0121
+BSMfgE|MEC 0212.1|Workshop, Theory and Practice|1|1|0|MEC|2|1st|
+BSMfgE|GTB 121|Great Books|3|3|0|GTB|2|1st|
+BSMfgE|PED 0013|PE Elective (12, 13, or 14)|2|2|0|PED|2|1st|
+BSMfgE|CET 0212|Engineering Data Analysis|3|3|0|CET|2|2nd|CET 0111
+BSMfgE|CET 0221|Engineering Management|3|3|0|CET|2|2nd|
+BSMfgE|CET 0223|Dynamics of Rigid Bodies|3|3|0|CET|2|2nd|CET 0214
+BSMfgE|ECE 0225|Basic Electronics|3|2|0|ECE|2|2nd|ELE 0219
+BSMfgE|ECE 0225.1|Basic Electronics|0|0|1|ECE|2|2nd|ECE 0225
+BSMfgE|MEC 0222.1|Machine Shop Theory|3|3|0|MEC|2|2nd|MEC 0212.1
+BSMfgE|MEC 0223|Advanced Mathematics for ME|1|1|0|MEC|2|2nd|CET 0211
+BSMfgE|PPC 122|Philippine Popular Culture|3|3|0|PPC|2|2nd|
+BSMfgE|PED 0014|PE Elective (12, 13, or 14)|2|2|0|PED|2|2nd|
+BSMfgE|MEC 0311|Mechanics of Deformable Bodies|3|3|0|MEC|3|1st|CET 0223
+BSMfgE|MEC 0315|Vibration Engineering|2|2|0|MEC|3|1st|CET 0211
+BSMfgE|MEC 0313|Fluid Mechanics|2|2|0|MEC|3|1st|MEC 0211
+BSMfgE|MFG 0311|Engineering Production Management|3|3|0|MFG|3|1st|
+BSMfgE|MFG 0312|Kinematics of Machinery|4|3|0|MFG|3|1st|
+BSMfgE|MFG 0312.1|Kinematics of Machinery|0|0|1|MFG|3|1st|
+BSMfgE|MFG 0313|Manufacturing Processes 1|2|2|0|MFG|3|1st|
+BSMfgE|MFG 0314|MFG Elective 1|2|2|0|MFG|3|1st|
+BSMfgE|CET 0216|Engineering Economics|3|3|0|CET|3|2nd|
+BSMfgE|MEC 0321|Methods of Research for ME|1|1|0|MEC|3|2nd|CET 0212
+BSMfgE|MEC 0325|Material Science & Engineering for ME|3|2|0|MEC|3|2nd|MEC 0311
+BSMfgE|MEC 0325.1|Material Science & Engineering for ME|0|0|1|MEC|3|2nd|MEC 0325
+BSMfgE|MFG 0321.1|Manufacturing Processes 2|2|2|0|MFG|3|2nd|
+BSMfgE|MFG 0322|Ergonomics|2|2|0|MFG|3|2nd|
+BSMfgE|MFG 0323|Lean Manufacturing|3|3|0|MFG|3|2nd|
+BSMfgE|MFG 0324|MFG Elective 2|2|2|0|MFG|3|2nd|
+BSMfgE|EITH 0329.1|Computer Fundamentals and Programming|1|1|0|EITH|3|2nd|
+BSMfgE|ETH 0008|Ethics|3|3|0|ETH|3|2nd|
+BSMfgE|MFGE 0330.1|On The Job Training 1 (240 hrs)|1|1|0|MFGE|3|summer|
+BSMfgE|CET 0411|Technopreneurship 101|3|3|0|CET|4|1st|
+BSMfgE|MEC 0414|Control Engineering|3|2|0|MEC|4|1st|ECE 0225
+BSMfgE|MEC 0414.1|Control Engineering|0|0|1|MEC|4|1st|MEC 0414
+BSMfgE|MFG 0411|Computer-Aided Manufacturing|2|1|0|MFG|4|1st|
+BSMfgE|MFG 0411.1|Computer-Aided Manufacturing|0|0|1|MFG|4|1st|
+BSMfgE|MFG 0412|Design of Jigs and Fixtures|3|3|0|MFG|4|1st|
+BSMfgE|MFG 0413|Design of Machinery|2|2|0|MFG|4|1st|
+BSMfgE|MFG 0413.1|Design of Machinery|3|0|1|MFG|4|1st|
+BSMfgE|MFG 0414|Computer-Aided Engineering|1|1|0|MFG|4|1st|
+BSMfgE|MFG 0414.1|Computer-Aided Engineering|2|0|1|MFG|4|1st|
+BSMfgE|MFG 0416|Machine Elements|3|3|0|MFG|4|1st|
+BSMfgE|MEC 0425|Manufacturing & Industrial Processes|1|1|0|MEC|4|1st|
+BSMfgE|MEC 0424|Basic Occupational Safety & Health|3|3|0|MEC|4|2nd|
+BSMfgE|MFG 0421.1|Project Study|2|2|0|MFG|4|2nd|
+BSMfgE|MFG 0422|Engineering Ethics, Codes and Standards|2|2|0|MFG|4|2nd|
+BSMfgE|MFG 0423|Computer-Integrated Manufacturing (Lecture)|1|1|0|MFG|4|2nd|
+BSMfgE|MFG 0423.1|Computer-Integrated Manufacturing|1|1|0|MFG|4|2nd|
+BSMfgE|MFG 0424|Mechatronics (Lecture)|3|2|0|MFG|4|2nd|
+BSMfgE|MFG 0424.1|Mechatronics (Lecture)|0|0|1|MFG|4|2nd|
+BSMfgE|MFG 0425|Product Design (Lecture)|3|2|0|MFG|4|2nd|
+BSMfgE|MFG 0425.1|Product Design (Lecture)|0|0|1|MFG|4|2nd|

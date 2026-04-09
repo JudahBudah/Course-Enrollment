@@ -44,26 +44,107 @@ mysqli_stmt_close($stmt);
 $total_subjects = count($subjects);
 $total_units    = array_sum(array_column($subjects, 'units'));
 
+// Fetch curriculum URL for the student's course
+$curriculum_url = '';
+$course_info = get_course_info($con, $user_data['course'] ?? '');
+$curriculum_url = $course_info['curriculum_url'] ?? '';
+
 // Build scheduleData for the weekly grid
 function parseDays(string $day_str): array {
     $day_str = trim($day_str);
-    $map = [
-        'Monday'    => 'M',  'Tuesday' => 'T',  'Wednesday' => 'W',
-        'Thursday'  => 'TH', 'Friday'  => 'F',  'Saturday'  => 'S', 'Sunday' => 'SU',
-        'Mon' => 'M', 'Tue' => 'T', 'Wed' => 'W', 'Thu' => 'TH', 'Fri' => 'F', 'Sat' => 'S',
-        'MW'  => ['M','W'],  'TTH' => ['T','TH'], 'MWF' => ['M','W','F'],
-        'TF'  => ['T','F'],  'MTH' => ['M','TH'],
+    
+    // Direct mapping for common patterns
+    $direct_map = [
+        'MW'   => ['M','W'],
+        'MWF'  => ['M','W','F'],
+        'TTH'  => ['T','TH'],
+        'TH'   => ['TH'],  // Thursday alone
+        'TF'   => ['T','F'],
+        'MTH'  => ['M','TH'],
+        'WF'   => ['W','F'],
+        'MF'   => ['M','F'],
+        'THS'  => ['TH','S'],  // Thursday Saturday
+        'MTWTHF' => ['M','T','W','TH','F'],  // Weekdays
     ];
-    if (isset($map[$day_str])) {
-        return is_array($map[$day_str]) ? $map[$day_str] : [$map[$day_str]];
+    
+    // Single day mapping
+    $single_map = [
+        'Monday' => 'M', 'Mon' => 'M', 'M' => 'M',
+        'Tuesday' => 'T', 'Tue' => 'T', 'T' => 'T',
+        'Wednesday' => 'W', 'Wed' => 'W', 'W' => 'W',
+        'Thursday' => 'TH', 'Thu' => 'TH', 'TH' => 'TH',
+        'Friday' => 'F', 'Fri' => 'F', 'F' => 'F',
+        'Saturday' => 'S', 'Sat' => 'S', 'S' => 'S',
+        'Sunday' => 'SU', 'Sun' => 'SU', 'SU' => 'SU',
+    ];
+    
+    // Check direct mapping first (case-insensitive)
+    $day_str_upper = strtoupper($day_str);
+    if (isset($direct_map[$day_str_upper])) {
+        return $direct_map[$day_str_upper];
     }
-    $parts  = preg_split('/[,\/]/', $day_str);
+    
+    // Check if it's a single day
+    if (isset($single_map[$day_str])) {
+        return [$single_map[$day_str]];
+    }
+    
+    // Try splitting by common delimiters (comma, slash, space)
+    $parts = preg_split('/[,\/\s]+/', $day_str);
+    if (count($parts) > 1) {
+        $result = [];
+        foreach ($parts as $p) {
+            $p = trim($p);
+            if (empty($p)) continue;
+            
+            // Check if this part is in single_map
+            if (isset($single_map[$p])) {
+                $result[] = $single_map[$p];
+            } else {
+                // Recursively parse this part
+                $sub_days = parseDays($p);
+                $result = array_merge($result, $sub_days);
+            }
+        }
+        return array_unique($result);
+    }
+    
+    // Try to parse as concatenated abbreviations (e.g., "MWF", "THS")
+    // This is a fallback for patterns not in direct_map
     $result = [];
-    foreach ($parts as $p) {
-        $p        = trim($p);
-        $result[] = $map[$p] ?? $p;
+    $i = 0;
+    $len = strlen($day_str_upper);
+    
+    while ($i < $len) {
+        // Try two-character match first (for TH, SU)
+        if ($i + 1 < $len) {
+            $two_char = substr($day_str_upper, $i, 2);
+            if ($two_char === 'TH') {
+                $result[] = 'TH';
+                $i += 2;
+                continue;
+            }
+            if ($two_char === 'SU') {
+                $result[] = 'SU';
+                $i += 2;
+                continue;
+            }
+        }
+        
+        // Single character match
+        $one_char = substr($day_str_upper, $i, 1);
+        if (in_array($one_char, ['M','T','W','F','S'])) {
+            // Special case: 'T' could be Tuesday or part of 'TH'
+            // We already checked for 'TH' above, so this is Tuesday
+            $result[] = $one_char === 'T' ? 'T' : $one_char;
+            $i++;
+        } else {
+            // Unknown character, skip it
+            $i++;
+        }
     }
-    return $result;
+    
+    return !empty($result) ? array_unique($result) : [$day_str];
 }
 
 function parseTime(string $time_str): array {
@@ -179,7 +260,7 @@ foreach ($subjects as $subj) {
                             <ul>
                                 <li><a href="student_info-program.php">Program</a></li>
                                 <li><a href="student_info-college.php">College</a></li>
-                                <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                                <?php if ($curriculum_url): ?><li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li><?php endif; ?>
                             </ul>
                         </div>
                     </li>

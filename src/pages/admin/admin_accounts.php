@@ -5,6 +5,13 @@ include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
 $self_id    = (int)$_SESSION['admin_id'];
+
+// Only superadmins can access this page
+if (($admin_data['role'] ?? 'admin') !== 'superadmin') {
+    header("Location: admin_home.php");
+    die;
+}
+
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM applicants WHERE application_status='pending'"))['c'];
 
 // Flash messages
@@ -28,6 +35,7 @@ $q = mysqli_query($con, "SELECT * FROM admins ORDER BY created_at DESC");
 while ($r = mysqli_fetch_assoc($q)) $admins[] = $r;
 
 $superadmin_count = count(array_filter($admins, fn($a) => $a['role'] === 'superadmin'));
+$admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin'));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -135,10 +143,12 @@ $superadmin_count = count(array_filter($admins, fn($a) => $a['role'] === 'supera
                         </a>
                     </li>
                     <li>
+                        <?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
                         <a href="admin_accounts.php" class="active">
                             <i class="fa-solid fa-user-shield"></i>
                             <span class="li-name">Admin Accounts</span>
                         </a>
+                        <?php endif; ?>
                     </li>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
@@ -181,8 +191,8 @@ $superadmin_count = count(array_filter($admins, fn($a) => $a['role'] === 'supera
                     <div class="stat-card blue">
                         <div class="stat-icon"><i class="fa-solid fa-user-shield"></i></div>
                         <div class="stat-content">
-                            <h3>Total Admins</h3>
-                            <p class="stat-number"><?php echo count($admins); ?></p>
+                            <h3>Admins</h3>
+                            <p class="stat-number"><?php echo $admin_count; ?></p>
                         </div>
                     </div>
                     <div class="stat-card gold">

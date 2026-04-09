@@ -14,6 +14,7 @@ if ($action === 'add' || $action === 'edit') {
     $units          = (int) $_POST['units'];
     $lecture_hours  = (float) $_POST['lecture_hours'];
     $lab_hours      = (float) $_POST['lab_hours'];
+    $course_id      = $_POST['course_id'] !== '' ? (int) $_POST['course_id'] : null;
     $department     = trim($_POST['department']);
     $year_level     = $_POST['year_level'] !== '' ? $_POST['year_level'] : null;
     $semester       = $_POST['semester'] !== '' ? $_POST['semester'] : null;
@@ -26,9 +27,14 @@ if ($action === 'add' || $action === 'edit') {
     }
 
     if ($action === 'add') {
-        // Check duplicate code
-        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ?");
-        mysqli_stmt_bind_param($chk, "s", $subject_code);
+        // Check duplicate code + course combination
+        if ($course_id !== null) {
+            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id = ?");
+            mysqli_stmt_bind_param($chk, "si", $subject_code, $course_id);
+        } else {
+            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id IS NULL");
+            mysqli_stmt_bind_param($chk, "s", $subject_code);
+        }
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
@@ -36,8 +42,8 @@ if ($action === 'add' || $action === 'edit') {
             die;
         }
 
-        $stmt = mysqli_prepare($con, "INSERT INTO subjects (subject_code, subject_name, description, units, lecture_hours, lab_hours, department, year_level, semester, prerequisite, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
-        mysqli_stmt_bind_param($stmt, "sssiddsssss", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $department, $year_level, $semester, $prerequisite, $status);
+        $stmt = mysqli_prepare($con, "INSERT INTO subjects (subject_code, subject_name, description, units, lecture_hours, lab_hours, course_id, department, year_level, semester, prerequisite, status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+        mysqli_stmt_bind_param($stmt, "sssiddisssss", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $course_id, $department, $year_level, $semester, $prerequisite, $status);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_subjects.php?error=insert_failed");
@@ -48,9 +54,14 @@ if ($action === 'add' || $action === 'edit') {
     } else {
         $subject_id = (int) $_POST['subject_id'];
 
-        // Check duplicate code excluding self
-        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND subject_id != ?");
-        mysqli_stmt_bind_param($chk, "si", $subject_code, $subject_id);
+        // Check duplicate code + course combination excluding self
+        if ($course_id !== null) {
+            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id = ? AND subject_id != ?");
+            mysqli_stmt_bind_param($chk, "sii", $subject_code, $course_id, $subject_id);
+        } else {
+            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id IS NULL AND subject_id != ?");
+            mysqli_stmt_bind_param($chk, "si", $subject_code, $subject_id);
+        }
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
@@ -58,8 +69,8 @@ if ($action === 'add' || $action === 'edit') {
             die;
         }
 
-        $stmt = mysqli_prepare($con, "UPDATE subjects SET subject_code=?, subject_name=?, description=?, units=?, lecture_hours=?, lab_hours=?, department=?, year_level=?, semester=?, prerequisite=?, status=? WHERE subject_id=?");
-        mysqli_stmt_bind_param($stmt, "sssiddsssssi", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $department, $year_level, $semester, $prerequisite, $status, $subject_id);
+        $stmt = mysqli_prepare($con, "UPDATE subjects SET subject_code=?, subject_name=?, description=?, units=?, lecture_hours=?, lab_hours=?, course_id=?, department=?, year_level=?, semester=?, prerequisite=?, status=? WHERE subject_id=?");
+        mysqli_stmt_bind_param($stmt, "sssiddisssssi", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $course_id, $department, $year_level, $semester, $prerequisite, $status, $subject_id);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_subjects.php?error=update_failed");

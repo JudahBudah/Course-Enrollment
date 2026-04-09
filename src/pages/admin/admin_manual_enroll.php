@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+// Prevent caching
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
 
@@ -47,6 +53,19 @@ if ($enrollments_exists && $classes_exists) {
         ORDER BY s.subject_code
     ");
 
+    $self_enrolled_query = mysqli_query($con, "
+        SELECT e.enrollment_id, e.status, c.class_id, c.section, c.schedule_day,
+               c.schedule_time, c.room,
+               s.subject_code, s.subject_name, s.units,
+               CONCAT(f.first_name,' ',f.last_name) as faculty_name
+        FROM enrollments e
+        JOIN classes c ON e.class_id = c.class_id
+        JOIN subjects s ON c.subject_id = s.subject_id
+        LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
+        WHERE e.student_id = $student_id AND e.status = 'ongoing'
+        ORDER BY s.subject_code
+    ");
+
     $enrolled_query = mysqli_query($con, "
         SELECT e.enrollment_id, e.status, c.class_id, c.section, c.schedule_day,
                c.schedule_time, c.room,
@@ -56,7 +75,7 @@ if ($enrollments_exists && $classes_exists) {
         JOIN classes c ON e.class_id = c.class_id
         JOIN subjects s ON c.subject_id = s.subject_id
         LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
-        WHERE e.student_id = $student_id AND e.status IN ('confirmed','ongoing')
+        WHERE e.student_id = $student_id AND e.status = 'confirmed'
         ORDER BY s.subject_code
     ");
 
@@ -78,13 +97,14 @@ if ($enrollments_exists && $classes_exists) {
         ORDER BY s.subject_code, c.section
     ");
 } else {
-    $reserved_query = $drop_requests_query = $enrolled_query = $available_query = false;
+    $reserved_query = $drop_requests_query = $self_enrolled_query = $enrolled_query = $available_query = false;
 }
 
 // Stats
-$reserved_count      = $reserved_query      ? mysqli_num_rows($reserved_query)      : 0;
-$drop_requests_count = $drop_requests_query ? mysqli_num_rows($drop_requests_query) : 0;
-$enrolled_count      = $enrolled_query      ? mysqli_num_rows($enrolled_query)      : 0;
+$reserved_count        = $reserved_query        ? mysqli_num_rows($reserved_query)        : 0;
+$drop_requests_count   = $drop_requests_query   ? mysqli_num_rows($drop_requests_query)   : 0;
+$self_enrolled_count   = $self_enrolled_query   ? mysqli_num_rows($self_enrolled_query)   : 0;
+$enrolled_count        = $enrolled_query        ? mysqli_num_rows($enrolled_query)        : 0;
 $total_units = 0;
 if ($enrolled_query && $enrolled_count > 0) {
     while ($r = mysqli_fetch_assoc($enrolled_query)) $total_units += $r['units'];
@@ -95,14 +115,6 @@ if ($enrolled_query && $enrolled_count > 0) {
 $reserved_rows = [];
 if ($reserved_query) {
     while ($r = mysqli_fetch_assoc($reserved_query)) $reserved_rows[] = $r;
-}
-
-// Debug rows if none reserved
-$debug_rows = null;
-if (empty($reserved_rows)) {
-    $dq = mysqli_query($con, "SELECT enrollment_id, status FROM enrollments WHERE student_id = $student_id");
-    $debug_rows = [];
-    while ($d = mysqli_fetch_assoc($dq)) $debug_rows[] = $d;
 }
 
 // Block name
@@ -275,6 +287,38 @@ $load_status_card = $total_units > 24 ? 'red' : 'navy';
                     </a>
                 </div>
 
+                <?php if (isset($_GET['success'])): ?>
+                    <?php if ($_GET['success'] === 'drop_accepted'): ?>
+                        <div class="success-message">
+                            <i class="fa-solid fa-check-circle"></i> Drop request accepted successfully.
+                        </div>
+                    <?php elseif ($_GET['success'] === 'drop_rejected'): ?>
+                        <div class="success-message">
+                            <i class="fa-solid fa-check-circle"></i> Drop request rejected. Student remains enrolled.
+                        </div>
+                    <?php elseif ($_GET['success'] === 'self_accepted'): ?>
+                        <div class="success-message">
+                            <i class="fa-solid fa-check-circle"></i> Self-enrollment accepted. Student is now confirmed.
+                        </div>
+                    <?php elseif ($_GET['success'] === 'self_rejected'): ?>
+                        <div class="success-message">
+                            <i class="fa-solid fa-check-circle"></i> Self-enrollment rejected. Subject has been dropped.
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if (isset($_GET['error'])): ?>
+                    <?php if ($_GET['error'] === 'invalid'): ?>
+                        <div class="error-message">
+                            <i class="fa-solid fa-exclamation-triangle"></i> Invalid drop request.
+                        </div>
+                    <?php elseif ($_GET['error'] === 'failed'): ?>
+                        <div class="error-message">
+                            <i class="fa-solid fa-exclamation-triangle"></i> Failed to process drop request.
+                        </div>
+                    <?php endif; ?>
+                <?php endif; ?>
+
                 <?php if (!$block_name): ?>
                 <div class="info-message">
                     <i class="fa-solid fa-info-circle"></i>
@@ -324,24 +368,71 @@ $load_status_card = $total_units > 24 ? 'red' : 'navy';
                 </div>
                 <?php endif; ?>
 
+                <!-- ── Drop Requests Table ──────── -->
+                <?php if ($drop_requests_count > 0): ?>
+                <div class="card" style="margin-bottom:1.5rem;">
+                    <div class="card-header" style="background:#dc2626;color:white;">
+                        <h2><i class="fa-solid fa-right-from-bracket"></i> Drop Requests (<?php echo $drop_requests_count; ?>)</h2>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Units</th>
+                                    <th>Section</th>
+                                    <th>Schedule</th>
+                                    <th>Instructor</th>
+                                    <th>Room</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($dr = mysqli_fetch_assoc($drop_requests_query)): ?>
+                                <tr>
+                                    <td><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($dr['subject_name']); ?></td>
+                                    <td><?php echo $dr['units']; ?></td>
+                                    <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
+                                    <td><?php echo htmlspecialchars(($dr['schedule_day'] ?? 'TBA') . ' ' . ($dr['schedule_time'] ?? '')); ?></td>
+                                    <td><?php echo htmlspecialchars($dr['faculty_name'] ?? 'TBA'); ?></td>
+                                    <td><?php echo htmlspecialchars($dr['room'] ?? 'TBA'); ?></td>
+                                    <td>
+                                        <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
+                                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                            <input type="hidden" name="class_id" value="<?php echo $dr['class_id']; ?>">
+                                            <input type="hidden" name="action" value="accept">
+                                            <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept Drop Request"
+                                                    onclick="return confirm('Accept this drop request?')">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
+                                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                            <input type="hidden" name="action" value="reject">
+                                            <button type="submit" class="btn-icon cancel" title="Reject Drop Request"
+                                                    onclick="return confirm('Reject this drop request?')">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- ── Pending Confirmation Table ──────── -->
                 <div class="card" style="margin-bottom:1.5rem;">
                     <div class="card-header gold-header">
                         <h2><i class="fa-solid fa-clock"></i> Pending Student Confirmation (<?php echo count($reserved_rows); ?>)</h2>
                     </div>
-
-                    <?php if ($debug_rows !== null): ?>
-                    <div class="debug-bar">
-                        <strong>Debug:</strong> No reserved rows found. Raw enrollment statuses for this student:
-                        <?php if (empty($debug_rows)): ?>
-                            <span style="margin-left:8px;">No enrollments at all for this student.</span>
-                        <?php else: ?>
-                            <?php foreach ($debug_rows as $d): ?>
-                                <span class="debug-status-chip">#<?php echo $d['enrollment_id']; ?> = <strong><?php echo htmlspecialchars($d['status']); ?></strong></span>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </div>
-                    <?php endif; ?>
 
                     <div class="table-responsive">
                         <table class="data-table">
@@ -395,6 +486,66 @@ $load_status_card = $total_units > 24 ? 'red' : 'navy';
                     </div>
                 </div>
 
+                <!-- ── Self-Enrolled (Ongoing) Table ──────── -->
+                <?php if ($self_enrolled_count > 0): ?>
+                <div class="card" style="margin-bottom:1.5rem;border-left:4px solid #2563eb;">
+                    <div class="card-header" style="background:#2563eb;color:white;">
+                        <h2><i class="fa-solid fa-user-pen"></i> Student Self-Enrollments Pending Review (<?php echo $self_enrolled_count; ?>)</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Units</th>
+                                    <th>Section</th>
+                                    <th>Schedule</th>
+                                    <th>Instructor</th>
+                                    <th>Room</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($se = mysqli_fetch_assoc($self_enrolled_query)): ?>
+                                <tr>
+                                    <td><strong><?php echo htmlspecialchars($se['subject_code']); ?></strong></td>
+                                    <td><?php echo htmlspecialchars($se['subject_name']); ?></td>
+                                    <td><?php echo $se['units']; ?></td>
+                                    <td><?php echo htmlspecialchars($se['section'] ?? 'TBA'); ?></td>
+                                    <td><?php echo htmlspecialchars(($se['schedule_day'] ?? 'TBA') . ' ' . ($se['schedule_time'] ?? '')); ?></td>
+                                    <td><?php echo htmlspecialchars($se['faculty_name'] ?? 'TBA'); ?></td>
+                                    <td><?php echo htmlspecialchars($se['room'] ?? 'TBA'); ?></td>
+                                    <td>
+                                        <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
+                                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                                            <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
+                                            <input type="hidden" name="class_id" value="<?php echo $se['class_id']; ?>">
+                                            <input type="hidden" name="action" value="accept">
+                                            <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept"
+                                                    onclick="return confirm('Accept this self-enrollment?')">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
+                                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                                            <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
+                                            <input type="hidden" name="class_id" value="<?php echo $se['class_id']; ?>">
+                                            <input type="hidden" name="action" value="reject">
+                                            <button type="submit" class="btn-icon cancel" title="Reject"
+                                                    onclick="return confirm('Reject this self-enrollment?')">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <!-- ── Confirmed Enrollment + Add Subject ─ -->
                 <div class="content-grid">
 
@@ -412,25 +563,19 @@ $load_status_card = $total_units > 24 ? 'red' : 'navy';
                                         <th>Schedule</th>
                                         <th>Instructor</th>
                                         <th>Room</th>
-                                        <th>Type</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php if ($enrolled_count === 0): ?>
                                         <tr>
-                                            <td colspan="9" style="text-align:center;color:var(--text-label);padding:1.5rem;">
+                                            <td colspan="8" style="text-align:center;color:var(--text-label);padding:1.5rem;">
                                                 No confirmed enrollments yet.
                                             </td>
                                         </tr>
                                     <?php else: ?>
                                         <?php
-                                        $status_colors = ['confirmed' => '#16a34a', 'ongoing' => '#2563eb'];
-                                        $status_labels = ['confirmed' => 'Confirmed', 'ongoing' => 'Self Enrolled'];
                                         while ($sub = mysqli_fetch_assoc($enrolled_query)):
-                                            $s     = $sub['status'];
-                                            $color = $status_colors[$s] ?? '#888';
-                                            $label = $status_labels[$s] ?? ucfirst($s);
                                         ?>
                                         <tr>
                                             <td><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></td>
@@ -440,12 +585,6 @@ $load_status_card = $total_units > 24 ? 'red' : 'navy';
                                             <td><?php echo htmlspecialchars(($sub['schedule_day'] ?? 'TBA') . ' ' . ($sub['schedule_time'] ?? '')); ?></td>
                                             <td><?php echo htmlspecialchars($sub['faculty_name'] ?? 'TBA'); ?></td>
                                             <td><?php echo htmlspecialchars($sub['room'] ?? 'TBA'); ?></td>
-                                            <td>
-                                                <span class="enroll-status-badge"
-                                                      style="background:<?php echo $color; ?>1a;color:<?php echo $color; ?>;">
-                                                    <?php echo $label; ?>
-                                                </span>
-                                            </td>
                                             <td>
                                                 <form method="POST" action="../../php/drop_enrollment.php" style="display:inline;">
                                                     <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">

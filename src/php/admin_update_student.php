@@ -24,9 +24,12 @@ $college            = trim($_POST['college']);
 $course             = trim($_POST['course']);
 $year_level         = (int) $_POST['year_level'];
 $block_id           = $_POST['block_id'] !== '' ? (int) $_POST['block_id'] : null;
-$registration_status = trim($_POST['registration_status']);
+$registration_status = trim($_POST['registration_status'] ?? 'Unknown');
+if (empty($registration_status)) $registration_status = 'Unknown';
 $account_status     = trim($_POST['account_status']);
 $status             = trim($_POST['status']);
+
+error_log("Updating student $student_id with registration_status: $registration_status");
 
 if (!$student_id || !$first_name || !$last_name || !$email) {
     header("Location: ../pages/admin/admin_students.php?error=missing_fields");
@@ -72,7 +75,7 @@ $stmt = mysqli_prepare($con, "UPDATE students SET
     status = ?
     WHERE student_id = ?");
 
-mysqli_stmt_bind_param($stmt, "sssssssssssisissi",
+mysqli_stmt_bind_param($stmt, "sssssssssssissssi",
     $student_number,
     $first_name,
     $last_name,
@@ -93,9 +96,11 @@ mysqli_stmt_bind_param($stmt, "sssssssssssisissi",
 );
 
 if (!mysqli_stmt_execute($stmt)) {
+    error_log("Update failed: " . mysqli_error($con));
     header("Location: ../pages/admin/admin_students.php?error=update_failed");
     die;
 }
 
+error_log("Student $student_id updated successfully with registration_status: $registration_status");
 header("Location: ../pages/admin/admin_students.php?success=updated");
 die;

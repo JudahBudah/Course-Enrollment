@@ -169,7 +169,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                 <?php endif; ?>
             </div>
             <div class="class-nav-right">
-                <form method="GET" style="display:contents;">
+                <form method="GET" id="classSelectForm">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
@@ -188,9 +188,6 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                             <?php endif; ?>
                         </select>
                     </div>
-                    <?php if ($search): ?>
-                        <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                    <?php endif; ?>
                 </form>
             </div>
         </div>

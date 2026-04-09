@@ -1,9 +1,21 @@
 <?php
 session_start();
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 include("../../php/connection.php");
 include("../../php/applicant_functions.php");
 
 $applicant_data = check_applicant_login($con);
+
+// Fetch joined exam schedule data
+$exam = null;
+if (!empty($applicant_data['exam_schedule_id'])) {
+    $es = mysqli_prepare($con, "SELECT exam_date, exam_time, location FROM exam_schedules WHERE schedule_id = ? LIMIT 1");
+    mysqli_stmt_bind_param($es, 'i', $applicant_data['exam_schedule_id']);
+    mysqli_stmt_execute($es);
+    $exam = mysqli_fetch_assoc(mysqli_stmt_get_result($es));
+}
 
 // Avatar initials fallback
 $initials = strtoupper(
@@ -15,11 +27,21 @@ $full_name = htmlspecialchars(
     trim(($applicant_data['first_name'] ?? '') . ' ' . ($applicant_data['last_name'] ?? ''))
 );
 
-$status = strtolower($applicant_data['application_status'] ?? 'pending');
+$status = strtolower($applicant_data['application_status'] ?? 'incomplete');
 $status_icon = match($status) {
-    'approved' => 'circle-check',
-    'rejected' => 'circle-xmark',
-    default    => 'clock',
+    'approved'       => 'circle-check',
+    'rejected'       => 'circle-xmark',
+    'pending'        => 'clock',
+    'pending_review' => 'clock',
+    default          => 'pen-to-square',
+};
+$status_message = match($status) {
+    'incomplete'     => 'Your application form is incomplete. Please fill out all required fields.',
+    'pending'        => 'Your application has been submitted and is currently under review by the admissions office.',
+    'pending_review' => 'Your application is currently being reviewed by the admissions office.',
+    'approved'       => 'Congratulations! Your application has been approved.',
+    'rejected'       => 'Unfortunately, your application has been rejected. Please contact the admissions office for more information.',
+    default          => 'Your application is being processed.',
 };
 ?>
 <!DOCTYPE html>
@@ -32,8 +54,26 @@ $status_icon = match($status) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/applicant/applicant_main.css">
     <link rel="stylesheet" href="../../css/applicant/applicant_home.css">
+    <link rel="stylesheet" href="../../css/plm_loader.css">
+    <script>window.addEventListener('pageshow',function(e){if(e.persisted){document.documentElement.style.visibility='hidden';window.location.reload();}});</script>
 </head>
 <body>
+
+<!-- Loading Screen -->
+<div id="plm-loader">
+    <div id="plm-loader-bar"></div>
+    <div class="plm-loader-logo">
+        <img src="../../assets/plm-logo.png" alt="PLM">
+        <div class="plm-loader-name">
+            <p>PLM</p>
+            <p>Pamantasan ng Lungsod ng Maynila</p>
+        </div>
+        <div class="plm-loader-dots">
+            <span></span><span></span><span></span>
+        </div>
+        <p class="plm-loader-status" id="plm-loader-status">Loading...</p>
+    </div>
+</div>
 
 <!-- ── Top Nav ─────────────────────────────────────────── -->
 <header>
@@ -131,7 +171,7 @@ $status_icon = match($status) {
             </div>
             <div class="status-content">
                 <h3>Application Status: <?php echo ucfirst($status); ?></h3>
-                <p>Your application is currently being reviewed by the admissions office.</p>
+                <p><?php echo $status_message; ?></p>
             </div>
         </div>
 
@@ -208,32 +248,38 @@ $status_icon = match($status) {
                     <h2>Application Timeline</h2>
                 </div>
                 <div class="timeline">
-                    <div class="timeline-item completed">
+                    <?php
+                        $app_submitted  = !in_array($status, ['incomplete', '']);
+                        $docs_submitted = !empty($applicant_data['documents_submitted']);
+                        $exam_assigned  = !empty($exam);
+                        $final_done     = in_array($status, ['approved', 'rejected', 'enrolled']);
+                    ?>
+                    <div class="timeline-item <?php echo $app_submitted ? 'completed' : ''; ?>">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <h4>Application Submitted</h4>
-                            <p><?php echo $applicant_data['created_at'] ? date('M d, Y', strtotime($applicant_data['created_at'])) : 'N/A'; ?></p>
+                            <p><?php echo $app_submitted ? date('M d, Y', strtotime($applicant_data['updated_at'] ?? $applicant_data['created_at'])) : 'Not yet submitted'; ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item <?php echo ($applicant_data['documents_submitted'] ?? 0) ? 'completed' : ''; ?>">
+                    <div class="timeline-item <?php echo $docs_submitted ? 'completed' : ''; ?>">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <h4>Documents Submitted</h4>
-                            <p><?php echo ($applicant_data['documents_submitted'] ?? 0) ? 'Completed' : 'Pending'; ?></p>
+                            <p><?php echo $docs_submitted ? 'Completed' : 'Pending'; ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item <?php echo ($applicant_data['exam_scheduled'] ?? 0) ? 'completed' : ''; ?>">
+                    <div class="timeline-item <?php echo $exam_assigned ? 'completed' : ''; ?>">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <h4>Entrance Exam</h4>
-                            <p><?php echo ($applicant_data['exam_date'] ?? null) ? date('M d, Y', strtotime($applicant_data['exam_date'])) : 'To be scheduled'; ?></p>
+                            <p><?php echo $exam_assigned ? date('M d, Y', strtotime($exam['exam_date'])) . ' · ' . htmlspecialchars($exam['exam_time']) . ' · ' . htmlspecialchars($exam['location']) : 'To be scheduled'; ?></p>
                         </div>
                     </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item <?php echo $final_done ? 'completed' : ''; ?>">
                         <div class="timeline-marker"></div>
                         <div class="timeline-content">
                             <h4>Final Decision</h4>
-                            <p>Awaiting results</p>
+                            <p><?php echo $final_done ? ucfirst($status) : 'Awaiting results'; ?></p>
                         </div>
                     </div>
                 </div>
@@ -270,5 +316,7 @@ $status_icon = match($status) {
 </div><!-- /.main-flex -->
 
 <script src="../../js/applicant/applicant_main.js"></script>
+<script src="../../js/no_cache.js"></script>
+<script src="../../js/plm_loader.js"></script>
 </body>
 </html>

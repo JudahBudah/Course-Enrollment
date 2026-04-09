@@ -10,13 +10,17 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 $flash = '';
 if (isset($_GET['success'])) {
     $count = (int)($_GET['count'] ?? 0);
-    $flash = '<div class="success-message"><i class="fa-solid fa-check-circle"></i> Successfully imported ' . $count . ' subject' . ($count !== 1 ? 's' : '') . '!</div>';
+    $skipped = (int)($_GET['skipped'] ?? 0);
+    $msg = 'Successfully imported ' . $count . ' subject' . ($count !== 1 ? 's' : '') . '!';
+    if ($skipped > 0) $msg .= ' (' . $skipped . ' skipped as duplicates)';
+    $flash = '<div class="success-message"><i class="fa-solid fa-check-circle"></i> ' . $msg . '</div>';
 }
 if (isset($_GET['error'])) {
     $msgs = [
         'no_data'        => 'No subjects data provided.',
         'invalid_format' => 'Invalid data format. Please check your input.',
         'import_failed'  => 'Failed to import subjects. Please try again.',
+        'all_skipped'    => 'All ' . (int)($_GET['skipped'] ?? 0) . ' subjects were skipped as duplicates. No new subjects imported.',
     ];
     $flash = '<div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> ' . ($msgs[$_GET['error']] ?? 'An error occurred.') . '</div>';
 }
@@ -184,7 +188,7 @@ if (isset($_GET['error'])) {
                                 <label>Paste Curriculum Data</label>
                                 <p class="help-text">Copy and paste subject data in the format shown on the right →</p>
                                 <textarea name="subjects_data" class="import-textarea"
-                                          placeholder="CODE|NAME|UNITS|LEC|LAB|DEPT|YEAR|SEM|PREREQ"
+                                          placeholder="COURSE_CODE|SUBJECT_CODE|SUBJECT_NAME|UNITS|LEC|LAB|DEPT|YEAR|SEM|PREREQ"
                                           required></textarea>
                             </div>
 
@@ -211,26 +215,27 @@ if (isset($_GET['error'])) {
 
                         <p class="help-text">Each line should contain subject data separated by pipes (<code>|</code>):</p>
                         <div class="format-example">
-                            <pre>CODE|NAME|UNITS|LEC|LAB|DEPT|YEAR|SEM|PREREQ</pre>
+                            <pre>COURSE_CODE|SUBJECT_CODE|SUBJECT_NAME|UNITS|LEC|LAB|DEPT|YEAR|SEM|PREREQ</pre>
                         </div>
 
                         <p class="help-text" style="margin-top:1.25rem;"><strong>Example:</strong></p>
                         <div class="format-example">
-<pre>STS 0002|Science, Technology and Society|3|3|0|General Education|1|1st|
-ICC 0101|Introduction to Computing|3|2|1|Information Technology|1|1st|
-ICC 0102|Fundamentals of Programming|3|2|1|Information Technology|1|1st|ICC 0101</pre>
+<pre>BSIT|STS 0002|Science, Technology and Society|3|3|0|General Education|1|1st|
+BSIT|ICC 0101|Introduction to Computing|3|2|1|Information Technology|1|1st|
+BSCpE|CPE 0111|Computer Engineering as a Discipline|1|1|0|Computer Engineering|1|1st|</pre>
                         </div>
 
                         <p class="help-text" style="margin-top:1.25rem;"><strong>Field Descriptions:</strong></p>
                         <ul class="field-list">
-                            <li><strong>CODE</strong> — Subject code (e.g., ICC 0101)</li>
-                            <li><strong>NAME</strong> — Subject name</li>
+                            <li><strong>COURSE_CODE</strong> — Course code (e.g., BSIT, BSCpE, BSCE)</li>
+                            <li><strong>SUBJECT_CODE</strong> — Subject code (e.g., ICC 0101)</li>
+                            <li><strong>SUBJECT_NAME</strong> — Subject name</li>
                             <li><strong>UNITS</strong> — Credit units (1–9)</li>
                             <li><strong>LEC</strong> — Lecture hours (0–9)</li>
                             <li><strong>LAB</strong> — Lab hours (0–9)</li>
                             <li><strong>DEPT</strong> — Department name</li>
-                            <li><strong>YEAR</strong> — Year level (1–4)</li>
-                            <li><strong>SEM</strong> — Semester (1st, 2nd, summer)</li>
+                            <li><strong>YEAR</strong> — Year level (1–4, or leave blank)</li>
+                            <li><strong>SEM</strong> — Semester (1st, 2nd, summer, or leave blank)</li>
                             <li><strong>PREREQ</strong> — Prerequisites <em>(optional, leave blank)</em></li>
                         </ul>
                     </div>

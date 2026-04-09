@@ -188,7 +188,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                 <?php endif; ?>
             </div>
             <div class="class-nav-right">
-                <form method="GET" style="display:contents;">
+                <form method="GET" id="classSelectForm">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">

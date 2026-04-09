@@ -8,10 +8,12 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 
 // Flash messages
 $flash_errors = [
-    'missing_fields'  => 'Please fill in all required fields.',
-    'insert_failed'   => 'Failed to create class. Please try again.',
-    'update_failed'   => 'Failed to update class. Please try again.',
-    'has_enrollments' => 'Cannot delete — class has enrolled students.',
+    'missing_fields'    => 'Please fill in all required fields.',
+    'insert_failed'     => 'Failed to create class. Please try again.',
+    'update_failed'     => 'Failed to update class. Please try again.',
+    'has_enrollments'   => 'Cannot delete — class has enrolled students.',
+    'duplicate_class'   => 'This section already has this subject for the selected school year and semester.',
+    'schedule_conflict' => 'Schedule conflict: Another class is already using this room at the same day and time.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
@@ -63,7 +65,7 @@ $classes = mysqli_query($con, "
 $subjects_query = mysqli_query($con, "
     SELECT subject_id, subject_code, subject_name, year_level, semester, department
     FROM subjects WHERE status = 'active'
-    ORDER BY year_level, semester, subject_code
+    ORDER BY department, year_level, semester, subject_code
 ");
 $subjects = [];
 while ($s = mysqli_fetch_assoc($subjects_query)) $subjects[] = $s;
@@ -74,8 +76,8 @@ $dept_query = mysqli_query($con, "
     WHERE status = 'active' AND department IS NOT NULL AND department != ''
     ORDER BY department
 ");
-$departments = [];
-while ($d = mysqli_fetch_assoc($dept_query)) $departments[] = $d['department'];
+$modal_departments = [];
+while ($d = mysqli_fetch_assoc($dept_query)) $modal_departments[] = $d['department'];
 
 // Faculty for dropdown
 $faculty_query = mysqli_query($con, "
@@ -357,6 +359,10 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                     </td>
                                     <td>
                                         <div class="action-buttons">
+                                            <button class="btn-icon" title="View Students"
+                                                    onclick="viewStudents(<?php echo $cls['class_id']; ?>, '<?php echo htmlspecialchars($cls['subject_code'], ENT_QUOTES); ?>')">
+                                                <i class="fa-solid fa-users"></i>
+                                            </button>
                                             <button class="btn-icon" title="Edit"
                                                     onclick="openEdit('<?php echo $js; ?>')">
                                                 <i class="fa-solid fa-pen-to-square"></i>
@@ -405,18 +411,20 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                 <!-- Subject filter box -->
                 <div class="subject-filter-box">
                     <p class="filter-box-label">
-                        <i class="fa-solid fa-filter"></i> Filter Subjects by:
+                        <i class="fa-solid fa-filter"></i> Filter Subjects:
                     </p>
                     <div class="form-grid-3">
                         <div>
+                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Department</label>
                             <select id="filter_dept" class="modal-filter-select" onchange="filterSubjects()">
                                 <option value="">All Departments</option>
-                                <?php foreach ($departments as $dept): ?>
+                                <?php foreach ($modal_departments as $dept): ?>
                                     <option value="<?php echo htmlspecialchars($dept); ?>"><?php echo htmlspecialchars($dept); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div>
+                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Year Level</label>
                             <select id="filter_year" class="modal-filter-select" onchange="filterSubjects()">
                                 <option value="">All Years</option>
                                 <option value="1">1st Year</option>
@@ -426,6 +434,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                             </select>
                         </div>
                         <div>
+                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Semester</label>
                             <select id="filter_sem" class="modal-filter-select" onchange="filterSubjects()">
                                 <option value="">All Semesters</option>
                                 <option value="1st">1st Semester</option>
@@ -434,25 +443,37 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                             </select>
                         </div>
                     </div>
+                    <div style="margin-top:0.75rem;">
+                        <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Search Subject</label>
+                        <input type="text" id="filter_search" class="modal-filter-select" placeholder="Type to search subject code or name..." oninput="filterSubjects()" style="width:100%;">
+                    </div>
                     <p class="filter-count-note" id="filter_count">Showing all subjects</p>
                 </div>
 
                 <div class="form-group">
                     <label>Subject <span style="color:var(--red)">*</span></label>
-                    <select name="subject_id" id="form_subject_id" required>
-                        <option value="">Select Subject</option>
+                    <select name="subject_id" id="form_subject_id" required size="8" style="height:auto;">
+                        <option value="" disabled selected>Select a subject from the list below</option>
                         <?php foreach ($subjects as $subj): ?>
                             <option value="<?php echo $subj['subject_id']; ?>"
                                     data-year="<?php echo $subj['year_level']; ?>"
                                     data-sem="<?php echo $subj['semester']; ?>"
-                                    data-dept="<?php echo htmlspecialchars($subj['department']); ?>">
-                                <?php echo htmlspecialchars($subj['subject_code'] . ' - ' . $subj['subject_name']); ?>
-                                <?php if ($subj['year_level']): ?>
-                                    (Year <?php echo $subj['year_level']; ?><?php echo $subj['semester'] ? ', ' . $subj['semester'] : ''; ?>)
+                                    data-dept="<?php echo htmlspecialchars($subj['department']); ?>"
+                                    data-code="<?php echo htmlspecialchars($subj['subject_code']); ?>"
+                                    data-name="<?php echo htmlspecialchars($subj['subject_name']); ?>">
+                                <?php echo htmlspecialchars($subj['subject_code']); ?> - <?php echo htmlspecialchars($subj['subject_name']); ?>
+                                <?php if ($subj['department']): ?>
+                                    (<?php echo htmlspecialchars($subj['department']); ?><?php echo $subj['year_level'] ? ', Year ' . $subj['year_level'] : ''; ?><?php echo $subj['semester'] ? ', ' . $subj['semester'] : ''; ?>)
                                 <?php endif; ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <p style="font-size:0.75rem;color:var(--text-label);margin-top:0.4rem;">
+                        <i class="fa-solid fa-info-circle"></i> Use the filters above to narrow down subjects, then select from the list
+                    </p>
+                    <p id="subject_locked_note" style="display:none;font-size:0.75rem;color:var(--gold);margin-top:0.4rem;background:rgba(212,175,55,0.1);padding:0.5rem;border-radius:4px;">
+                        <i class="fa-solid fa-lock"></i> Subject cannot be changed when editing a class. Create a new class if you need a different subject.
+                    </p>
                 </div>
 
                 <div class="form-grid-2">
@@ -492,7 +513,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>Schedule Day</label>
-                        <input type="text" name="schedule_day"  id="form_schedule_day"  placeholder="e.g., Monday, MW, TTH">
+                        <input type="text" name="schedule_day"  id="form_schedule_day"  placeholder="e.g., MW, TTH, THS, MWF, Monday Tuesday">
                     </div>
                     <div class="form-group">
                         <label>Schedule Time</label>
@@ -519,11 +540,59 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label>Class Availability</label>
+                    <div style="margin-bottom:0.5rem;">
+                        <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;cursor:pointer;">
+                            <input type="radio" name="availability_type" value="all" checked onchange="toggleDepartmentSelect()">
+                            <span>Available to all departments (e.g., PE, GE subjects)</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;cursor:pointer;">
+                            <input type="radio" name="availability_type" value="specific" onchange="toggleDepartmentSelect()">
+                            <span>Restrict to specific department only</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="specific_dept_group" style="display:none;">
+                    <label>Specific Department <span style="color:var(--red)">*</span></label>
+                    <select name="specific_department" id="form_specific_department">
+                        <option value="">Select Department</option>
+                        <?php foreach ($modal_departments as $dept): ?>
+                            <option value="<?php echo htmlspecialchars($dept); ?>"><?php echo htmlspecialchars($dept); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <p style="font-size:0.75rem;color:var(--text-label);margin-top:0.4rem;">
+                        <i class="fa-solid fa-info-circle"></i> Only students from this department can see and enroll in this class
+                    </p>
+                </div>
+
                 <div class="modal-actions">
                     <button type="submit" class="btn-submit" id="formSubmitBtn">Create Class</button>
                     <button type="button" class="btn-secondary" onclick="closeModal('formModal')">Cancel</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ── View Students Modal ─────────────────────── -->
+    <div id="studentsModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close" onclick="closeModal('studentsModal')">&times;</span>
+            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="studentsModalTitle">Enrolled Students</h2>
+            
+            <div id="studentsContent">
+                <div style="text-align:center;padding:2rem;color:var(--text-label);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;"></i>
+                    <p style="margin-top:1rem;">Loading students...</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions" style="margin-top:1.5rem;">
+                <button type="button" class="btn-secondary" onclick="closeModal('studentsModal')">Close</button>
+            </div>
         </div>
     </div>
 

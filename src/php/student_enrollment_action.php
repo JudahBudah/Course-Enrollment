@@ -47,12 +47,30 @@ function check_prerequisites($con, $student_id, $subject_id) {
     return ['passed' => empty($missing), 'missing' => $missing];
 }
 
+// Helper: get total enrolled units for a student this semester
+function get_enrolled_units($con, $student_id) {
+    $stmt = mysqli_prepare($con, "
+        SELECT COALESCE(SUM(s.units), 0) as total_units
+        FROM enrollments e
+        JOIN classes c ON e.class_id = c.class_id
+        JOIN subjects s ON c.subject_id = s.subject_id
+        WHERE e.student_id = ? AND e.status IN ('reserved','confirmed','ongoing')
+    ");
+    mysqli_stmt_bind_param($stmt, "i", $student_id);
+    mysqli_stmt_execute($stmt);
+    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+    return (int)$row['total_units'];
+}
+
+define('MAX_UNITS', 24);
+
 // ── CONFIRM reserved enrollment ──────────────────────────────
 if ($action === 'confirm') {
     $enrollment_id = (int)($_POST['enrollment_id'] ?? 0);
 
     // Verify this enrollment belongs to this student and is reserved
-    $stmt = mysqli_prepare($con, "SELECT e.*, c.max_slots, c.enrolled_count, c.subject_id FROM enrollments e JOIN classes c ON e.class_id = c.class_id WHERE e.enrollment_id = ? AND e.student_id = ? AND e.status = 'reserved'");
+    $stmt = mysqli_prepare($con, "SELECT e.*, c.max_slots, c.enrolled_count, c.subject_id, s.units FROM enrollments e JOIN classes c ON e.class_id = c.class_id JOIN subjects s ON c.subject_id = s.subject_id WHERE e.enrollment_id = ? AND e.student_id = ? AND e.status = 'reserved'");
     mysqli_stmt_bind_param($stmt, "ii", $enrollment_id, $student_id);
     mysqli_stmt_execute($stmt);
     $enroll = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -71,6 +89,13 @@ if ($action === 'confirm') {
         die;
     }
 
+    // Check unit overload (exclude this reserved enrollment from current count since it's already counted)
+    $current_units = get_enrolled_units($con, $student_id);
+    // The reserved subject is already included in get_enrolled_units, so no need to add again
+    // But we need to check if confirming would push ACTIVE (non-reserved) units over limit
+    // Actually: reserved units are already counted, confirming doesn't add new units — skip unit check here
+    // Unit check only applies when ADDING a new subject
+
     // Check class still has slots
     if ($enroll['enrolled_count'] >= $enroll['max_slots']) {
         header("Location: ../pages/student/student_enrollment.php?error=full");
@@ -85,6 +110,9 @@ if ($action === 'confirm') {
 
     // Update class slot count
     mysqli_query($con, "UPDATE classes SET enrolled_count = enrolled_count + 1 WHERE class_id = {$enroll['class_id']}");
+
+    // Update student status to Enrolled
+    mysqli_query($con, "UPDATE students SET status = 'Enrolled' WHERE student_id = $student_id");
 
     header("Location: ../pages/student/student_enrollment.php?success=confirmed");
     die;
@@ -123,6 +151,11 @@ if ($action === 'confirm_all') {
         mysqli_stmt_close($upd);
         mysqli_query($con, "UPDATE classes SET enrolled_count = enrolled_count + 1 WHERE class_id = {$enroll['class_id']}");
         $confirmed++;
+    }
+
+    // Update student status to Enrolled if any confirmations succeeded
+    if ($confirmed > 0) {
+        mysqli_query($con, "UPDATE students SET status = 'Enrolled' WHERE student_id = $student_id");
     }
 
     header("Location: ../pages/student/student_enrollment.php?success=confirmed_all&count=$confirmed");
@@ -164,6 +197,13 @@ if ($action === 'self_enroll') {
         die;
     }
 
+    // Check unit overload
+    $current_units = get_enrolled_units($con, $student_id);
+    if ($current_units + (int)$class['units'] > MAX_UNITS) {
+        header("Location: ../pages/student/student_enrollment.php?error=overload&current=$current_units&adding={$class['units']}");
+        die;
+    }
+
     // Check slots
     if ($class['enrolled_count'] >= $class['max_slots']) {
         header("Location: ../pages/student/student_enrollment.php?error=full");
@@ -178,6 +218,9 @@ if ($action === 'self_enroll') {
     mysqli_stmt_close($stmt);
 
     mysqli_query($con, "UPDATE classes SET enrolled_count = enrolled_count + 1 WHERE class_id = $class_id");
+
+    // Update student status to Enrolled
+    mysqli_query($con, "UPDATE students SET status = 'Enrolled' WHERE student_id = $student_id");
 
     header("Location: ../pages/student/student_enrollment.php?success=enrolled");
     die;
@@ -199,6 +242,7 @@ if ($action === 'drop') {
         die;
     }
 
+    // Change status to drop_requested
     $upd = mysqli_prepare($con, "UPDATE enrollments SET status = 'drop_requested' WHERE enrollment_id = ?");
     mysqli_stmt_bind_param($upd, "i", $enrollment_id);
     mysqli_stmt_execute($upd);
@@ -229,6 +273,32 @@ if ($action === 'cancel_reserved') {
     mysqli_stmt_close($upd);
 
     header("Location: ../pages/student/student_enrollment.php?success=dropped");
+    die;
+}
+
+// ── CANCEL DROP REQUEST ──────────────────────────────────────
+if ($action === 'cancel_drop_request') {
+    $enrollment_id = (int)($_POST['enrollment_id'] ?? 0);
+
+    // Verify ownership and status
+    $stmt = mysqli_prepare($con, "SELECT class_id FROM enrollments WHERE enrollment_id = ? AND student_id = ? AND status = 'drop_requested'");
+    mysqli_stmt_bind_param($stmt, "ii", $enrollment_id, $student_id);
+    mysqli_stmt_execute($stmt);
+    $enroll = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+
+    if (!$enroll) {
+        header("Location: ../pages/student/student_enrollment.php?error=invalid");
+        die;
+    }
+
+    // Revert status back to confirmed
+    $upd = mysqli_prepare($con, "UPDATE enrollments SET status = 'confirmed' WHERE enrollment_id = ?");
+    mysqli_stmt_bind_param($upd, "i", $enrollment_id);
+    mysqli_stmt_execute($upd);
+    mysqli_stmt_close($upd);
+
+    header("Location: ../pages/student/student_enrollment.php?success=drop_cancelled");
     die;
 }
 

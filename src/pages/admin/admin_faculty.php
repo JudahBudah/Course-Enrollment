@@ -508,6 +508,7 @@ foreach ($faculty_classes as $cls) {
                                     <td><span class="badge <?php echo $fac['status']; ?>"><?php echo ucfirst($fac['status']); ?></span></td>
                                     <td>
                                         <div class="action-buttons">
+                                            <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js; ?>')"><i class="fa-solid fa-eye"></i></button>
                                             <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=assign"   class="btn-icon assign"   title="Assign to Class"><i class="fa-solid fa-chalkboard"></i></a>
                                             <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=schedule" class="btn-icon schedule" title="View Schedule"><i class="fa-solid fa-calendar-days"></i></a>
                                             <button class="btn-icon" title="Edit" onclick="openEdit('<?php echo $js; ?>')"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -530,6 +531,58 @@ foreach ($faculty_classes as $cls) {
             </div><!-- /.main-content -->
         </main>
     </div><!-- /.main-flex -->
+
+    <!-- ── View Faculty Modal ────────────────────────── -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content wide">
+            <span class="close" onclick="closeModal('viewModal')">&times;</span>
+
+            <div class="modal-header">
+                <div class="student-avatar-lg" id="view_avatar"></div>
+                <div class="modal-header-info">
+                    <h3 id="view_fullname"></h3>
+                    <p id="view_employee_id"></p>
+                    <p id="view_status_badge"></p>
+                </div>
+            </div>
+
+            <div class="view-grid">
+                <div class="section-title">Employment Information</div>
+                <div class="view-item"><label>Position</label><span id="vw_position"></span></div>
+                <div class="view-item"><label>College</label><span id="vw_college"></span></div>
+                <div class="view-item"><label>Department</label><span id="vw_department"></span></div>
+                <div class="view-item"><label>Employment Status</label><span id="vw_employment_status"></span></div>
+                <div class="view-item"><label>PLM Email</label><span id="vw_email"></span></div>
+
+                <div class="section-title">Personal Information</div>
+                <div class="view-item"><label>First Name</label><span id="vw_first_name"></span></div>
+                <div class="view-item"><label>Last Name</label><span id="vw_last_name"></span></div>
+                <div class="view-item"><label>Middle Name</label><span id="vw_middle_name"></span></div>
+                <div class="view-item"><label>Suffix</label><span id="vw_suffix_name"></span></div>
+                <div class="view-item"><label>Date of Birth</label><span id="vw_date_of_birth"></span></div>
+                <div class="view-item"><label>Place of Birth</label><span id="vw_place_of_birth"></span></div>
+                <div class="view-item"><label>Sex</label><span id="vw_sex"></span></div>
+                <div class="view-item"><label>Civil Status</label><span id="vw_civil_status"></span></div>
+                <div class="view-item"><label>Religion</label><span id="vw_religion"></span></div>
+                <div class="view-item"><label>Nationality</label><span id="vw_nationality"></span></div>
+                <div class="view-item"><label>Disability</label><span id="vw_disability"></span></div>
+
+                <div class="section-title">Contact</div>
+                <div class="view-item"><label>Contact Number</label><span id="vw_phone"></span></div>
+                <div class="view-item"><label>Personal Email</label><span id="vw_personal_email"></span></div>
+
+                <div class="section-title">Permanent Address</div>
+                <div class="view-item full"><label>Address</label><span id="vw_permanent_address_full"></span></div>
+
+                <div class="section-title">Mailing Address</div>
+                <div class="view-item full"><label>Address</label><span id="vw_mailing_address_full"></span></div>
+            </div>
+
+            <div class="modal-actions" style="margin-top:1.5rem;">
+                <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ── Add / Edit Faculty Modal ──────────────────── -->
     <div id="formModal" class="modal">

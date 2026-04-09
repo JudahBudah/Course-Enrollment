@@ -30,20 +30,37 @@ function formatYear(int|null $year): string {
 }
 $year_display = formatYear($year_level);
 
-/* ── Fetch grades from DB ── */
+/* ── Transmutation helpers ── */
+function transmute(float $g): int {
+    if ($g>=97) return 99; if ($g>=94) return 96; if ($g>=91) return 93;
+    if ($g>=88) return 90; if ($g>=85) return 87; if ($g>=82) return 84;
+    if ($g>=79) return 81; if ($g>=76) return 78; if ($g>=73) return 75;
+    if ($g>=70) return 72; if ($g>=67) return 69; if ($g>=64) return 66;
+    if ($g>=61) return 63; if ($g>=55) return 60; return 55;
+}
+function pointGrade(int $t): string {
+    if ($t>=97) return '1.00'; if ($t>=94) return '1.25'; if ($t>=91) return '1.50';
+    if ($t>=88) return '1.75'; if ($t>=85) return '2.00'; if ($t>=82) return '2.25';
+    if ($t>=79) return '2.50'; if ($t>=76) return '2.75'; if ($t>=73) return '3.00';
+    if ($t>=70) return '4.00'; return '5.00';
+}
+
+/* ── Fetch grades from grade_entries (saved by faculty) ── */
 $grades_by_year = [];
 for ($y = 1; $y <= 4; $y++) {
     $grades_by_year[$y] = ['1st' => [], '2nd' => []];
 }
 
-$query = "SELECT g.grade, g.status, g.semester, s.subject_code, s.subject_name, s.units,
-                 c.section, c.school_year
-          FROM grades g
-          JOIN subjects s ON g.subject_id = s.subject_id
-          LEFT JOIN enrollments e ON e.student_id = g.student_id
-          LEFT JOIN classes c ON e.class_id = c.class_id AND c.subject_id = s.subject_id
-          WHERE g.student_id = ?
-          ORDER BY c.school_year, g.semester, s.subject_code";
+$query = "SELECT ge.computed_grade, e.status AS enroll_status,
+                 c.semester, c.section, c.school_year,
+                 s.subject_code, s.subject_name, s.units, s.year_level
+          FROM enrollments e
+          JOIN classes c    ON e.class_id   = c.class_id
+          JOIN subjects s   ON c.subject_id = s.subject_id
+          LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+          WHERE e.student_id = ?
+            AND e.status IN ('ongoing','confirmed','completed')
+          ORDER BY c.school_year, c.semester, s.subject_code";
 
 $stmt = mysqli_prepare($con, $query);
 mysqli_stmt_bind_param($stmt, "i", $user_data['student_id']);
@@ -51,17 +68,14 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 while ($row = mysqli_fetch_assoc($result)) {
-    $sem = $row['semester'] ?? '1st Semester Year 1';
-    preg_match('/(\d+)(st|nd|rd|th)\s+Semester/i', $sem, $sem_match);
-    preg_match('/Year\s+(\d+)/i', $sem, $year_match);
+    $cg = $row['computed_grade'] !== null ? (float)$row['computed_grade'] : null;
+    $row['grade'] = $cg !== null ? pointGrade(transmute($cg)) : null;
 
-    $semester_num = (int)($sem_match[1] ?? 1);
-    $year_num     = (int)($year_match[1] ?? 1);
-    $sem_key      = ($semester_num === 1) ? '1st' : '2nd';
+    $sem_key  = $row['semester'] === '2nd' ? '2nd' : '1st';
+    $year_num = (int)($row['year_level'] ?? 1);
+    if ($year_num < 1 || $year_num > 4) $year_num = 1;
 
-    if (isset($grades_by_year[$year_num][$sem_key])) {
-        $grades_by_year[$year_num][$sem_key][] = $row;
-    }
+    $grades_by_year[$year_num][$sem_key][] = $row;
 }
 mysqli_stmt_close($stmt);
 
@@ -98,6 +112,11 @@ foreach ($grades_by_year as $year => $semesters) {
         }
     }
 }
+
+// Fetch curriculum URL for the student's course
+$curriculum_url = '';
+$course_info = get_course_info($con, $user_data['course'] ?? '');
+$curriculum_url = $course_info['curriculum_url'] ?? '';
 
 $overall_gwa = calculateGWA($all_grades);
 ?>
@@ -175,7 +194,7 @@ $overall_gwa = calculateGWA($all_grades);
                             <ul>
                                 <li><a href="student_info-program.php">Program</a></li>
                                 <li><a href="student_info-college.php">College</a></li>
-                                <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                                <?php if ($curriculum_url): ?><li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li><?php endif; ?>
                             </ul>
                         </div>
                     </li>
@@ -303,10 +322,10 @@ $overall_gwa = calculateGWA($all_grades);
                                             <td class="center"><?php echo htmlspecialchars($g['units']); ?></td>
                                             <td class="center"><?php echo htmlspecialchars($g['section'] ?? 'N/A'); ?></td>
                                             <td class="center">
-                                                <?php echo renderGradeValue($g['grade']); ?>
+                                                <?php echo $g['grade'] !== null ? renderGradeValue($g['grade']) : '<span class="grade-val" style="color:#999;">—</span>'; ?>
                                             </td>
                                             <td class="center">
-                                                <?php echo renderGradeStatus($g['grade']); ?>
+                                                <?php echo $g['grade'] !== null ? renderGradeStatus($g['grade']) : '<span class="grade-status ongoing"><i class="fa-solid fa-clock" style="font-size:.65rem"></i>Pending</span>'; ?>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>

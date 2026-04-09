@@ -244,6 +244,36 @@
     border-color: var(--red);
 }
 
+/* Subject select box - larger for better visibility */
+#form_subject_id {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--white-pr);
+    border: 1px solid var(--off);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    min-height: 200px;
+}
+
+#form_subject_id:focus {
+    outline: none;
+    border-color: var(--red);
+}
+
+#form_subject_id option {
+    padding: 0.5rem;
+    line-height: 1.6;
+}
+
+#form_subject_id option:disabled {
+    color: var(--text-label);
+    font-style: italic;
+}
+
 .filter-count-note {
     font-size: 0.75rem;
     color: var(--text-label);

@@ -22,6 +22,11 @@ $profile_src    = $profile_photo
     ? '../../' . $profile_photo
     : '../../assets/test/student-profile.webp';
 
+// Fetch curriculum URL for the student's course
+$curriculum_url = '';
+$course_info = get_course_info($con, $user_data['course'] ?? '');
+$curriculum_url = $course_info['curriculum_url'] ?? '';
+
 // TODO (backend): map these fields from $user_data when available in DB
 // $lrn             = htmlspecialchars($user_data['lrn']             ?? '');
 // $birth_place     = htmlspecialchars($user_data['birth_place']     ?? '');
@@ -116,7 +121,7 @@ $profile_src    = $profile_photo
                             <ul>
                                 <li><a href="student_info-program.php">Program</a></li>
                                 <li><a href="student_info-college.php">College</a></li>
-                                <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                                <?php if ($curriculum_url): ?><li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li><?php endif; ?>
                             </ul>
                         </div>
                     </li>

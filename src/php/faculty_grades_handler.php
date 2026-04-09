@@ -33,6 +33,14 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS grade_entries (
 header('Content-Type: application/json');
 $action = $_POST['action'] ?? '';
 
+// ── Helper: check if a class has finalized grades ───────────────────────────
+function isFinalized(mysqli $con, int $class_id): bool {
+    $r = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT grades_finalized FROM classes WHERE class_id = $class_id"
+    ));
+    return $r && (int)$r['grades_finalized'] === 1;
+}
+
 // ── Save a single cell ──────────────────────────────────────────────────────
 if ($action === 'save_cell') {
     $enrollment_id = (int)$_POST['enrollment_id'];
@@ -40,6 +48,10 @@ if ($action === 'save_cell') {
     $class_id      = (int)$_POST['class_id'];
     $field         = $_POST['field'] ?? '';
     $value         = $_POST['value'] === '' ? null : (float)$_POST['value'];
+
+    if (isFinalized($con, $class_id)) {
+        echo json_encode(['ok'=>false,'msg'=>'Grades are finalized and cannot be changed.']); die;
+    }
 
     $allowed = ['class_standing','quiz','midterms','finals'];
     if (!in_array($field, $allowed)) {
@@ -52,12 +64,12 @@ if ($action === 'save_cell') {
     $stmt = mysqli_prepare($con,
         "INSERT INTO grade_entries (enrollment_id, class_id, student_id, $field)
          VALUES (?, ?, ?, ?)
-         ON DUPLICATE KEY UPDATE $field = VALUES($field)"
+         ON DUPLICATE KEY UPDATE $field = ?"
     );
-    mysqli_stmt_bind_param($stmt, 'iiid', $enrollment_id, $class_id, $student_id, $value);
+    $bind_type = $value === null ? 'iiiss' : 'iiidd';
+    mysqli_stmt_bind_param($stmt, $bind_type, $enrollment_id, $class_id, $student_id, $value, $value);
     mysqli_stmt_execute($stmt);
 
-    // Return updated computed grade + transmuted + point grade
     $row = mysqli_fetch_assoc(mysqli_query($con,
         "SELECT class_standing, quiz, midterms, finals, computed_grade
          FROM grade_entries WHERE enrollment_id = $enrollment_id"
@@ -75,6 +87,29 @@ if ($action === 'save_cell') {
         'point'      => $point,
         'remark'     => $remark,
     ]);
+    die;
+}
+
+// ── Finalize grades for a class ─────────────────────────────────────────────
+if ($action === 'finalize_class') {
+    $class_id   = (int)$_POST['class_id'];
+    $faculty_id = (int)$_SESSION['faculty_id'];
+
+    // Verify this faculty owns the class
+    $owns = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT class_id FROM classes WHERE class_id = $class_id AND faculty_id = $faculty_id"
+    ));
+    if (!$owns) {
+        echo json_encode(['ok'=>false,'msg'=>'Unauthorized']); die;
+    }
+    if (isFinalized($con, $class_id)) {
+        echo json_encode(['ok'=>false,'msg'=>'Already finalized']); die;
+    }
+
+    mysqli_query($con,
+        "UPDATE classes SET grades_finalized = 1, grades_finalized_at = NOW() WHERE class_id = $class_id"
+    );
+    echo json_encode(['ok'=>true]);
     die;
 }
 

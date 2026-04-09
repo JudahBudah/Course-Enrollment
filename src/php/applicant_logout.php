@@ -1,11 +1,9 @@
 <?php
 session_start();
-
-if (isset($_SESSION['applicant_id'])) {
-    unset($_SESSION['applicant_id']);
-}
-
+session_unset();
 session_destroy();
-header("Location: ../pages/applicant/applicant_login.php");
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+header("Location: ../pages/login_hub.php?portal=applicant");
 die;
-?>

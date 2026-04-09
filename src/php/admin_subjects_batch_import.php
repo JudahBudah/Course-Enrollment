@@ -24,29 +24,47 @@ foreach ($lines as $line) {
     if (empty($line)) continue;
     
     $parts = explode("|", $line);
-    if (count($parts) < 8) {
+    if (count($parts) < 9) {
         $errors[] = "Invalid format: $line";
         continue;
     }
     
-    $subject_code = trim($parts[0]);
-    $subject_name = trim($parts[1]);
-    $units = (int) trim($parts[2]);
-    $lecture_hours = (float) trim($parts[3]);
-    $lab_hours = (float) trim($parts[4]);
-    $department = trim($parts[5]);
-    $year_level = trim($parts[6]);
-    $semester = trim($parts[7]);
-    $prerequisite = isset($parts[8]) ? trim($parts[8]) : '';
+    $course_code = trim($parts[0]);
+    $subject_code = trim($parts[1]);
+    $subject_name = trim($parts[2]);
+    $units = (int) trim($parts[3]);
+    $lecture_hours = (float) trim($parts[4]);
+    $lab_hours = (float) trim($parts[5]);
+    $department = trim($parts[6]);
+    $year_level = trim($parts[7]);
+    $semester = trim($parts[8]);
+    $prerequisite = isset($parts[9]) ? trim($parts[9]) : '';
     
-    if (empty($subject_code) || empty($subject_name) || $units <= 0) {
+    if (empty($course_code) || empty($subject_code) || empty($subject_name) || $units <= 0) {
         $errors[] = "Missing required fields: $line";
         continue;
     }
     
-    // Check for duplicates
-    $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ?");
-    mysqli_stmt_bind_param($chk, "s", $subject_code);
+    // Get course_id from course_code
+    $course_id = null;
+    if (!empty($course_code)) {
+        $course_query = mysqli_prepare($con, "SELECT course_id FROM courses WHERE course_code = ? LIMIT 1");
+        mysqli_stmt_bind_param($course_query, "s", $course_code);
+        mysqli_stmt_execute($course_query);
+        $course_result = mysqli_stmt_get_result($course_query);
+        if ($course_row = mysqli_fetch_assoc($course_result)) {
+            $course_id = $course_row['course_id'];
+        }
+    }
+    
+    // Check for duplicates (subject_code + course_id combination)
+    if ($course_id !== null) {
+        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id = ?");
+        mysqli_stmt_bind_param($chk, "si", $subject_code, $course_id);
+    } else {
+        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id IS NULL");
+        mysqli_stmt_bind_param($chk, "s", $subject_code);
+    }
     mysqli_stmt_execute($chk);
     mysqli_stmt_store_result($chk);
     
@@ -64,8 +82,8 @@ foreach ($lines as $line) {
     $year_level_val = ($year_level !== '' && is_numeric($year_level)) ? $year_level : null;
     $semester_val = !empty($semester) ? $semester : null;
     
-    $stmt = mysqli_prepare($con, "INSERT INTO subjects (subject_code, subject_name, units, lecture_hours, lab_hours, department, year_level, semester, prerequisite, status) VALUES (?,?,?,?,?,?,?,?,?,?)");
-    mysqli_stmt_bind_param($stmt, "ssiddsssss", $subject_code, $subject_name, $units, $lecture_hours, $lab_hours, $department, $year_level_val, $semester_val, $prerequisite, $status);
+    $stmt = mysqli_prepare($con, "INSERT INTO subjects (course_id, subject_code, subject_name, units, lecture_hours, lab_hours, department, year_level, semester, prerequisite, status) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+    mysqli_stmt_bind_param($stmt, "issiddsssss", $course_id, $subject_code, $subject_name, $units, $lecture_hours, $lab_hours, $department, $year_level_val, $semester_val, $prerequisite, $status);
     
     if (mysqli_stmt_execute($stmt)) {
         $imported++;
@@ -75,9 +93,15 @@ foreach ($lines as $line) {
 }
 
 if ($imported > 0) {
-    header("Location: ../pages/admin/admin_subjects_batch_import.php?success=1&count=$imported");
+    $msg = "success=1&count=$imported";
+    if ($skipped > 0) $msg .= "&skipped=$skipped";
+    header("Location: ../pages/admin/admin_subjects_batch_import.php?$msg");
 } else {
-    header("Location: ../pages/admin/admin_subjects_batch_import.php?error=import_failed");
+    if ($skipped > 0) {
+        header("Location: ../pages/admin/admin_subjects_batch_import.php?error=all_skipped&skipped=$skipped");
+    } else {
+        header("Location: ../pages/admin/admin_subjects_batch_import.php?error=import_failed");
+    }
 }
 die;
 ?>

@@ -36,27 +36,40 @@ $total_units_row   = mysqli_fetch_assoc(mysqli_query($con, "SELECT SUM(units) as
 $total_units       = $total_units_row['s'] ?? 0;
 
 // Search & filters
-$search      = trim($_GET['search'] ?? '');
-$filter      = $_GET['filter']      ?? 'all';
-$dept_filter = $_GET['dept']        ?? '';
-$year_filter = $_GET['year']        ?? '';
+$search       = trim($_GET['search'] ?? '');
+$filter       = $_GET['filter']       ?? 'all';
+$course_filter = $_GET['course']      ?? '';
+$year_filter  = $_GET['year']         ?? '';
 
 $where = "WHERE 1=1";
-if ($filter === 'active')   $where .= " AND status = 'active'";
-if ($filter === 'inactive') $where .= " AND status = 'inactive'";
-if ($dept_filter !== '')    $where .= " AND department = '" . mysqli_real_escape_string($con, $dept_filter) . "'";
-if ($year_filter !== '')    $where .= " AND year_level = '" . mysqli_real_escape_string($con, $year_filter) . "'";
+if ($filter === 'active')   $where .= " AND s.status = 'active'";
+if ($filter === 'inactive') $where .= " AND s.status = 'inactive'";
+if ($course_filter !== '')  $where .= " AND s.course_id = '" . mysqli_real_escape_string($con, $course_filter) . "'";
+if ($year_filter !== '')    $where .= " AND s.year_level = '" . mysqli_real_escape_string($con, $year_filter) . "'";
 if ($search !== '') {
     $s = mysqli_real_escape_string($con, $search);
-    $where .= " AND (subject_code LIKE '%$s%' OR subject_name LIKE '%$s%' OR department LIKE '%$s%' OR prerequisite LIKE '%$s%')";
+    $where .= " AND (s.subject_code LIKE '%$s%' OR s.subject_name LIKE '%$s%' OR s.department LIKE '%$s%' OR s.prerequisite LIKE '%$s%' OR c.course_code LIKE '%$s%')";
 }
 
-$subjects = mysqli_query($con, "SELECT * FROM subjects $where ORDER BY year_level ASC, semester ASC, subject_code ASC");
+$subjects = mysqli_query($con, "
+    SELECT s.*, c.course_code, c.course_name 
+    FROM subjects s 
+    LEFT JOIN courses c ON s.course_id = c.course_id 
+    $where 
+    ORDER BY s.year_level ASC, s.semester ASC, s.subject_code ASC
+");
 
-// Departments for filter dropdown
-$depts_query = mysqli_query($con, "SELECT DISTINCT department FROM subjects WHERE department IS NOT NULL AND department != '' ORDER BY department");
-$departments = [];
-while ($d = mysqli_fetch_assoc($depts_query)) $departments[] = $d['department'];
+// Get courses for filter dropdown
+$courses_filter_query = mysqli_query($con, "SELECT DISTINCT c.course_id, c.course_code, c.course_name FROM subjects s INNER JOIN courses c ON s.course_id = c.course_id ORDER BY c.course_code");
+$courses_filter = [];
+while ($cf = mysqli_fetch_assoc($courses_filter_query)) $courses_filter[] = $cf;
+
+// Get courses from courses table
+$courses_query = mysqli_query($con, "SELECT course_id, course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_name");
+$courses = [];
+while ($row = mysqli_fetch_assoc($courses_query)) {
+    $courses[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -239,21 +252,21 @@ while ($d = mysqli_fetch_assoc($depts_query)) $departments[] = $d['department'];
                                     <option value="3" <?php echo $year_filter==='3'?'selected':''; ?>>3rd Year</option>
                                     <option value="4" <?php echo $year_filter==='4'?'selected':''; ?>>4th Year</option>
                                 </select>
-                                <select name="dept" class="dept-select" onchange="this.form.submit()">
-                                    <option value="">All Departments</option>
-                                    <?php foreach ($departments as $d): ?>
-                                        <option value="<?php echo htmlspecialchars($d); ?>" <?php echo $dept_filter===$d?'selected':''; ?>>
-                                            <?php echo htmlspecialchars($d); ?>
+                                <select name="course" class="dept-select" onchange="this.form.submit()">
+                                    <option value="">All Courses</option>
+                                    <?php foreach ($courses_filter as $cf): ?>
+                                        <option value="<?php echo $cf['course_id']; ?>" <?php echo $course_filter==$cf['course_id']?'selected':''; ?>>
+                                            <?php echo htmlspecialchars($cf['course_code']); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
                                 <input type="text" name="search" class="header-search-input"
-                                       placeholder="Search code, name, dept..."
+                                       placeholder="Search code, name, course..."
                                        value="<?php echo htmlspecialchars($search); ?>">
                                 <button type="submit" class="btn-secondary" style="padding:0.45rem 0.75rem;">
                                     <i class="fa-solid fa-search"></i>
                                 </button>
-                                <?php if ($search || $dept_filter || $year_filter): ?>
+                                <?php if ($search || $course_filter || $year_filter): ?>
                                     <a href="?filter=<?php echo $filter; ?>" class="btn-secondary" style="padding:0.45rem 0.75rem;">Clear</a>
                                 <?php endif; ?>
                             </form>
@@ -269,11 +282,11 @@ while ($d = mysqli_fetch_assoc($depts_query)) $departments[] = $d['department'];
                     </div>
 
                     <div class="filter-tabs">
-                        <a href="?filter=all&search=<?php echo urlencode($search); ?>&dept=<?php echo urlencode($dept_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
+                        <a href="?filter=all&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
                            class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
-                        <a href="?filter=active&search=<?php echo urlencode($search); ?>&dept=<?php echo urlencode($dept_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
+                        <a href="?filter=active&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
                            class="filter-tab <?php echo $filter==='active'?'active':''; ?>">Active</a>
-                        <a href="?filter=inactive&search=<?php echo urlencode($search); ?>&dept=<?php echo urlencode($dept_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
+                        <a href="?filter=inactive&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
                            class="filter-tab <?php echo $filter==='inactive'?'active':''; ?>">Inactive</a>
                     </div>
 
@@ -444,6 +457,26 @@ while ($d = mysqli_fetch_assoc($depts_query)) $departments[] = $d['department'];
 
                 <p class="form-section-title">Classification</p>
                 <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Course</label>
+                        <select name="course_id" id="form_course_id">
+                            <option value="">Not specified</option>
+                            <?php 
+                            $current_college = '';
+                            foreach ($courses as $course): 
+                                if ($current_college !== $course['college_name']) {
+                                    if ($current_college !== '') echo '</optgroup>';
+                                    echo '<optgroup label="' . htmlspecialchars($course['college_name']) . '">';
+                                    $current_college = $course['college_name'];
+                                }
+                            ?>
+                                <option value="<?php echo $course['course_id']; ?>"><?php echo htmlspecialchars($course['course_code'] . ' - ' . $course['course_name']); ?></option>
+                            <?php 
+                            endforeach; 
+                            if ($current_college !== '') echo '</optgroup>';
+                            ?>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label>Department</label>
                         <input type="text" name="department" id="form_department" placeholder="e.g. Computer Science">

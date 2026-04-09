@@ -38,15 +38,37 @@ function openView(raw) {
 
 /* ── Edit modal ────────────────────────────────────────── */
 
+function populateBlocks(course, selectedBlockId) {
+    const select = document.getElementById('edit_block_id');
+    select.innerHTML = '<option value="">No Block (Irregular)</option>';
+    const filtered = ALL_BLOCKS.filter(b => !course || b.course === course);
+    filtered.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.block_id;
+        opt.textContent = b.block_name + ' — ' + b.course + ' Yr' + b.year_level;
+        if (String(b.block_id) === String(selectedBlockId)) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
 function openEdit(raw) {
     const s = JSON.parse(raw);
+
     const fields = ['student_id','student_number','first_name','last_name','middle_name',
                     'suffix_name','gender','birthdate','email','contact_number','college',
-                    'course','year_level','registration_status','account_status','status'];
+                    'course','year_level','account_status','status'];
     fields.forEach(f => {
         const el = document.getElementById('edit_' + f);
         if (el) el.value = s[f] || '';
     });
-    document.getElementById('edit_block_id').value = s.block_id || '';
+
+    const regStatusEl = document.getElementById('edit_registration_status');
+    if (regStatusEl) regStatusEl.value = s.registration_status || 'Unknown';
+
+    populateBlocks(s.course || '', s.block_id || '');
     document.getElementById('editModal').style.display = 'block';
 }
+
+document.getElementById('edit_course').addEventListener('change', function() {
+    populateBlocks(this.value, '');
+});

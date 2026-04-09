@@ -144,6 +144,99 @@
 
 .modal-content.exam-modal  { max-width: 520px; }
 .modal-content.convert-modal { max-width: 480px; }
+.modal-content.view-modal { max-width: 800px; }
+.modal-content.doc-viewer-modal { max-width: 90vw; max-height: 90vh; padding: 0; }
+
+/* View modal sections */
+.view-sections { display: grid; gap: 1.5rem; }
+.view-section { }
+.view-section-title {
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--off);
+    padding-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.view-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    font-size: 0.85rem;
+}
+.view-field { display: flex; flex-direction: column; gap: 0.25rem; }
+.view-field label { font-weight: 600; color: var(--text-label); font-size: 0.8rem; }
+.view-field span { color: var(--text); }
+.view-field-full { grid-column: 1 / -1; }
+
+/* Document list in view modal */
+.doc-list { display: grid; gap: 0.75rem; }
+.doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--off);
+    border-radius: 6px;
+}
+.doc-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+.doc-info i {
+    font-size: 1.5rem;
+    color: var(--gold);
+}
+.doc-info div { display: flex; flex-direction: column; gap: 0.25rem; }
+.doc-info strong { font-size: 0.9rem; color: var(--text); }
+.doc-info span { font-size: 0.8rem; color: var(--text-label); }
+.doc-not-uploaded { color: var(--text-label); opacity: 0.6; }
+.doc-view-btn {
+    padding: 0.4rem 0.9rem;
+    background: rgba(37,99,235,0.15);
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.doc-view-btn:hover {
+    background: rgba(37,99,235,0.25);
+}
+
+/* Document viewer modal */
+.doc-viewer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--off);
+    background: var(--card-bg);
+}
+.doc-viewer-header span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+.doc-viewer-body {
+    width: 100%;
+    height: calc(90vh - 60px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.3);
+}
 
 /* Convert modal applicant name highlight */
 .convert-name {

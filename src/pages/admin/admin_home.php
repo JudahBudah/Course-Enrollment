@@ -1,5 +1,8 @@
 <?php
 session_start();
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
 
@@ -9,9 +12,10 @@ $admin_data = check_admin_login($con);
 $total_students     = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM students"))['count'];
 $total_applicants   = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants"))['count'];
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
-$total_faculty      = 0; // Faculty table not yet created
-$total_subjects     = 0; // Subjects table not yet created
-$total_classes      = 0; // Classes table not yet created
+$total_faculty      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM faculty WHERE status = 'active'"))['count'];
+$total_subjects     = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM subjects WHERE status = 'active'"))['count'];
+$total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM classes WHERE status IN ('open', 'closed')"))['count'];
+$total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM enrollments WHERE status IN ('reserved', 'confirmed', 'ongoing')"))['count'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,8 +27,26 @@ $total_classes      = 0; // Classes table not yet created
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/admin/admin_main.css">
     <link rel="stylesheet" href="../../css/admin/admin_home.css">
+    <link rel="stylesheet" href="../../css/plm_loader.css">
+    <script>window.addEventListener('pageshow',function(e){if(e.persisted){document.documentElement.style.visibility='hidden';window.location.reload();}});</script>
 </head>
 <body>
+
+    <!-- Loading Screen -->
+    <div id="plm-loader">
+        <div id="plm-loader-bar"></div>
+        <div class="plm-loader-logo">
+            <img src="../../assets/plm-logo.png" alt="PLM">
+            <div class="plm-loader-name">
+                <p>PLM</p>
+                <p>Pamantasan ng Lungsod ng Maynila</p>
+            </div>
+            <div class="plm-loader-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p class="plm-loader-status" id="plm-loader-status">Loading...</p>
+        </div>
+    </div>
 
     <!-- ── Top Nav Bar ────────────────────────────────── -->
     <header>
@@ -120,10 +142,12 @@ $total_classes      = 0; // Classes table not yet created
                         </a>
                     </li>
                     <li>
+                        <?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
                         <a href="admin_accounts.php">
                             <i class="fa-solid fa-user-shield"></i>
                             <span class="li-name">Admin Accounts</span>
                         </a>
+                        <?php endif; ?>
                     </li>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
@@ -181,14 +205,14 @@ $total_classes      = 0; // Classes table not yet created
                     <div class="stat-card red">
                         <div class="stat-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
                         <div class="stat-content">
-                            <h3>Faculty Members</h3>
+                            <h3>Active Faculty</h3>
                             <p class="stat-number"><?php echo number_format($total_faculty); ?></p>
                         </div>
                     </div>
                     <div class="stat-card green">
                         <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
                         <div class="stat-content">
-                            <h3>Subjects</h3>
+                            <h3>Active Subjects</h3>
                             <p class="stat-number"><?php echo number_format($total_subjects); ?></p>
                         </div>
                     </div>
@@ -199,12 +223,11 @@ $total_classes      = 0; // Classes table not yet created
                             <p class="stat-number"><?php echo number_format($total_classes); ?></p>
                         </div>
                     </div>
-                    <div class="stat-card navy">
-                        <div class="stat-icon"><i class="fa-solid fa-calendar"></i></div>
+                    <div class="stat-card teal">
+                        <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
                         <div class="stat-content">
-                            <h3>Current Semester</h3>
-                            <p class="stat-number">2nd Sem</p>
-                            <small>AY 2024-2025</small>
+                            <h3>Enrollments</h3>
+                            <p class="stat-number"><?php echo number_format($total_enrollments); ?></p>
                         </div>
                     </div>
                 </div>
@@ -321,5 +344,7 @@ $total_classes      = 0; // Classes table not yet created
 
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_home.js"></script>
+    <script src="../../js/no_cache.js"></script>
+    <script src="../../js/plm_loader.js"></script>
 </body>
 </html>

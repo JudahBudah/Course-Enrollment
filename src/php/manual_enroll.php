@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
-    $chk = mysqli_query($con, "SELECT enrollment_id FROM enrollments WHERE student_id = $student_id AND class_id = $class_id AND status = 'ongoing'");
+    $chk = mysqli_query($con, "SELECT enrollment_id FROM enrollments WHERE student_id = $student_id AND class_id = $class_id AND status IN ('reserved','confirmed','ongoing')");
     if (mysqli_num_rows($chk) > 0) {
         header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&error=already_enrolled");
         exit;
@@ -35,8 +35,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_bind_param($stmt, "iisi", $student_id, $class_id, $school_year, $semester);
 
     if (mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_close($stmt);
+        
+        // Update student status to Enrolled
+        mysqli_query($con, "UPDATE students SET status = 'Enrolled' WHERE student_id = $student_id");
+        
         header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&success=reserved");
     } else {
+        mysqli_stmt_close($stmt);
         header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&error=failed");
     }
 } else {

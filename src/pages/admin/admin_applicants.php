@@ -32,6 +32,8 @@ $error_messages = [
     'already_student'          => 'This applicant is already a student.',
     'insert_failed'            => 'Failed to create student record. Please try again.',
     'incomplete_profile'       => 'Cannot convert — applicant has not completed their profile (missing first name or last name).',
+    'documents_not_submitted'  => 'Cannot convert — applicant has not submitted required documents.',
+    'incomplete_information'   => 'Cannot convert — applicant has incomplete information (missing LRN, birthdate, contact number, program choice, or gender).',
 ];
 if (isset($_GET['error']) && isset($error_messages[$_GET['error']])) {
     $error = $error_messages[$_GET['error']];
@@ -196,10 +198,12 @@ $applicants = mysqli_query($con, $query);
                         </a>
                     </li>
                     <li>
+                        <?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
                         <a href="admin_accounts.php">
                             <i class="fa-solid fa-user-shield"></i>
                             <span class="li-name">Admin Accounts</span>
                         </a>
+                        <?php endif; ?>
                     </li>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
@@ -326,6 +330,9 @@ $applicants = mysqli_query($con, $query);
                                     <td><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
                                     <td>
                                         <div class="action-buttons">
+                                            <button onclick="viewApplicant(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="View Details">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
                                             <button onclick="updateStatus(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="Update Status">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
@@ -402,11 +409,11 @@ $applicants = mysqli_query($con, $query);
             <p style="font-size:0.9rem;color:var(--text);margin-bottom:1.5rem;">
                 Applicant: <strong class="convert-name" id="convertName"></strong>
             </p>
-            <form method="POST" action="../../php/convert_to_student.php">
+            <form id="convertForm">
                 <input type="hidden" name="applicant_id" id="convert_applicant_id">
                 <div class="form-group">
                     <label>Student Number <span style="color:var(--red)">*</span></label>
-                    <input type="text" name="student_number" placeholder="e.g., 2024-12345" required>
+                    <input type="text" name="student_number" placeholder="e.g., 202412345" required>
                 </div>
                 <div class="form-group">
                     <label>College <span style="color:var(--red)">*</span></label>
@@ -435,6 +442,29 @@ $applicants = mysqli_query($con, $query);
                 </div>
                 <button type="submit" class="btn-submit-green">Convert to Student</button>
             </form>
+        </div>
+    </div>
+
+    <!-- ── View Applicant Details Modal ──────────────── -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content view-modal">
+            <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
+            <h2>Applicant Details</h2>
+            <div id="viewContent" style="max-height:70vh;overflow-y:auto;padding:1rem 0;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('viewModal').style.display='none'">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Document Viewer Modal ──────────────────────── -->
+    <div id="docModal" class="modal">
+        <div class="modal-content doc-viewer-modal">
+            <div class="doc-viewer-header">
+                <span id="docModalName"></span>
+                <button class="close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="doc-viewer-body" id="docModalBody"></div>
         </div>
     </div>
 

@@ -29,11 +29,15 @@ $assigned_query = mysqli_query($con, "
 // Available classes not yet assigned to this block
 $sy_esc  = mysqli_real_escape_string($con, $block['school_year']);
 $sem_esc = mysqli_real_escape_string($con, $block['semester']);
+$course_esc = mysqli_real_escape_string($con, $block['course']);
+$year_esc = (int)$block['year_level'];
+
 $available_query = mysqli_query($con, "
-    SELECT c.*, s.subject_code, s.subject_name, s.units,
-           f.first_name, f.last_name
+    SELECT c.*, s.subject_code, s.subject_name, s.units, s.year_level as subject_year,
+           f.first_name, f.last_name, co.course_code
     FROM classes c
     JOIN subjects s ON c.subject_id = s.subject_id
+    LEFT JOIN courses co ON s.course_id = co.course_id
     LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
     WHERE c.class_id NOT IN (
         SELECT class_id FROM block_subjects WHERE block_id = $block_id
@@ -41,6 +45,8 @@ $available_query = mysqli_query($con, "
     AND c.school_year = '$sy_esc'
     AND c.semester    = '$sem_esc'
     AND c.status      = 'open'
+    AND (co.course_code = '$course_esc' OR s.course_id IS NULL)
+    AND (s.year_level = $year_esc OR s.year_level IS NULL)
     ORDER BY s.subject_code
 ");
 ?>
@@ -270,21 +276,37 @@ $available_query = mysqli_query($con, "
                             <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
                             <div class="add-subject-body">
                                 <label>Select Class to Add</label>
-                                <select name="class_id" required>
-                                    <option value="">Choose a class…</option>
-                                    <?php while ($cls = mysqli_fetch_assoc($available_query)): ?>
-                                        <option value="<?php echo $cls['class_id']; ?>">
-                                            <?php echo htmlspecialchars(
-                                                $cls['subject_code'] . ' — ' . $cls['subject_name'] .
-                                                ' | Sec ' . $cls['section'] . ' | ' .
-                                                ($cls['schedule_day'] ?? 'TBA') . ' ' . ($cls['schedule_time'] ?? '')
-                                            ); ?>
-                                        </option>
-                                    <?php endwhile; ?>
-                                </select>
-                                <button type="submit" class="btn-add-subject">
-                                    <i class="fa-solid fa-plus"></i> Add Subject to Block
-                                </button>
+                                <?php if (mysqli_num_rows($available_query) > 0): ?>
+                                    <select name="class_id" required>
+                                        <option value="">Choose a class…</option>
+                                        <?php while ($cls = mysqli_fetch_assoc($available_query)): ?>
+                                            <option value="<?php echo $cls['class_id']; ?>">
+                                                <?php echo htmlspecialchars(
+                                                    $cls['subject_code'] . ' — ' . $cls['subject_name'] .
+                                                    ' | Sec ' . $cls['section'] . ' | ' .
+                                                    ($cls['schedule_day'] ?? 'TBA') . ' ' . ($cls['schedule_time'] ?? '')
+                                                ); ?>
+                                            </option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                    <button type="submit" class="btn-add-subject">
+                                        <i class="fa-solid fa-plus"></i> Add Subject to Block
+                                    </button>
+                                <?php else: ?>
+                                    <div class="no-classes-message">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                        <p><strong>No available classes found</strong></p>
+                                        <p>To add subjects to this block, you need to create classes that match:</p>
+                                        <ul>
+                                            <li>Course: <strong><?php echo htmlspecialchars($block['course']); ?></strong></li>
+                                            <li>Year Level: <strong><?php echo htmlspecialchars($block['year_level']); ?></strong></li>
+                                            <li>Semester: <strong><?php echo htmlspecialchars($block['semester']); ?></strong></li>
+                                            <li>School Year: <strong><?php echo htmlspecialchars($block['school_year']); ?></strong></li>
+                                            <li>Status: <strong>Open</strong></li>
+                                        </ul>
+                                        <p>Go to <a href="admin_classes.php" style="color:var(--primary-color);font-weight:600;">Classes Management</a> to create classes for <?php echo htmlspecialchars($block['course']); ?> subjects.</p>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </form>
                     </div>

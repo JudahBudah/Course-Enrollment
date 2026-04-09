@@ -204,6 +204,46 @@ input[type="checkbox"] {
 
 .faculty-name { font-weight: 500; }
 
+/* ── ACTION BUTTONS ── */
+.action-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.drop-btn {
+    background: #dc2626;
+    color: white;
+}
+
+.drop-btn:hover {
+    background: #b91c1c;
+}
+
+.cancel-btn {
+    background: #6b7280;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background: #4b5563;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
 /* ── SEARCH BAR ── */
 .search-bar-wrap {
     padding: 16px 24px;

@@ -247,9 +247,9 @@ header a {
 
 .portal-tab {
     flex: 1;
-    display: block;
     padding: 0.6rem;
     background: transparent;
+    border: none;
     border: 1px solid rgba(212,175,55,0.15);
     border-right: none;
     color: rgba(242,243,242,0.35);
@@ -258,10 +258,8 @@ header a {
     font-weight: 600;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    text-align: center;
     cursor: pointer;
     transition: all 0.3s;
-    text-decoration: none;
 }
 
 .portal-tab:last-child {
@@ -351,6 +349,7 @@ header a {
 .field-wrap input:focus {
     border-color: var(--gold);
     background: rgba(212,175,55,0.05);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.08);
 }
 
 /* Password toggle button */
@@ -407,7 +406,6 @@ header a {
     margin-top: 1.8rem;
     background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
     border: none;
-    border-radius: 5px;
     color: var(--white);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.78rem;
@@ -415,6 +413,7 @@ header a {
     letter-spacing: 0.18em;
     text-transform: uppercase;
     cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
     transition: all 0.35s;
     position: relative;
     overflow: hidden;
@@ -434,7 +433,8 @@ header a {
 }
 
 .btn-login:hover {
-    box-shadow: 0 6px 16px rgba(140, 28, 36, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(140,28,36,0.4);
 }
 
 .btn-login span {

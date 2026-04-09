@@ -1,0 +1,73 @@
+BSCpE|CET 0111|Calculus 1|3|3|0|CET|1|1st|
+BSCpE|CET 0112|Chemistry for Engineers|3|3|0|CET|1|1st|CET 0112.1
+BSCpE|CET 0112.1|Chemistry for Engineers|1|0|1|CET|1|1st|CET 0112.1
+BSCpE|CPE 0111|Computer Engineering as a Discipline|1|1|0|CPE|1|1st|
+BSCpE|CPE 0112.1|Programming Logic and Design (Laboratory)|2|0|2|CPE|1|1st|
+BSCpE|MMW 0001|Mathematics in the Modern World|3|3|0|MMW|1|1st|
+BSCpE|STS 0002|Science, Technology and Society|3|3|0|STS|1|1st|
+BSCpE|UTS 0003|Understanding the Self|3|3|0|UTS|1|1st|
+BSCpE|GTB 121|Great Books|3|3|0|GTB|1|1st|
+BSCpE|PED 0001|Foundation of Physical Activities|2|2|0|PED|1|1st|
+BSCpE|NSTP 01|National Service Training Program 1- ROTC 1/ CWTS 1|3|3|0|NSTP|1|1st|
+BSCpE|CET 0121|Calculus 2|3|3|0|CET|1|2nd|CET 0111
+BSCpE|CET 0122A|Physics for Engineers|4|4|0|CET|1|2nd|CET 0111, CET 0122.1
+BSCpE|CET 0122A.1|Physics for Engineers|1|0|1|CET|1|2nd|CET 0111, CET 0122
+BSCpE|CET 0216|Engineering Economics|3|3|0|CET|1|2nd|
+BSCpE|CPE 0121.1|Object Oriented Programming (Laboratory)|2|0|2|CPE|1|2nd|CPE 0112.1
+BSCpE|CPE 0122|Discrete Mathematics|3|3|0|CPE|1|2nd|CET 0111
+BSCpE|ITE 0001|Living in the IT Era|3|3|0|ITE|1|2nd|
+BSCpE|PCM 0006|Purposive Communication|3|3|0|PCM|1|2nd|
+BSCpE|PED 0043|PE Elective (12, 13, or 14)|2|2|0|PED|1|2nd|PED 0001
+BSCpE|NSTP 02|National Service Training Program 2 - ROTC 2/ CWTS 2|3|3|0|NSTP|1|2nd|NSTP 1
+BSCpE|CET 0123.1|Computer-Aided Drafting|1|1|0|CET|2|1st|2nd Year Standing
+BSCpE|CET 0211|Differential Equations|3|3|0|CET|2|1st|CET 0121
+BSCpE|CET 0212|Engineering Data Analysis|3|3|0|CET|2|1st|CET 0111
+BSCpE|CPE 0211.1|Data Structures and Algorithms (Laboratory)|2|0|2|CPE|2|1st|CET 0121.1
+BSCpE|CPE 0212|Fundamentals of Electrical Circuits|3|3|0|CPE|2|1st|CET 0122, CPE 0212.1
+BSCpE|CPE 0212.1|Fundamentals of Electrical Circuits|1|0|1|CPE|2|1st|CET 0122, CPE 0212
+BSCpE|AAP 0007|Art Appreciation|3|3|0|AAP|2|1st|
+BSCpE|RPH 0004|Readings in Philippine History|3|3|0|RPH|2|1st|
+BSCpE|IPP 0010|Interdisiplinaryong Pagbasa at Pagsulat Tungo sa Mabisang Pagpapahayag|3|3|0|IPP|2|1st|New Mandated Course
+BSCpE|PED 0013|PE Elective (12, 13, or 14)|2|2|0|PED|2|1st|PED 0001
+BSCpE|CPE 0221|Numerical Methods|3|3|0|CPE|2|2nd|CET 0211
+BSCpE|CPE 0222|Software Design|3|3|0|CPE|2|2nd|CET 0211.1, CPE 0222.1
+BSCpE|CPE 0222.1|Software Design|1|0|1|CPE|2|2nd|CET 0211.1, CPE 0222
+BSCpE|CPE 0223|Fundamentals of Electronic Circuits|3|3|0|CPE|2|2nd|CPE 0212, CPE 0223.1
+BSCpE|CPE 0223.1|Fundamentals of Electronic Circuits|1|0|1|CPE|2|2nd|CPE 0212, CPE 0223
+BSCpE|LWR 0009|Life and Works of Rizal|3|3|0|LWR|2|2nd|
+BSCpE|TCW 0005|The Contemporary World|3|3|0|TCW|2|2nd|
+BSCpE|PPC 122|GEC ELECTIVE 3-Philippine Popular Culture|3|3|0|PPC|2|2nd|
+BSCpE|ETH 0008|Ethics|3|3|0|ETH|2|2nd|
+BSCpE|PED 0074|PE Elective (12, 13, or 14)|2|2|0|PED|2|2nd|PED 0001
+BSCpE|CPE 0311|Logic Circuits and Design|3|3|0|CPE|3|1st|CPE 0223, CPE 0311.1
+BSCpE|CPE 0311.1|Logic Circuits and Design|1|0|1|CPE|3|1st|CPE 0223, CPE 0311
+BSCpE|CPE 0312.1|Introduction to HDL (Laboratory)|1|0|1|CPE|3|1st|CPE 0112.1, CPE 0223
+BSCpE|CPE 0313|Operating Systems|3|3|0|CPE|3|1st|CPE 0211.1
+BSCpE|CPE 0314|Data and Digital Communications|3|3|0|CPE|3|1st|CPE 0223
+BSCpE|CPE 0315|Feedback and Control Systems|3|3|0|CPE|3|1st|CPE 0221, CPE 0212
+BSCpE|CPE 0316|Fundamentals of Mixed Signals and Sensors|3|3|0|CPE|3|1st|CPE 0223
+BSCpE|CPE 0317.1|Computer Engineering Drafting and Design (Design)|1|1|0|CPE|3|1st|CPE 0223
+BSCpE|CPE 0318|Elective 1 (Lecture)|2|2|0|CPE|3|1st|CPE 0222, CPE 0318.1
+BSCpE|CPE 0318.1|Elective 1 (Lecture)|1|0|1|CPE|3|1st|CPE 0222, CPE 0318
+BSCpE|CET 0411|Technopreneurship 101|3|3|0|CET|3|2nd|
+BSCpE|CPE 0321|Basic Occupational Health and Safety|3|3|0|CPE|3|2nd|3rd Year Standing
+BSCpE|CPE 0322|Computer Networks and Security (Lecture)|3|3|0|CPE|3|2nd|CPE 0314, CPE 0322.1
+BSCpE|CPE 0322.1|Computer Networks and Security (Lecture)|1|0|1|CPE|3|2nd|CPE 0314, CPE 0322
+BSCpE|CPE 0323|Computer Architecture and Organization (Lecture)|3|3|0|CPE|3|2nd|CPE 0311, CPE 0323.1
+BSCpE|CPE 0323.1|Computer Architecture and Organization (Lecture)|1|0|1|CPE|3|2nd|CPE 0311, CPE 0323
+BSCpE|CPE 0324|Methods of Research|2|2|0|CPE|3|2nd|CET 0212, PCM 0006, CPE 0311
+BSCpE|CPE 0325|CPE Laws and Professional Practice|2|2|0|CPE|3|2nd|3rd Year Standing
+BSCpE|CPE 0326|Elective 2|3|3|0|CPE|3|2nd|
+BSCpE|CPE 0331|Seminars and Field Trips (fld)|1|1|0|CPE|3|summer|
+BSCpE|CPE 0332|Elective 3|2|2|0|CPE|3|summer|CPE 0222, CPE 0332.1
+BSCpE|CPE 0332.1|Elective 3|1|0|1|CPE|3|summer|CPE 0222, CPE 0332
+BSCpE|CPE 0411|Embedded Systems|3|3|0|CPE|4|1st|CPE 0323, CPE 0411.1
+BSCpE|CPE 0411.1|Embedded Systems|1|0|1|CPE|4|1st|CPE 0323, CPE 0411
+BSCpE|CPE 0412|Microprocessors|3|3|0|CPE|4|1st|CPE 0323, CPE 0412.1
+BSCpE|CPE 0412.1|Microprocessors|1|0|1|CPE|4|1st|CPE 0323, CPE 0412
+BSCpE|CPE 0413|Emerging Technologies in CPE|3|3|0|CPE|4|1st|4th Year Standing
+BSCpE|CPE 0414.1|CPE Practice and Design 1 (Design)|1|1|0|CPE|4|1st|CPE 0323, CPE 0324
+BSCpE|CPE 0415|Digital Signal Processing|3|3|0|CPE|4|1st|CPE 0315, CPE 0415.1
+BSCpE|CPE 0415.1|Digital Signal Processing|1|0|1|CPE|4|1st|CPE 0315, CPE 0415
+BSCpE|CPE 0421.1|CPE Practice and Design 2 (Design)|2|2|0|CPE|4|2nd|CPE 0414.1
+BSCpE|CPE 0422.1|On-The-Job Training for CPE (240 hrs)|3|3|0|CPE|4|2nd|4th Year Standing

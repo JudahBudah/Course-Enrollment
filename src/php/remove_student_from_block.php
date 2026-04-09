@@ -13,12 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $block_query = mysqli_query($con, "SELECT * FROM blocks WHERE block_id = $block_id");
     $block = mysqli_fetch_assoc($block_query);
 
+    // Verify student is actually in this block
+    $student_check = mysqli_query($con, "SELECT block_id FROM students WHERE student_id = $student_id");
+    $student = mysqli_fetch_assoc($student_check);
+    
+    if (!$student || $student['block_id'] != $block_id) {
+        header("Location: ../pages/admin/admin_block_students.php?block_id=$block_id&error=not_in_block");
+        exit;
+    }
+
     // Remove student from block
     $update_student = "UPDATE students SET block_id = NULL WHERE student_id = $student_id";
     
     if (mysqli_query($con, $update_student)) {
-        // Update block student count
-        $update_block = "UPDATE blocks SET current_students = current_students - 1 WHERE block_id = $block_id";
+        // Update block student count (prevent negative)
+        $update_block = "UPDATE blocks SET current_students = GREATEST(0, current_students - 1) WHERE block_id = $block_id";
         mysqli_query($con, $update_block);
 
         // Remove student enrollments from block subjects
@@ -34,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                AND school_year = '$school_year' 
                                AND semester = $semester");
             
-            // Update class enrolled count
-            mysqli_query($con, "UPDATE classes SET enrolled_count = enrolled_count - 1 WHERE class_id = $class_id");
+            // Update class enrolled count (prevent negative)
+            mysqli_query($con, "UPDATE classes SET enrolled_count = GREATEST(0, enrolled_count - 1) WHERE class_id = $class_id");
         }
 
         header("Location: ../pages/admin/admin_block_students.php?block_id=$block_id&success=removed");

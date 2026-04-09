@@ -52,8 +52,9 @@ foreach ($classes as $c) {
 }
 
 // Students + grade entries for selected class
-$students = [];
-$entries  = [];
+$students  = [];
+$entries   = [];
+$finalized = false;
 if ($selected_class_id) {
     $sq = mysqli_query($con,
         "SELECT e.enrollment_id, e.student_id,
@@ -69,6 +70,12 @@ if ($selected_class_id) {
         "SELECT * FROM grade_entries WHERE class_id = $selected_class_id"
     );
     while ($r = mysqli_fetch_assoc($eq)) $entries[$r['enrollment_id']] = $r;
+
+    $cls_row   = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT grades_finalized, grades_finalized_at FROM classes WHERE class_id = $selected_class_id"
+    ));
+    $finalized = $cls_row && (int)$cls_row['grades_finalized'] === 1;
+    $finalized_at = $cls_row['grades_finalized_at'] ?? null;
 }
 
 // Transmutation helpers (PHP side for initial render)
@@ -214,7 +221,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                 <?php endif; ?>
             </div>
             <div class="class-nav-right">
-                <form method="GET" style="display:contents;">
+                <form method="GET" id="classSelectForm">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
@@ -252,11 +259,27 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                 <span><i class="fa-solid fa-circle-check" style="color:var(--passed-green);"></i> Passed (1.00–3.00)</span>
                 <span><i class="fa-solid fa-circle-half-stroke" style="color:var(--perm-navy);"></i> Conditional (4.00)</span>
                 <span><i class="fa-solid fa-circle-xmark" style="color:var(--red);"></i> Failed (5.00)</span>
+                <?php if (!$finalized): ?>
                 <span class="ss-legend-hint">Click any grade cell to edit · Tab / Enter to move · Values 0–100</span>
+                <?php endif; ?>
             </div>
-            <button class="btn-export" onclick="exportCSV()">
-                <i class="fa-solid fa-file-csv"></i> Export CSV
-            </button>
+            <div style="display:flex;gap:0.6rem;align-items:center;">
+                <?php if ($finalized): ?>
+                    <span style="display:flex;align-items:center;gap:0.4rem;color:var(--passed-green);font-weight:600;font-size:0.85rem;">
+                        <i class="fa-solid fa-lock"></i> Grades Finalized
+                        <?php if ($finalized_at): ?>
+                            <span style="font-weight:400;color:var(--text-label);">(<?php echo date('M d, Y', strtotime($finalized_at)); ?>)</span>
+                        <?php endif; ?>
+                    </span>
+                <?php else: ?>
+                    <button class="btn-finalize" id="btnFinalize" onclick="confirmFinalize()">
+                        <i class="fa-solid fa-lock"></i> Finalize Grades
+                    </button>
+                <?php endif; ?>
+                <button class="btn-export" onclick="exportCSV()">
+                    <i class="fa-solid fa-file-csv"></i> Export CSV
+                </button>
+            </div>
         </div>
 
         <!-- Spreadsheet Table -->
@@ -303,7 +326,8 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                                    data-field="<?php echo $field; ?>"
                                    value="<?php echo $val !== null ? htmlspecialchars($val) : ''; ?>"
                                    placeholder="—" min="0" max="100" step="0.01"
-                                   title="<?php echo ucwords(str_replace('_', ' ', $field)); ?> (0–100)">
+                                   title="<?php echo ucwords(str_replace('_', ' ', $field)); ?> (0–100)"
+                                   <?php echo $finalized ? 'disabled' : ''; ?>>
                         </span>
                         <?php endforeach; ?>
 
@@ -349,7 +373,9 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
         }
 
         // ── Transmutation (mirrors PHP) ──────────────────────────────────────
-        const HANDLER = '../../php/faculty_grades_handler.php';
+        const HANDLER   = '../../php/faculty_grades_handler.php';
+        const CLASS_ID  = <?php echo $selected_class_id; ?>;
+        const FINALIZED = <?php echo $finalized ? 'true' : 'false'; ?>;
         let saveTimer = null;
 
         function transmute(g) {
@@ -416,9 +442,23 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             saveTimer = setTimeout(() => el.classList.remove('show'), 1800);
         }
 
+        // ── Finalize grades ───────────────────────────────────────────────────
+        function confirmFinalize() {
+            if (!confirm('Finalize grades for this class?\n\nThis is permanent and cannot be undone. Students will see their final grades and no further edits will be allowed.')) return;
+            const fd = new FormData();
+            fd.append('action',   'finalize_class');
+            fd.append('class_id', CLASS_ID);
+            fetch(HANDLER, { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) location.reload();
+                    else alert(d.msg || 'Failed to finalize grades.');
+                })
+                .catch(() => alert('Error finalizing grades.'));
+        }
+
         // ── Save cell to server ──────────────────────────────────────────────
-        function saveCell(input) {
-            const row = input.closest('.ss-row');
+        function saveCell(input, row) {
             const fd  = new FormData();
             fd.append('action',        'save_cell');
             fd.append('enrollment_id', row.dataset.enrollment);
@@ -429,7 +469,24 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
 
             fetch(HANDLER, { method: 'POST', body: fd })
                 .then(r => r.json())
-                .then(d => showSaved(d.ok))
+                .then(d => {
+                    showSaved(d.ok);
+                    if (!d.ok) return;
+                    const tgEl = row.querySelector('[data-col="tg"]');
+                    const fgEl = row.querySelector('[data-col="fg"]');
+                    const rmEl = row.querySelector('[data-col="remark"]');
+                    if (d.transmuted !== null && d.transmuted !== undefined) {
+                        tgEl.textContent = d.transmuted;
+                        fgEl.textContent = d.point;
+                        rmEl.className   = 'col-remark ' + d.remark;
+                        rmEl.innerHTML   = `<i class="fa-solid ${remarkIcon[d.remark]}"></i> ${remarkLabel[d.remark]}`;
+                    } else {
+                        tgEl.textContent = '—';
+                        fgEl.textContent = '—';
+                        rmEl.className   = 'col-remark pending';
+                        rmEl.innerHTML   = '<i class="fa-solid fa-clock"></i> Pending';
+                    }
+                })
                 .catch(() => showSaved(false));
         }
 
@@ -449,7 +506,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             input.addEventListener('input', () => updateRowComputed(input.closest('.ss-row')));
 
             // Save on blur
-            input.addEventListener('blur', () => saveCell(input));
+            input.addEventListener('blur', () => saveCell(input, input.closest('.ss-row')));
 
             // Keyboard nav
             input.addEventListener('keydown', e => {

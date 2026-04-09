@@ -18,15 +18,44 @@ if ($action === 'add' || $action === 'edit') {
     $room = trim($_POST['room']);
     $max_slots = (int) $_POST['max_slots'];
     $status = $_POST['status'];
+    
+    // Handle department restriction
+    $availability_type = $_POST['availability_type'] ?? 'all';
+    $specific_department = null;
+    if ($availability_type === 'specific' && !empty($_POST['specific_department'])) {
+        $specific_department = trim($_POST['specific_department']);
+    }
 
-    if (!$subject_id || !$section || !$school_year || !$semester || !$max_slots) {
+    if (!$section || !$school_year || !$semester || !$max_slots) {
         header("Location: ../pages/admin/admin_classes.php?error=missing_fields");
         die;
     }
 
     if ($action === 'add') {
-        $stmt = mysqli_prepare($con, "INSERT INTO classes (subject_id, faculty_id, section, school_year, semester, schedule_day, schedule_time, room, max_slots, enrolled_count, status) VALUES (?,?,?,?,?,?,?,?,?,0,?)");
-        mysqli_stmt_bind_param($stmt, "iissssssis", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status);
+        // Check for duplicate section with same subject in same school year and semester
+        $dup_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE subject_id = ? AND section = ? AND school_year = ? AND semester = ?");
+        mysqli_stmt_bind_param($dup_check, "isss", $subject_id, $section, $school_year, $semester);
+        mysqli_stmt_execute($dup_check);
+        mysqli_stmt_store_result($dup_check);
+        if (mysqli_stmt_num_rows($dup_check) > 0) {
+            header("Location: ../pages/admin/admin_classes.php?error=duplicate_class");
+            die;
+        }
+
+        // Check for room/schedule conflict (same room, day, and time)
+        if (!empty($room) && !empty($schedule_day) && !empty($schedule_time)) {
+            $conflict_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE room = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ?");
+            mysqli_stmt_bind_param($conflict_check, "sssss", $room, $schedule_day, $schedule_time, $school_year, $semester);
+            mysqli_stmt_execute($conflict_check);
+            mysqli_stmt_store_result($conflict_check);
+            if (mysqli_stmt_num_rows($conflict_check) > 0) {
+                header("Location: ../pages/admin/admin_classes.php?error=schedule_conflict");
+                die;
+            }
+        }
+
+        $stmt = mysqli_prepare($con, "INSERT INTO classes (subject_id, faculty_id, section, school_year, semester, schedule_day, schedule_time, room, max_slots, enrolled_count, status, specific_department) VALUES (?,?,?,?,?,?,?,?,?,0,?,?)");
+        mysqli_stmt_bind_param($stmt, "iisssssisss", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_classes.php?error=insert_failed");
@@ -37,8 +66,30 @@ if ($action === 'add' || $action === 'edit') {
     } else {
         $class_id = (int) $_POST['class_id'];
 
-        $stmt = mysqli_prepare($con, "UPDATE classes SET subject_id=?, faculty_id=?, section=?, school_year=?, semester=?, schedule_day=?, schedule_time=?, room=?, max_slots=?, status=? WHERE class_id=?");
-        mysqli_stmt_bind_param($stmt, "iissssssisi", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $class_id);
+        // Check for duplicate section with same subject in same school year and semester (excluding current class)
+        $dup_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE subject_id = ? AND section = ? AND school_year = ? AND semester = ? AND class_id != ?");
+        mysqli_stmt_bind_param($dup_check, "isssi", $subject_id, $section, $school_year, $semester, $class_id);
+        mysqli_stmt_execute($dup_check);
+        mysqli_stmt_store_result($dup_check);
+        if (mysqli_stmt_num_rows($dup_check) > 0) {
+            header("Location: ../pages/admin/admin_classes.php?error=duplicate_class");
+            die;
+        }
+
+        // Check for room/schedule conflict (same room, day, and time, excluding current class)
+        if (!empty($room) && !empty($schedule_day) && !empty($schedule_time)) {
+            $conflict_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE room = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ? AND class_id != ?");
+            mysqli_stmt_bind_param($conflict_check, "sssssi", $room, $schedule_day, $schedule_time, $school_year, $semester, $class_id);
+            mysqli_stmt_execute($conflict_check);
+            mysqli_stmt_store_result($conflict_check);
+            if (mysqli_stmt_num_rows($conflict_check) > 0) {
+                header("Location: ../pages/admin/admin_classes.php?error=schedule_conflict");
+                die;
+            }
+        }
+
+        $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id=?, section=?, school_year=?, semester=?, schedule_day=?, schedule_time=?, room=?, max_slots=?, status=?, specific_department=? WHERE class_id=?");
+        mysqli_stmt_bind_param($stmt, "issssssissi", $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department, $class_id);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_classes.php?error=update_failed");
@@ -52,8 +103,8 @@ if ($action === 'add' || $action === 'edit') {
 if ($action === 'delete') {
     $class_id = (int) $_POST['class_id'];
 
-    // Check if class has enrollments
-    $chk = mysqli_prepare($con, "SELECT enrollment_id FROM enrollments WHERE class_id = ? LIMIT 1");
+    // Check if class has active enrollments
+    $chk = mysqli_prepare($con, "SELECT enrollment_id FROM enrollments WHERE class_id = ? AND status IN ('reserved', 'confirmed', 'ongoing') LIMIT 1");
     mysqli_stmt_bind_param($chk, "i", $class_id);
     mysqli_stmt_execute($chk);
     mysqli_stmt_store_result($chk);

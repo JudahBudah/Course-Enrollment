@@ -9,7 +9,7 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 
 // Stats
 $total_students = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
-$total_enrolled = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(DISTINCT student_id) as c FROM enrollments WHERE status = 'enrolled'"))['c'];
+$total_enrolled = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(DISTINCT student_id) as c FROM enrollments WHERE status NOT IN ('dropped', 'cancelled')"))['c'];
 $pending_enrollment = $total_students - $total_enrolled;
 ?>
 <!DOCTYPE html>
@@ -219,7 +219,7 @@ $pending_enrollment = $total_students - $total_enrolled;
                                     $sid = (int)$student['student_id'];
 
                                     $enr = mysqli_fetch_assoc(mysqli_query($con,
-                                        "SELECT COUNT(*) as c FROM enrollments WHERE student_id = $sid AND status = 'enrolled'"
+                                        "SELECT COUNT(*) as c FROM enrollments WHERE student_id = $sid AND status NOT IN ('dropped', 'cancelled')"
                                     ));
                                     $enrolled_count = $enr['c'] ?? 0;
 
@@ -228,7 +228,7 @@ $pending_enrollment = $total_students - $total_enrolled;
                                          FROM enrollments e
                                          JOIN classes c ON e.class_id = c.class_id
                                          JOIN subjects s ON c.subject_id = s.subject_id
-                                         WHERE e.student_id = $sid AND e.status = 'enrolled'"
+                                         WHERE e.student_id = $sid AND e.status NOT IN ('dropped', 'cancelled')"
                                     ));
                                     $total_units = $uq['t'] ?? 0;
                                 ?>

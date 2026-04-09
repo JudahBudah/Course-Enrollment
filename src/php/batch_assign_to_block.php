@@ -41,18 +41,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             continue;
         }
 
+        // Verify student is not already in another block
+        $check_student = mysqli_query($con, "SELECT block_id FROM students WHERE student_id = $student_id");
+        $student_data = mysqli_fetch_assoc($check_student);
+        if ($student_data && $student_data['block_id'] != NULL && $student_data['block_id'] != 0) {
+            $skipped_count++;
+            continue;
+        }
+
         // Assign student to block
         $update_student = "UPDATE students SET block_id = $block_id WHERE student_id = $student_id";
         
         if (mysqli_query($con, $update_student)) {
             $assigned_count++;
             
-            // Reserve in block subjects (student must confirm)
+            // Reserve in block subjects and update class counts
             $block_subjects = mysqli_query($con, "SELECT class_id FROM block_subjects WHERE block_id = $block_id");
             while ($subject = mysqli_fetch_assoc($block_subjects)) {
                 $class_id = $subject['class_id'];
-                mysqli_query($con, "INSERT IGNORE INTO enrollments (student_id, class_id, school_year, semester, status) 
-                                   VALUES ($student_id, $class_id, '{$block['school_year']}', $semester, 'reserved')");
+                $insert_result = mysqli_query($con, "INSERT IGNORE INTO enrollments (student_id, class_id, school_year, semester, status) 
+                                   VALUES ($student_id, $class_id, '{$block['school_year']}', $semester, 'confirmed')");
+                
+                // Update class enrolled count only if enrollment was actually inserted
+                if ($insert_result && mysqli_affected_rows($con) > 0) {
+                    mysqli_query($con, "UPDATE classes SET enrolled_count = enrolled_count + 1 WHERE class_id = $class_id");
+                }
             }
         }
     }

@@ -181,6 +181,7 @@ ul {
 .logo-container img {
     height: 2.4rem;
     width: 2.4rem;
+    object-fit: contain;
 }
 
 .logo-title {

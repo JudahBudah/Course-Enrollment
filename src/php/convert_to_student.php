@@ -6,7 +6,7 @@ include("admin_functions.php");
 check_admin_login($con);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../pages/admin/admin_applicants.php");
+    echo json_encode(['success' => false, 'error' => 'Invalid request method']);
     die;
 }
 
@@ -18,7 +18,7 @@ $college        = trim($_POST['college']);
 
 // Validate
 if (!$applicant_id || !$student_number || !$course || !$year_level) {
-    header("Location: ../pages/admin/admin_applicants.php?error=missing_fields");
+    echo json_encode(['success' => false, 'error' => 'Please fill in all required fields.']);
     die;
 }
 
@@ -29,7 +29,7 @@ mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 if (!$result || mysqli_num_rows($result) === 0) {
-    header("Location: ../pages/admin/admin_applicants.php?error=not_found");
+    echo json_encode(['success' => false, 'error' => 'Applicant not found or not yet approved.']);
     die;
 }
 
@@ -37,7 +37,20 @@ $applicant = mysqli_fetch_assoc($result);
 
 // Ensure required fields exist
 if (empty($applicant['first_name']) || empty($applicant['last_name'])) {
-    header("Location: ../pages/admin/admin_applicants.php?error=incomplete_profile");
+    echo json_encode(['success' => false, 'error' => 'Cannot convert — applicant has not completed their profile (missing first name or last name).']);
+    die;
+}
+
+// Check if documents are submitted
+if (empty($applicant['documents_submitted']) || $applicant['documents_submitted'] != 1) {
+    echo json_encode(['success' => false, 'error' => 'Cannot convert — applicant has not submitted required documents.']);
+    die;
+}
+
+// Validate required personal information
+if (empty($applicant['lrn']) || empty($applicant['birthdate']) || empty($applicant['contact_number']) ||
+    empty($applicant['first_choice']) || empty($applicant['gender'])) {
+    echo json_encode(['success' => false, 'error' => 'Cannot convert — applicant has incomplete information (missing LRN, birthdate, contact number, program choice, or gender).']);
     die;
 }
 
@@ -47,7 +60,7 @@ mysqli_stmt_bind_param($check, "s", $student_number);
 mysqli_stmt_execute($check);
 mysqli_stmt_store_result($check);
 if (mysqli_stmt_num_rows($check) > 0) {
-    header("Location: ../pages/admin/admin_applicants.php?error=duplicate_student_number");
+    echo json_encode(['success' => false, 'error' => 'Student number already exists.']);
     die;
 }
 
@@ -57,7 +70,7 @@ mysqli_stmt_bind_param($check2, "s", $applicant['email']);
 mysqli_stmt_execute($check2);
 mysqli_stmt_store_result($check2);
 if (mysqli_stmt_num_rows($check2) > 0) {
-    header("Location: ../pages/admin/admin_applicants.php?error=already_student");
+    echo json_encode(['success' => false, 'error' => 'This applicant is already a student.']);
     die;
 }
 
@@ -82,7 +95,7 @@ mysqli_stmt_bind_param($insert, "ssssssssssis",
 );
 
 if (!mysqli_stmt_execute($insert)) {
-    header("Location: ../pages/admin/admin_applicants.php?error=insert_failed");
+    echo json_encode(['success' => false, 'error' => 'Failed to create student record. Please try again.']);
     die;
 }
 
@@ -91,5 +104,5 @@ $update = mysqli_prepare($con, "UPDATE applicants SET application_status = 'enro
 mysqli_stmt_bind_param($update, "i", $applicant_id);
 mysqli_stmt_execute($update);
 
-header("Location: ../pages/admin/admin_applicants.php?success=converted");
+echo json_encode(['success' => true, 'message' => 'Applicant successfully converted to student!']);
 die;

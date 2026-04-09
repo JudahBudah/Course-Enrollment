@@ -28,6 +28,7 @@ function openAdd() {
     document.getElementById('form_units').value         = 3;
     document.getElementById('form_lecture_hours').value = 3.0;
     document.getElementById('form_lab_hours').value     = 0.0;
+    document.getElementById('form_course_id').value     = '';
     document.getElementById('form_year_level').value    = '';
     document.getElementById('form_semester').value      = '';
     document.getElementById('form_status').value        = 'active';
@@ -49,6 +50,7 @@ function openEdit(raw) {
         if (el) el.value = s[f] ?? '';
     });
 
+    document.getElementById('form_course_id').value    = s.course_id  ?? '';
     document.getElementById('form_year_level').value   = s.year_level ?? '';
     document.getElementById('form_semester').value     = s.semester   ?? '';
     document.getElementById('formModal').style.display = 'block';

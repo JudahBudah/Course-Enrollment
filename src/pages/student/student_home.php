@@ -1,5 +1,8 @@
 <?php
-    session_start(); 
+    session_start();
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Pragma: no-cache");
+    header("Expires: 0");
     
     include("../../php/connection.php");
     include("../../php/functions.php");
@@ -29,6 +32,11 @@
     }
     $year_display = formatYear($year_level);
 
+    // Fetch curriculum URL for the student's course
+    $curriculum_url = '';
+    $course_info = get_course_info($con, $user_data['course'] ?? '');
+    $curriculum_url = $course_info['curriculum_url'] ?? '';
+
     // Enrollment status
     $enrollment_status = "Not Enrolled";
     $stmt = mysqli_prepare($con, "SELECT status FROM enrollments WHERE student_id = ? AND status IN ('confirmed','ongoing') ORDER BY enrollment_id DESC LIMIT 1");
@@ -44,14 +52,95 @@
     // Day abbreviation map for schedule matching
     $today_name = date('l');
     $today_abbr_map = [
-        'Monday'    => ['M','MW','MWF','MTH','Monday','Mon'],
+        'Monday'    => ['M','MW','MWF','MTH','MF','Monday','Mon'],
         'Tuesday'   => ['T','TTH','TF','Tuesday','Tue'],
-        'Wednesday' => ['W','MW','MWF','Wednesday','Wed'],
-        'Thursday'  => ['TH','TTH','MTH','Thursday','Thu'],
-        'Friday'    => ['F','MWF','TF','Friday','Fri'],
-        'Saturday'  => ['S','Saturday','Sat'],
+        'Wednesday' => ['W','MW','MWF','WF','Wednesday','Wed'],
+        'Thursday'  => ['TH','TTH','MTH','THS','Thursday','Thu'],
+        'Friday'    => ['F','MWF','TF','WF','MF','Friday','Fri'],
+        'Saturday'  => ['S','THS','Saturday','Sat'],
         'Sunday'    => ['SU','Sunday','Sun'],
     ];
+    
+    // Helper function to parse day strings
+    function parseScheduleDays($day_str) {
+        $day_str = trim($day_str);
+        $day_str_upper = strtoupper($day_str);
+        
+        // Direct patterns
+        $patterns = [
+            'MW' => ['Monday','Wednesday'],
+            'MWF' => ['Monday','Wednesday','Friday'],
+            'TTH' => ['Tuesday','Thursday'],
+            'TH' => ['Thursday'],
+            'TF' => ['Tuesday','Friday'],
+            'MTH' => ['Monday','Thursday'],
+            'WF' => ['Wednesday','Friday'],
+            'MF' => ['Monday','Friday'],
+            'THS' => ['Thursday','Saturday'],
+            'MTWTHF' => ['Monday','Tuesday','Wednesday','Thursday','Friday'],
+        ];
+        
+        if (isset($patterns[$day_str_upper])) {
+            return $patterns[$day_str_upper];
+        }
+        
+        // Single days
+        $singles = [
+            'M' => 'Monday', 'T' => 'Tuesday', 'W' => 'Wednesday',
+            'F' => 'Friday', 'S' => 'Saturday', 'SU' => 'Sunday',
+            'MONDAY' => 'Monday', 'TUESDAY' => 'Tuesday', 'WEDNESDAY' => 'Wednesday',
+            'THURSDAY' => 'Thursday', 'FRIDAY' => 'Friday', 'SATURDAY' => 'Saturday', 'SUNDAY' => 'Sunday',
+            'MON' => 'Monday', 'TUE' => 'Tuesday', 'WED' => 'Wednesday',
+            'THU' => 'Thursday', 'FRI' => 'Friday', 'SAT' => 'Saturday', 'SUN' => 'Sunday',
+        ];
+        
+        if (isset($singles[$day_str_upper])) {
+            return [$singles[$day_str_upper]];
+        }
+        
+        // Try splitting by delimiters
+        $parts = preg_split('/[,\/\s]+/', $day_str);
+        if (count($parts) > 1) {
+            $result = [];
+            foreach ($parts as $p) {
+                $p = trim($p);
+                if (empty($p)) continue;
+                $sub = parseScheduleDays($p);
+                $result = array_merge($result, $sub);
+            }
+            return array_unique($result);
+        }
+        
+        // Parse concatenated (e.g., THS)
+        $result = [];
+        $i = 0;
+        $len = strlen($day_str_upper);
+        
+        while ($i < $len) {
+            if ($i + 1 < $len) {
+                $two = substr($day_str_upper, $i, 2);
+                if ($two === 'TH') {
+                    $result[] = 'Thursday';
+                    $i += 2;
+                    continue;
+                }
+                if ($two === 'SU') {
+                    $result[] = 'Sunday';
+                    $i += 2;
+                    continue;
+                }
+            }
+            
+            $one = substr($day_str_upper, $i, 1);
+            $map = ['M'=>'Monday','T'=>'Tuesday','W'=>'Wednesday','F'=>'Friday','S'=>'Saturday'];
+            if (isset($map[$one])) {
+                $result[] = $map[$one];
+            }
+            $i++;
+        }
+        
+        return !empty($result) ? array_unique($result) : [];
+    }
 
     // Fetch all enrolled classes with schedule
     $all_schedule = [];
@@ -77,15 +166,10 @@
     $week_schedule = array_fill_keys($days_order, []);
 
     foreach ($all_schedule as $cls) {
-        $day_str = trim($cls['schedule_day']);
-        foreach ($days_order as $day) {
-            $patterns = $today_abbr_map[$day];
-            foreach ($patterns as $p) {
-                if (preg_match('/\b' . preg_quote($p, '/') . '\b/i', $day_str) ||
-                    strcasecmp($day_str, $p) === 0) {
-                    $week_schedule[$day][] = $cls;
-                    break 2;
-                }
+        $parsed_days = parseScheduleDays($cls['schedule_day']);
+        foreach ($parsed_days as $day) {
+            if (in_array($day, $days_order)) {
+                $week_schedule[$day][] = $cls;
             }
         }
     }
@@ -121,8 +205,26 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="../../css/student/student_home.css">
     <link rel="stylesheet" href="../../css/student/student_main.css">
+    <link rel="stylesheet" href="../../css/plm_loader.css">
+    <script>window.addEventListener('pageshow',function(e){if(e.persisted){document.documentElement.style.visibility='hidden';window.location.reload();}});</script>
 </head>
 <body>
+
+    <!-- Loading Screen -->
+    <div id="plm-loader">
+        <div id="plm-loader-bar"></div>
+        <div class="plm-loader-logo">
+            <img src="../../assets/plm-logo.png" alt="PLM">
+            <div class="plm-loader-name">
+                <p>PLM</p>
+                <p>Pamantasan ng Lungsod ng Maynila</p>
+            </div>
+            <div class="plm-loader-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p class="plm-loader-status" id="plm-loader-status">Loading...</p>
+        </div>
+    </div>
     <header>
         <div class="nav-section">
             <!-- Mobile Nav Button -->
@@ -187,7 +289,7 @@
                             <ul>
                                 <li><a href="student_info-program.php">Program</a></li>
                                 <li><a href="student_info-college.php">College</a></li>
-                                <li><a href="https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf" target="_blank">Curriculum</a></li>
+                                <?php if ($curriculum_url): ?><li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li><?php endif; ?>
                             </ul>
                         </div>
                     </li>
@@ -398,5 +500,7 @@
 
     <script src="../../js/student/student_home.js"></script>
     <script src="../../js/student/student_main.js"></script>
+    <script src="../../js/no_cache.js"></script>
+    <script src="../../js/plm_loader.js"></script>
 </body>
 </html>

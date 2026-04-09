@@ -107,3 +107,52 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ── No Classes Message ────────────────────────────────── */
+
+.no-classes-message {
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.no-classes-message i {
+    font-size: 1.5rem;
+    color: var(--red);
+    margin-bottom: 0.75rem;
+}
+
+.no-classes-message p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.no-classes-message p:first-of-type {
+    margin-top: 0.75rem;
+}
+
+.no-classes-message strong {
+    color: var(--dark);
+    font-weight: 600;
+}
+
+.no-classes-message ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style: disc;
+}
+
+.no-classes-message ul li {
+    margin: 0.5rem 0;
+    font-size: 0.88rem;
+    color: var(--text);
+}
+
+.no-classes-message ul li strong {
+    color: var(--red);
+    font-weight: 600;
+}

@@ -1,5 +1,8 @@
 <?php
 session_start();
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
 
@@ -24,8 +27,9 @@ if (isset($_GET['success']) && $_GET['success'] === 'updated') {
 
 // Stats
 $total_students  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
-$enrolled_count  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status != 'Not Enrolled'"))['c'];
-$not_enrolled    = $total_students - $enrolled_count;
+$enrolled_count  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status = 'Enrolled'"))['c'];
+$dropped_count   = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status = 'Dropped'"))['c'];
+$not_enrolled    = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE status = 'Not Enrolled'"))['c'];
 $irregular_count = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students WHERE registration_status = 'Irregular'"))['c'];
 
 // Search & filter
@@ -33,8 +37,9 @@ $search = trim($_GET['search'] ?? '');
 $filter = $_GET['filter'] ?? 'all';
 
 $where = "WHERE 1=1";
-if ($filter === 'enrolled')     $where .= " AND s.status != 'Not Enrolled'";
+if ($filter === 'enrolled')     $where .= " AND s.status = 'Enrolled'";
 if ($filter === 'not_enrolled') $where .= " AND s.status = 'Not Enrolled'";
+if ($filter === 'dropped')      $where .= " AND s.status = 'Dropped'";
 if ($filter === 'irregular')    $where .= " AND s.registration_status = 'Irregular'";
 if ($search !== '') {
     $s = mysqli_real_escape_string($con, $search);
@@ -54,14 +59,12 @@ $blocks_list = mysqli_query($con, "SELECT block_id, block_name, course, year_lev
 $blocks_arr  = [];
 while ($b = mysqli_fetch_assoc($blocks_list)) $blocks_arr[] = $b;
 
-$courses = [
-    'BS Computer Science',
-    'BS Information Technology',
-    'BS Business Administration',
-    'BS Accountancy',
-    'BS Civil Engineering',
-    'BS Electrical Engineering',
-];
+// Get courses from courses table
+$courses_query = mysqli_query($con, "SELECT course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_name");
+$courses = [];
+while ($row = mysqli_fetch_assoc($courses_query)) {
+    $courses[] = $row;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -233,6 +236,13 @@ $courses = [
                             <p class="stat-number"><?php echo $not_enrolled; ?></p>
                         </div>
                     </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon"><i class="fa-solid fa-user-xmark"></i></div>
+                        <div class="stat-content">
+                            <h3>Dropped</h3>
+                            <p class="stat-number"><?php echo $dropped_count; ?></p>
+                        </div>
+                    </div>
                     <div class="stat-card purple">
                         <div class="stat-icon"><i class="fa-solid fa-shuffle"></i></div>
                         <div class="stat-content">
@@ -259,6 +269,7 @@ $courses = [
                         <a href="?filter=all&search=<?php echo urlencode($search); ?>"         class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
                         <a href="?filter=enrolled&search=<?php echo urlencode($search); ?>"    class="filter-tab <?php echo $filter==='enrolled'?'active':''; ?>">Enrolled</a>
                         <a href="?filter=not_enrolled&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='not_enrolled'?'active':''; ?>">Not Enrolled</a>
+                        <a href="?filter=dropped&search=<?php echo urlencode($search); ?>"     class="filter-tab <?php echo $filter==='dropped'?'active':''; ?>">Dropped</a>
                         <a href="?filter=irregular&search=<?php echo urlencode($search); ?>"   class="filter-tab <?php echo $filter==='irregular'?'active':''; ?>">Irregular</a>
                     </div>
 
@@ -280,6 +291,11 @@ $courses = [
                             </thead>
                             <tbody id="studentsTable">
                             <?php while ($student = mysqli_fetch_assoc($students_query)):
+                                // Ensure registration_status has a default value
+                                if (empty($student['registration_status'])) {
+                                    $student['registration_status'] = 'Unknown';
+                                }
+                                
                                 $initials     = strtoupper(substr($student['first_name'] ?? '', 0, 1) . substr($student['last_name'] ?? '', 0, 1));
                                 $photo        = $student['profile_photo'] ? '../../' . $student['profile_photo'] : null;
                                 $fullname     = htmlspecialchars(trim(
@@ -315,8 +331,19 @@ $courses = [
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <span class="badge <?php echo $student['registration_status']==='Irregular' ? 'pending' : 'approved'; ?>">
-                                        <?php echo htmlspecialchars($student['registration_status'] ?? 'Regular'); ?>
+                                    <?php 
+                                    $reg_status = $student['registration_status'] ?? 'Unknown';
+                                    if (empty($reg_status)) $reg_status = 'Unknown';
+                                    if ($reg_status === 'Irregular') {
+                                        $badge_class = 'pending';
+                                    } elseif ($reg_status === 'Unknown') {
+                                        $badge_class = 'no-block';
+                                    } else {
+                                        $badge_class = 'approved';
+                                    }
+                                    ?>
+                                    <span class="badge <?php echo $badge_class; ?>">
+                                        <?php echo htmlspecialchars($reg_status); ?>
                                     </span>
                                 </td>
                                 <td>
@@ -415,9 +442,20 @@ $courses = [
                         <label>Course</label>
                         <select name="course" id="edit_course">
                             <option value="">Select Course</option>
-                            <?php foreach ($courses as $c): ?>
-                                <option value="<?php echo $c; ?>"><?php echo $c; ?></option>
-                            <?php endforeach; ?>
+                            <?php 
+                            $current_college = '';
+                            foreach ($courses as $course): 
+                                if ($current_college !== $course['college_name']) {
+                                    if ($current_college !== '') echo '</optgroup>';
+                                    echo '<optgroup label="' . htmlspecialchars($course['college_name']) . '">';
+                                    $current_college = $course['college_name'];
+                                }
+                            ?>
+                                <option value="<?php echo htmlspecialchars($course['course_code']); ?>"><?php echo htmlspecialchars($course['course_code'] . ' - ' . $course['course_name']); ?></option>
+                            <?php 
+                            endforeach; 
+                            if ($current_college !== '') echo '</optgroup>';
+                            ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -433,16 +471,12 @@ $courses = [
                         <label>Block</label>
                         <select name="block_id" id="edit_block_id">
                             <option value="">No Block (Irregular)</option>
-                            <?php foreach ($blocks_arr as $b): ?>
-                                <option value="<?php echo $b['block_id']; ?>">
-                                    <?php echo htmlspecialchars($b['block_name'] . ' — ' . $b['course'] . ' Yr' . $b['year_level']); ?>
-                                </option>
-                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Registration Type</label>
-                        <select name="registration_status" id="edit_registration_status">
+                        <select name="registration_status" id="edit_registration_status" required>
+                            <option value="Unknown">Unknown</option>
                             <option value="Regular">Regular</option>
                             <option value="Irregular">Irregular</option>
                         </select>
@@ -515,7 +549,18 @@ $courses = [
         </div>
     </div>
 
+    <script>
+    const ALL_BLOCKS = <?php echo json_encode($blocks_arr); ?>;
+    </script>
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_students.js"></script>
+    <script>
+    // Force page reload on back navigation to show updated data
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            window.location.reload();
+        }
+    });
+    </script>
 </body>
 </html>

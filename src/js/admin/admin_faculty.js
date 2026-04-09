@@ -1,11 +1,70 @@
 /* admin_faculty.js — page-specific scripts */
 
-/* ── Close modal on outside click ─────────────────────── */
+/* ── Modal helpers ─────────────────────────────────────── */
+
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
 
 window.addEventListener('click', function(e) {
-    const m = document.getElementById('formModal');
-    if (e.target === m) m.style.display = 'none';
+    ['viewModal', 'formModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (e.target === m) m.style.display = 'none';
+    });
 });
+
+/* ── View modal ────────────────────────────────────────── */
+
+function openView(raw) {
+    const f = JSON.parse(raw);
+    const initials = ((f.first_name || '')[0] || '') + ((f.last_name || '')[0] || '');
+
+    document.getElementById('view_avatar').textContent   = initials.toUpperCase();
+    document.getElementById('view_fullname').textContent =
+        [f.first_name, f.middle_name, f.last_name, (f.suffix_name && f.suffix_name !== 'none' ? f.suffix_name : '')]
+        .filter(Boolean).join(' ');
+    document.getElementById('view_employee_id').textContent  = 'Employee ID: ' + (f.employee_id || 'N/A');
+    document.getElementById('view_status_badge').innerHTML   =
+        '<span class="badge ' + (f.status || '') + '">' + (f.status ? f.status.charAt(0).toUpperCase() + f.status.slice(1) : 'N/A') + '</span>';
+
+    const simple = ['position','college','department','email',
+                    'first_name','last_name','middle_name','suffix_name',
+                    'date_of_birth','place_of_birth','sex','civil_status',
+                    'religion','nationality','disability',
+                    'phone','personal_email'];
+    simple.forEach(k => {
+        const el = document.getElementById('vw_' + k);
+        if (el) el.textContent = f[k] || '—';
+    });
+
+    // Employment status — prettify
+    const empEl = document.getElementById('vw_employment_status');
+    if (empEl) empEl.textContent = f.employment_status
+        ? f.employment_status.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+        : '—';
+
+    // Permanent address
+    const permEl = document.getElementById('vw_permanent_address_full');
+    if (permEl) {
+        const parts = [f.permanent_address, f.permanent_barangay, f.permanent_municipality,
+                       f.permanent_province, f.permanent_region, f.permanent_zip_code].filter(Boolean);
+        permEl.textContent = parts.length ? parts.join(', ') : '—';
+    }
+
+    // Mailing address
+    const mailEl = document.getElementById('vw_mailing_address_full');
+    if (mailEl) {
+        if (parseInt(f.mailing_same_as_permanent) === 1) {
+            mailEl.textContent = 'Same as permanent address';
+        } else {
+            const parts = [f.mailing_address, f.mailing_barangay, f.mailing_municipality,
+                           f.mailing_province, f.mailing_region, f.mailing_zip_code].filter(Boolean);
+            mailEl.textContent = parts.length ? parts.join(', ') : '—';
+        }
+    }
+
+    document.getElementById('viewModal').style.display = 'block';
+}
 
 /* ── Add Faculty modal ─────────────────────────────────── */
 
@@ -45,12 +104,11 @@ function openEdit(raw) {
 /* ── Assign / Schedule pane switcher ───────────────────── */
 
 function switchMode(mode) {
-    const paneAssign   = document.getElementById('pane-assign');
-    const paneSchedule = document.getElementById('pane-schedule');
-    if (paneAssign)   paneAssign.style.display   = mode === 'assign'   ? '' : 'none';
-    if (paneSchedule) paneSchedule.style.display = mode === 'schedule' ? '' : 'none';
+    ['assign','schedule'].forEach(p => {
+        const el = document.getElementById('pane-' + p);
+        if (el) el.style.display = mode === p ? '' : 'none';
+    });
 
-    // Toggle active class on the panel's own view-tabs
     document.querySelectorAll('.panel > .view-tabs .view-tab').forEach((t, i) => {
         t.classList.toggle('active',
             (mode === 'assign'   && i === 0) ||

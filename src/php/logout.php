@@ -1,11 +1,10 @@
 <?php
 session_start();
-
-if (isset($_SESSION['student_number'])) {
-    unset($_SESSION['student_number']);
-}
-
+session_unset();
 session_destroy();
-header("Location: ../pages/student_login.php");
+
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+header("Location: ../pages/login_hub.php?portal=student");
 die;
-?>

@@ -1,15 +1,18 @@
 <?php
 session_start();
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 include("../../php/connection.php");
 
-if (!isset($_SESSION['faculty_id'])) { header("Location: faculty_login.php"); die; }
+if (!isset($_SESSION['faculty_id'])) { header("Location: ../../pages/login_hub.php?portal=faculty"); die; }
 $faculty_id = (int)$_SESSION['faculty_id'];
 
 $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE faculty_id = ? AND status = 'active' LIMIT 1");
 mysqli_stmt_bind_param($stmt, "i", $faculty_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-if (!$result || mysqli_num_rows($result) == 0) { session_destroy(); header("Location: faculty_login.php"); die; }
+if (!$result || mysqli_num_rows($result) == 0) { session_destroy(); header("Location: ../../pages/login_hub.php?portal=faculty"); die; }
 $faculty_data = mysqli_fetch_assoc($result);
 
 // Fetch all assigned classes with schedule
@@ -80,8 +83,26 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <link rel="stylesheet" href="../../css/faculty/faculty_home.css" />
     <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
+    <link rel="stylesheet" href="../../css/plm_loader.css" />
+    <script>window.addEventListener('pageshow',function(e){if(e.persisted){document.documentElement.style.visibility='hidden';window.location.reload();}});</script>
   </head>
   <body>
+
+    <!-- Loading Screen -->
+    <div id="plm-loader">
+        <div id="plm-loader-bar"></div>
+        <div class="plm-loader-logo">
+            <img src="../../assets/plm-logo.png" alt="PLM">
+            <div class="plm-loader-name">
+                <p>PLM</p>
+                <p>Pamantasan ng Lungsod ng Maynila</p>
+            </div>
+            <div class="plm-loader-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p class="plm-loader-status" id="plm-loader-status">Loading...</p>
+        </div>
+    </div>
     <header>
         <div class="nav-section">
             <!-- Mobile Nav Button -->
@@ -345,5 +366,7 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
 
     <script src="../../js/faculty/faculty_home.js"></script>
     <script src="../../js/faculty/faculty_main.js"></script>
+    <script src="../../js/no_cache.js"></script>
+    <script src="../../js/plm_loader.js"></script>
   </body>
 </html>

@@ -201,6 +201,28 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                     </a>
                 </div>
 
+                <?php if (isset($_GET['success']) && $_GET['success'] === 'assigned'): ?>
+                    <div class="success-message"><i class="fa-solid fa-check-circle"></i> Student assigned successfully!</div>
+                <?php elseif (isset($_GET['success']) && $_GET['success'] === 'removed'): ?>
+                    <div class="success-message"><i class="fa-solid fa-check-circle"></i> Student removed from block successfully!</div>
+                <?php elseif (isset($_GET['success']) && $_GET['success'] === 'batch'): ?>
+                    <?php $count = (int)($_GET['count'] ?? 0); ?>
+                    <div class="success-message"><i class="fa-solid fa-check-circle"></i> Successfully assigned <?php echo $count; ?> student<?php echo $count > 1 ? 's' : ''; ?> to block!</div>
+                <?php endif; ?>
+                <?php if (isset($_GET['error'])): ?>
+                    <?php
+                    $errors = [
+                        'full' => 'Block is at full capacity.',
+                        'failed' => 'Failed to assign student. Please try again.',
+                        'block_not_found' => 'Block not found.',
+                        'not_in_block' => 'Student is not in this block.',
+                        'no_students' => 'No eligible students found to assign.',
+                    ];
+                    $error_msg = $errors[$_GET['error']] ?? 'An error occurred.';
+                    ?>
+                    <div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> <?php echo htmlspecialchars($error_msg); ?></div>
+                <?php endif; ?>
+
                 <div class="content-grid">
 
                     <!-- ── Assigned Students Table ──────── -->
