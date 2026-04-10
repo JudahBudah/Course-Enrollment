@@ -186,7 +186,7 @@
     padding: 14px 20px;
     border-left: 3px solid var(--red);
     background: var(--white);
-    margin: 0 24px;
+    margin: 10px 24px 0;
     margin-bottom: 12px;
     transition: background 0.2s;
 }
@@ -252,7 +252,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-label);
-    padding: 10px 24px 4px;
+    padding: 10px 24px 0;
     border-top: 1px solid var(--off);
     margin-top: 4px;
 }
