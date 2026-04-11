@@ -1,6 +1,6 @@
 <?php
 function reset_bootstrap($con){
-    mysqli_query($con,"CREATE TABLE IF NOT EXISTS password_resets (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, student_id INT NOT NULL, token VARCHAR(64) UNIQUE, expires_at DATETIME NOT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci");
+    mysqli_query($con,"CREATE TABLE IF NOT EXISTS password_resets (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, student_id INT NOT NULL, token VARCHAR(64) UNIQUE, expires_at DATETIME NOT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci");
 }
 function reset_create($con,$student_id){
     $token=bin2hex(random_bytes(32));

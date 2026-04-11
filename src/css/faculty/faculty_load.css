@@ -120,6 +120,14 @@ select:focus {
     padding-left: 2px;
 }
 
+/* Empty Sched */
+
+.sched-empty {
+    margin: 0 auto;
+    margin-top: 50px;
+    font-size: 1.1rem;
+}
+
 
 /* --- Sched Table --- */
 
@@ -139,27 +147,28 @@ select:focus {
 /* Sched Header */
 
 .sched-table-header {
-    display: grid;
-    grid-template-columns: 40px 130px 120px 1fr 60px 160px;
-
     background: var(--red);
     color: var(--white);
-
-    padding: 11px 20px;
-    gap: 12px;
-
-    text-align: center;
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.06em;
 }
 
+
+/* Rows */
+
+.sched-table-header,
+.sched-row {
+    display: grid;
+    grid-template-columns: 34px 110px 100px 1fr 150px 120px 40px;
+    gap: 12px;
+    padding: 14px;
+    text-align: center;
+}
+
 .col-side {
     text-align: left;
 }
-
-
-/* Rows */
 
 .sched-table-body {
     display: flex;
@@ -167,17 +176,9 @@ select:focus {
 }
 
 .sched-row {
-    display: grid;
-    grid-template-columns: 40px 130px 120px 1fr 60px 160px;
-
     align-items: center;
-    text-align: center;
-
-    gap: 12px;
-    padding: 12px 20px;
     background-color: var(--white-pr);
     border-bottom: 1px solid var(--off);
-
     font-size: 0.8rem;
     color: var(--dark);
 }

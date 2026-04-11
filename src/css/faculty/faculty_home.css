@@ -136,7 +136,7 @@
     opacity: 1;
 }
 
-/* Range / View toggles */
+/* ── SCHEDULE TOGGLES ── */
 
 .sched-toggle {
     display: flex;
@@ -160,7 +160,7 @@
 }
 
 .sched-toggle-btn.active {
-    background: var(--white);
+    background: var(--off);
     color: var(--red);
 }
 
@@ -216,7 +216,7 @@
     padding: 14px 20px;
     border-left: 3px solid var(--red);
     background: var(--white);
-    margin: 0 24px;
+    margin: 10px 24px 0;
     margin-bottom: 12px;
     transition: background 0.2s;
 }
@@ -254,20 +254,104 @@
 /* Mini weekly grid (grid view) */
 
 .mini-weekly-grid {
-    min-width: 420px;
-    background: var(--white-pr);
-    display: grid;
-    grid-template-columns: 36px repeat(6, 1fr);
-    padding-bottom: 12px;
+    font-size: 0.72rem;
 }
 
-.mini-weekly-grid .wg-day-header,
-.mini-weekly-grid .wg-time-header { height: 28px; font-size: 0.58rem; }
-.mini-weekly-grid .wg-time-label  { font-size: 0.55rem; }
-.mini-weekly-grid .wg-block       { padding: 4px 5px; border-radius: 4px; }
-.mini-weekly-grid .wg-block-code  { font-size: 0.55rem; }
-.mini-weekly-grid .wg-block-name  { font-size: 0.55rem; }
-.mini-weekly-grid .wg-block-room  { font-size: 0.5rem; }
+.wg-time-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.wg-time-header {
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.wg-time-label {
+    position: absolute;
+    right: 4px;
+    font-size: 0.65rem;
+    color: var(--text-label);
+    transform: translateY(-50%);
+    white-space: nowrap;
+}
+
+.wg-day-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wg-day-header {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--text-label);
+    flex-shrink: 0;
+}
+
+.wg-body-area {
+    position: relative;
+    flex: 1;
+}
+
+.wg-hour-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--off);
+}
+
+.wg-half-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--off);
+    opacity: 0.45;
+    border-top: 1px dashed var(--off);
+}
+
+.wg-block {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    border-radius: 5px;
+    padding: 3px 5px;
+    overflow: hidden;
+    font-size: 0.65rem;
+    line-height: 1.3;
+    cursor: default;
+}
+
+.wg-block-code {
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wg-block-name {
+    font-weight: 400;
+    color: rgba(255,255,255,0.88);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.wg-block-room {
+    font-weight: 400;
+    color: rgba(255,255,255,0.7);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 /* ── CALENDAR ── */
@@ -349,6 +433,9 @@
     cursor: default;
 }
 
+
+/* Days from previous/next month — dimmed, non-interactive */
+
 .cal-day.other-month {
     color: var(--text-label);
     opacity: 0.4;
@@ -362,10 +449,11 @@
     font-weight: 700;
 }
 
-/* Selected (non-today) shows a subtle highlight */
-.cal-day.selected:not(.today) {
-    background: var(--off);
-    color: var(--dark);
+/* Selected day (clicked) */
+
+.cal-day.selected {
+    background: var(--red);
+    color: var(--white);
     font-weight: 700;
 }
 
@@ -402,15 +490,147 @@
 
 .cal-event-peek {
     margin: 0 20px 16px;
-    padding: 10px 14px;
     background: var(--white);
     border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
     display: none;
+    overflow: hidden;
 }
 
-.cal-event-peek p {
-    font-size: .78rem;
+.cal-peek-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
     color: var(--dark);
+    border-bottom: 1px solid var(--off);
+}
+
+.cal-peek-item:last-child {
+    border-bottom: none;
+}
+
+.cal-peek-item:hover {
+    background: var(--off);
+}
+
+.cal-peek-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.cal-peek-title {
+    font-size: 0.82rem;
+    font-weight: 500;
+    flex: 1;
+    line-height: 1.3;
+}
+
+.cal-peek-chevron {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--text-label);
+}
+
+
+/* Modal Styles */
+
+#calEventModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+#calEventModal[style*="display: block"] {
+    display: flex !important;
+}
+
+.cem-inner {
+    background: var(--white-pr);
+    border-radius: 12px;
+    width: min(460px, 92vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#cem_color_strip {
+    height: 4px;
+}
+
+.cem-body {
+    padding: 18px 20px 20px;
+}
+
+#cem_title {
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+
+#cem_meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--off);
+}
+
+#cem_meta span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#cem_meta i {
+    width: 14px;
+    font-size: 0.75rem;
+    text-align: center;
+    color: var(--red);
+    flex-shrink: 0;
+}
+
+#cem_desc {
+    font-family: "DM Sans", sans-serif;
+    font-size: 0.82rem;
+    color: var(--dark);
+    line-height: 1.7;
+    white-space: pre-line;
+}
+
+.cem-close-btn {
+    display: block;
+    width: calc(100% - 40px);
+    margin: 16px 20px 20px;
+    padding: 9px;
+    background: var(--off);
+    color: var(--dark);
+    border: none;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+}
+
+.cem-close-btn:hover {
+    background: var(--off-gray);
 }
 
 

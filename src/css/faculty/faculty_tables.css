@@ -170,7 +170,7 @@ select:focus {
 }
 
 .student-no {
-    color: var(--perm-navy);
+    color: var(--navy);
     white-space: nowrap;
     font-weight: 700;
     font-size: 0.75rem;
@@ -229,6 +229,7 @@ select:focus {
 .col-remark {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
     padding: 4px 12px;
     border-radius: 999px;
@@ -241,7 +242,7 @@ select:focus {
 .col-remark.passed    { background: var(--passed-bg); color: var(--passed-green); }
 .col-remark.failed    { background: var(--failed-bg); color: var(--red); }
 .col-remark.incomplete{ background: var(--inc-bg);    color: var(--inc-orange); }
-.col-remark.ongoing   { background: #e8f0fb;           color: var(--perm-navy); }
+.col-remark.ongoing   { background: #e8f0fb;           color: var(--navy); }
 .col-remark.pending   { background: var(--pending-bg); color: var(--pending-gold); }
 
 /* Grade value cells */
@@ -382,6 +383,29 @@ select:focus {
     border-color: var(--red);
 }
 
+.btn-finalize {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 9px 16px;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 9px;
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.btn-finalize:hover {
+    opacity: 0.85;
+}
+
 .btn-export {
     display: inline-flex;
     align-items: center;
@@ -441,7 +465,7 @@ select:focus {
 
 /* ── Class List Table ─────────────────────────────────────── */
 
-.sec-table-wrapper { overflow-x: auto; }
+.sec-table-wrapper { overflow-x: auto; margin-bottom: 25px}
 
 .sec-table {
     min-width: 900px;
@@ -454,10 +478,10 @@ select:focus {
 .sec-table-header,
 .sec-row {
     display: grid;
-    grid-template-columns: 40px 140px 1fr 1fr 130px 130px;
+    grid-template-columns: 40px 130px 1fr 1fr 120px 120px;
     align-items: center;
     gap: 12px;
-    padding: 11px 20px;
+    padding: 11px 20px 11px 10px;
 }
 
 .sec-table-header {
@@ -496,10 +520,10 @@ select:focus {
 .ss-table-header,
 .ss-row {
     display: grid;
-    grid-template-columns: 34px 1fr 130px 100px 110px 110px 130px 110px 120px;
+    grid-template-columns: 34px 1fr 130px 90px 100px 90px 100px 100px 100px;
     align-items: center;
     gap: 12px;
-    padding: 11px 20px;
+    padding: 11px 20px 11px 10px;
 }
 
 .ss-table-header {
@@ -525,7 +549,10 @@ select:focus {
 
 /* ── Gradebook Table ──────────────────────────────────────── */
 
-.gb-table-wrapper { overflow-x: auto; }
+.gb-table-wrapper { 
+    overflow-x: auto; 
+    margin-bottom: 25px;
+}
 
 .gb-table {
     min-width: 900px;
@@ -538,7 +565,7 @@ select:focus {
 .gb-table-header,
 .gb-row {
     display: grid;
-    grid-template-columns: 40px 150px 1fr 150px 155px 140px 130px;
+    grid-template-columns: 40px 130px 1fr 90px 110px 110px 100px;
     align-items: center;
     gap: 12px;
     padding: 11px 20px;
@@ -594,12 +621,11 @@ select:focus {
 .ss-legend-hint {
     font-style: italic;
     opacity: 0.55;
-    margin-left: auto;
 }
 
 /* Editable grade input */
 .cell-input {
-    width: 100%;
+    width: 60px;
     border: none;
     background: transparent;
     text-align: center;
@@ -609,28 +635,38 @@ select:focus {
     padding: 0;
     outline: none;
     border-radius: 0;
+
+    background: var(--white);
+    border-bottom: 2px solid var(--red);
 }
 
 .cell-input:focus {
-    background: #fffbe6;
+    background: var(--off);
     border-bottom: 2px solid var(--red);
+}
+
+.cell-input {
+    -moz-appearance: textfield;
 }
 
 .cell-input::-webkit-inner-spin-button,
 .cell-input::-webkit-outer-spin-button {
-    opacity: 1;
+    display: none;
 }
+
+
+
 
 /* Computed columns */
 .col-computed {
     font-weight: 600;
-    color: var(--perm-navy);
+    color: var(--navy);
 }
 
 /* Conditional remark variant */
 .col-remark.conditional {
     background: #e8f0fb;
-    color: var(--perm-navy);
+    color: var(--navy);
 }
 
 /* Save toast */
@@ -714,7 +750,7 @@ select:focus {
     text-align: center;
     font-weight: 600;
     font-size: 0.82rem;
-    color: var(--perm-navy);
+    color: var(--navy);
 }
 
 /* Pending / missing grade dash */
