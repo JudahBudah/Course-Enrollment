@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $first_choice     = $_POST['first_choice'];
     $second_choice    = $_POST['second_choice'];
     $third_choice     = $_POST['third_choice'];
-    $department       = $_POST['department'] ?? '';
     $last_name        = $_POST['last_name'];
     $first_name       = $_POST['first_name'];
     $middle_name      = $_POST['middle_name'];
@@ -48,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = mysqli_prepare($con,
         "UPDATE applicants SET
-            lrn=?, first_choice=?, second_choice=?, third_choice=?, department=?,
+            lrn=?, first_choice=?, second_choice=?, third_choice=?,
             last_name=?, first_name=?, middle_name=?, suffix=?, married_name=?,
             birthdate=?, nationality=?, place_of_birth=?, civil_status=?,
             contact_number=?, religion=?, gender=?, disability=?,
@@ -60,17 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         WHERE applicant_id=?"
     );
 
-    mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssssssssssssi",
-        $lrn, $first_choice, $second_choice, $third_choice, $department,
-        $last_name, $first_name, $middle_name, $suffix, $married_name,
-        $birthdate, $nationality, $place_of_birth, $civil_status,
-        $contact_number, $religion, $gender, $disability,
-        $perm_region, $perm_province, $perm_municipality, $perm_barangay,
-        $perm_address, $perm_zipcode,
-        $mail_region, $mail_province, $mail_municipality, $mail_barangay,
-        $mail_address, $mail_zipcode,
-        $applicant_id
-    );
+    mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssssssssi",
+    $lrn, $first_choice, $second_choice, $third_choice,
+    $last_name, $first_name, $middle_name, $suffix, $married_name,
+    $birthdate, $nationality, $place_of_birth, $civil_status,
+    $contact_number, $religion, $gender, $disability,
+    $perm_region, $perm_province, $perm_municipality, $perm_barangay,
+    $perm_address, $perm_zipcode,
+    $mail_region, $mail_province, $mail_municipality, $mail_barangay,
+    $mail_address, $mail_zipcode,
+    $applicant_id
+);
 
     if (mysqli_stmt_execute($stmt)) {
         $success = "Application form saved successfully!";
@@ -279,7 +278,6 @@ function programOptions($field, $applicant_data, $courses) {
                         </select>
                     </div>
                 </div>
-                <input type="hidden" name="department" id="department" value="<?php echo htmlspecialchars($applicant_data['department'] ?? $course_college_map[$applicant_data['first_choice'] ?? ''] ?? ''); ?>">
             </div>
 
             <!-- ── Personal Information ───────────────────── -->
@@ -488,10 +486,6 @@ function programOptions($field, $applicant_data, $courses) {
 
 <script>
     const courseCollegeMap = <?php echo json_encode($course_college_map); ?>;
-
-    document.getElementById('first_choice')?.addEventListener('change', function() {
-        document.getElementById('department').value = courseCollegeMap[this.value] || '';
-    });
 
     function copyAddress() {
         if (!document.getElementById('sameAddress').checked) return;
