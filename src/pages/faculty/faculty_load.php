@@ -247,6 +247,11 @@ foreach ($classes as $cls) {
                                 <option value="summer" <?php echo $sel_sem === 'summer' ? 'selected' : ''; ?>>Summer</option>
                             </select>
                         </div>
+                        <?php if ($sel_year || $sel_sem): ?>
+                            <div class="sched-label-container" style="justify-content:flex-end;">
+                                <a href="faculty_load.php" class="sched-clear-link">Clear</a>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>

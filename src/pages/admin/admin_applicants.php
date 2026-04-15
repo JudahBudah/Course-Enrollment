@@ -315,17 +315,17 @@ $applicants = mysqli_query($con, $query);
                                     <td>
                                         <input type="checkbox" class="row-check" value="<?php echo $applicant['applicant_id']; ?>" onchange="updateBatch()">
                                     </td>
-                                    <td data-label="ID"><?php echo $applicant['applicant_id']; ?></td>
-                                    <td data-label="Name"><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></td>
-                                    <td data-label="Email"><?php echo htmlspecialchars($applicant['email']); ?></td>
-                                    <td data-label="LRN"><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></td>
-                                    <td data-label="1st Choice"><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></td>
-                                    <td data-label="Status">
+                                    <td><?php echo $applicant['applicant_id']; ?></td>
+                                    <td><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></td>
+                                    <td><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></td>
+                                    <td>
                                         <span class="badge <?php echo strtolower($applicant['application_status']); ?>">
                                             <?php echo htmlspecialchars(ucfirst($applicant['application_status'])); ?>
                                         </span>
                                     </td>
-                                    <td data-label="Exam">
+                                    <td>
                                         <?php if ($applicant['exam_schedule_id']): ?>
                                             <div class="exam-cell">
                                                 <div class="exam-cell-date"><?php echo date('M j, Y', strtotime($applicant['exam_date'])); ?></div>
@@ -336,8 +336,8 @@ $applicants = mysqli_query($con, $query);
                                             <span class="exam-cell-empty">—</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td data-label="Applied"><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
-                                    <td data-label="Actions">
+                                    <td><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
+                                    <td>
                                         <div class="action-buttons">
                                             <button onclick="viewApplicant(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="View Details">
                                                 <i class="fa-solid fa-eye"></i>

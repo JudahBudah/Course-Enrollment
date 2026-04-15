@@ -18,7 +18,7 @@ function check_admin_login($con)
         }
     }
 
-    header("Location: ../../pages/login_hub.php?portal=admin");
+    header("Location: /SoftDes/kevin/src/pages/login_hub.php?portal=admin");
     die;
 }
 

@@ -26,5 +26,13 @@
         form.addEventListener('submit', () => showLoader('Authenticating...'));
     }
 
-    window.plmLoader = { show: showLoader };
+    function hideLoader() {
+        const loader = document.getElementById('plm-loader');
+        const bar    = document.getElementById('plm-loader-bar');
+        if (!loader) return;
+        bar.classList.add('complete');
+        loader.classList.remove('visible');
+    }
+
+    window.plmLoader = { show: showLoader, hide: hideLoader };
 })();
