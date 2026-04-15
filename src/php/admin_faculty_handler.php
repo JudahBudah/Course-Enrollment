@@ -19,7 +19,7 @@ if ($action === 'add' || $action === 'edit') {
     $status       = $_POST['status'] ?? 'active';
 
     if (!$employee_id || !$first_name || !$last_name || !$email) {
-        header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?error=missing_fields");
+        header("Location: ../pages/admin/admin_faculty.php?error=missing_fields");
         die;
     }
 
@@ -29,7 +29,7 @@ if ($action === 'add' || $action === 'edit') {
         $stmt = mysqli_prepare($con, "INSERT INTO faculty (employee_id, first_name, middle_name, last_name, email, password, department, position, employment_status, status) VALUES (?,?,?,?,?,?,?,?,?,?)");
         mysqli_stmt_bind_param($stmt, "ssssssssss", $employee_id, $first_name, $middle_name, $last_name, $email, $password, $department, $position, $employment_status, $status);
         if (!mysqli_stmt_execute($stmt)) {
-            header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?error=insert_failed");
+            header("Location: ../pages/admin/admin_faculty.php?error=insert_failed");
             die;
         }
 
@@ -58,16 +58,16 @@ if ($action === 'add' || $action === 'edit') {
         </div>";
         mailer_send($email, $subject, $body, ['is_html' => true]);
 
-        header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?success=added");
+        header("Location: ../pages/admin/admin_faculty.php?success=added");
     } else {
         $faculty_id = (int) $_POST['faculty_id'];
         $stmt = mysqli_prepare($con, "UPDATE faculty SET employee_id=?, first_name=?, middle_name=?, last_name=?, email=?, department=?, position=?, employment_status=?, status=? WHERE faculty_id=?");
         mysqli_stmt_bind_param($stmt, "sssssssssi", $employee_id, $first_name, $middle_name, $last_name, $email, $department, $position, $employment_status, $status, $faculty_id);
         if (!mysqli_stmt_execute($stmt)) {
-            header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?error=update_failed");
+            header("Location: ../pages/admin/admin_faculty.php?error=update_failed");
             die;
         }
-        header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?success=updated");
+        header("Location: ../pages/admin/admin_faculty.php?success=updated");
     }
     die;
 }
@@ -79,7 +79,7 @@ if ($action === 'delete') {
     $stmt = mysqli_prepare($con, "DELETE FROM faculty WHERE faculty_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $faculty_id);
     mysqli_stmt_execute($stmt);
-    header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?success=deleted");
+    header("Location: ../pages/admin/admin_faculty.php?success=deleted");
     die;
 }
 
@@ -87,13 +87,13 @@ if ($action === 'assign_class') {
     $faculty_id = (int) $_POST['faculty_id'];
     $class_id   = (int) $_POST['class_id'];
     if (!$faculty_id || !$class_id) {
-        header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?error=missing_fields");
+        header("Location: ../pages/admin/admin_faculty.php?error=missing_fields");
         die;
     }
     $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id = ? WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "ii", $faculty_id, $class_id);
     mysqli_stmt_execute($stmt);
-    header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?success=assigned&faculty_id=$faculty_id");
+    header("Location: ../pages/admin/admin_faculty.php?success=assigned&faculty_id=$faculty_id");
     die;
 }
 
@@ -103,10 +103,10 @@ if ($action === 'unassign_class') {
     $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id = NULL WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $class_id);
     mysqli_stmt_execute($stmt);
-    header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php?success=unassigned&faculty_id=$faculty_id");
+    header("Location: ../pages/admin/admin_faculty.php?success=unassigned&faculty_id=$faculty_id");
     die;
 }
 
-header("Location: /SoftDes/kevin/src/pages/admin/admin_faculty.php");
+header("Location: ../pages/admin/admin_faculty.php");
 die;
 ?>
