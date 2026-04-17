@@ -8,13 +8,29 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 
 // Flash messages
 $flash_errors = [
-    'missing_fields' => 'Please fill in all required fields.',
-    'insert_failed'  => 'Failed to add faculty. Employee ID or email may already exist.',
-    'update_failed'  => 'Failed to update faculty record.',
+    'missing_fields'   => 'Please fill in all required fields.',
+    'insert_failed'    => 'Failed to add faculty. Employee ID or email may already exist.',
+    'update_failed'    => 'Failed to update faculty record.',
+    'already_assigned' => 'This class already has an assigned faculty member.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
-    $flash = '<div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> ' . $flash_errors[$_GET['error']] . '</div>';
+    $flash = '<div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> ' . $flash_errors[$_GET['error']];
+    // Show override option for already_assigned
+    if ($_GET['error'] === 'already_assigned' && isset($_GET['current_faculty'], $_GET['class_id'], $_GET['faculty_id'])) {
+        $current = htmlspecialchars(urldecode($_GET['current_faculty']));
+        $cid = (int)$_GET['class_id'];
+        $fid = (int)$_GET['faculty_id'];
+        $flash .= ' Currently assigned to: <strong>' . $current . '</strong>.';
+        $flash .= ' <form method="POST" action="../../php/admin_faculty_handler.php" style="display:inline;">';
+        $flash .= '<input type="hidden" name="action" value="assign_class">';
+        $flash .= '<input type="hidden" name="faculty_id" value="' . $fid . '">';
+        $flash .= '<input type="hidden" name="class_id" value="' . $cid . '">';
+        $flash .= '<input type="hidden" name="force" value="1">';
+        $flash .= '<button type="submit" class="btn-primary" style="margin-left:.75rem;padding:.3rem .8rem;font-size:.82rem;" onclick="return confirm(\'Override and replace the current faculty assignment?\')">';
+        $flash .= '<i class="fa-solid fa-rotate"></i> Override Assignment</button></form>';
+    }
+    $flash .= '</div>';
 }
 if (isset($_GET['success'])) {
     $msgs = [

@@ -130,10 +130,21 @@ if ($action === 'do_reset') {
         exit;
     }
 
+    $t   = $cfg['table'];
+    $pk  = $cfg['pk'];
+    $uid = $pending['user_id'];
+
+    // Check if new password is the same as the current one
+    $chk = mysqli_prepare($con, "SELECT password FROM `$t` WHERE `$pk` = ? LIMIT 1");
+    mysqli_stmt_bind_param($chk, "i", $uid);
+    mysqli_stmt_execute($chk);
+    $cur = mysqli_fetch_assoc(mysqli_stmt_get_result($chk));
+    if ($cur && password_verify($password, $cur['password'])) {
+        echo json_encode(['success' => false, 'message' => 'You cannot use your old password. Please choose a different one.']);
+        exit;
+    }
+
     $hash = password_hash($password, PASSWORD_DEFAULT);
-    $t    = $cfg['table'];
-    $pk   = $cfg['pk'];
-    $uid  = $pending['user_id'];
 
     $stmt = mysqli_prepare($con, "UPDATE `$t` SET password = ? WHERE `$pk` = ?");
     mysqli_stmt_bind_param($stmt, "si", $hash, $uid);

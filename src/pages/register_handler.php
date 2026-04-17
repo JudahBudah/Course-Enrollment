@@ -71,7 +71,12 @@ if ($action === 'send_code') {
         <p style='font-size:0.8rem;color:rgba(242,243,242,0.35);text-align:center;'>If you did not request this, you can safely ignore this email.</p>
     </div>";
 
-    $sent = mailer_send($email, $subject, $body, ['is_html' => true]);
+    $sent = false;
+    try {
+        $sent = mailer_send($email, $subject, $body, ['is_html' => true]);
+    } catch (Exception $e) {
+        $sent = false;
+    }
 
     if (!$sent) {
         echo json_encode(['success' => false, 'message' => 'Failed to send verification email. Please try again.']);

@@ -158,6 +158,14 @@ function openEdit(raw) {
         filterBox.style.pointerEvents = 'none';
     }
 
+    // Restore availability type and specific department
+    const hasDept = c.specific_department && c.specific_department !== '';
+    document.querySelector('input[name="availability_type"][value="' + (hasDept ? 'specific' : 'all') + '"]').checked = true;
+    toggleDepartmentSelect();
+    if (hasDept) {
+        document.getElementById('form_specific_department').value = c.specific_department;
+    }
+
     resetModalFilters();
     document.getElementById('formModal').style.display = 'block';
 }

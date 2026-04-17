@@ -422,7 +422,11 @@ $applicants = mysqli_query($con, $query);
                 <input type="hidden" name="applicant_id" id="convert_applicant_id">
                 <div class="form-group">
                     <label>Student Number <span style="color:var(--red)">*</span></label>
-                    <input type="text" name="student_number" placeholder="e.g., 202412345" required>
+                    <input type="text" name="student_number" placeholder="e.g., 202412345"
+                           maxlength="9" pattern="\d{9}"
+                           inputmode="numeric"
+                           oninput="this.value=this.value.replace(/\D/g,'').slice(0,9)"
+                           title="Student number must be exactly 9 digits" required>
                 </div>
                 <div class="form-group">
                     <label>College <span style="color:var(--red)">*</span></label>

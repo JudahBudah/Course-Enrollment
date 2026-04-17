@@ -106,6 +106,52 @@ if ($action === 'finalize_class') {
         echo json_encode(['ok'=>false,'msg'=>'Already finalized']); die;
     }
 
+    // Get class info for grades table
+    $class_info = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT semester, school_year, subject_id FROM classes WHERE class_id = $class_id"
+    ));
+
+    // Process each student's grade entry
+    $entries = mysqli_query($con,
+        "SELECT ge.enrollment_id, ge.student_id, ge.computed_grade
+         FROM grade_entries ge
+         WHERE ge.class_id = $class_id"
+    );
+    while ($entry = mysqli_fetch_assoc($entries)) {
+        $computed   = (float)$entry['computed_grade'];
+        $point      = pointGrade(transmute($computed));
+        $status     = $point === '5.00' ? 'Failed' : 'Passed';
+        $student_id = (int)$entry['student_id'];
+
+        // Write final grade to grades table so admin can see it
+        $stmt = mysqli_prepare($con,
+            "INSERT INTO grades (student_id, subject_id, grade, status, semester, school_year)
+             VALUES (?, ?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE grade = VALUES(grade), status = VALUES(status)"
+        );
+        mysqli_stmt_bind_param($stmt, 'iissss',
+            $student_id, $class_info['subject_id'],
+            $point, $status,
+            $class_info['semester'], $class_info['school_year']
+        );
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+
+        // Mark enrollment as completed
+        mysqli_query($con,
+            "UPDATE enrollments SET status = 'completed'
+             WHERE enrollment_id = {$entry['enrollment_id']}"
+        );
+
+        // TC024: auto-flag student as Irregular if they failed
+        if ($point === '5.00') {
+            mysqli_query($con,
+                "UPDATE students SET registration_status = 'Irregular'
+                 WHERE student_id = $student_id"
+            );
+        }
+    }
+
     mysqli_query($con,
         "UPDATE classes SET grades_finalized = 1, grades_finalized_at = NOW() WHERE class_id = $class_id"
     );

@@ -23,13 +23,13 @@ if ($action === 'upload_photo') {
         echo json_encode(['ok'=>false,'msg'=>'File too large (max 5MB).']); die;
     }
 
-    $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Softdev/src/uploads/faculty/';
+    $upload_dir = __DIR__ . '/../uploads/faculty/';
     if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
 
     // Delete old photo
     $old = mysqli_fetch_assoc(mysqli_query($con, "SELECT profile_photo FROM faculty WHERE faculty_id=$faculty_id"));
     if (!empty($old['profile_photo'])) {
-        $old_path = $_SERVER['DOCUMENT_ROOT'] . '/Softdev/src/' . $old['profile_photo'];
+        $old_path = __DIR__ . '/../' . $old['profile_photo'];
         if (file_exists($old_path)) @unlink($old_path);
     }
 
@@ -52,17 +52,46 @@ if ($action === 'upload_photo') {
 if ($action === 'save_profile') {
     header('Content-Type: application/json');
 
+    // Ensure new columns exist before saving
+    $ensure_cols = [
+        'emergency_name'         => "VARCHAR(150) DEFAULT NULL",
+        'emergency_relationship' => "VARCHAR(100) DEFAULT NULL",
+        'emergency_phone'        => "VARCHAR(20)  DEFAULT NULL",
+        'emergency_address'      => "VARCHAR(255) DEFAULT NULL",
+        'highest_education'      => "VARCHAR(150) DEFAULT NULL",
+        'degree'                 => "VARCHAR(150) DEFAULT NULL",
+        'school'                 => "VARCHAR(200) DEFAULT NULL",
+        'year_graduated'         => "VARCHAR(10)  DEFAULT NULL",
+    ];
+    $col_res = mysqli_query($con, "SHOW COLUMNS FROM faculty");
+    $existing_cols = [];
+    while ($c = mysqli_fetch_assoc($col_res)) $existing_cols[] = $c['Field'];
+    foreach ($ensure_cols as $col => $def) {
+        if (!in_array($col, $existing_cols)) {
+            mysqli_query($con, "ALTER TABLE faculty ADD COLUMN `$col` $def");
+        }
+    }
+
+    // Faculty can only update their own personal/address/emergency fields
+    // Admin-assigned fields (college, department, position, employment_status, email) are excluded
     $fields = [
         'first_name','middle_name','last_name','suffix_name',
         'date_of_birth','place_of_birth','sex','civil_status',
         'religion','nationality','disability',
-        'phone','personal_email','college','department','position','employment_status',
+        'phone','personal_email',
         'permanent_region','permanent_province','permanent_municipality',
         'permanent_barangay','permanent_address','permanent_zip_code',
         'mailing_same_as_permanent',
         'mailing_region','mailing_province','mailing_municipality',
         'mailing_barangay','mailing_address','mailing_zip_code',
+        'emergency_name','emergency_relationship','emergency_phone','emergency_address',
     ];
+
+    // Only include fields that actually exist in the table
+    $col_res2 = mysqli_query($con, "SHOW COLUMNS FROM faculty");
+    $existing_cols2 = [];
+    while ($c = mysqli_fetch_assoc($col_res2)) $existing_cols2[] = $c['Field'];
+    $fields = array_filter($fields, fn($f) => in_array($f, $existing_cols2) || $f === 'mailing_same_as_permanent');
 
     $set_parts = [];
     $types = '';
@@ -71,7 +100,7 @@ if ($action === 'save_profile') {
         $val = isset($_POST[$f]) ? trim($_POST[$f]) : null;
         if ($f === 'mailing_same_as_permanent') $val = $val ? 1 : 0;
         if ($val === '') $val = null;
-        $set_parts[] = "$f = ?";
+        $set_parts[] = "`$f` = ?";
         $types .= ($f === 'mailing_same_as_permanent') ? 'i' : 's';
         $values[] = $val;
     }

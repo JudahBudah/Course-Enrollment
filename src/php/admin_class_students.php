@@ -56,11 +56,14 @@ if ($action === 'remove_student') {
     mysqli_stmt_bind_param($stmt, 'i', $enrollment_id);
     
     if (mysqli_stmt_execute($stmt)) {
-        // Decrease enrolled count
-        $count_query = "UPDATE classes SET enrolled_count = enrolled_count - 1 WHERE class_id = ? AND enrolled_count > 0";
-        $stmt = mysqli_prepare($con, $count_query);
-        mysqli_stmt_bind_param($stmt, 'i', $class_id);
-        mysqli_stmt_execute($stmt);
+        // Recalculate enrolled_count from actual active enrollments
+        $count_query = "UPDATE classes SET enrolled_count = (
+            SELECT COUNT(*) FROM enrollments
+            WHERE class_id = ? AND status IN ('reserved','confirmed','ongoing')
+        ) WHERE class_id = ?";
+        $stmt2 = mysqli_prepare($con, $count_query);
+        mysqli_stmt_bind_param($stmt2, 'ii', $class_id, $class_id);
+        mysqli_stmt_execute($stmt2);
         
         echo json_encode(['success' => true, 'message' => 'Student removed successfully']);
     } else {

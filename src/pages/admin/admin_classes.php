@@ -14,6 +14,7 @@ $flash_errors = [
     'has_enrollments'   => 'Cannot delete — class has enrolled students.',
     'duplicate_class'   => 'This section already has this subject for the selected school year and semester.',
     'schedule_conflict' => 'Schedule conflict: Another class is already using this room at the same day and time.',
+    'faculty_conflict'  => 'Schedule conflict: This faculty member already has a class at the same day and time.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {

@@ -137,17 +137,19 @@ function sel($faculty, $key, $option) {
             <!-- Section Tab Nav -->
             <div class="account-nav">
                 <ul>
-                    <li><a href="#" class="active">Faculty Information</a></li>
-                    <li><a href="#">Educational Background</a></li>  <!-- TODO: No PHP logic yet from backend -->
-                    <li><a href="#">Emergency Contacts</a></li>       <!-- TODO: No PHP logic yet from backend -->
-                    <li><a href="#">Documents / ID Photo</a></li>     <!-- TODO: No PHP logic yet from backend -->
+                    <li><a href="#section-faculty" class="tab-link active" data-section="section-faculty">Faculty Information</a></li>
+                    <li><a href="#section-personal" class="tab-link" data-section="section-personal">Personal Information</a></li>
+                    <li><a href="#section-address" class="tab-link" data-section="section-address">Address</a></li>
+                    <li><a href="#section-educational" class="tab-link" data-section="section-educational">Educational Background</a></li>
+                    <li><a href="#section-emergency" class="tab-link" data-section="section-emergency">Emergency Contact</a></li>
                 </ul>
             </div>
 
             <!-- Main Content -->
             <div class="content-section">
 
-                <!-- Main Info -->
+                <!-- ── SECTION: Faculty Information ── -->
+                <div id="section-faculty" class="profile-section">
                 <div class="main-info">
                     <div class="img-container">
                         <img src="<?php echo $profile_src; ?>" id="profile-img" alt="Profile Photo">
@@ -159,61 +161,50 @@ function sel($faculty, $key, $option) {
                     </div>
 
                     <div class="main-info-content">
-
                         <div class="main-row-1">
                             <div class="info-input">
-                                <!-- Employee ID is read-only / pulled from DB -->
-                                <label for="faculty_id">Faculty ID</label>
-                                <input name="faculty_id" id="faculty_id" value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background-color: var(--white);  color:var(--text); cursor: not-allowed;">
+                                <label>Faculty ID</label>
+                                <input value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
-
                             <div class="info-input">
-                                <label for="f_position">Position</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed options (Dean, Chairperson, Full-Time, Part-Time).
-                                     Switched to free-text input to match DB. Revert to <select> if position values are fixed in DB. -->
-                                <input type="text" name="position" id="f_position" value="<?php echo val($faculty, 'position'); ?>" placeholder="e.g. Instructor I">
+                                <label>Position</label>
+                                <input value="<?php echo val($faculty, 'position'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
-
                         <div class="main-row-2">
                             <div class="info-input">
-                                <label for="f_college">College</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed college options.
-                                     Switched to free-text input to match DB. Revert to <select> if colleges are fixed. -->
-                                <input type="text" name="college" id="f_college" value="<?php echo val($faculty, 'college'); ?>" placeholder="e.g. College of Engineering">
+                                <label>College</label>
+                                <input value="<?php echo val($faculty, 'college'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                             <div class="info-input">
-                                <label for="f_department">Department</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed department options.
-                                     Switched to free-text input to match DB. Revert to <select> if departments are fixed. -->
-                                <input type="text" name="department" id="f_department" value="<?php echo val($faculty, 'department'); ?>" placeholder="e.g. Information Technology">
+                                <label>Department</label>
+                                <input value="<?php echo val($faculty, 'department'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
-
                         <div class="main-row-1">
                             <div class="info-input">
-                                <label for="f_employment_status">Employment Status</label>
-                                <select name="employment_status" id="f_employment_status">
-                                    <option value="">Select</option>
-                                    <option value="full-time"   <?php echo sel($faculty, 'employment_status', 'full-time'); ?>>Full-time</option>
-                                    <option value="part-time"   <?php echo sel($faculty, 'employment_status', 'part-time'); ?>>Part-time</option>
-                                    <option value="contractual" <?php echo sel($faculty, 'employment_status', 'contractual'); ?>>Contractual</option>
-                                </select>
+                                <label>Employment Status</label>
+                                <input value="<?php echo ucfirst(val($faculty, 'employment_status')); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                             <div class="info-input">
-                                <!-- PLM Email is read-only -->
-                                <label for="plm_email">PLM Email</label>
-                                <input type="email" id="plm_email" value="<?php echo val($faculty, 'email'); ?>" disabled style="background-color: var(--white);  color:var(--text); cursor: not-allowed;">
+                                <label>PLM Email</label>
+                                <input value="<?php echo val($faculty, 'email'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
-
                     </div>
                 </div>
+                </div><!-- /#section-faculty -->
 
                 <hr>
 
-                <!-- Personal Information -->
-                <div class="personal-info">
+                <!-- ── SECTION: Personal Information ── -->
+                <div id="section-personal" class="profile-section" style="display:none;">
                     <h3>Personal Information</h3>
 
                     <div class="personal-info-content">
@@ -251,11 +242,11 @@ function sel($faculty, $key, $option) {
                         <div class="birth-info">
                             <div class="info-input">
                                 <label for="f_date_of_birth">Date of Birth</label>
-                                <input name="date_of_birth" id="f_date_of_birth" type="date" value="<?php echo val($faculty, 'date_of_birth'); ?>" required>
+                                <input name="date_of_birth" id="f_date_of_birth" type="date" value="<?php echo val($faculty, 'date_of_birth'); ?>">
                             </div>
                             <div class="info-input">
                                 <label for="f_place_of_birth">Place of Birth</label>
-                                <input name="place_of_birth" id="f_place_of_birth" type="text" value="<?php echo val($faculty, 'place_of_birth'); ?>" required>
+                                <input name="place_of_birth" id="f_place_of_birth" type="text" value="<?php echo val($faculty, 'place_of_birth'); ?>">
                             </div>
                         </div>
 
@@ -263,18 +254,17 @@ function sel($faculty, $key, $option) {
                             <div class="info-input">
                                 <label for="f_sex">Sex</label>
                                 <select name="sex" id="f_sex">
-                                    <option value="" disabled selected>Select Sex</option>
+                                    <option value="">Select Sex</option>
                                     <option value="Male"   <?php echo sel($faculty, 'sex', 'Male'); ?>>Male</option>
                                     <option value="Female" <?php echo sel($faculty, 'sex', 'Female'); ?>>Female</option>
                                     <option value="Other"  <?php echo sel($faculty, 'sex', 'Other'); ?>>Other</option>
                                     <option value="na"     <?php echo sel($faculty, 'sex', 'na'); ?>>Prefer not to say</option>
                                 </select>
                             </div>
-
                             <div class="info-input">
                                 <label for="f_civil_status">Civil Status</label>
                                 <select name="civil_status" id="f_civil_status">
-                                    <option value="" disabled selected>Select Civil Status</option>
+                                    <option value="">Select Civil Status</option>
                                     <option value="Single"    <?php echo sel($faculty, 'civil_status', 'Single'); ?>>Single</option>
                                     <option value="Married"   <?php echo sel($faculty, 'civil_status', 'Married'); ?>>Married</option>
                                     <option value="Widowed"   <?php echo sel($faculty, 'civil_status', 'Widowed'); ?>>Widowed</option>
@@ -287,158 +277,201 @@ function sel($faculty, $key, $option) {
                         <div class="contact-info">
                             <div class="info-input">
                                 <label for="f_phone">Contact Number</label>
-                                <input name="phone" id="f_phone" value="<?php echo val($faculty, 'phone'); ?>" required>
+                                <input name="phone" id="f_phone" value="<?php echo val($faculty, 'phone'); ?>">
                             </div>
-
                             <div class="info-input">
                                 <label for="f_personal_email">Personal Email</label>
-                                <input name="personal_email" id="f_personal_email" type="email" value="<?php echo val($faculty, 'personal_email'); ?>" required>
+                                <input name="personal_email" id="f_personal_email" type="email" value="<?php echo val($faculty, 'personal_email'); ?>">
                             </div>
                         </div>
 
                         <div class="background-info">
                             <div class="info-input">
                                 <label for="f_religion">Religion</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed religion options.
-                                     Switched to free-text input to match DB. Revert to <select> if values are fixed. -->
                                 <input type="text" name="religion" id="f_religion" value="<?php echo val($faculty, 'religion'); ?>">
                             </div>
-
                             <div class="info-input">
                                 <label for="f_nationality">Nationality</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed nationality options.
-                                     Switched to free-text input to match DB. Revert to <select> if values are fixed. -->
                                 <input type="text" name="nationality" id="f_nationality" value="<?php echo val($faculty, 'nationality'); ?>">
                             </div>
-
                             <div class="info-input">
                                 <label for="f_disability">Disability</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed disability options.
-                                     Switched to free-text input to match DB. Revert to <select> if values are fixed. -->
                                 <input type="text" name="disability" id="f_disability" value="<?php echo val($faculty, 'disability'); ?>" placeholder="None">
                             </div>
                         </div>
-
                     </div>
-                </div>
 
-                <hr>
+                    <div class="save-changes">
+                        <button type="button" id="save-changes-btn" onclick="saveProfile()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </div>
+                </div><!-- /#section-personal -->
 
-                <!-- Permanent Address -->
-                <div class="complete-address">
-                    <h3>Permanent Address</h3>
+                <!-- ── SECTION: Address ── -->
+                <div id="section-address" class="profile-section" style="display:none;">
 
-                    <div class="complete-address-content">
-                        <div class="address-row-1">
-                            <div class="info-input">
-                                <label for="f_permanent_region">Region</label>
-                                <!-- TODO: Backend member — original HTML used a <select> with fixed region options + cascading Province/Municipality/Barangay dropdowns via JS.
-                                     Switched to free-text inputs to match DB fields. Wire up dropdowns if a PSGC API or lookup table is available. -->
-                                <input type="text" name="permanent_region" id="f_permanent_region" value="<?php echo val($faculty, 'permanent_region'); ?>" required>
+                    <!-- Permanent Address -->
+                    <div class="complete-address">
+                        <h3>Permanent Address</h3>
+                        <div class="complete-address-content">
+                            <div class="address-row-1">
+                                <div class="info-input">
+                                    <label for="f_permanent_region">Region</label>
+                                    <input type="text" name="permanent_region" id="f_permanent_region" value="<?php echo val($faculty, 'permanent_region'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_permanent_province">Province</label>
+                                    <input type="text" name="permanent_province" id="f_permanent_province" value="<?php echo val($faculty, 'permanent_province'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_permanent_municipality">Municipality</label>
+                                    <input type="text" name="permanent_municipality" id="f_permanent_municipality" value="<?php echo val($faculty, 'permanent_municipality'); ?>">
+                                </div>
                             </div>
-
-                            <div class="info-input">
-                                <label for="f_permanent_province">Province</label>
-                                <!-- TODO: Backend member — was a cascading <select>, see Region note above -->
-                                <input type="text" name="permanent_province" id="f_permanent_province" value="<?php echo val($faculty, 'permanent_province'); ?>" required>
+                            <div class="address-row-2">
+                                <div class="info-input">
+                                    <label for="f_permanent_address">Complete Address (House No. / Unit Bldg No. / Street Name)</label>
+                                    <input type="text" name="permanent_address" id="f_permanent_address" value="<?php echo val($faculty, 'permanent_address'); ?>">
+                                </div>
                             </div>
-
-                            <div class="info-input">
-                                <label for="f_permanent_municipality">Municipality</label>
-                                <!-- TODO: Backend member — was a cascading <select>, see Region note above -->
-                                <input type="text" name="permanent_municipality" id="f_permanent_municipality" value="<?php echo val($faculty, 'permanent_municipality'); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="address-row-2">
-                            <div class="info-input">
-                                <label for="f_permanent_address">
-                                    Complete Address (House No. / Unit Bldg No. / Street Name)
-                                </label>
-                                <input type="text" name="permanent_address" id="f_permanent_address" value="<?php echo val($faculty, 'permanent_address'); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="address-row-3">
-                            <div class="info-input">
-                                <label for="f_permanent_barangay">Barangay</label>
-                                <!-- TODO: Backend member — was a cascading <select>, see Region note above -->
-                                <input type="text" name="permanent_barangay" id="f_permanent_barangay" value="<?php echo val($faculty, 'permanent_barangay'); ?>" required>
-                            </div>
-
-                            <div class="info-input">
-                                <label for="f_permanent_zip_code">Zip Code</label>
-                                <input type="text" name="permanent_zip_code" id="f_permanent_zip_code" value="<?php echo val($faculty, 'permanent_zip_code'); ?>" maxlength="10" required>
+                            <div class="address-row-3">
+                                <div class="info-input">
+                                    <label for="f_permanent_barangay">Barangay</label>
+                                    <input type="text" name="permanent_barangay" id="f_permanent_barangay" value="<?php echo val($faculty, 'permanent_barangay'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_permanent_zip_code">Zip Code</label>
+                                    <input type="text" name="permanent_zip_code" id="f_permanent_zip_code" value="<?php echo val($faculty, 'permanent_zip_code'); ?>" maxlength="10">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Mailing Address -->
-                <div class="mailing-address">
-                    <div class="mailing-address-header">
-                        <h3>Mailing Address</h3>
-
-                        <div class="same-address-checkbox">
-                            <input type="checkbox" name="same-address" id="same-address" autocomplete="off" <?php echo (int)($faculty['mailing_same_as_permanent'] ?? 0) === 1 ? 'checked' : ''; ?>>
-                            <label for="same-address">Same as Permanent Address</label>
+                    <!-- Mailing Address -->
+                    <div class="mailing-address">
+                        <div class="mailing-address-header">
+                            <h3>Mailing Address</h3>
+                            <div class="same-address-checkbox">
+                                <input type="checkbox" id="same-address" autocomplete="off" <?php echo (int)($faculty['mailing_same_as_permanent'] ?? 0) === 1 ? 'checked' : ''; ?>>
+                                <label for="same-address">Same as Permanent Address</label>
+                            </div>
+                        </div>
+                        <div class="complete-address-content" id="mailing-address-content">
+                            <div class="address-row-1">
+                                <div class="info-input">
+                                    <label for="f_mailing_region">Region</label>
+                                    <input type="text" name="mailing_region" id="f_mailing_region" value="<?php echo val($faculty, 'mailing_region'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_mailing_province">Province</label>
+                                    <input type="text" name="mailing_province" id="f_mailing_province" value="<?php echo val($faculty, 'mailing_province'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_mailing_municipality">Municipality</label>
+                                    <input type="text" name="mailing_municipality" id="f_mailing_municipality" value="<?php echo val($faculty, 'mailing_municipality'); ?>">
+                                </div>
+                            </div>
+                            <div class="address-row-2">
+                                <div class="info-input">
+                                    <label for="f_mailing_address">Complete Address (House No. / Unit Bldg No. / Street Name)</label>
+                                    <input type="text" name="mailing_address" id="f_mailing_address" value="<?php echo val($faculty, 'mailing_address'); ?>">
+                                </div>
+                            </div>
+                            <div class="address-row-3">
+                                <div class="info-input">
+                                    <label for="f_mailing_barangay">Barangay</label>
+                                    <input type="text" name="mailing_barangay" id="f_mailing_barangay" value="<?php echo val($faculty, 'mailing_barangay'); ?>">
+                                </div>
+                                <div class="info-input">
+                                    <label for="f_mailing_zip_code">Zip Code</label>
+                                    <input type="text" name="mailing_zip_code" id="f_mailing_zip_code" value="<?php echo val($faculty, 'mailing_zip_code'); ?>" maxlength="10">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="complete-address-content" id="mailing-address-content" <?php echo (int)($faculty['mailing_same_as_permanent'] ?? 0) === 1 ? 'class="sync-disabled"' : ''; ?>>
-                        <div class="address-row-1">
-                            <div class="info-input">
-                                <label for="f_mailing_region">Region</label>
-                                <!-- TODO: Backend member — same cascading dropdown note as Permanent Address -->
-                                <input type="text" name="mailing_region" id="f_mailing_region" value="<?php echo val($faculty, 'mailing_region'); ?>" required>
-                            </div>
+                    <div class="save-changes">
+                        <button type="button" id="save-changes-btn" onclick="saveProfile()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </div>
+                </div><!-- /#section-address -->
 
+                <!-- ── SECTION: Educational Background ── -->
+                <div id="section-educational" class="profile-section" style="display:none;">
+                    <h3>Educational Background</h3>
+                    <p style="color:var(--text-label);font-size:0.88rem;margin-bottom:1.5rem;">
+                        <i class="fa-solid fa-circle-info"></i>
+                        Educational background records are managed by the admin. Please contact the admin to update this information.
+                    </p>
+                    <div class="personal-info-content">
+                        <div class="full-name">
                             <div class="info-input">
-                                <label for="f_mailing_province">Province</label>
-                                <!-- TODO: Backend member — same cascading dropdown note as Permanent Address -->
-                                <input type="text" name="mailing_province" id="f_mailing_province" value="<?php echo val($faculty, 'mailing_province'); ?>" required>
+                                <label>Highest Educational Attainment</label>
+                                <input type="text" value="<?php echo val($faculty, 'highest_education'); ?>" disabled style="background:#f5f5f5;color:#888;">
                             </div>
-
                             <div class="info-input">
-                                <label for="f_mailing_municipality">Municipality</label>
-                                <!-- TODO: Backend member — same cascading dropdown note as Permanent Address -->
-                                <input type="text" name="mailing_municipality" id="f_mailing_municipality" value="<?php echo val($faculty, 'mailing_municipality'); ?>" required>
-                            </div>
-                        </div>
-
-                        <div class="address-row-2">
-                            <div class="info-input">
-                                <label for="f_mailing_address">
-                                    Complete Address (House No. / Unit Bldg No. / Street Name)
-                                </label>
-                                <input type="text" name="mailing_address" id="f_mailing_address" value="<?php echo val($faculty, 'mailing_address'); ?>" required>
+                                <label>Degree / Course</label>
+                                <input type="text" value="<?php echo val($faculty, 'degree'); ?>" disabled style="background:#f5f5f5;color:#888;">
                             </div>
                         </div>
-
-                        <div class="address-row-3">
+                        <div class="full-name">
                             <div class="info-input">
-                                <label for="f_mailing_barangay">Barangay</label>
-                                <!-- TODO: Backend member — same cascading dropdown note as Permanent Address -->
-                                <input type="text" name="mailing_barangay" id="f_mailing_barangay" value="<?php echo val($faculty, 'mailing_barangay'); ?>" required>
+                                <label>School / University</label>
+                                <input type="text" value="<?php echo val($faculty, 'school'); ?>" disabled style="background:#f5f5f5;color:#888;">
                             </div>
-
                             <div class="info-input">
-                                <label for="f_mailing_zip_code">Zip Code</label>
-                                <input type="text" name="mailing_zip_code" id="f_mailing_zip_code" value="<?php echo val($faculty, 'mailing_zip_code'); ?>" maxlength="10" required>
+                                <label>Year Graduated</label>
+                                <input type="text" value="<?php echo val($faculty, 'year_graduated'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                            </div>
+                        </div>
+                        <div class="full-name">
+                            <div class="info-input">
+                                <label>Specialization</label>
+                                <input type="text" value="<?php echo val($faculty, 'specialization'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                            </div>
+                            <div class="info-input">
+                                <label>Date Hired</label>
+                                <input type="text" value="<?php echo val($faculty, 'date_hired'); ?>" disabled style="background:#f5f5f5;color:#888;">
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><!-- /#section-educational -->
 
-                <div class="save-changes">
-                    <button type="button" id="save-changes-btn" onclick="saveProfile()">
-                        <i class="fa-solid fa-floppy-disk"></i> Save Changes
-                    </button>
-                </div>
+                <!-- ── SECTION: Emergency Contact ── -->
+                <div id="section-emergency" class="profile-section" style="display:none;">
+                    <h3>Emergency Contact</h3>
+                    <div class="personal-info-content">
+                        <div class="full-name">
+                            <div class="info-input">
+                                <label for="f_emergency_name">Contact Name</label>
+                                <input type="text" name="emergency_name" id="f_emergency_name" value="<?php echo val($faculty, 'emergency_name'); ?>" placeholder="Full name">
+                            </div>
+                            <div class="info-input">
+                                <label for="f_emergency_relationship">Relationship</label>
+                                <input type="text" name="emergency_relationship" id="f_emergency_relationship" value="<?php echo val($faculty, 'emergency_relationship'); ?>" placeholder="e.g. Spouse, Parent">
+                            </div>
+                        </div>
+                        <div class="full-name">
+                            <div class="info-input">
+                                <label for="f_emergency_phone">Contact Number</label>
+                                <input type="text" name="emergency_phone" id="f_emergency_phone" value="<?php echo val($faculty, 'emergency_phone'); ?>" placeholder="09XXXXXXXXX">
+                            </div>
+                            <div class="info-input">
+                                <label for="f_emergency_address">Address</label>
+                                <input type="text" name="emergency_address" id="f_emergency_address" value="<?php echo val($faculty, 'emergency_address'); ?>" placeholder="Complete address">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="save-changes">
+                        <button type="button" id="save-changes-btn" onclick="saveProfile()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                        </button>
+                    </div>
+                </div><!-- /#section-emergency -->
 
-            </div>
-        </main>
-    </div>
+            </div><!-- /.content-section -->
 
     <div class="toast" id="toast"></div>
 
@@ -556,11 +589,12 @@ function sel($faculty, $key, $option) {
             'first_name', 'middle_name', 'last_name', 'suffix_name',
             'date_of_birth', 'place_of_birth', 'sex', 'civil_status',
             'religion', 'nationality', 'disability',
-            'phone', 'personal_email', 'college', 'department', 'position', 'employment_status',
+            'phone', 'personal_email',
             'permanent_region', 'permanent_province', 'permanent_municipality',
             'permanent_barangay', 'permanent_address', 'permanent_zip_code',
             'mailing_region', 'mailing_province', 'mailing_municipality',
             'mailing_barangay', 'mailing_address', 'mailing_zip_code',
+            'emergency_name', 'emergency_relationship', 'emergency_phone', 'emergency_address',
         ];
 
         const fd = new FormData();

@@ -323,3 +323,219 @@ input[type="checkbox"] {
         width: 120px;
     }
 }
+
+/* ── FLASH MESSAGES ── */
+.flash {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: .9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+.flash-success { background: #16a34a1a; color: #16a34a; border-left: 4px solid #16a34a; }
+.flash-error   { background: #dc26261a; color: #dc2626; border-left: 4px solid #dc2626; }
+
+/* ── SUBMIT BAR ── */
+.submit-bar {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--off, #e5e7eb);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    font-size: .85rem;
+    color: var(--text-label);
+}
+.btn-submit-enroll {
+    padding: .6rem 1.4rem;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: .9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+}
+.btn-submit-enroll:hover { background: #1d4ed8; }
+
+/* ── CURRICULUM NAV (Year row + Semester row) ── */
+.curric-nav {
+    border-bottom: 1px solid var(--off, #e5e7eb);
+}
+.curric-year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: 1rem 1.5rem .6rem;
+    border-bottom: 1px solid var(--off, #e5e7eb);
+}
+.year-tab {
+    padding: .4rem 1.1rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--off, #f3f4f6);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    transition: all .15s;
+}
+.year-tab:hover  { background: var(--red); color: white; }
+.year-tab.active { background: var(--red); color: white; }
+
+.curric-sem-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .6rem 1.5rem .75rem;
+}
+.sem-tab {
+    padding: .35rem .95rem;
+    border: 1.5px solid var(--off, #e5e7eb);
+    border-radius: 999px;
+    background: transparent;
+    font-size: .8rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    transition: all .15s;
+}
+.sem-tab:hover  { border-color: var(--red); color: var(--red); }
+.sem-tab.active { background: var(--red); color: white; border-color: var(--red); }
+
+/* ── CURRICULUM PANELS ── */
+.curric-panel { display: none; }
+.curric-panel.active { display: block; }
+
+/* ── GRADE BADGE ── */
+.grade-badge {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 700;
+}
+.grade-pass { background: #16a34a1a; color: #16a34a; }
+.grade-fail { background: #dc26261a; color: #dc2626; }
+
+/* ── CURRICULUM ROW STATES ── */
+.row-passed td { opacity: .6; }
+.row-failed td { background: #dc262608 !important; }
+.row-enrolled td { background: #2563eb08 !important; }
+.row-locked td { background: #f9741608 !important; opacity: .75; }
+
+/* ── LOCK REASON ── */
+.lock-reason {
+    font-size: .78rem;
+    color: #f97416;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-weight: 500;
+}
+
+/* ── PREREQ CELL ── */
+.prereq-cell { font-size: .78rem; color: var(--text-label); max-width: 160px; }
+
+/* ── SELECT SCHEDULE BUTTON ── */
+.btn-select-sched {
+    padding: .4rem .9rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    white-space: nowrap;
+}
+.btn-select-sched:hover { opacity: .88; }
+
+/* ── MODAL ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+.modal-box {
+    background: var(--white-pr, #fff);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+    overflow: hidden;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem;
+    background: var(--red);
+    color: white;
+}
+.modal-subject-code { font-weight: 700; font-size: 1rem; letter-spacing: .04em; }
+.modal-subject-name { font-size: .85rem; opacity: .85; margin-top: .2rem; }
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: .2rem;
+    opacity: .8;
+}
+.modal-close:hover { opacity: 1; }
+.modal-body { padding: 1.25rem 1.5rem; overflow-y: auto; }
+
+/* ── SCHEDULE OPTIONS ── */
+.sched-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .9rem 1rem;
+    border: 1px solid var(--off, #e5e7eb);
+    border-radius: 8px;
+    margin-bottom: .6rem;
+    transition: border-color .15s;
+}
+.sched-option:hover:not(.sched-full) { border-color: var(--red); }
+.sched-full { opacity: .5; }
+.sched-option-info { flex: 1; }
+.sched-option-section { font-weight: 700; font-size: .9rem; color: var(--dark); margin-bottom: .3rem; }
+.sched-option-details { display: flex; flex-wrap: wrap; gap: .5rem; font-size: .78rem; color: var(--text-label); }
+.sched-option-details span { display: flex; align-items: center; gap: .3rem; }
+.sched-option-slots { font-size: .78rem; font-weight: 600; white-space: nowrap; }
+.slots-open { color: #16a34a; }
+.slots-full  { color: #dc2626; }
+.btn-enroll-class {
+    padding: .4rem .9rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    white-space: nowrap;
+}
+.btn-enroll-class:hover { opacity: .88; }

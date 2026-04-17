@@ -15,6 +15,28 @@ if ($action === 'add' || $action === 'edit') {
     $semester = $_POST['semester'];
     $schedule_day = trim($_POST['schedule_day']);
     $schedule_time = trim($_POST['schedule_time']);
+
+    // Normalize full day names to standard abbreviations to prevent misparse
+    $day_normalize = [
+        'monday'    => 'M',
+        'tuesday'   => 'T',
+        'wednesday' => 'W',
+        'thursday'  => 'TH',
+        'friday'    => 'F',
+        'saturday'  => 'S',
+        'sunday'    => 'SU',
+    ];
+    // Split by space or comma, normalize each token, rejoin
+    if (!empty($schedule_day)) {
+        $tokens = preg_split('/[\s,]+/', strtolower(trim($schedule_day)));
+        $normalized = [];
+        foreach ($tokens as $token) {
+            $token = trim($token);
+            if ($token === '') continue;
+            $normalized[] = $day_normalize[$token] ?? strtoupper($token);
+        }
+        $schedule_day = implode('', $normalized);
+    }
     $room = trim($_POST['room']);
     $max_slots = (int) $_POST['max_slots'];
     $status = $_POST['status'];
@@ -32,8 +54,13 @@ if ($action === 'add' || $action === 'edit') {
     }
 
     if ($action === 'add') {
-        // Check for duplicate section with same subject in same school year and semester
-        $dup_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE subject_id = ? AND section = ? AND school_year = ? AND semester = ?");
+        // TC017: check duplicate by subject_code + section + school_year + semester
+        $dup_check = mysqli_prepare($con, "
+            SELECT c.class_id FROM classes c
+            JOIN subjects s ON c.subject_id = s.subject_id
+            WHERE s.subject_code = (SELECT subject_code FROM subjects WHERE subject_id = ?)
+            AND c.section = ? AND c.school_year = ? AND c.semester = ?"
+        );
         mysqli_stmt_bind_param($dup_check, "isss", $subject_id, $section, $school_year, $semester);
         mysqli_stmt_execute($dup_check);
         mysqli_stmt_store_result($dup_check);
@@ -42,7 +69,7 @@ if ($action === 'add' || $action === 'edit') {
             die;
         }
 
-        // Check for room/schedule conflict (same room, day, and time)
+        // TC018: room conflict (same room, day, time)
         if (!empty($room) && !empty($schedule_day) && !empty($schedule_time)) {
             $conflict_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE room = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ?");
             mysqli_stmt_bind_param($conflict_check, "sssss", $room, $schedule_day, $schedule_time, $school_year, $semester);
@@ -50,6 +77,18 @@ if ($action === 'add' || $action === 'edit') {
             mysqli_stmt_store_result($conflict_check);
             if (mysqli_stmt_num_rows($conflict_check) > 0) {
                 header("Location: ../pages/admin/admin_classes.php?error=schedule_conflict");
+                die;
+            }
+        }
+
+        // TC018: faculty conflict (same faculty, day, time)
+        if ($faculty_id && !empty($schedule_day) && !empty($schedule_time)) {
+            $fac_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE faculty_id = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ?");
+            mysqli_stmt_bind_param($fac_check, "issss", $faculty_id, $schedule_day, $schedule_time, $school_year, $semester);
+            mysqli_stmt_execute($fac_check);
+            mysqli_stmt_store_result($fac_check);
+            if (mysqli_stmt_num_rows($fac_check) > 0) {
+                header("Location: ../pages/admin/admin_classes.php?error=faculty_conflict");
                 die;
             }
         }
@@ -66,8 +105,13 @@ if ($action === 'add' || $action === 'edit') {
     } else {
         $class_id = (int) $_POST['class_id'];
 
-        // Check for duplicate section with same subject in same school year and semester (excluding current class)
-        $dup_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE subject_id = ? AND section = ? AND school_year = ? AND semester = ? AND class_id != ?");
+        // TC017: check duplicate by subject_code + section (excluding current class)
+        $dup_check = mysqli_prepare($con, "
+            SELECT c.class_id FROM classes c
+            JOIN subjects s ON c.subject_id = s.subject_id
+            WHERE s.subject_code = (SELECT subject_code FROM subjects WHERE subject_id = ?)
+            AND c.section = ? AND c.school_year = ? AND c.semester = ? AND c.class_id != ?"
+        );
         mysqli_stmt_bind_param($dup_check, "isssi", $subject_id, $section, $school_year, $semester, $class_id);
         mysqli_stmt_execute($dup_check);
         mysqli_stmt_store_result($dup_check);
@@ -76,7 +120,7 @@ if ($action === 'add' || $action === 'edit') {
             die;
         }
 
-        // Check for room/schedule conflict (same room, day, and time, excluding current class)
+        // TC018: room conflict (excluding current class)
         if (!empty($room) && !empty($schedule_day) && !empty($schedule_time)) {
             $conflict_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE room = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ? AND class_id != ?");
             mysqli_stmt_bind_param($conflict_check, "sssssi", $room, $schedule_day, $schedule_time, $school_year, $semester, $class_id);
@@ -84,6 +128,18 @@ if ($action === 'add' || $action === 'edit') {
             mysqli_stmt_store_result($conflict_check);
             if (mysqli_stmt_num_rows($conflict_check) > 0) {
                 header("Location: ../pages/admin/admin_classes.php?error=schedule_conflict");
+                die;
+            }
+        }
+
+        // TC018: faculty conflict (excluding current class)
+        if ($faculty_id && !empty($schedule_day) && !empty($schedule_time)) {
+            $fac_check = mysqli_prepare($con, "SELECT class_id FROM classes WHERE faculty_id = ? AND schedule_day = ? AND schedule_time = ? AND school_year = ? AND semester = ? AND class_id != ?");
+            mysqli_stmt_bind_param($fac_check, "issssi", $faculty_id, $schedule_day, $schedule_time, $school_year, $semester, $class_id);
+            mysqli_stmt_execute($fac_check);
+            mysqli_stmt_store_result($fac_check);
+            if (mysqli_stmt_num_rows($fac_check) > 0) {
+                header("Location: ../pages/admin/admin_classes.php?error=faculty_conflict");
                 die;
             }
         }

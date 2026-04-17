@@ -23,12 +23,22 @@ $assigned_students = mysqli_query($con, "
 ");
 
 // Unassigned students matching block's course + year
+// Match on both course_code and course_name since students may store either
 $course_esc = mysqli_real_escape_string($con, $block['course']);
 $year_esc   = mysqli_real_escape_string($con, $block['year_level']);
+
+// Get both the course_code and course_name for this block's course value
+$course_match = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT course_code, course_name FROM courses
+     WHERE course_code = '$course_esc' OR course_name = '$course_esc' LIMIT 1"
+));
+$course_code_esc = mysqli_real_escape_string($con, $course_match['course_code'] ?? $course_esc);
+$course_name_esc = mysqli_real_escape_string($con, $course_match['course_name'] ?? $course_esc);
+
 $unassigned_students = mysqli_query($con, "
     SELECT * FROM students
     WHERE (block_id IS NULL OR block_id = 0)
-    AND course = '$course_esc'
+    AND (course = '$course_code_esc' OR course = '$course_name_esc')
     AND year_level = '$year_esc'
     ORDER BY last_name, first_name
 ");
@@ -308,7 +318,7 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                             </div>
                             <p class="assign-filter-note">
                                 <i class="fa-solid fa-info-circle"></i>
-                                Showing students from <?php echo htmlspecialchars($block['course']); ?>,
+                                Showing students from <?php echo htmlspecialchars($course_name_esc ?: $block['course']); ?>,
                                 Year <?php echo htmlspecialchars($block['year_level']); ?> without a block.
                                 <span class="student-count-note" id="studentCount"></span>
                             </p>

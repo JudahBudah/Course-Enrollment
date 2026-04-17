@@ -46,20 +46,6 @@ if ($class_info['enrolled_count'] >= $class_info['max_slots']) {
     exit();
 }
 
-// Check unit overload
-$units_query = "SELECT COALESCE(SUM(s2.units), 0) as total_units FROM enrollments e JOIN classes c2 ON e.class_id = c2.class_id JOIN subjects s2 ON c2.subject_id = s2.subject_id WHERE e.student_id = ? AND e.status IN ('reserved','confirmed','ongoing')";
-$stmt = mysqli_prepare($con, $units_query);
-mysqli_stmt_bind_param($stmt, 'i', $student_id);
-mysqli_stmt_execute($stmt);
-$units_row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-$current_units = (int)$units_row['total_units'];
-$adding_units = (int)$class_info['units'];
-
-if ($current_units + $adding_units > 24) {
-    echo json_encode(['success' => false, 'message' => "Unit overload: you have $current_units units. Adding $adding_units units would exceed the 24-unit limit."]);
-    exit();
-}
-
 // Get school year and semester from class
 $class_query = "SELECT school_year, semester FROM classes WHERE class_id = ?";
 $stmt = mysqli_prepare($con, $class_query);

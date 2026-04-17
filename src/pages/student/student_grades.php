@@ -51,15 +51,18 @@ for ($y = 1; $y <= 4; $y++) {
     $grades_by_year[$y] = ['1st' => [], '2nd' => []];
 }
 
-$query = "SELECT ge.computed_grade, e.status AS enroll_status,
+$query = "SELECT ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade,
+                 e.enrollment_id, e.status AS enroll_status,
                  c.semester, c.section, c.school_year,
-                 s.subject_code, s.subject_name, s.units, s.year_level
+                 s.subject_code, s.subject_name, s.units, s.year_level,
+                 CONCAT(f.first_name, ' ', f.last_name) AS faculty_name
           FROM enrollments e
           JOIN classes c    ON e.class_id   = c.class_id
           JOIN subjects s   ON c.subject_id = s.subject_id
+          LEFT JOIN faculty f  ON c.faculty_id  = f.faculty_id
           LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
           WHERE e.student_id = ?
-            AND e.status IN ('ongoing','confirmed','completed')
+            AND e.status IN ('reserved','ongoing','confirmed','completed','drop_requested')
           ORDER BY c.school_year, c.semester, s.subject_code";
 
 $stmt = mysqli_prepare($con, $query);
@@ -302,14 +305,19 @@ $overall_gwa = calculateGWA($all_grades);
                                             <th>Subject Title</th>
                                             <th class="center">Units</th>
                                             <th class="center">Section</th>
+                                            <th class="center">Professor</th>
+                                            <th class="center">Class Standing</th>
+                                            <th class="center">Quiz</th>
+                                            <th class="center">Midterms</th>
+                                            <th class="center">Finals</th>
                                             <th class="center">Final Grade</th>
-                                            <th class="center">Grade Status</th>
+                                            <th class="center">Remarks</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (empty($sem_grades)): ?>
                                         <tr>
-                                            <td colspan="7" style="text-align:center; padding:2rem; color:#999;">
+                                            <td colspan="12" style="text-align:center; padding:2rem; color:#999;">
                                                 No grades recorded for this semester.
                                             </td>
                                         </tr>
@@ -320,7 +328,12 @@ $overall_gwa = calculateGWA($all_grades);
                                             <td><span class="subj-code"><?php echo htmlspecialchars($g['subject_code']); ?></span></td>
                                             <td><?php echo htmlspecialchars($g['subject_name']); ?></td>
                                             <td class="center"><?php echo htmlspecialchars($g['units']); ?></td>
-                                            <td class="center"><?php echo htmlspecialchars($g['section'] ?? 'N/A'); ?></td>
+                                            <td class="center"><?php echo htmlspecialchars($g['section'] ?? '—'); ?></td>
+                                            <td class="center"><?php echo htmlspecialchars($g['faculty_name'] ?? '—'); ?></td>
+                                            <td class="center"><?php echo $g['class_standing'] !== null ? number_format($g['class_standing'], 2) : '<span style="color:#999;">—</span>'; ?></td>
+                                            <td class="center"><?php echo $g['quiz'] !== null ? number_format($g['quiz'], 2) : '<span style="color:#999;">—</span>'; ?></td>
+                                            <td class="center"><?php echo $g['midterms'] !== null ? number_format($g['midterms'], 2) : '<span style="color:#999;">—</span>'; ?></td>
+                                            <td class="center"><?php echo $g['finals'] !== null ? number_format($g['finals'], 2) : '<span style="color:#999;">—</span>'; ?></td>
                                             <td class="center">
                                                 <?php echo $g['grade'] !== null ? renderGradeValue($g['grade']) : '<span class="grade-val" style="color:#999;">—</span>'; ?>
                                             </td>
@@ -330,7 +343,7 @@ $overall_gwa = calculateGWA($all_grades);
                                         </tr>
                                         <?php endforeach; ?>
                                         <tr class="gwa-row">
-                                            <td colspan="7" class="gwa-label">
+                                            <td colspan="12" class="gwa-label">
                                                 GWA: <span class="gwa-val">
                                                     <?php
                                                         $gwa = calculateGWA($sem_grades);

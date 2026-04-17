@@ -540,7 +540,6 @@ $subs = [
             alert.style.display = 'none';
             btn.disabled = true;
             btn.innerHTML = '<span>Sending... &nbsp;<i class="fa-solid fa-spinner fa-spin"></i></span>';
-            plmLoader.show('Sending verification code...');
 
             const data = new FormData();
             data.append('action', 'send_code');
@@ -548,24 +547,27 @@ $subs = [
             data.append('password',         document.getElementById('reg-password').value);
             data.append('confirm_password', document.getElementById('reg-confirm').value);
 
-            try {
-                const res  = await fetch('register_handler.php', { method: 'POST', body: data });
-                const json = await res.json();
-                if (json.success) {
-                    window.location.href = 'login_hub.php?portal=applicant&view=verify';
-                } else {
-                    plmLoader.hide();
-                    alertMsg.textContent = json.message;
-                    alert.style.display  = 'flex';
-                    btn.disabled         = false;
-                    btn.innerHTML        = '<span>Send Verification Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>';
-                }
-            } catch {
-                plmLoader.hide();
-                alertMsg.textContent = 'Network error. Please try again.';
+            const showError = (msg) => {
+                if (window.plmLoader) plmLoader.hide();
+                alertMsg.textContent = msg;
                 alert.style.display  = 'flex';
                 btn.disabled         = false;
                 btn.innerHTML        = '<span>Send Verification Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>';
+            };
+
+            try {
+                const res  = await fetch('register_handler.php', { method: 'POST', body: data });
+                const text = await res.text();
+                let json;
+                try { json = JSON.parse(text); } catch { showError('Server error. Please try again.'); return; }
+                if (json.success) {
+                    if (window.plmLoader) plmLoader.show('Sending verification code...');
+                    window.location.href = 'login_hub.php?portal=applicant&view=verify';
+                } else {
+                    showError(json.message || 'An error occurred.');
+                }
+            } catch {
+                showError('Network error. Please try again.');
             }
         }
 

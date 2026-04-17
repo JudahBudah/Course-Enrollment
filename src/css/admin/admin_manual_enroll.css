@@ -277,3 +277,109 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ── Curriculum Nav (Year row + Semester row) ── */
+.curric-nav {
+    border-bottom: 1px solid var(--off, #e5e7eb);
+}
+.curric-year-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: 1rem 1.5rem .6rem;
+    border-bottom: 1px solid var(--off, #e5e7eb);
+}
+.year-tab {
+    padding: .4rem 1.1rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--off, #f3f4f6);
+    font-size: .82rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text);
+    transition: all .15s;
+}
+.year-tab:hover  { background: var(--red); color: white; }
+.year-tab.active { background: var(--red); color: white; }
+
+.curric-sem-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    padding: .6rem 1.5rem .75rem;
+}
+.sem-tab {
+    padding: .35rem .95rem;
+    border: 1.5px solid var(--off, #e5e7eb);
+    border-radius: 999px;
+    background: transparent;
+    font-size: .8rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    transition: all .15s;
+}
+.sem-tab:hover  { border-color: var(--red); color: var(--red); }
+.sem-tab.active { background: var(--red); color: white; border-color: var(--red); }
+
+/* ── Curriculum Panels ── */
+.curric-panel         { display: none; }
+.curric-panel.active  { display: block; }
+
+/* ── Row states ── */
+.row-passed td { opacity: .55; }
+.row-failed td { background: #dc262608 !important; }
+.row-enrolled td { background: #2563eb06 !important; }
+.row-locked td { background: #f9741608 !important; opacity: .75; }
+
+.lock-reason {
+    font-size: .78rem;
+    color: #f97416;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-weight: 500;
+}
+
+/* ── Grade badge ── */
+.grade-badge {
+    display: inline-block;
+    padding: .2rem .55rem;
+    border-radius: 5px;
+    font-size: .78rem;
+    font-weight: 700;
+}
+.grade-pass { background: #16a34a1a; color: #16a34a; }
+.grade-fail { background: #dc26261a; color: #dc2626; }
+
+/* ── Class dropdown ── */
+.class-dropdown {
+    width: 100%;
+    padding: .45rem .7rem;
+    border: 1px solid var(--off, #e5e7eb);
+    border-radius: 6px;
+    font-size: .8rem;
+    background: var(--surface-alt, #f9fafb);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+}
+.class-dropdown:focus { outline: none; border-color: var(--red); }
+
+/* ── Reserve row button ── */
+.btn-reserve-row {
+    padding: .38rem .8rem;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    white-space: nowrap;
+}
+.btn-reserve-row:hover { opacity: .88; }

@@ -6,7 +6,7 @@ include("admin_functions.php");
 check_admin_login($con);
 
 $action = $_POST['action'] ?? '';
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Softdev/src/uploads/announcements/';
+$upload_dir = __DIR__ . '/../uploads/announcements/';
 
 function handle_media_uploads(string $upload_dir): array {
     $media = [];

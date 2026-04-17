@@ -5,6 +5,11 @@ include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
 
+// Sync current_students to actual count on every page load
+mysqli_query($con, "UPDATE blocks b SET b.current_students = (
+    SELECT COUNT(*) FROM students s WHERE s.block_id = b.block_id
+)");
+
 $blocks_query       = mysqli_query($con, "SELECT * FROM blocks ORDER BY course, year_level, block_name");
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
 
@@ -169,6 +174,7 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                     <?php
                     $errors = [
                         'missing_fields' => 'Please fill in all required fields.',
+                        'duplicate_block' => 'A block with the same name, course, year, semester and school year already exists.',
                         'update_failed' => 'Failed to update block. Please try again.',
                         'delete_failed' => 'Failed to delete block. Please try again.',
                         'has_students' => 'Cannot delete block with enrolled students.',

@@ -64,13 +64,6 @@ function mailer_send($to,$subject,$body,$options=[]){
         $mail->SMTPSecure = $cfg["encryption"];
         $mail->Port       = $cfg["port"];
         $mail->CharSet    = "UTF-8";
-        $mail->SMTPOptions = [
-            'ssl' => [
-                'verify_peer'       => false,
-                'verify_peer_name'  => false,
-                'allow_self_signed' => true,
-            ]
-        ];
 
         $mail->setFrom($cfg["from_email"],$cfg["from_name"]);
 

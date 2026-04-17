@@ -1,5 +1,23 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+    /* ── Tab switching ─────────────────────────────────────── */
+
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const sections = document.querySelectorAll('.profile-section');
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            tabLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            const target = this.dataset.section;
+            sections.forEach(sec => {
+                sec.style.display = sec.id === target ? '' : 'none';
+            });
+        });
+    });
+
+
     /* ── Change Photo ────────────────────────────────────────── */
 
     const changePhotoBtn = document.getElementById('change-photo-btn');

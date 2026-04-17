@@ -38,6 +38,10 @@ if (!$applicant_id || !$student_number || !$course || !$year_level) {
     json_out(['success' => false, 'error' => 'Please fill in all required fields.']);
 }
 
+if (!preg_match('/^\d{9}$/', $student_number)) {
+    json_out(['success' => false, 'error' => 'Student number must be exactly 9 digits.']);
+}
+
 // Get applicant data
 $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE applicant_id = ? AND application_status = 'approved' LIMIT 1");
 mysqli_stmt_bind_param($stmt, "i", $applicant_id);

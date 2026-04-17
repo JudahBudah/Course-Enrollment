@@ -21,7 +21,7 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS calendar_events (
 )");
 
 $action = $_POST['action'] ?? '';
-$upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/Softdev/src/uploads/events/';
+$upload_dir = __DIR__ . '/../uploads/events/';
 
 function upload_event_image(string $upload_dir): ?string {
     if (empty($_FILES['image']['name']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) return null;
