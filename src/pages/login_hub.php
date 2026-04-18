@@ -99,10 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Portal display config
 $portals = [
-    'applicant' => ['label' => 'Applicant', 'icon' => 'fa-user-plus',       'id_label' => 'Email Address',       'id_placeholder' => 'your.email@example.com',       'heading' => 'Welcome back, <em>Applicant</em>',     'sub' => 'Sign in to check your application status.'],
+    'applicant' => ['label' => 'Applicant', 'icon' => 'fa-user-plus',       'id_label' => 'Email Address',       'id_placeholder' => 'your.email@example.com',       'heading' => 'Welcome, <em>Future Iskolar</em>',     'sub' => 'Sign in to check your application status.'],
     'student'   => ['label' => 'Student',   'icon' => 'fa-user-graduate',   'id_label' => 'Student ID Number',  'id_placeholder' => 'e.g. 202400000',              'heading' => 'Welcome back, <em>Iskolar</em>',       'sub' => 'Sign in to manage your enrollment and grades.'],
     'faculty'   => ['label' => 'Faculty',   'icon' => 'fa-chalkboard-user', 'id_label' => 'Email Address',       'id_placeholder' => 'juan.delacruz@plm.edu.ph',     'heading' => 'Welcome, <em>Faculty Member</em>',     'sub' => 'Sign in to manage your classes and records.'],
-    'admin'     => ['label' => 'Admin',     'icon' => 'fa-shield-halved',   'id_label' => 'Username',            'id_placeholder' => 'Enter your admin username',    'heading' => 'Admin <em>Access</em>',                'sub' => 'Sign in to manage the system.'],
+    'admin'     => ['label' => 'Admin',     'icon' => 'fa-shield-halved',   'id_label' => 'Username',            'id_placeholder' => 'Enter your admin username',    'heading' => 'Welcome, <em>Adminitrator</em>',                'sub' => 'Sign in to manage the system.'],
 ];
 
 $current  = $portals[$portal];
@@ -253,29 +253,31 @@ $subs = [
                         </div>
                     </div>
 
+                    <div class="login-help-container adjust">
+                        <?php if ($portal === 'applicant'): ?>
+                            <p class="login-help" >
+                                <a href="login_hub.php?portal=applicant&view=forgot" class="link">Forgot password?</a>
+                            </p>
+                            <p class="login-help">
+                                Don't have an account?
+                                <a href="login_hub.php?portal=applicant&view=register" class="link space">Create Account</a>
+                            </p>
+                        <?php elseif ($portal !== 'admin'): ?>
+                            <p class="login-help">
+                                <a href="login_hub.php?portal=<?php echo $portal; ?>&view=forgot" class="link">Forgot password?</a>
+                            </p>
+                        <?php endif; ?>
+                    </div>
+                    
+
                     <button type="submit" class="btn-login">
                         <span>Sign In &nbsp;<i class="fa-solid fa-arrow-right"></i></span>
                     </button>
                 </form>
-
                 <div class="login-divider"><span>PLM Portal</span></div>
+                <?php endif; ?>
 
-                <?php if ($portal === 'applicant'): ?>
-                    <p class="login-help">
-                        Don't have an account?
-                        <a href="login_hub.php?portal=applicant&view=register" class="link">Create Account</a>
-                    </p>
-                    <p class="login-help" style="margin-top:0.4rem;">
-                        <a href="login_hub.php?portal=applicant&view=forgot" class="link">Forgot password?</a>
-                    </p>
-                <?php elseif ($portal !== 'admin'): ?>
-                    <p class="login-help">
-                        <a href="login_hub.php?portal=<?php echo $portal; ?>&view=forgot" class="link">Forgot password?</a>
-                    </p>
-                <?php else: ?>
-                    <p class="login-help">Having trouble? Contact ICT Support or visit the Registrar's Office.</p>
-                <?php endif; ?>
-                <?php endif; ?>
+
 
                 <!-- ── REGISTER FORM ── -->
                 <?php if ($view === 'register'): ?>
@@ -318,16 +320,18 @@ $subs = [
                         </div>
                     </div>
 
+                    <p class="login-help adjust">
+                        Already have an account?
+                        <a href="login_hub.php?portal=applicant" class="link space">Sign In</a>
+                    </p>
+
                     <button type="submit" class="btn-login" id="reg-btn">
                         <span>Send Verification Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>
                     </button>
                 </form>
 
                 <div class="login-divider"><span>PLM Portal</span></div>
-                <p class="login-help">
-                    Already have an account?
-                    <a href="login_hub.php?portal=applicant" class="link">Sign In</a>
-                </p>
+
                 <?php endif; ?>
 
                 <!-- ── VERIFY FORM ── -->
@@ -360,7 +364,7 @@ $subs = [
                 <div class="login-divider"><span>PLM Portal</span></div>
                 <p class="login-help">
                     Wrong email?
-                    <a href="login_hub.php?portal=applicant&view=register" class="link">Start over</a>
+                    <a href="login_hub.php?portal=applicant&view=register" class="link space">Start over</a>
                 </p>
                 <?php endif; ?>
 
@@ -389,12 +393,13 @@ $subs = [
                         <span>Send Reset Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>
                     </button>
                 </form>
+                    <p class="login-help right">
+                        <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link"> 
+                            Back to Sign In
+                        </a>
+                    </p>
+                
                 <div class="login-divider"><span>PLM Portal</span></div>
-                <p class="login-help">
-                    <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link">
-                        <i class="fa-solid fa-arrow-left"></i> Back to Sign In
-                    </a>
-                </p>
                 <?php endif; ?>
 
                 <!-- ── RESET VERIFY FORM ── -->
@@ -412,8 +417,15 @@ $subs = [
                             <input type="text" id="rv-code" placeholder="e.g. 123456"
                                 maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
                         </div>
-                        <div style="margin-top:0.5rem;font-size:0.72rem;color:rgba(242,243,242,0.35);">
-                            Code expires in <span id="rv-countdown">10:00</span>
+                        <div class="login-help-container">
+                            <div style="margin-top:0.5rem;font-size:0.72rem;color:rgba(242,243,242,0.35);">
+                                Code expires in <span id="rv-countdown">10:00</span>
+                            </div>
+                            <p class="login-help right">
+                                <a href="login_hub.php?portal=<?php echo $portal; ?>&view=forgot" class="link">
+                                    <i class="fa-solid fa-arrow-left"></i> Start over
+                                </a>
+                            </p>
                         </div>
                     </div>
 
@@ -422,11 +434,6 @@ $subs = [
                     </button>
                 </form>
                 <div class="login-divider"><span>PLM Portal</span></div>
-                <p class="login-help">
-                    <a href="login_hub.php?portal=<?php echo $portal; ?>&view=forgot" class="link">
-                        <i class="fa-solid fa-arrow-left"></i> Start over
-                    </a>
-                </p>
                 <?php endif; ?>
 
                 <!-- ── RESET PASSWORD FORM ── -->
@@ -486,9 +493,9 @@ $subs = [
         // ── Portal tab switching ──
         const portalConfig = {
             student:   { idLabel: 'Student ID Number',  idPlaceholder: 'e.g. 202400000',           idType: 'text',  idIcon: 'fa-id-card',     heading: 'Welcome back, <em>Iskolar</em>',      sub: 'Sign in to manage your enrollment and grades.' },
-            applicant: { idLabel: 'Email Address',       idPlaceholder: 'your.email@example.com',    idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome back, <em>Applicant</em>',    sub: 'Sign in to check your application status.' },
+            applicant: { idLabel: 'Email Address',       idPlaceholder: 'your.email@example.com',    idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Future Iskolar</em>',    sub: 'Sign in to check your application status.' },
             faculty:   { idLabel: 'Email Address',       idPlaceholder: 'juan.delacruz@plm.edu.ph',  idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Faculty Member</em>',    sub: 'Sign in to manage your classes and records.' },
-            admin:     { idLabel: 'Username',            idPlaceholder: 'Enter your admin username', idType: 'text',  idIcon: 'fa-user-shield', heading: 'Admin <em>Access</em>',               sub: 'Sign in to manage the system.' },
+            admin:     { idLabel: 'Username',            idPlaceholder: 'Enter your admin username', idType: 'text',  idIcon: 'fa-user-shield', heading: 'Welcome, <em>Adminitrator</em>',               sub: 'Sign in to manage the system.' },
         };
 
         function switchPortal(key) {

@@ -9,6 +9,7 @@ utf8mb4_general_ci
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pamantasan ng Lungsod ng Maynila</title>
+    <link rel="icon" href="src/assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="src/css/index.css">
 </head>
@@ -26,26 +27,51 @@ utf8mb4_general_ci
                 <div>EST. 1965</div>
             </div>
         </div>
+
+        <div>
+            <button class="nav-popover" id="nav-popover">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
  
-        <div class="nav-actions">
-        <a class="nav-btn" href="src/pages/login_hub.php?portal=applicant">
+        <div class="nav-actions" id="nav-actions">
+            <a class="nav-btn" href="src/pages/login_hub.php?portal=applicant">
+                <i class="fa-solid fa-user-plus"></i>
+                <div>APPLICANT</div>
+            </a>
+            <a class="nav-btn" href="src/pages/login_hub.php?portal=student">
+                <i class="fa-solid fa-book"></i>
+                <div>STUDENT</div>
+            </a>
+            <a class="nav-btn" href="src/pages/login_hub.php?portal=faculty">
+                <i class="fa-solid fa-users"></i>
+                <div>FACULTY</div>
+            </a>
+            <a class="nav-btn" href="src/pages/login_hub.php?portal=admin">
+                <i class="fa-solid fa-server"></i>
+                <div>ADMIN</div>
+            </a>
+        </div>
+    </nav>
+
+    <div class="nav-popover-menu" id="nav-popover-menu">
+        <a class="nav-popover-btn" href="src/pages/login_hub.php?portal=applicant">
             <i class="fa-solid fa-user-plus"></i>
             <div>APPLICANT</div>
         </a>
-        <a class="nav-btn" href="src/pages/login_hub.php?portal=student">
+        <a class="nav-popover-btn" href="src/pages/login_hub.php?portal=student">
             <i class="fa-solid fa-book"></i>
             <div>STUDENT</div>
         </a>
-        <a class="nav-btn" href="src/pages/login_hub.php?portal=faculty">
+        <a class="nav-popover-btn" href="src/pages/login_hub.php?portal=faculty">
             <i class="fa-solid fa-users"></i>
             <div>FACULTY</div>
         </a>
-        <a class="nav-btn" href="src/pages/login_hub.php?portal=admin">
+        <a class="nav-popover-btn" href="src/pages/login_hub.php?portal=admin">
             <i class="fa-solid fa-server"></i>
             <div>ADMIN</div>
         </a>
-        </div>
-    </nav>
+    </div>
  
 <!-- Main Section -->
     <section class="main">
@@ -80,10 +106,6 @@ utf8mb4_general_ci
                     <div>ENROLL NOW</div>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
- 
-                <button class="btn-secondary">
-                    DISCOVER PLM
-                </button>
             </div>
  
             <div class="main-stats">

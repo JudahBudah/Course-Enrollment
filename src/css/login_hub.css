@@ -383,8 +383,8 @@ header a {
     font-weight: 600;
     letter-spacing: 0.18em;
     text-transform: uppercase;
+    border-radius: 5px;
     cursor: pointer;
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
     transition: all 0.35s;
     position: relative;
     overflow: hidden;
@@ -425,6 +425,10 @@ header a {
     color: var(--white);
 }
 
+.space {
+    margin-left: 5px;
+}
+
 /* ── DIVIDER ── */
 .login-divider {
     display: flex;
@@ -449,10 +453,26 @@ header a {
 }
 
 /* ── HELP TEXT ── */
+
+.login-help-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .login-help {
-    text-align: center;
     font-size: 0.72rem;
     color: rgba(242,243,242,0.25);
+}
+
+.right {
+    text-align: right;
+    margin-top: 5px;
+}
+
+.adjust {
+    margin-top: -12px;
 }
 
 /* ── FOOTER ── */
