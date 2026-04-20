@@ -249,10 +249,12 @@ $pending_enrollment = $total_students - $total_enrolled;
                                     <td><span class="enroll-count"><?php echo $enrolled_count; ?> subjects</span></td>
                                     <td><span class="enroll-units"><?php echo $total_units; ?> units</span></td>
                                     <td>
-                                        <a href="admin_manual_enroll.php?student_id=<?php echo $sid; ?>"
-                                           class="btn-icon" title="View/Edit Enrollment">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
+                                        <div class="action-buttons">
+                                            <a href="admin_manual_enroll.php?student_id=<?php echo $sid; ?>"
+                                            class="btn-icon" title="View/Edit Enrollment">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>

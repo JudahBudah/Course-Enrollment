@@ -368,6 +368,7 @@ $subs = [
                 </p>
                 <?php endif; ?>
 
+
                 <!-- ── FORGOT PASSWORD FORM ── -->
                 <?php if ($view === 'forgot'): ?>
                 <form id="forgot-form" onsubmit="submitForgot(event)">
@@ -388,19 +389,19 @@ $subs = [
                                 id="fgt-identifier" placeholder="<?php echo htmlspecialchars($current['id_placeholder']); ?>" required>
                         </div>
                     </div>
+                    <p class="login-help right">
+                        <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link"> 
+                            <i class="fa-solid fa-arrow-left"></i> Back to Sign In
+                        </a>
+                    </p>
 
                     <button type="submit" class="btn-login" id="fgt-btn">
                         <span>Send Reset Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>
                     </button>
                 </form>
-                    <p class="login-help right">
-                        <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link"> 
-                            Back to Sign In
-                        </a>
-                    </p>
-                
                 <div class="login-divider"><span>PLM Portal</span></div>
                 <?php endif; ?>
+
 
                 <!-- ── RESET VERIFY FORM ── -->
                 <?php if ($view === 'reset-verify'): ?>
@@ -417,15 +418,15 @@ $subs = [
                             <input type="text" id="rv-code" placeholder="e.g. 123456"
                                 maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
                         </div>
-                        <div class="login-help-container">
-                            <div style="margin-top:0.5rem;font-size:0.72rem;color:rgba(242,243,242,0.35);">
-                                Code expires in <span id="rv-countdown">10:00</span>
-                            </div>
-                            <p class="login-help right">
+                        <div class="login-help-container" style="margin-top: 5px;">
+                            <p class="login-help">
                                 <a href="login_hub.php?portal=<?php echo $portal; ?>&view=forgot" class="link">
                                     <i class="fa-solid fa-arrow-left"></i> Start over
                                 </a>
                             </p>
+                            <div class="login-help">
+                                Code expires in <span id="rv-countdown">10:00</span>
+                            </div>
                         </div>
                     </div>
 
@@ -477,13 +478,6 @@ $subs = [
                     </a>
                 </p>
                 <?php endif; ?>
-
-                <div class="login-footer">
-                    <a href="../../index.html" class="link">
-                        <i class="fa-solid fa-arrow-left"></i> Back to Home
-                    </a>
-                </div>
-
             </div>
         </div>
 

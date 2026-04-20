@@ -324,12 +324,16 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                 <td><strong><?php echo htmlspecialchars($student['student_number']); ?></strong></td>
                                 <td>
                                     <?php if ($photo): ?>
-                                        <img src="<?php echo htmlspecialchars($photo); ?>"
-                                             class="student-thumb"
-                                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                        <div class="photo-container">
+                                            <img src="<?php echo htmlspecialchars($photo); ?>"
+                                                class="student-thumb"
+                                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                                        </div>
                                     <?php endif; ?>
-                                    <div class="student-initials" style="display:<?php echo $photo ? 'none' : 'flex'; ?>;">
-                                        <?php echo $initials; ?>
+                                    <div class="photo-container">
+                                        <div class="student-initials" style="display:<?php echo $photo ? 'none' : 'flex'; ?>;">
+                                            <?php echo $initials; ?>
+                                        </div>
                                     </div>
                                 </td>
                                 <td><?php echo $fullname; ?></td>

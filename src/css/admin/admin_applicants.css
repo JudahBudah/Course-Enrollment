@@ -1,3 +1,55 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 70px; }    /* Checkbox */
+.data-table thead th:nth-child(2)  { width: 40px; }    /* ID */
+.data-table thead th:nth-child(3)  { width: 200px; }    /* Name */
+.data-table thead th:nth-child(4)  { width: 220px; }    /* Email */
+.data-table thead th:nth-child(5)  { width: 130px; }    /* LRN */
+.data-table thead th:nth-child(6)  { width: 220px;  }    /* First Choice */
+.data-table thead th:nth-child(7)  { width: 110px; }    /* Status */
+.data-table thead th:nth-child(8)  { width: 140px; }    /* Exam Schedule */
+.data-table thead th:nth-child(9)  { width: 130px;  }    /* Applied Date */
+.data-table thead th:nth-child(10) { width: 200px;  }    /* Actions */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  /* Checkbox */
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) { text-align: center; }  /* ID */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* LRN */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Status */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Exam Schedule */
+
+.data-table th:nth-child(9),
+.data-table td:nth-child(9) { text-align: center; }  /* Appliead Date */
+
+.data-table th:nth-child(10),
+.data-table td:nth-child(10) { text-align: center; }  /* Actions */
+
+.action-buttons {
+    justify-self: flex-start;
+}
+
+
 /* ── Card Header (search + button row) ────────────────── */
 
 .card-header {
@@ -84,7 +136,7 @@
 .batch-count {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--gold, #D4AF37);
+    color: var(--red);
     margin-right: 0.25rem;
 }
 
@@ -97,7 +149,7 @@
 
 .exam-cell-date {
     font-weight: 600;
-    color: var(--gold, #D4AF37);
+    color: var(--red);
 }
 
 .exam-cell-time {
@@ -151,7 +203,7 @@
 .view-sections { display: grid; gap: 1.5rem; }
 .view-section { }
 .view-section-title {
-    color: var(--gold);
+    color: var(--red);
     margin-bottom: 0.75rem;
     font-size: 1rem;
     border-bottom: 1px solid var(--off);
@@ -182,16 +234,19 @@
     border: 1px solid var(--off);
     border-radius: 6px;
 }
+
 .doc-info {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     flex: 1;
 }
+
 .doc-info i {
     font-size: 1.5rem;
-    color: var(--gold);
+    color: var(--red);
 }
+
 .doc-info div { display: flex; flex-direction: column; gap: 0.25rem; }
 .doc-info strong { font-size: 0.9rem; color: var(--text); }
 .doc-info span { font-size: 0.8rem; color: var(--text-label); }
@@ -316,71 +371,3 @@
     }
 }
 
-
-/* ── Responsive Table → Card layout (≤ 600px) ─── */
-
-@media (max-width: 600px) {
-
-    .data-table thead {
-        display: none;
-    }
-
-    .data-table,
-    .data-table tbody,
-    .data-table tr,
-    .data-table td {
-        display: block;
-        width: 100%;
-    }
-
-    .data-table tr {
-        border: 1px solid var(--off);
-        border-radius: 8px;
-        margin-bottom: 1rem;
-        padding: 0.75rem;
-        background: var(--white-pr);
-    }
-
-    .data-table td {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 0.5rem;
-        padding: 0.4rem 0;
-        border-bottom: 1px solid var(--off);
-        font-size: clamp(0.78rem, 3vw, 0.88rem);
-        min-height: 0;
-    }
-
-    .data-table td:last-child {
-        border-bottom: none;
-    }
-
-    /* Hide the checkbox column entirely on mobile */
-    .data-table td:first-child {
-        display: none;
-    }
-
-    /* Inject labels via data-label attribute */
-    .data-table td::before {
-        content: attr(data-label);
-        font-weight: 700;
-        font-size: clamp(0.7rem, 2.5vw, 0.78rem);
-        color: var(--text-label);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        white-space: nowrap;
-        flex-shrink: 0;
-        padding-top: 0.1rem;
-    }
-
-    .data-table .action-buttons {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-    }
-
-    .batch-bar {
-        margin: 0.5rem;
-        padding: 0.5rem 0.75rem;
-    }
-}

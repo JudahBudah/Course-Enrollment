@@ -468,17 +468,11 @@ header a {
 
 .right {
     text-align: right;
-    margin-top: 5px;
+    margin-top: -15px;
 }
 
 .adjust {
     margin-top: -12px;
-}
-
-/* ── FOOTER ── */
-.login-footer {
-    margin-top: 10px;
-    text-align: center;
 }
 
 /* ── RESPONSIVE ── */

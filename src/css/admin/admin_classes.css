@@ -1,3 +1,50 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 320px; }    /* Subject */
+.data-table thead th:nth-child(2)  { width: 135px; }    /* Section */
+.data-table thead th:nth-child(3)  { width: 190px; }    /* Faculty */
+.data-table thead th:nth-child(4)  { width: 135px; }    /* Schedule */
+.data-table thead th:nth-child(5)  { width: 135px; }    /* Room */
+.data-table thead th:nth-child(6)  { width: 90px;  }    /* Capacity */
+.data-table thead th:nth-child(7)  { width: 140px; }    /* Semester */
+.data-table thead th:nth-child(8)  { width: 90px; }    /* Status */
+.data-table thead th:nth-child(9)  { width: 200px;  }    /* Actions */
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) { text-align: center; }  /* Section */
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }  /* Schedule */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* Room */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; }  /* Capacity */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Semester */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Semester */
+
+.data-table th:nth-child(9),
+.data-table td:nth-child(9) { text-align: center; }  /* Status */
+
+
 /* ── Stats Grid ────────────────────────────────────────── */
 
 .stats-grid {

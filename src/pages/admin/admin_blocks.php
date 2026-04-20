@@ -236,7 +236,7 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             <button class="btn-icon" title="Edit" onclick="editBlock(<?php echo $block['block_id']; ?>)">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
-                                            <button class="btn-icon delete" title="Delete" onclick="deleteBlock(<?php echo $block['block_id']; ?>, '<?php echo htmlspecialchars($block['block_name'], ENT_QUOTES); ?>')">
+                                            <button class="btn-icon danger" title="Delete" onclick="deleteBlock(<?php echo $block['block_id']; ?>, '<?php echo htmlspecialchars($block['block_name'], ENT_QUOTES); ?>')">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>

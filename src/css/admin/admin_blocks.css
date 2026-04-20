@@ -1,3 +1,52 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 120px; }    /* Block Name */
+.data-table thead th:nth-child(2)  { width: 230px; }    /* Course */
+.data-table thead th:nth-child(3)  { width: 100px; }    /* Year */
+.data-table thead th:nth-child(4)  { width: 100px; }    /* Semester */
+.data-table thead th:nth-child(5)  { width: 100px; }    /* School Year */
+.data-table thead th:nth-child(6)  { width: 100px;  }    /* Students */
+.data-table thead th:nth-child(7)  { width: 100px; }    /* Status */
+.data-table thead th:nth-child(8)  { width: 200px; }    /* Actions */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) { text-align: center; }  
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; } 
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; } 
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; } 
+
+
 /* ── Card Header (Create button on right) ─────────────── */
 
 .card-header {
@@ -64,13 +113,13 @@
 }
 
 /* Delete button styling */
-.btn-icon.delete {
+.btn-icon.danger {
     color: #dc2626;
+    border-color: #dc2626;
 }
 
-.btn-icon.delete:hover {
-    background: rgba(220, 38, 38, 0.1);
-    color: #b91c1c;
+.btn-icon.danger:hover {
+    background: rgba(220,38,38,0.1);
 }
 
 /* ── Responsive ────────────────────────────────────────── */

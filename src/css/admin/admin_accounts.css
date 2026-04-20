@@ -1,3 +1,39 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 200px; }    /* Username */
+.data-table thead th:nth-child(2)  { width: 220px; }    /* Email */
+.data-table thead th:nth-child(3)  { width: 130px; }    /* Role */
+.data-table thead th:nth-child(4)  { width: 130px; }    /* Created */
+.data-table thead th:nth-child(5)  { width: 120px; }    /* Actions */
+
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }  /* Role */
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }  /* Created */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* Actions */
+
+.action-buttons {
+    justify-self: flex-start;
+}
+
+
 /* ── Stats Grid (2-card layout) ────────────────────────── */
 
 .stats-grid {

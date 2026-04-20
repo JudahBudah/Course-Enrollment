@@ -1,3 +1,49 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 130px; }    /* Student ID */
+.data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
+.data-table thead th:nth-child(3)  { width: 120px; }    /* Course */
+.data-table thead th:nth-child(4)  { width: 120px; }    /* Year Level */
+.data-table thead th:nth-child(5)  { width: 120px; }    /* Block */
+.data-table thead th:nth-child(6)  { width: 190px;  }    /* Enrolled Subjects */
+.data-table thead th:nth-child(7)  { width: 120px; }    /* Total Units */
+.data-table thead th:nth-child(8)  { width: 120px; }    /* Actions */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  /* Student ID */
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }  /* Course */
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }  /* Year Level */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* Block */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; }  /* Enrolled Subjects */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Total Units */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Actions */
+
+
 /* ── Stats Grid (3-card layout) ────────────────────────── */
 
 .stats-grid {

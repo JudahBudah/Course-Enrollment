@@ -1,3 +1,57 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 150px; }    /* Code */
+.data-table thead th:nth-child(2)  { width: 220px; }    /* Subject Name */
+.data-table thead th:nth-child(3)  { width: 90px; }    /* Units */
+.data-table thead th:nth-child(4)  { width: 140px; }    /* Lec / Lab Hrs */
+.data-table thead th:nth-child(5)  { width: 130px; }    /* Department */
+.data-table thead th:nth-child(6)  { width: 80px;  }    /* Year */
+.data-table thead th:nth-child(7)  { width: 100px; }    /* Semester */
+.data-table thead th:nth-child(8)  { width: 120px; }    /* Prerequisite */
+.data-table thead th:nth-child(9)  { width: 90px;  }    /* Status */
+.data-table thead th:nth-child(10) { width: 200px;  }    /* Actions */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  /* Code */
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }  /* Units */
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }  /* Lec / Lab Hrs */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* Department */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; }  /* Year */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Semester */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Prerequisite */
+
+.data-table th:nth-child(9),
+.data-table td:nth-child(9) { text-align: center; }  /* Status */
+
+.data-table th:nth-child(10),
+.data-table td:nth-child(10) { text-align: center; }  /* Actions */
+
+
 /* ── Stats Grid ────────────────────────────────────────── */
 
 .stats-grid {
@@ -62,6 +116,7 @@
     line-height: 1;
 }
 
+
 /* ── Card Header (filters + buttons row) ──────────────── */
 
 .card-header {
@@ -120,7 +175,7 @@
 }
 
 .header-search-input::placeholder {
-    color: rgba(242,243,242,0.5);
+    color: var(--off);
 }
 
 .header-search-input:focus {
@@ -143,18 +198,13 @@
     border-color: rgba(255,255,255,0.7);
 }
 
-/* Batch Import: gold tinted */
+
 .card-header .btn-import {
-    background: var(--gold);
-    color: var(--navy-dk, #070f2e);
-    border-color: var(--gold);
+    background: var(--red);
+    color: var(--white);
     font-weight: 700;
 }
 
-.card-header .btn-import:hover {
-    background: var(--gold-lt, #f0d060);
-    border-color: var(--gold-lt, #f0d060);
-}
 
 /* ── Filter Tabs ───────────────────────────────────────── */
 
@@ -170,9 +220,10 @@
 .units-badge {
     display: inline-block;
     background: rgba(212,175,55,0.12);
-    color: var(--gold, #D4AF37);
+    color: var(--gold-spc);
     padding: 0.2rem 0.65rem;
     border-radius: 10px;
+    white-space: nowrap;
     font-size: 0.78rem;
     font-weight: 700;
 }
@@ -185,6 +236,10 @@
 .badge.yr4 { background: rgba(212,175,55,0.15);  color: #a8881c; }
 
 /* Toggle status btn-icon variants */
+.btn-icon {
+    flex-shrink: 0;
+}
+
 .btn-icon.toggle-on {
     color: #ea580c;
     border-color: #ea580c;

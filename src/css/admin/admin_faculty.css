@@ -1,3 +1,40 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 200px; }    /* Employee ID */
+.data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
+.data-table thead th:nth-child(3)  { width: 250px; }    /* Email */
+.data-table thead th:nth-child(4)  { width: 140px; }    /* Department */
+.data-table thead th:nth-child(5)  { width: 140px; }    /* Position */
+.data-table thead th:nth-child(6)  { width: 110px;  }    /* Employment */
+.data-table thead th:nth-child(7)  { width: 110px; }    /* Status */
+.data-table thead th:nth-child(8)  { width: 240px; }    /* Actions */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  /* Employee ID */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; }  /* Employment */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Status */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Actions */
+
+
 /* ── Stats Grid ────────────────────────────────────────── */
 
 .stats-grid {
@@ -407,6 +444,10 @@
 }
 
 /* ── Employment badge variants ─────────────────────────── */
+
+.badge {
+    white-space: nowrap;
+}
 
 .badge.full-time   { background: rgba(34,197,94,0.12);  color: #16a34a; }
 .badge.part-time   { background: rgba(249,115,22,0.12); color: #ea580c; }
