@@ -15,18 +15,15 @@
 
 .data-table thead th:nth-child(1)  { width: 130px; }    /* Student ID */
 .data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(3)  { width: 120px; }    /* Course */
+.data-table thead th:nth-child(3)  { width: 200px; }    /* Course */
 .data-table thead th:nth-child(4)  { width: 120px; }    /* Year Level */
 .data-table thead th:nth-child(5)  { width: 120px; }    /* Block */
-.data-table thead th:nth-child(6)  { width: 190px;  }    /* Enrolled Subjects */
+.data-table thead th:nth-child(6)  { width: 180px;  }    /* Enrolled Subjects */
 .data-table thead th:nth-child(7)  { width: 120px; }    /* Total Units */
 .data-table thead th:nth-child(8)  { width: 120px; }    /* Actions */
 
 .data-table th:nth-child(1),
 .data-table td:nth-child(1) { text-align: center; }  /* Student ID */
-
-.data-table th:nth-child(3),
-.data-table td:nth-child(3) { text-align: center; }  /* Course */
 
 .data-table th:nth-child(4),
 .data-table td:nth-child(4) { text-align: center; }  /* Year Level */
@@ -51,23 +48,6 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1.25rem;
     margin-bottom: 1.5rem;
-}
-
-.stat-card {
-    background: var(--white-pr);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.07);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.1rem;
-    transition: transform 0.25s, box-shadow 0.25s;
-    border-left: 4px solid transparent;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .stat-card.blue { border-left-color: #3b82f6; }

@@ -306,9 +306,11 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                         <h2>System Activity</h2>
                         <span class="activity-live"><i class="fa-solid fa-circle"></i> Live</span>
                     </div>
-                    <div class="activity-list" id="activityList">
-                        <div style="padding:2rem;text-align:center;color:var(--text-label);">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+                    <div class="table-responsive">
+                        <div class="activity-list" id="activityList">
+                            <div style="padding:2rem;text-align:center;color:var(--text-label);">
+                                <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+                            </div>
                         </div>
                     </div>
                 </div>

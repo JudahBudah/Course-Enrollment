@@ -570,7 +570,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 </tr>
                 <?php endwhile; ?>
                 <?php if (!$has_enrolled): ?>
-                <tr><td colspan="7" class="center" style="padding:2rem;color:var(--text-label);">No current enrollments.</td></tr>
+                <tr><td colspan="7" class="center" style="padding:2rem; font-size: 0.9rem; color:var(--text-label);">No current enrollments.</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>

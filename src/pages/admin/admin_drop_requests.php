@@ -158,10 +158,11 @@ $drop_requests = mysqli_query($con, "
                     </div>
 
                     <div class="filter-tabs">
+                        <a href="?filter=all<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
+                            All</a>
                         <a href="?filter=pending<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'pending' ? 'active' : ''; ?>">
                             Pending <?php if ($total_pending > 0): ?><span class="tab-badge"><?php echo $total_pending; ?></span><?php endif; ?>
                         </a>
-                        <a href="?filter=all<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">All</a>
                     </div>
 
                     <div class="table-responsive">

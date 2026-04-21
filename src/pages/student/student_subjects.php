@@ -389,7 +389,7 @@ foreach ($subjects as $subj) {
 
                     <div class="sched-table-body">
                         <?php if (empty($subjects)): ?>
-                        <div class="sched-row" style="justify-content:center;color:var(--text-label);padding:2rem;">
+                        <div style="text-align:center; color:var(--text-label); font-size: 0.9rem; padding:2rem; background:var(--white-pr);">
                             No enrolled subjects found.
                         </div>
                         <?php else: ?>

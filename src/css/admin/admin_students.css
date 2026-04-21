@@ -17,7 +17,7 @@
 .data-table thead th:nth-child(2)  { width: 110px; }    /* Photo */
 .data-table thead th:nth-child(3)  { width: 200px; }    /* Name */
 .data-table thead th:nth-child(4)  { width: 220px; }    /* Email */
-.data-table thead th:nth-child(5)  { width: 80px; }    /* Course */
+.data-table thead th:nth-child(5)  { width: 200px; }    /* Course */
 .data-table thead th:nth-child(6)  { width: 80px;  }    /* Year */
 .data-table thead th:nth-child(7)  { width: 110px; }    /* Block */
 .data-table thead th:nth-child(8)  { width: 110px; }    /* Type */
@@ -25,22 +25,19 @@
 .data-table thead th:nth-child(10) { width: 200px;  }    /* Actions */
 
 .data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Code */
+.data-table td:nth-child(1) { text-align: center; }  /* Student No. */
 
 .data-table th:nth-child(2),
 .data-table td:nth-child(2) { text-align: center; }  /* Photo */
 
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* Department */
-
 .data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Course */
+.data-table td:nth-child(6) { text-align: center; }  /* Year */
 
 .data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Semester */
+.data-table td:nth-child(7) { text-align: center; }  /* Block */
 
 .data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Prerequisite */
+.data-table td:nth-child(8) { text-align: center; }  /* Type */
 
 .data-table th:nth-child(9),
 .data-table td:nth-child(9) { text-align: center; }  /* Status */
@@ -56,22 +53,6 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.25rem;
     margin-bottom: 1.5rem;
-}
-
-.stat-card {
-    background: var(--white-pr);
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.07);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.1rem;
-    transition: transform 0.25s, box-shadow 0.25s;
-    border-left: 4px solid transparent;
-}
-
-.stat-card:hover {
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .stat-card.blue   { border-left-color: #3b82f6; }
