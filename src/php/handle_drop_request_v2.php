@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $enrollment_id = (int)$_POST['enrollment_id'];
     $class_id      = (int)($_POST['class_id'] ?? 0);
     $action        = $_POST['action'] ?? '';
+    $redirect      = $_POST['redirect'] ?? 'manual'; // 'manual' or 'enrollments'
 
     // Start transaction for data consistency
     mysqli_begin_transaction($con);
@@ -67,7 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Commit transaction
             mysqli_commit($con);
-            header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&success=drop_accepted&t=" . time());
+            log_activity($con, 'Approved drop request', 'enrollment', 'Enrollment ID ' . $enrollment_id . ' — Student ID ' . $student_id);
+            $back = $redirect === 'enrollments'
+                ? '../pages/admin/admin_enrollments.php?success=drop_accepted'
+                : ($redirect === 'drop_requests'
+                    ? '../pages/admin/admin_drop_requests.php?success=drop_accepted'
+                    : '../pages/admin/admin_manual_enroll.php?student_id=' . $student_id . '&success=drop_accepted&t=' . time());
+            header("Location: $back");
             exit;
 
         } elseif ($action === 'reject') {
@@ -86,7 +93,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             // Commit transaction
             mysqli_commit($con);
-            header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&success=drop_rejected&t=" . time());
+            log_activity($con, 'Rejected drop request', 'enrollment', 'Enrollment ID ' . $enrollment_id . ' — Student ID ' . $student_id);
+            $back = $redirect === 'enrollments'
+                ? '../pages/admin/admin_enrollments.php?success=drop_rejected'
+                : ($redirect === 'drop_requests'
+                    ? '../pages/admin/admin_drop_requests.php?success=drop_rejected'
+                    : '../pages/admin/admin_manual_enroll.php?student_id=' . $student_id . '&success=drop_rejected&t=' . time());
+            header("Location: $back");
             exit;
 
         } else {

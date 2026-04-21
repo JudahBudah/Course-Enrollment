@@ -48,6 +48,7 @@ if ($action === 'add') {
     $admin_id = $_SESSION['admin_id'];
     mysqli_stmt_bind_param($stmt, "isssss", $admin_id, $title, $message, $media_json, $audience, $priority);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Added announcement', 'announcement', $title);
     header("Location: ../pages/admin/admin_announcements.php?success=added");
     die;
 }
@@ -84,6 +85,7 @@ if ($action === 'edit') {
     $stmt = mysqli_prepare($con, "UPDATE announcements SET title=?, message=?, media=?, target_audience=?, priority=?, status=? WHERE announcement_id=?");
     mysqli_stmt_bind_param($stmt, "ssssssi", $title, $message, $media_json, $audience, $priority, $status, $id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Updated announcement', 'announcement', $title);
     header("Location: ../pages/admin/admin_announcements.php?success=updated");
     die;
 }
@@ -95,6 +97,7 @@ if ($action === 'delete') {
         @unlink($upload_dir . $m['file']);
     }
     mysqli_query($con, "DELETE FROM announcements WHERE announcement_id = $id");
+    log_activity($con, 'Deleted announcement', 'announcement', 'ID ' . $id);
     header("Location: ../pages/admin/admin_announcements.php?success=deleted");
     die;
 }
@@ -102,6 +105,7 @@ if ($action === 'delete') {
 if ($action === 'toggle') {
     $id = (int) $_POST['announcement_id'];
     mysqli_query($con, "UPDATE announcements SET status = IF(status='active','archived','active') WHERE announcement_id = $id");
+    log_activity($con, 'Toggled announcement status', 'announcement', 'ID ' . $id);
     header("Location: ../pages/admin/admin_announcements.php?success=updated");
     die;
 }

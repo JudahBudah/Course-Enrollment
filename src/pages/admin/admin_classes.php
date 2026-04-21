@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
@@ -15,6 +15,7 @@ $flash_errors = [
     'duplicate_class'   => 'This section already has this subject for the selected school year and semester.',
     'schedule_conflict' => 'Schedule conflict: Another class is already using this room at the same day and time.',
     'faculty_conflict'  => 'Schedule conflict: This faculty member already has a class at the same day and time.',
+    'wrong_school_year' => 'School year does not match the current system school year. Update it in Admin Accounts.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
@@ -33,7 +34,7 @@ if (isset($_GET['success'])) {
 $total_classes  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM classes"))['c'];
 $open_classes   = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM classes WHERE status = 'open'"))['c'];
 $closed_classes = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM classes WHERE status = 'closed'"))['c'];
-$total_enrolled = mysqli_fetch_assoc(mysqli_query($con, "SELECT SUM(enrolled_count) as s FROM classes"))['s'] ?? 0;
+$total_enrolled = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as s FROM enrollments WHERE status IN ('confirmed','reserved','ongoing')"))['s'] ?? 0;
 
 // Search & filter
 $search          = trim($_GET['search'] ?? '');
@@ -54,7 +55,8 @@ if ($search !== '') {
 
 $classes = mysqli_query($con, "
     SELECT c.*, s.subject_code, s.subject_name, s.units, s.year_level,
-           CONCAT(f.first_name, ' ', f.last_name) as faculty_name
+           CONCAT(f.first_name, ' ', f.last_name) as faculty_name,
+           (SELECT COUNT(*) FROM enrollments e WHERE e.class_id = c.class_id AND e.status IN ('confirmed','reserved','ongoing')) as real_enrolled
     FROM classes c
     JOIN subjects s ON c.subject_id = s.subject_id
     LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
@@ -62,23 +64,24 @@ $classes = mysqli_query($con, "
     ORDER BY c.school_year DESC, c.semester ASC, s.subject_code ASC
 ");
 
-// Subjects for dropdown (add/edit modal)
-$subjects_query = mysqli_query($con, "
-    SELECT subject_id, subject_code, subject_name, year_level, semester, department
-    FROM subjects WHERE status = 'active'
-    ORDER BY department, year_level, semester, subject_code
-");
-$subjects = [];
-while ($s = mysqli_fetch_assoc($subjects_query)) $subjects[] = $s;
+// Courses for modal selector
+$courses_query = mysqli_query($con, "SELECT course_id, course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_name");
+$modal_courses = [];
+while ($c = mysqli_fetch_assoc($courses_query)) $modal_courses[] = $c;
 
-// Departments for modal filter
-$dept_query = mysqli_query($con, "
-    SELECT DISTINCT department FROM subjects
-    WHERE status = 'active' AND department IS NOT NULL AND department != ''
-    ORDER BY department
+// All subjects grouped by course_id → year_level → semester
+$subjects_query = mysqli_query($con, "
+    SELECT subject_id, subject_code, subject_name, units, year_level, semester, department, course_id
+    FROM subjects WHERE status = 'active'
+    ORDER BY course_id, CAST(year_level AS UNSIGNED), FIELD(semester,'1st','2nd','summer'), subject_code
 ");
-$modal_departments = [];
-while ($d = mysqli_fetch_assoc($dept_query)) $modal_departments[] = $d['department'];
+$subjects_by_course = [];
+while ($s = mysqli_fetch_assoc($subjects_query)) {
+    $cid = $s['course_id'] ?? 0;
+    $yr  = $s['year_level'] ?? '0';
+    $sem = $s['semester'] ?? 'N/A';
+    $subjects_by_course[$cid][$yr][$sem][] = $s;
+}
 
 // Faculty for dropdown
 $faculty_query = mysqli_query($con, "
@@ -183,6 +186,13 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                         </a>
                     </li>
                     <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin_announcements.php">
                             <i class="fa-solid fa-bullhorn"></i>
                             <span class="li-name">Announcements</span>
@@ -269,6 +279,8 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                     <option value="2" <?php echo $year_filter==='2'?'selected':''; ?>>2nd Year</option>
                                     <option value="3" <?php echo $year_filter==='3'?'selected':''; ?>>3rd Year</option>
                                     <option value="4" <?php echo $year_filter==='4'?'selected':''; ?>>4th Year</option>
+                                    <option value="5" <?php echo $year_filter==='5'?'selected':''; ?>>5th Year</option>
+                                    <option value="6" <?php echo $year_filter==='6'?'selected':''; ?>>6th Year</option>
                                 </select>
                                 <select name="semester" class="filter-select" onchange="this.form.submit()">
                                     <option value="">All Semesters</option>
@@ -327,7 +339,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                 </tr>
                             <?php else: ?>
                             <?php while ($cls = mysqli_fetch_assoc($classes)):
-                                $capacity_pct   = $cls['max_slots'] > 0 ? ($cls['enrolled_count'] / $cls['max_slots']) * 100 : 0;
+                                $capacity_pct   = $cls['max_slots'] > 0 ? ($cls['real_enrolled'] / $cls['max_slots']) * 100 : 0;
                                 $capacity_class = $capacity_pct >= 100 ? 'full' : ($capacity_pct >= 80 ? 'almost' : 'available');
                                 $js = htmlspecialchars(json_encode($cls), ENT_QUOTES);
                             ?>
@@ -349,7 +361,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                     <td><?php echo htmlspecialchars($cls['room'] ?? 'TBA'); ?></td>
                                     <td>
                                         <span class="capacity-badge <?php echo $capacity_class; ?>">
-                                            <?php echo $cls['enrolled_count']; ?>/<?php echo $cls['max_slots']; ?>
+                                            <?php echo $cls['real_enrolled']; ?>/<?php echo $cls['max_slots']; ?>
                                         </span>
                                     </td>
                                     <td><?php echo htmlspecialchars($cls['semester'] . ' ' . $cls['school_year']); ?></td>
@@ -408,72 +420,35 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
             <form method="POST" action="../../php/admin_classes_handler.php">
                 <input type="hidden" name="action"   id="form_action"   value="add">
                 <input type="hidden" name="class_id" id="form_class_id">
+                <input type="hidden" name="subject_id" id="form_subject_id">
 
-                <!-- Subject filter box -->
-                <div class="subject-filter-box">
-                    <p class="filter-box-label">
-                        <i class="fa-solid fa-filter"></i> Filter Subjects:
-                    </p>
-                    <div class="form-grid-3">
-                        <div>
-                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Department</label>
-                            <select id="filter_dept" class="modal-filter-select" onchange="filterSubjects()">
-                                <option value="">All Departments</option>
-                                <?php foreach ($modal_departments as $dept): ?>
-                                    <option value="<?php echo htmlspecialchars($dept); ?>"><?php echo htmlspecialchars($dept); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Year Level</label>
-                            <select id="filter_year" class="modal-filter-select" onchange="filterSubjects()">
-                                <option value="">All Years</option>
-                                <option value="1">1st Year</option>
-                                <option value="2">2nd Year</option>
-                                <option value="3">3rd Year</option>
-                                <option value="4">4th Year</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Semester</label>
-                            <select id="filter_sem" class="modal-filter-select" onchange="filterSubjects()">
-                                <option value="">All Semesters</option>
-                                <option value="1st">1st Semester</option>
-                                <option value="2nd">2nd Semester</option>
-                                <option value="summer">Summer</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div style="margin-top:0.75rem;">
-                        <label style="font-size:0.75rem;color:var(--text-label);margin-bottom:0.3rem;display:block;">Search Subject</label>
-                        <input type="text" id="filter_search" class="modal-filter-select" placeholder="Type to search subject code or name..." oninput="filterSubjects()" style="width:100%;">
-                    </div>
-                    <p class="filter-count-note" id="filter_count">Showing all subjects</p>
+                <!-- Course selector -->
+                <div class="form-group" id="course_selector_group">
+                    <label>Course <span style="color:var(--red)">*</span></label>
+                    <select id="modal_course_select" class="modal-filter-select" onchange="loadCourseSubjects()" style="width:100%;">
+                        <option value="">— Select a course to view subjects —</option>
+                        <?php
+                        $cur_college = '';
+                        foreach ($modal_courses as $mc):
+                            if ($cur_college !== $mc['college_name']) {
+                                if ($cur_college !== '') echo '</optgroup>';
+                                echo '<optgroup label="' . htmlspecialchars($mc['college_name']) . '">';
+                                $cur_college = $mc['college_name'];
+                            }
+                        ?>
+                            <option value="<?php echo $mc['course_id']; ?>"><?php echo htmlspecialchars($mc['course_code'] . ' — ' . $mc['course_name']); ?></option>
+                        <?php endforeach; if ($cur_college !== '') echo '</optgroup>'; ?>
+                    </select>
                 </div>
 
-                <div class="form-group">
-                    <label>Subject <span style="color:var(--red)">*</span></label>
-                    <select name="subject_id" id="form_subject_id" required size="8" style="height:auto;">
-                        <option value="" disabled selected>Select a subject from the list below</option>
-                        <?php foreach ($subjects as $subj): ?>
-                            <option value="<?php echo $subj['subject_id']; ?>"
-                                    data-year="<?php echo $subj['year_level']; ?>"
-                                    data-sem="<?php echo $subj['semester']; ?>"
-                                    data-dept="<?php echo htmlspecialchars($subj['department']); ?>"
-                                    data-code="<?php echo htmlspecialchars($subj['subject_code']); ?>"
-                                    data-name="<?php echo htmlspecialchars($subj['subject_name']); ?>">
-                                <?php echo htmlspecialchars($subj['subject_code']); ?> - <?php echo htmlspecialchars($subj['subject_name']); ?>
-                                <?php if ($subj['department']): ?>
-                                    (<?php echo htmlspecialchars($subj['department']); ?><?php echo $subj['year_level'] ? ', Year ' . $subj['year_level'] : ''; ?><?php echo $subj['semester'] ? ', ' . $subj['semester'] : ''; ?>)
-                                <?php endif; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <p style="font-size:0.75rem;color:var(--text-label);margin-top:0.4rem;">
-                        <i class="fa-solid fa-info-circle"></i> Use the filters above to narrow down subjects, then select from the list
-                    </p>
+                <!-- Subject checklist (populated by JS) -->
+                <div id="subject_checklist_wrap" style="display:none;">
+                    <div class="subject-filter-box">
+                        <p class="filter-box-label"><i class="fa-solid fa-book-open"></i> Select Subject</p>
+                        <div id="subject_checklist"></div>
+                    </div>
                     <p id="subject_locked_note" style="display:none;font-size:0.75rem;color:var(--gold);margin-top:0.4rem;background:rgba(212,175,55,0.1);padding:0.5rem;border-radius:4px;">
-                        <i class="fa-solid fa-lock"></i> Subject cannot be changed when editing a class. Create a new class if you need a different subject.
+                        <i class="fa-solid fa-lock"></i> Subject cannot be changed when editing a class.
                     </p>
                 </div>
 
@@ -498,7 +473,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>School Year <span style="color:var(--red)">*</span></label>
-                        <input type="text" name="school_year" id="form_school_year" placeholder="e.g., 2024-2025" value="2024-2025" required>
+                        <input type="text" name="school_year" id="form_school_year" placeholder="e.g., 2024-2025" value="<?php echo htmlspecialchars(get_setting($con, 'current_school_year', date('Y') . '-' . (date('Y')+1))); ?>" required>
                     </div>
                     <div class="form-group">
                         <label>Semester <span style="color:var(--red)">*</span></label>
@@ -511,15 +486,20 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                     </div>
                 </div>
 
-                <div class="form-grid-2">
-                    <div class="form-group">
-                        <label>Schedule Day</label>
-                        <input type="text" name="schedule_day"  id="form_schedule_day"  placeholder="e.g., MW, TTH, THS, MWF, Monday Tuesday">
+                <div class="form-group">
+                    <label>Schedule Day</label>
+                    <div class="day-checkboxes">
+                        <?php foreach (['M'=>'Mon','T'=>'Tue','W'=>'Wed','TH'=>'Thu','F'=>'Fri','S'=>'Sat','SU'=>'Sun'] as $val => $lbl): ?>
+                        <label class="day-cb-label">
+                            <input type="checkbox" name="schedule_days[]" value="<?php echo $val; ?>" class="day-cb">
+                            <span><?php echo $lbl; ?></span>
+                        </label>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="form-group">
-                        <label>Schedule Time</label>
-                        <input type="text" name="schedule_time" id="form_schedule_time" placeholder="e.g., 8:00 AM - 10:00 AM">
-                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Schedule Time</label>
+                    <input type="text" name="schedule_time" id="form_schedule_time" placeholder="e.g., 8:00 AM - 10:00 AM">
                 </div>
 
                 <div class="form-grid-3">
@@ -539,35 +519,6 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                             <option value="cancelled">Cancelled</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Class Availability</label>
-                    <div style="margin-bottom:0.5rem;">
-                        <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;cursor:pointer;">
-                            <input type="radio" name="availability_type" value="all" checked onchange="toggleDepartmentSelect()">
-                            <span>Available to all departments (e.g., PE, GE subjects)</span>
-                        </label>
-                    </div>
-                    <div>
-                        <label style="display:flex;align-items:center;gap:0.5rem;font-weight:normal;cursor:pointer;">
-                            <input type="radio" name="availability_type" value="specific" onchange="toggleDepartmentSelect()">
-                            <span>Restrict to specific department only</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group" id="specific_dept_group" style="display:none;">
-                    <label>Specific Department <span style="color:var(--red)">*</span></label>
-                    <select name="specific_department" id="form_specific_department">
-                        <option value="">Select Department</option>
-                        <?php foreach ($modal_departments as $dept): ?>
-                            <option value="<?php echo htmlspecialchars($dept); ?>"><?php echo htmlspecialchars($dept); ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <p style="font-size:0.75rem;color:var(--text-label);margin-top:0.4rem;">
-                        <i class="fa-solid fa-info-circle"></i> Only students from this department can see and enroll in this class
-                    </p>
                 </div>
 
                 <div class="modal-actions">
@@ -597,6 +548,13 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
         </div>
     </div>
 
+    <script>
+    const SUBJECTS_BY_COURSE = <?php echo json_encode($subjects_by_course); ?>;
+    const YEAR_LABELS = {"1":"1st Year","2":"2nd Year","3":"3rd Year","4":"4th Year","5":"5th Year","6":"6th Year","0":"Unassigned"};
+    const SEM_LABELS  = {"1st":"1st Semester","2nd":"2nd Semester","summer":"Summer","N/A":"Unassigned"};
+    const CURRENT_SCHOOL_YEAR = <?php echo json_encode(get_setting($con, 'current_school_year', date('Y').'-'.(date('Y')+1))); ?>;
+    const CURRENT_SEMESTER    = <?php echo json_encode(get_setting($con, 'current_semester', '1st')); ?>;
+    </script>
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_classes.js"></script>
 </body>

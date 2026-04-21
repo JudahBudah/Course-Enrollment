@@ -15,7 +15,12 @@ $result = mysqli_stmt_get_result($stmt);
 if (!$result || mysqli_num_rows($result) == 0) { session_destroy(); header("Location: ../../pages/login_hub.php?portal=faculty"); die; }
 $faculty_data = mysqli_fetch_assoc($result);
 
-// Fetch all assigned classes with schedule
+include("../../php/admin_functions.php");
+
+$cur_semester    = get_setting($con, 'current_semester', '');
+$cur_school_year = get_setting($con, 'current_school_year', '');
+
+// Fetch assigned classes for current semester only
 $classes = [];
 $cq = mysqli_query($con,
     "SELECT c.class_id, c.section, c.schedule_day, c.schedule_time, c.room,
@@ -23,6 +28,8 @@ $cq = mysqli_query($con,
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
      WHERE c.faculty_id = $faculty_id
+       AND c.semester = '" . mysqli_real_escape_string($con, $cur_semester) . "'
+       AND c.school_year = '" . mysqli_real_escape_string($con, $cur_school_year) . "'
      ORDER BY c.schedule_time, s.subject_code"
 );
 while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
@@ -36,6 +43,7 @@ $day_patterns = [
     'Thursday'  => ['TH','TTH','MTH','THU','THURSDAY'],
     'Friday'    => ['F','MWF','TF','FRI','FRIDAY'],
     'Saturday'  => ['S','SAT','SATURDAY'],
+    'Sunday'    => ['SU','SUN','SUNDAY'],
 ];
 $days_order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 $week_schedule = array_fill_keys($days_order, []);
@@ -123,7 +131,7 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                     <?php echo htmlspecialchars($faculty_data['first_name'] . ' ' . $faculty_data['last_name']); ?>
                 </div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -159,6 +167,12 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                         <a href="faculty_gradebook.php">
                             <i class="fa-solid fa-book"></i>
                             <div class="li-name">Gradebook</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
                         </a>
                     </li>
                     <li>
@@ -200,7 +214,7 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                 </div>
                 <div class="faculty-body">
                     <div class="avatar-wrap">
-                        <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                        <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                     </div>
                     <div class="faculty-title-content">
                         <h2><?php echo htmlspecialchars($faculty_data['first_name'] . ' ' . ($faculty_data['middle_name'] ?? '') . ' ' . $faculty_data['last_name']); ?></h2>

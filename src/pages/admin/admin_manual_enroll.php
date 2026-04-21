@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
@@ -143,7 +143,7 @@ $drop_requests = mysqli_query($con, "SELECT e.enrollment_id, e.class_id, s.subje
 // Self-enrolled (ongoing) pending review
 $self_enrolled = mysqli_query($con, "SELECT e.enrollment_id, e.class_id, s.subject_code, s.subject_name, s.units, c.section, c.schedule_day, c.schedule_time, c.room, CONCAT(f.first_name,' ',f.last_name) as faculty_name FROM enrollments e JOIN classes c ON e.class_id = c.class_id JOIN subjects s ON c.subject_id = s.subject_id LEFT JOIN faculty f ON c.faculty_id = f.faculty_id WHERE e.student_id = $student_id AND e.status = 'ongoing' ORDER BY s.subject_code");
 
-$year_labels = ['1' => '1st Year', '2' => '2nd Year', '3' => '3rd Year', '4' => '4th Year', '0' => 'Unassigned'];
+$year_labels = ['1' => '1st Year', '2' => '2nd Year', '3' => '3rd Year', '4' => '4th Year', '5' => '5th Year', '6' => '6th Year', '0' => 'Unassigned'];
 $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Summer', 'N/A' => 'Unassigned'];
 ?>
 <!DOCTYPE html>
@@ -184,6 +184,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 <li><a href="admin_subjects.php"><i class="fa-solid fa-book"></i><span class="li-name">Subjects</span></a></li>
                 <li><a href="admin_classes.php"><i class="fa-solid fa-door-open"></i><span class="li-name">Classes</span></a></li>
                 <li><a href="admin_enrollments.php"><i class="fa-solid fa-file-lines"></i><span class="li-name">Enrollments</span></a></li>
+                <li><a href="admin_drop_requests.php"><i class="fa-solid fa-right-from-bracket"></i><span class="li-name">Drop Requests</span><?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?></a></li>
                 <li><a href="admin_announcements.php"><i class="fa-solid fa-bullhorn"></i><span class="li-name">Announcements</span></a></li>
                 <li><a href="admin_calendar.php"><i class="fa-solid fa-calendar-days"></i><span class="li-name">Calendar</span></a></li>
                 <li><a href="admin_accounts.php"><i class="fa-solid fa-user-shield"></i><span class="li-name">Admin Accounts</span></a></li>
@@ -220,8 +221,16 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="success-message"><i class="fa-solid fa-check-circle"></i> <?php echo $smsgs[$_GET['success']] ?? 'Action completed.'; ?></div>
     <?php endif; ?>
     <?php if (isset($_GET['error'])): ?>
-        <?php $emsgs = ['invalid' => 'Invalid request.', 'class_full' => 'Class is full.', 'already_enrolled' => 'Student is already enrolled in this subject.', 'failed' => 'Action failed. Please try again.']; ?>
-        <div class="error-message"><i class="fa-solid fa-exclamation-triangle"></i> <?php echo $emsgs[$_GET['error']] ?? 'An error occurred.'; ?></div>
+        <?php $emsgs = ['invalid' => 'Invalid request.', 'class_full' => 'Class is full.', 'already_enrolled' => 'Student is already enrolled in this subject.', 'failed' => 'Action failed. Please try again.', 'prereq' => 'Cannot enroll: prerequisite not passed.']; ?>
+        <div class="error-message"><i class="fa-solid fa-exclamation-triangle"></i>
+            <?php
+            $emsg = $emsgs[$_GET['error']] ?? 'An error occurred.';
+            if ($_GET['error'] === 'prereq' && !empty($_GET['missing'])) {
+                $emsg .= ' Missing: ' . htmlspecialchars(urldecode($_GET['missing']));
+            }
+            echo $emsg;
+            ?>
+        </div>
     <?php endif; ?>
 
     <!-- Stats -->

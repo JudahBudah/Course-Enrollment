@@ -27,14 +27,9 @@ if ($action === 'add' || $action === 'edit') {
     }
 
     if ($action === 'add') {
-        // Check duplicate code + course combination
-        if ($course_id !== null) {
-            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id = ?");
-            mysqli_stmt_bind_param($chk, "si", $subject_code, $course_id);
-        } else {
-            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id IS NULL");
-            mysqli_stmt_bind_param($chk, "s", $subject_code);
-        }
+        // Check duplicate: same code + same course only
+        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND (course_id = ? OR (course_id IS NULL AND ? IS NULL))");
+        mysqli_stmt_bind_param($chk, "sii", $subject_code, $course_id, $course_id);
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
@@ -49,19 +44,15 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_subjects.php?error=insert_failed");
             die;
         }
+        log_activity($con, 'Added subject', 'subject', $subject_code . ' — ' . $subject_name);
         header("Location: ../pages/admin/admin_subjects.php?success=added");
 
     } else {
         $subject_id = (int) $_POST['subject_id'];
 
-        // Check duplicate code + course combination excluding self
-        if ($course_id !== null) {
-            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id = ? AND subject_id != ?");
-            mysqli_stmt_bind_param($chk, "sii", $subject_code, $course_id, $subject_id);
-        } else {
-            $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND course_id IS NULL AND subject_id != ?");
-            mysqli_stmt_bind_param($chk, "si", $subject_code, $subject_id);
-        }
+        // Check duplicate: same code + same course, excluding self
+        $chk = mysqli_prepare($con, "SELECT subject_id FROM subjects WHERE subject_code = ? AND (course_id = ? OR (course_id IS NULL AND ? IS NULL)) AND subject_id != ?");
+        mysqli_stmt_bind_param($chk, "siii", $subject_code, $course_id, $course_id, $subject_id);
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
@@ -76,6 +67,7 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_subjects.php?error=update_failed");
             die;
         }
+        log_activity($con, 'Updated subject', 'subject', $subject_code . ' — ' . $subject_name);
         header("Location: ../pages/admin/admin_subjects.php?success=updated");
     }
     die;
@@ -97,6 +89,7 @@ if ($action === 'delete') {
     $stmt = mysqli_prepare($con, "DELETE FROM subjects WHERE subject_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $subject_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Deleted subject', 'subject', 'Subject ID ' . $subject_id);
     header("Location: ../pages/admin/admin_subjects.php?success=deleted");
     die;
 }
@@ -107,6 +100,7 @@ if ($action === 'toggle_status') {
     $stmt = mysqli_prepare($con, "UPDATE subjects SET status = ? WHERE subject_id = ?");
     mysqli_stmt_bind_param($stmt, "si", $new_status, $subject_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Toggled subject status to ' . $new_status, 'subject', 'Subject ID ' . $subject_id);
     header("Location: ../pages/admin/admin_subjects.php?success=updated");
     die;
 }

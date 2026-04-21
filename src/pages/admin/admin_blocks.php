@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
@@ -12,6 +12,12 @@ mysqli_query($con, "UPDATE blocks b SET b.current_students = (
 
 $blocks_query       = mysqli_query($con, "SELECT * FROM blocks ORDER BY course, year_level, block_name");
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants WHERE application_status = 'pending'"))['count'];
+
+$sys_semester    = get_setting($con, 'current_semester', '1st');
+$sys_school_year = get_setting($con, 'current_school_year', date('Y') . '-' . (date('Y') + 1));
+
+// Auto-sync all blocks to current system semester and school year
+mysqli_query($con, "UPDATE blocks SET semester = '" . mysqli_real_escape_string($con, $sys_semester) . "', school_year = '" . mysqli_real_escape_string($con, $sys_school_year) . "'");
 
 // Get courses from courses table
 $courses_query = mysqli_query($con, "SELECT course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_name");
@@ -111,6 +117,13 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                         <a href="admin_enrollments.php">
                             <i class="fa-solid fa-file-lines"></i>
                             <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
                         </a>
                     </li>
                     <li>
@@ -294,16 +307,11 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                 </div>
                 <div class="form-group">
                     <label>Semester</label>
-                    <select name="semester" required>
-                        <option value="">Select Semester</option>
-                        <option value="1st">1st Semester</option>
-                        <option value="2nd">2nd Semester</option>
-                        <option value="summer">Summer</option>
-                    </select>
+                    <input type="text" name="semester" value="<?php echo htmlspecialchars($sys_semester); ?>" readonly style="background:var(--surface-alt);color:var(--text-label);cursor:not-allowed;">
                 </div>
                 <div class="form-group">
                     <label>School Year</label>
-                    <input type="text" name="school_year" placeholder="e.g., 2024-2025" required>
+                    <input type="text" name="school_year" value="<?php echo htmlspecialchars($sys_school_year); ?>" readonly style="background:var(--surface-alt);color:var(--text-label);cursor:not-allowed;">
                 </div>
                 <div class="form-group">
                     <label>Max Students</label>
@@ -357,16 +365,11 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                 </div>
                 <div class="form-group">
                     <label>Semester</label>
-                    <select name="semester" id="edit_semester" required>
-                        <option value="">Select Semester</option>
-                        <option value="1st">1st Semester</option>
-                        <option value="2nd">2nd Semester</option>
-                        <option value="summer">Summer</option>
-                    </select>
+                    <input type="text" name="semester" id="edit_semester" readonly style="background:var(--surface-alt);color:var(--text-label);cursor:not-allowed;">
                 </div>
                 <div class="form-group">
                     <label>School Year</label>
-                    <input type="text" name="school_year" id="edit_school_year" required>
+                    <input type="text" name="school_year" id="edit_school_year" readonly style="background:var(--surface-alt);color:var(--text-label);cursor:not-allowed;">
                 </div>
                 <div class="form-group">
                     <label>Max Students</label>

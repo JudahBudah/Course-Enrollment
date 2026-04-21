@@ -63,6 +63,7 @@ if ($action === 'assign_exam') {
     }
 
     $count = count($ids);
+    log_activity($con, 'Assigned exam schedule', 'applicant', $count . ' applicant(s) → ' . $date . ' ' . $time . ' @ ' . $location);
     header("Location: ../pages/admin/admin_applicants.php?exam_success=$count");
     die;
 }
@@ -75,6 +76,7 @@ if ($action === 'clear_exam') {
         mysqli_stmt_bind_param($upd, 'i', $aid);
         mysqli_stmt_execute($upd);
     }
+    log_activity($con, 'Cleared exam schedule', 'applicant', count($ids) . ' applicant(s)');
     header("Location: ../pages/admin/admin_applicants.php?exam_cleared=1");
     die;
 }

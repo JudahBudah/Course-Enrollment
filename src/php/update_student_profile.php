@@ -21,6 +21,15 @@ if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === 0) 
     }
 }
 
+// Photo-only update (profile picture change)
+if (!empty($_POST['photo_only']) && $profile_path) {
+    $stmt = mysqli_prepare($con, "UPDATE students SET profile_photo=? WHERE student_id=?");
+    mysqli_stmt_bind_param($stmt, "si", $profile_path, $user_id);
+    mysqli_stmt_execute($stmt);
+    header("Location: ../pages/student/student_account.php?msg=Profile photo updated");
+    die;
+}
+
 $first_name       = $_POST['first_name']       ?? '';
 $last_name        = $_POST['last_name']        ?? '';
 $middle_name      = $_POST['middle_name']      ?? '';
@@ -69,7 +78,7 @@ if ($profile_path) {
         $profile_path, $user_id
     );
 } else {
-    mysqli_stmt_bind_param($stmt, "sssssssssssssssssssssssssssi",
+    mysqli_stmt_bind_param($stmt, "ssssssssssssssssssssssssssi",
         $first_name, $last_name, $middle_name, $suffix_name, $lrn,
         $email, $contact, $birth, $birth_place, $sex,
         $civil_status, $religion, $nationality, $disability,

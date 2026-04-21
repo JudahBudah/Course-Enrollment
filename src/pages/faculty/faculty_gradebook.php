@@ -10,19 +10,27 @@ $faculty = mysqli_fetch_assoc(mysqli_query($con,
 ));
 if (!$faculty) { session_destroy(); header("Location: faculty_login.php"); die; }
 
-// Get classes assigned to this faculty
-$classes = [];
+// Get classes assigned to this faculty - split current vs past
+$current_classes = [];
+$past_classes    = [];
 $cq = mysqli_query($con,
-    "SELECT c.class_id, c.section, c.semester, c.school_year,
+    "SELECT c.class_id, c.section, c.semester, c.school_year, c.grades_finalized,
             s.subject_code, s.subject_name
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
      WHERE c.faculty_id = $faculty_id
-     ORDER BY s.subject_code, c.section"
+     ORDER BY c.grades_finalized ASC, s.subject_code, c.section"
 );
-while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
+while ($r = mysqli_fetch_assoc($cq)) {
+    if ((int)$r['grades_finalized'] === 1) $past_classes[] = $r;
+    else $current_classes[] = $r;
+}
+$classes = array_merge($current_classes, $past_classes);
 
-$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($classes[0]['class_id'] ?? 0);
+$view_mode = $_GET['view'] ?? 'current';
+$display_classes = $view_mode === 'past' ? $past_classes : $current_classes;
+
+$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($display_classes[0]['class_id'] ?? 0);
 $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
@@ -37,7 +45,14 @@ if ($selected_class_id) {
          FROM enrollments e
          JOIN students s ON e.student_id = s.student_id
          LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
-         WHERE e.class_id = $selected_class_id AND e.status IN ('ongoing','confirmed')
+         WHERE e.class_id = $selected_class_id
+           AND e.status IN ('ongoing','confirmed')
+           AND e.enrollment_id = (
+               SELECT MAX(e2.enrollment_id) FROM enrollments e2
+               WHERE e2.student_id = e.student_id
+                 AND e2.class_id = $selected_class_id
+                 AND e2.status IN ('ongoing','confirmed')
+           )
          ORDER BY s.last_name, s.first_name"
     );
     while ($r = mysqli_fetch_assoc($q)) $rows[] = $r;
@@ -102,7 +117,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -141,6 +156,12 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                         </a>
                     </li>
                     <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
+                        </a>
+                    </li>
+                    <li>
                         <a href="faculty_profile.php">
                             <i class="fa-solid fa-user"></i>
                             <div class="li-name">Profile</div>
@@ -173,10 +194,22 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
 
     <main>
 
+        <!-- Current / Past toggle -->
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <a href="?view=current" class="sched-toggle-btn <?php echo $view_mode==='current'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-chalkboard"></i> Current Classes
+                <?php if (count($current_classes)): ?><span style="background:var(--maroon);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($current_classes); ?></span><?php endif; ?>
+            </a>
+            <a href="?view=past" class="sched-toggle-btn <?php echo $view_mode==='past'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-clock-rotate-left"></i> Past Classes
+                <?php if (count($past_classes)): ?><span style="background:var(--navy);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($past_classes); ?></span><?php endif; ?>
+            </a>
+        </div>
+
         <!-- Class Selector Card -->
         <div class="class-nav">
             <div class="class-nav-left">
-                <div class="class-nav-title">Gradebook</div>
+                <div class="class-nav-title">Gradebook <?php if($view_mode==='past'): ?><span style="font-size:.75rem;color:var(--text-label);font-weight:400;"> - Past / Finalized</span><?php endif; ?></div>
                 <?php if ($selected_class): ?>
                 <div class="class-meta">
                     <span class="class-meta-badge code" id="metaCode"><?php echo htmlspecialchars($selected_class['subject_code']); ?></span>
@@ -189,19 +222,20 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             </div>
             <div class="class-nav-right">
                 <form method="GET" id="classSelectForm">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view_mode); ?>">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
-                            <?php if (empty($classes)): ?>
-                                <option>No classes assigned</option>
+                            <?php if (empty($display_classes)): ?>
+                                <option>No classes found</option>
                             <?php else: ?>
-                                <?php foreach ($classes as $c): ?>
+                                <?php foreach ($display_classes as $c): ?>
                                 <option value="<?php echo $c['class_id']; ?>"
                                     data-code="<?php echo htmlspecialchars($c['subject_code']); ?>"
                                     data-section="<?php echo htmlspecialchars($c['section']); ?>"
                                     data-name="<?php echo htmlspecialchars($c['subject_name']); ?>"
                                     <?php echo $c['class_id'] == $selected_class_id ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($c['subject_code'] . ' — ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
+                                    <?php echo htmlspecialchars($c['subject_code'] . ' - ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
                                 </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -215,7 +249,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
         <!-- Empty State -->
         <div class="sched-empty">
             <i class="fa-solid fa-book"></i>
-            <span><?php echo empty($classes) ? 'No classes assigned to you yet.' : 'No enrolled students in this class.'; ?></span>
+            <span><?php echo empty($display_classes) ? 'No ' . ($view_mode==='past'?'past':'current') . ' classes found.' : 'No enrolled students in this class.'; ?></span>
         </div>
 
         <?php else: ?>
@@ -244,7 +278,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                 </div>
                 <div class="sched-stat-divider"></div>
                 <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo $avg_cg ?? '—'; ?></span>
+                    <span class="gb-stat-value"><?php echo $avg_cg ?? '-'; ?></span>
                     <span class="gb-stat-label">Class Avg</span>
                 </div>
             </div>
@@ -252,7 +286,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                 <div class="cl-search-wrapper">
                     <i class="fa-solid fa-magnifying-glass cl-search-icon"></i>
                     <input type="text" class="cl-search" id="gbSearch"
-                           placeholder="Search student…"
+                           placeholder="Search student-"
                            oninput="filterRows(this.value)">
                 </div>
                 <button class="btn-export" onclick="exportCSV()">
@@ -301,13 +335,13 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                         </span>
                         <span class="col-side"><?php echo $fullname; ?></span>
                         <span class="col-cg">
-                            <?php echo $cg !== null ? number_format($cg, 2) : '<span class="no-grade">—</span>'; ?>
+                            <?php echo $cg !== null ? number_format($cg, 2) : '<span class="no-grade">-</span>'; ?>
                         </span>
                         <span class="col-tg">
-                            <?php echo $tg ?? '<span class="no-grade">—</span>'; ?>
+                            <?php echo $tg ?? '<span class="no-grade">-</span>'; ?>
                         </span>
                         <span class="col-fg">
-                            <?php echo $pg ?? '<span class="no-grade">—</span>'; ?>
+                            <?php echo $pg ?? '<span class="no-grade">-</span>'; ?>
                         </span>
                         <span class="col-container">
                             <span class="col-remark <?php echo $rm; ?>">
@@ -339,7 +373,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
 
     <script src="../../js/faculty/faculty_main.js"></script>
     <script>
-        // ── Meta badge updater ───────────────────────────────────────────────
+        // -- Meta badge updater -----------------------------------------------
         const classSelect = document.getElementById('classSelect');
         if (classSelect) {
             classSelect.addEventListener('change', function () {
@@ -353,7 +387,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             });
         }
 
-        // ── Search filter ────────────────────────────────────────────────────
+        // -- Search filter ----------------------------------------------------
         function filterRows(q) {
             q = q.toLowerCase();
             const rows = document.querySelectorAll('.gb-row');
@@ -369,7 +403,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             if (cnt) cnt.innerHTML = 'Total Students: <strong>' + visible + '</strong>';
         }
 
-        // ── CSV Export ───────────────────────────────────────────────────────
+        // -- CSV Export -------------------------------------------------------
         function exportCSV() {
             const rows = document.querySelectorAll('.gb-row');
             const lines = [['#', 'Student No.', 'Full Name', 'Computed Grade', 'Transmuted Grade', 'Point Grade', 'Remarks']];

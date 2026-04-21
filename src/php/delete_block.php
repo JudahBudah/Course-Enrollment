@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("connection.php");
+include("admin_functions.php");
 
 if (!isset($_SESSION['admin_id'])) {
     header("Location: ../pages/admin/admin_login.php");
@@ -37,6 +38,7 @@ mysqli_query($con, "DELETE FROM block_subjects WHERE block_id = '$block_id'");
 $delete_query = "DELETE FROM blocks WHERE block_id = '$block_id'";
 
 if (mysqli_query($con, $delete_query)) {
+    log_activity($con, 'Deleted block', 'block', 'Block ID ' . $block_id);
     header("Location: ../pages/admin/admin_blocks.php?success=deleted");
 } else {
     header("Location: ../pages/admin/admin_blocks.php?error=delete_failed");

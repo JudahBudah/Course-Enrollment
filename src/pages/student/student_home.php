@@ -12,7 +12,7 @@
     // Profile photo fallback
     $profile_src = !empty($user_data['profile_photo']) 
         ? '../../' . $user_data['profile_photo'] 
-        : '../../assets/test/student-profile.webp';
+        : '../../uploads/default.jpg';
 
     // Student details
     $program              = htmlspecialchars($user_data['course'] ?? 'N/A');
@@ -275,6 +275,12 @@
                         <a href="student_grades.php">
                             <i class="fa-solid fa-book"></i>
                             <div class="li-name">Grades</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student_my_subjects.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div class="li-name">My Subjects</div>
                         </a>
                     </li>
                     <li class="course-dropdown">

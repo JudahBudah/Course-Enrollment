@@ -31,6 +31,7 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_faculty.php?error=insert_failed");
             die;
         }
+        log_activity($con, 'Added faculty', 'faculty', $first_name . ' ' . $last_name);
         header("Location: ../pages/admin/admin_faculty.php?success=added");
     } else {
         $faculty_id = (int) $_POST['faculty_id'];
@@ -40,6 +41,7 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_faculty.php?error=update_failed");
             die;
         }
+        log_activity($con, 'Updated faculty', 'faculty', $first_name . ' ' . $last_name);
         header("Location: ../pages/admin/admin_faculty.php?success=updated");
     }
     die;
@@ -52,6 +54,7 @@ if ($action === 'delete') {
     $stmt = mysqli_prepare($con, "DELETE FROM faculty WHERE faculty_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $faculty_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Deleted faculty', 'faculty', 'Faculty ID ' . $faculty_id);
     header("Location: ../pages/admin/admin_faculty.php?success=deleted");
     die;
 }
@@ -82,6 +85,7 @@ if ($action === 'assign_class') {
     $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id = ? WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "ii", $faculty_id, $class_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Assigned faculty to class', 'faculty', 'Faculty ID ' . $faculty_id . ' → Class ID ' . $class_id);
     header("Location: ../pages/admin/admin_faculty.php?success=assigned&faculty_id=$faculty_id");
     die;
 }
@@ -92,6 +96,7 @@ if ($action === 'unassign_class') {
     $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id = NULL WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $class_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Unassigned faculty from class', 'faculty', 'Faculty ID ' . $faculty_id . ' from Class ID ' . $class_id);
     header("Location: ../pages/admin/admin_faculty.php?success=unassigned&faculty_id=$faculty_id");
     die;
 }

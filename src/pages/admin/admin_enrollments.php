@@ -8,9 +8,11 @@ $admin_data = check_admin_login($con);
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM applicants WHERE application_status = 'pending'"))['c'];
 
 // Stats
-$total_students = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM students"))['c'];
 $total_enrolled = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(DISTINCT student_id) as c FROM enrollments WHERE status NOT IN ('dropped', 'cancelled')"))['c'];
-$pending_enrollment = $total_students - $total_enrolled;
+
+$cur_semester    = get_setting($con, 'current_semester', '1st');
+$cur_school_year = get_setting($con, 'current_school_year', date('Y') . '-' . (date('Y') + 1));
+$sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,6 +108,13 @@ $pending_enrollment = $total_students - $total_enrolled;
                         </a>
                     </li>
                     <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin_announcements.php">
                             <i class="fa-solid fa-bullhorn"></i>
                             <span class="li-name">Announcements</span>
@@ -157,6 +166,11 @@ $pending_enrollment = $total_students - $total_enrolled;
                     <p>Manage student enrollments for current semester</p>
                 </div>
 
+                <?php if (isset($_GET['success'])): ?>
+                    <?php $sm = ['drop_accepted' => 'Drop request approved.', 'drop_rejected' => 'Drop request rejected.']; ?>
+                    <div class="success-message"><i class="fa-solid fa-check-circle"></i> <?php echo $sm[$_GET['success']] ?? 'Done.'; ?></div>
+                <?php endif; ?>
+
                 <!-- Stats -->
                 <div class="stats-grid">
                     <div class="stat-card blue">
@@ -166,22 +180,90 @@ $pending_enrollment = $total_students - $total_enrolled;
                             <p class="stat-number"><?php echo number_format($total_enrolled); ?></p>
                         </div>
                     </div>
-                    <div class="stat-card gold">
-                        <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
-                        <div class="stat-content">
-                            <h3>Pending Enrollment</h3>
-                            <p class="stat-number"><?php echo number_format($pending_enrollment); ?></p>
-                        </div>
-                    </div>
                     <div class="stat-card navy">
                         <div class="stat-icon"><i class="fa-solid fa-calendar"></i></div>
-                        <div class="stat-content">
-                            <h3>Current Semester</h3>
-                            <p class="stat-number">2nd Sem</p>
-                            <small>AY 2024-2025</small>
+                        <div class="stat-content" style="display:flex;gap:1.5rem;align-items:center;flex:1;">
+                            <div style="flex:1;border-right:1px solid var(--off);padding-right:1.5rem;">
+                                <h3>Enrollment Period</h3>
+                                <p class="stat-number" style="font-size:1.4rem;"><?php echo htmlspecialchars($sem_labels[$cur_semester] ?? $cur_semester); ?></p>
+                            </div>
+                            <div style="flex:1;">
+                                <h3>School Year</h3>
+                                <p class="stat-number" style="font-size:1.4rem;">AY <?php echo htmlspecialchars($cur_school_year); ?></p>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Drop Requests -->
+                <?php
+                $drop_reqs = mysqli_query($con, "
+                    SELECT e.enrollment_id, e.class_id, e.student_id,
+                           st.first_name, st.last_name, st.student_number,
+                           s.subject_code, s.subject_name, s.units,
+                           c.section, c.schedule_day, c.schedule_time
+                    FROM enrollments e
+                    JOIN students st ON e.student_id = st.student_id
+                    JOIN classes c ON e.class_id = c.class_id
+                    JOIN subjects s ON c.subject_id = s.subject_id
+                    WHERE e.status = 'drop_requested'
+                    ORDER BY st.last_name, st.first_name
+                ");
+                if (mysqli_num_rows($drop_reqs) > 0):
+                ?>
+                <div class="card" style="margin-bottom:1.5rem;border-left:4px solid #dc2626;">
+                    <div class="card-header" style="background:#dc2626;">
+                        <h2><i class="fa-solid fa-right-from-bracket"></i> Pending Drop Requests</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Student No.</th>
+                                    <th>Subject</th>
+                                    <th>Section</th>
+                                    <th>Schedule</th>
+                                    <th>Units</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php while ($dr = mysqli_fetch_assoc($drop_reqs)): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($dr['first_name'] . ' ' . $dr['last_name']); ?></td>
+                                <td><?php echo htmlspecialchars($dr['student_number']); ?></td>
+                                <td><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong> — <?php echo htmlspecialchars($dr['subject_name']); ?></td>
+                                <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
+                                <td><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?></td>
+                                <td><?php echo $dr['units']; ?></td>
+                                <td>
+                                    <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
+                                        <input type="hidden" name="student_id" value="<?php echo $dr['student_id']; ?>">
+                                        <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                        <input type="hidden" name="class_id" value="<?php echo $dr['class_id']; ?>">
+                                        <input type="hidden" name="action" value="accept">
+                                        <input type="hidden" name="redirect" value="enrollments">
+                                        <button type="submit" class="btn-icon" style="background:#16a34a;color:#fff;" title="Approve" onclick="return confirm('Approve this drop request?')"><i class="fa-solid fa-check"></i></button>
+                                    </form>
+                                    <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
+                                        <input type="hidden" name="student_id" value="<?php echo $dr['student_id']; ?>">
+                                        <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                        <input type="hidden" name="action" value="reject">
+                                        <input type="hidden" name="redirect" value="enrollments">
+                                        <button type="submit" class="btn-icon danger" title="Reject" onclick="return confirm('Reject this drop request?')"><i class="fa-solid fa-xmark"></i></button>
+                                    </form>
+                                    <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <?php endif; ?>
 
                 <!-- Enrollments Table -->
                 <div class="card">
@@ -240,10 +322,8 @@ $pending_enrollment = $total_students - $total_enrolled;
                                     <td>
                                         <?php if (!empty($student['block_name'])): ?>
                                             <span class="badge blue"><?php echo htmlspecialchars($student['block_name']); ?></span>
-                                        <?php elseif (!empty($student['block_id'])): ?>
-                                            <span class="badge no-block">No Block</span>
                                         <?php else: ?>
-                                            <span class="badge incomplete">Irregular</span>
+                                            <span class="badge incomplete">No Block</span>
                                         <?php endif; ?>
                                     </td>
                                     <td><span class="enroll-count"><?php echo $enrolled_count; ?> subjects</span></td>

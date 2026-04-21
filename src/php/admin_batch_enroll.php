@@ -90,6 +90,8 @@ foreach ($students as $student_id) {
 }
 
 if ($enrolled_count > 0) {
+    log_activity($con, 'Batch enrolled students', 'enrollment',
+        count($students) . ' students in ' . $course . ' Y' . $year_level . ' ' . $semester . ' ' . $school_year . ' (' . $enrolled_count . ' enrollments)');
     header("Location: ../pages/admin/admin_batch_enroll.php?success=1&enrolled=$enrolled_count");
 } else {
     header("Location: ../pages/admin/admin_batch_enroll.php?error=enroll_failed");

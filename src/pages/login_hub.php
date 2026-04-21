@@ -497,55 +497,20 @@ $subs = [
         };
 
         function switchPortal(key) {
-        const cfg = portalConfig[key];
-        if (!cfg) return;
-
-        document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
-        document.querySelector(`.portal-tab[data-portal="${key}"]`).classList.add('active');
-        document.getElementById('portal-input').value = key;
-
-        const idInput  = document.getElementById('identifier');
-        const idLabel  = document.getElementById('id-label');
-        const idIcon   = document.getElementById('id-icon');
-        if (idLabel) idLabel.textContent = cfg.idLabel;
-        if (idInput) { idInput.placeholder = cfg.idPlaceholder; idInput.type = cfg.idType; idInput.value = ''; }
-        if (idIcon)  idIcon.className = 'field-icon fa-solid ' + cfg.idIcon;
-
-        // Animate heading
-        const h2 = document.querySelector('.login-card-header h2');
-        if (h2) {
-            h2.classList.remove('anim-fade-up');
-            void h2.offsetWidth; // reflow to restart animation
-            h2.innerHTML = cfg.heading;
-            h2.classList.add('anim-fade-up');
+            const cfg = portalConfig[key];
+            if (!cfg) return;
+            document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.portal-tab[data-portal="${key}"]`).classList.add('active');
+            document.getElementById('portal-input').value = key;
+            const idInput = document.getElementById('identifier');
+            const idLabel = document.getElementById('id-label');
+            const idIcon  = document.getElementById('id-icon');
+            if (idLabel) idLabel.textContent = cfg.idLabel;
+            if (idInput) { idInput.placeholder = cfg.idPlaceholder; idInput.type = cfg.idType; idInput.value = ''; }
+            if (idIcon)  idIcon.className = 'field-icon fa-solid ' + cfg.idIcon;
+            document.querySelector('.login-card-header h2').innerHTML  = cfg.heading;
+            document.querySelector('.login-card-header p').textContent = cfg.sub;
         }
-
-        // Animate subheading (with slight delay)
-        const sub = document.querySelector('.login-card-header p');
-        if (sub) {
-            sub.classList.remove('anim-fade-up');
-            void sub.offsetWidth;
-            sub.textContent = cfg.sub;
-            sub.style.animationDelay = '0.07s';
-            sub.classList.add('anim-fade-up');
-        }
-
-        // Animate brand subtitle (left panel)
-        const brandSub = document.getElementById('brand-sub');
-        if (brandSub) {
-            brandSub.classList.remove('anim-fade-left');
-            void brandSub.offsetWidth;
-            brandSub.textContent = cfg.brandSub;
-            brandSub.classList.add('anim-fade-left');
-        }
-
-        // Animate field label
-        if (idLabel) {
-            idLabel.classList.remove('anim-fade-up');
-            void idLabel.offsetWidth;
-            idLabel.classList.add('anim-fade-up');
-        }
-    }
 
         document.querySelectorAll('.portal-tab').forEach(tab => {
             tab.addEventListener('click', () => {

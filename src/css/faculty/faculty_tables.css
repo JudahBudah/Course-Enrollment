@@ -478,7 +478,7 @@ select:focus {
 .sec-table-header,
 .sec-row {
     display: grid;
-    grid-template-columns: 40px 130px 1fr 1fr 120px 120px;
+    grid-template-columns: 40px 130px 1fr 1fr 110px 110px 100px 120px;
     align-items: center;
     gap: 12px;
     padding: 11px 20px 11px 10px;

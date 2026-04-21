@@ -23,6 +23,7 @@ if ($action === 'add') {
     if (!mysqli_stmt_execute($stmt)) {
         header("Location: ../pages/admin/admin_accounts.php?error=duplicate"); die;
     }
+    log_activity($con, 'Created admin account', 'admin', $username . ' (' . $role . ')');
     header("Location: ../pages/admin/admin_accounts.php?success=added"); die;
 }
 
@@ -51,6 +52,7 @@ if ($action === 'edit') {
         mysqli_stmt_execute($ps);
     }
 
+    log_activity($con, 'Updated admin account', 'admin', $username);
     header("Location: ../pages/admin/admin_accounts.php?success=updated"); die;
 }
 
@@ -62,6 +64,7 @@ if ($action === 'delete') {
         header("Location: ../pages/admin/admin_accounts.php?error=self_delete"); die;
     }
     mysqli_query($con, "DELETE FROM admins WHERE admin_id = $id");
+    log_activity($con, 'Deleted admin account', 'admin', 'Admin ID ' . $id);
     header("Location: ../pages/admin/admin_accounts.php?success=deleted"); die;
 }
 

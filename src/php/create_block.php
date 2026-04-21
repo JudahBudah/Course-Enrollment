@@ -9,9 +9,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $block_name   = trim($_POST['block_name']);
     $course       = trim($_POST['course']);
     $year_level   = trim($_POST['year_level']);
-    $semester     = trim($_POST['semester']);
-    $school_year  = trim($_POST['school_year']);
     $max_students = (int)$_POST['max_students'];
+    // Always use system settings for semester and school year
+    $semester    = get_setting($con, 'current_semester', '1st');
+    $school_year = get_setting($con, 'current_school_year', date('Y') . '-' . (date('Y') + 1));
 
     if (!$block_name || !$course || !$year_level || !$semester || !$school_year || !$max_students) {
         header("Location: ../pages/admin/admin_blocks.php?error=missing_fields");
@@ -35,9 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         "INSERT INTO blocks (block_name, course, year_level, semester, school_year, max_students, current_students, status)
          VALUES (?, ?, ?, ?, ?, ?, 0, 'active')"
     );
-    mysqli_stmt_bind_param($stmt, 'ssssssi', $block_name, $course, $year_level, $semester, $school_year, $max_students);
+    mysqli_stmt_bind_param($stmt, 'sssssi', $block_name, $course, $year_level, $semester, $school_year, $max_students);
 
     if (mysqli_stmt_execute($stmt)) {
+        log_activity($con, 'Created block', 'block', $block_name . ' — ' . $course . ' ' . $year_level . ' ' . $semester);
         header("Location: ../pages/admin/admin_blocks.php?success=created");
     } else {
         header("Location: ../pages/admin/admin_blocks.php?error=failed");

@@ -88,6 +88,17 @@ if (mysqli_stmt_num_rows($check2) > 0) {
     json_out(['success' => false, 'error' => 'This applicant is already a student.']);
 }
 
+// Check if LRN already exists as student
+if (!empty($applicant['lrn'])) {
+    $check3 = mysqli_prepare($con, "SELECT student_id FROM students WHERE lrn = ?");
+    mysqli_stmt_bind_param($check3, "s", $applicant['lrn']);
+    mysqli_stmt_execute($check3);
+    mysqli_stmt_store_result($check3);
+    if (mysqli_stmt_num_rows($check3) > 0) {
+        json_out(['success' => false, 'error' => 'A student with this LRN already exists.']);
+    }
+}
+
 // Ensure extended columns exist before inserting
 $ensure_cols = [
     "lrn VARCHAR(20)",
@@ -244,5 +255,11 @@ $email_body = "
 </html>
 ";
 mailer_send($applicant['email'], 'Your PLM Student Account Credentials', $email_body, ['is_html' => true]);
+
+// Log the conversion
+if (function_exists('log_activity')) {
+    log_activity($con, 'Converted applicant to student', 'student',
+        $applicant['first_name'] . ' ' . $applicant['last_name'] . ' → ' . $student_number);
+}
 
 json_out(['success' => true, 'message' => 'Applicant successfully converted to student!']);

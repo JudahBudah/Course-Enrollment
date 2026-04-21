@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Pragma: no-cache");
@@ -15,7 +15,6 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 $total_faculty      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM faculty WHERE status = 'active'"))['count'];
 $total_subjects     = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM subjects WHERE status = 'active'"))['count'];
 $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM classes WHERE status IN ('open', 'closed')"))['count'];
-$total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM enrollments WHERE status IN ('reserved', 'confirmed', 'ongoing')"))['count'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -130,6 +129,13 @@ $total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                         </a>
                     </li>
                     <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin_announcements.php">
                             <i class="fa-solid fa-bullhorn"></i>
                             <span class="li-name">Announcements</span>
@@ -223,13 +229,6 @@ $total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                             <p class="stat-number"><?php echo number_format($total_classes); ?></p>
                         </div>
                     </div>
-                    <div class="stat-card teal">
-                        <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
-                        <div class="stat-content">
-                            <h3>Enrollments</h3>
-                            <p class="stat-number"><?php echo number_format($total_enrollments); ?></p>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Content grid: recent applicants + quick actions -->
@@ -305,35 +304,11 @@ $total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                 <div class="card">
                     <div class="card-header">
                         <h2>System Activity</h2>
+                        <span class="activity-live"><i class="fa-solid fa-circle"></i> Live</span>
                     </div>
-                    <div class="activity-list">
-                        <div class="activity-item">
-                            <div class="activity-icon blue"><i class="fa-solid fa-user-plus"></i></div>
-                            <div class="activity-content">
-                                <p><strong>New applicant registered</strong></p>
-                                <small>2 hours ago</small>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon green"><i class="fa-solid fa-check-circle"></i></div>
-                            <div class="activity-content">
-                                <p><strong>Student enrollment approved</strong></p>
-                                <small>5 hours ago</small>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon gold"><i class="fa-solid fa-book"></i></div>
-                            <div class="activity-content">
-                                <p><strong>New subject added to curriculum</strong></p>
-                                <small>1 day ago</small>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon red"><i class="fa-solid fa-bullhorn"></i></div>
-                            <div class="activity-content">
-                                <p><strong>Announcement posted</strong></p>
-                                <small>2 days ago</small>
-                            </div>
+                    <div class="activity-list" id="activityList">
+                        <div style="padding:2rem;text-align:center;color:var(--text-label);">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Loading...
                         </div>
                     </div>
                 </div>
@@ -346,5 +321,56 @@ $total_enrollments  = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
     <script src="../../js/admin/admin_home.js"></script>
     <script src="../../js/no_cache.js"></script>
     <script src="../../js/plm_loader.js"></script>
+    <script>
+    const ICON_MAP = {
+        'fa-right-to-bracket': 'blue',
+        'fa-door-open':        'purple',
+        'fa-book':             'gold',
+        'fa-bullhorn':         'red',
+        'fa-chalkboard-user':  'teal',
+        'fa-users':            'blue',
+        'fa-file-lines':       'green',
+        'fa-layer-group':      'navy',
+        'fa-user-shield':      'red',
+        'fa-calendar-days':    'gold',
+        'fa-user-plus':        'gold',
+        'fa-circle-info':      'blue',
+    };
+
+    function esc(str) {
+        const d = document.createElement('div');
+        d.textContent = str || '';
+        return d.innerHTML;
+    }
+
+    function renderActivity(items) {
+        const list = document.getElementById('activityList');
+        if (!items.length) {
+            list.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--text-label);">No activity logged yet.</div>';
+            return;
+        }
+        list.innerHTML = items.map(item => {
+            const detail = item.detail ? `<span class="activity-detail">${esc(item.detail)}</span>` : '';
+            const by     = item.by    ? `<span class="activity-by">by ${esc(item.by)}</span>` : '';
+            return `<div class="activity-item">
+                <div class="activity-icon ${esc(item.color)}"><i class="fa-solid ${esc(item.icon)}"></i></div>
+                <div class="activity-content">
+                    <p><strong>${esc(item.action)}</strong>${detail}</p>
+                    <small>${esc(item.ago)}${by}</small>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function fetchActivity() {
+        fetch('../../php/admin_activity_feed.php')
+            .then(r => r.json())
+            .then(renderActivity)
+            .catch(() => {});
+    }
+
+    fetchActivity();
+    setInterval(fetchActivity, 30000);
+    </script>
 </body>
 </html>

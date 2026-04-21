@@ -18,8 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (mysqli_query($con, "UPDATE students SET block_id = NULL WHERE student_id = $student_id")) {
-        // Recalculate actual count from DB instead of decrementing
         mysqli_query($con, "UPDATE blocks SET current_students = (SELECT COUNT(*) FROM students WHERE block_id = $block_id) WHERE block_id = $block_id");
+        log_activity($con, 'Removed student from block', 'block',
+            ($student ? 'Student ' . $student_id : 'Student ' . $student_id) . ' from Block ID ' . $block_id);
 
         $semester    = $block['school_year'];
         $sem_num     = ($block['semester'] === '1st') ? 1 : (($block['semester'] === '2nd') ? 2 : 0);

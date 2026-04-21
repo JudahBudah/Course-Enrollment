@@ -38,7 +38,7 @@ $mail_zipcode      = htmlspecialchars($user_data['mail_zipcode']      ?? '');
 $profile_photo  = $user_data['profile_photo'] ?? '';
 $profile_src    = $profile_photo
     ? '../../' . $profile_photo
-    : '../../assets/test/student-profile.webp';
+    : '../../uploads/default.jpg';
 
 // Fetch curriculum URL for the student's course
 $curriculum_url = '';
@@ -107,6 +107,12 @@ $curriculum_url = $course_info['curriculum_url'] ?? '';
                         <a href="student_grades.php">
                             <i class="fa-solid fa-book"></i>
                             <div class="li-name">Grades</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="student_my_subjects.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div class="li-name">My Subjects</div>
                         </a>
                     </li>
                     <li class="course-dropdown">

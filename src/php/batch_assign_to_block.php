@@ -78,6 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if ($assigned_count > 0) {
+        log_activity($con, 'Batch assigned students to block', 'block',
+            $assigned_count . ' students → ' . $block['block_name']);
         header("Location: ../pages/admin/admin_block_students.php?block_id=$block_id&success=batch&count=$assigned_count");
     } else {
         header("Location: ../pages/admin/admin_block_students.php?block_id=$block_id&error=no_students");

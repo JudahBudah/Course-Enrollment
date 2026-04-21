@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
@@ -165,6 +165,13 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                         </a>
                     </li>
                     <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin_announcements.php">
                             <i class="fa-solid fa-bullhorn"></i>
                             <span class="li-name">Announcements</span>
@@ -251,6 +258,8 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                     <option value="2" <?php echo $year_filter==='2'?'selected':''; ?>>2nd Year</option>
                                     <option value="3" <?php echo $year_filter==='3'?'selected':''; ?>>3rd Year</option>
                                     <option value="4" <?php echo $year_filter==='4'?'selected':''; ?>>4th Year</option>
+                                    <option value="5" <?php echo $year_filter==='5'?'selected':''; ?>>5th Year</option>
+                                    <option value="6" <?php echo $year_filter==='6'?'selected':''; ?>>6th Year</option>
                                 </select>
                                 <select name="course" class="dept-select" onchange="this.form.submit()">
                                     <option value="">All Courses</option>
@@ -493,6 +502,8 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                             <option value="2">2nd Year</option>
                             <option value="3">3rd Year</option>
                             <option value="4">4th Year</option>
+                            <option value="5">5th Year</option>
+                            <option value="6">6th Year</option>
                         </select>
                     </div>
                     <div class="form-group">

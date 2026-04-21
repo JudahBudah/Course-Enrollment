@@ -154,28 +154,56 @@ function updateStatus(id) {
 
 /* ── Convert modal ─────────────────────────────────────── */
 
-function openConvertModal(id, name, course) {
+function openConvertModal(id, name, choice1, choice2, choice3) {
   document.getElementById("convert_applicant_id").value = id;
   document.getElementById("convertName").textContent = name;
+
+  // Render program choices
+  const choices = [
+    { label: "1st Choice", value: choice1 },
+    { label: "2nd Choice", value: choice2 },
+    { label: "3rd Choice", value: choice3 },
+  ].filter(c => c.value);
+  document.getElementById("convertChoices").innerHTML = choices.length ? `
+    <div class="convert-choices-box">
+      <p class="convert-choices-title"><i class="fa-solid fa-list-ol"></i> Program Choices</p>
+      ${choices.map((c, i) => `
+        <div class="convert-choice-row">
+          <span class="convert-choice-label">${c.label}</span>
+          <button type="button" class="convert-choice-btn" onclick="applyChoice('${c.value.replace(/'/g, "\\'")}')"
+                  title="Use this choice">${c.value}</button>
+        </div>`).join('')}
+    </div>` : '';
+
+  // Pre-select first choice in course dropdown
   const courseSelect = document.getElementById("convert_course");
+  courseSelect.value = "";
+  document.getElementById("convert_college").value = "";
   for (const opt of courseSelect.options) {
-    if (opt.value === course) {
+    if (opt.value === choice1) {
       opt.selected = true;
-      document.getElementById("convert_college").value =
-        opt.dataset.college || "";
+      document.getElementById("convert_college").value = opt.dataset.college || "";
       break;
     }
   }
   document.getElementById("convertModal").style.display = "block";
 }
 
-document
-  .getElementById("convert_course")
-  .addEventListener("change", function () {
-    const selected = this.options[this.selectedIndex];
-    document.getElementById("convert_college").value =
-      selected.dataset.college || "";
-  });
+function applyChoice(courseName) {
+  const courseSelect = document.getElementById("convert_course");
+  for (const opt of courseSelect.options) {
+    if (opt.value === courseName) {
+      opt.selected = true;
+      document.getElementById("convert_college").value = opt.dataset.college || "";
+      return;
+    }
+  }
+}
+
+document.getElementById("convert_course").addEventListener("change", function () {
+  const selected = this.options[this.selectedIndex];
+  document.getElementById("convert_college").value = selected.dataset.college || "";
+});
 
 // Handle convert form submission
 document.getElementById("convertForm").addEventListener("submit", function (e) {
@@ -198,7 +226,7 @@ document.getElementById("convertForm").addEventListener("submit", function (e) {
       if (data.success) {
         alert(data.message);
         document.getElementById("convertModal").style.display = "none";
-        location.reload();
+        location.href = '?filter=enrolled';
       } else {
         alert(data.error);
       }

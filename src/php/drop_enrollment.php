@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         mysqli_query($con, "UPDATE students SET status = '$new_status' WHERE student_id = $student_id");
         
         header("Location: ../pages/admin/admin_manual_enroll.php?student_id=$student_id&success=dropped&t=" . time());
+        log_activity($con, 'Dropped enrollment', 'enrollment', 'Enrollment ID ' . $enrollment_id . ' — Student ID ' . $student_id);
     } else {
         error_log("Drop enrollment failed: " . mysqli_error($con));
         mysqli_stmt_close($stmt);

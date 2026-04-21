@@ -12,6 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $query = "DELETE FROM block_subjects WHERE block_id = $block_id AND class_id = $class_id";
 
     if (mysqli_query($con, $query)) {
+        log_activity($con, 'Removed subject from block', 'block', 'Block ID ' . $block_id . ' → Class ID ' . $class_id);
         header("Location: ../pages/admin/admin_block_subjects.php?block_id=$block_id&success=removed");
     } else {
         header("Location: ../pages/admin/admin_block_subjects.php?block_id=$block_id&error=failed");

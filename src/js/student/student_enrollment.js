@@ -56,6 +56,7 @@ document.querySelectorAll('.btn-select-sched').forEach(btn => {
         classes.forEach(cls => {
             const slotsLeft = cls.max_slots - cls.enrolled_count;
             const isFull    = slotsLeft <= 0;
+            const semLabel  = {'1st':'1st Semester','2nd':'2nd Semester','summer':'Summer'}[cls.semester] || cls.semester || '';
             const card      = document.createElement('div');
             card.className  = 'sched-option' + (isFull ? ' sched-full' : '');
             card.innerHTML  = `
@@ -65,6 +66,7 @@ document.querySelectorAll('.btn-select-sched').forEach(btn => {
                         <span><i class="fa-solid fa-clock"></i> ${cls.schedule_day} ${cls.schedule_time}</span>
                         ${cls.room ? `<span><i class="fa-solid fa-door-open"></i> ${cls.room}</span>` : ''}
                         <span><i class="fa-solid fa-chalkboard-user"></i> ${cls.faculty_name || 'TBA'}</span>
+                        ${cls.semester ? `<span><i class="fa-solid fa-calendar"></i> ${semLabel}${cls.school_year ? ' ' + cls.school_year : ''}</span>` : ''}
                     </div>
                 </div>
                 <div class="sched-option-slots ${isFull ? 'slots-full' : 'slots-open'}">

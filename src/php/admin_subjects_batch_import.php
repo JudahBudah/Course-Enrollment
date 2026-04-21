@@ -40,7 +40,7 @@ foreach ($lines as $line) {
     $semester = trim($parts[8]);
     $prerequisite = isset($parts[9]) ? trim($parts[9]) : '';
     
-    if (empty($course_code) || empty($subject_code) || empty($subject_name) || $units <= 0) {
+    if (empty($course_code) || empty($subject_code) || empty($subject_name)) {
         $errors[] = "Missing required fields: $line";
         continue;
     }
@@ -93,6 +93,7 @@ foreach ($lines as $line) {
 }
 
 if ($imported > 0) {
+    log_activity($con, 'Batch imported subjects', 'subject', $imported . ' imported' . ($skipped > 0 ? ', ' . $skipped . ' skipped' : ''));
     $msg = "success=1&count=$imported";
     if ($skipped > 0) $msg .= "&skipped=$skipped";
     header("Location: ../pages/admin/admin_subjects_batch_import.php?$msg");

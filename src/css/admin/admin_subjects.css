@@ -196,7 +196,7 @@
 
 
 .card-header .btn-import {
-    background: var(--red);
+    background: var(--red-dk);
     color: var(--white);
     font-weight: 700;
 }

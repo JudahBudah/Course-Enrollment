@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
@@ -141,6 +141,13 @@ $available_query = mysqli_query($con, "
                         <a href="admin_enrollments.php">
                             <i class="fa-solid fa-file-lines"></i>
                             <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
                         </a>
                     </li>
                     <li>

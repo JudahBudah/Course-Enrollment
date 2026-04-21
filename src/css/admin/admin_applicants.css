@@ -188,6 +188,13 @@
     color: #dc2626;
 }
 
+/* ── Modal filter select (light style for convert modal) ─ */
+
+.modal-filter-select {
+    cursor: pointer;
+}
+
+
 /* ── Modals (wide exam + convert + status) ─────────────── */
 
 .modal-content.exam-modal  { 
@@ -305,6 +312,63 @@
 /* Convert modal applicant name highlight */
 .convert-name {
     font-weight: 700;
+    color: var(--red);
+}
+
+/* Program choices reference box */
+.convert-choices-box {
+    background: rgba(212,175,55,0.07);
+    border: 1px solid rgba(212,175,55,0.25);
+    border-left: 3px solid var(--gold, #D4AF37);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.convert-choices-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--gold, #D4AF37);
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.convert-choice-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0;
+}
+
+.convert-choice-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-label);
+    white-space: nowrap;
+    min-width: 70px;
+}
+
+.convert-choice-btn {
+    flex: 1;
+    text-align: left;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--off);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    padding: 0.3rem 0.65rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.convert-choice-btn:hover {
+    background: rgba(140,28,36,0.1);
+    border-color: var(--red);
     color: var(--red);
 }
 

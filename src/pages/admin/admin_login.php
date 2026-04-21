@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../../php/connection.php");
+include("../../php/admin_functions.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $username = $_POST['username'];
@@ -16,7 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $admin_data = mysqli_fetch_assoc($result);
             
             if (password_verify($password, $admin_data['password'])) {
-                $_SESSION['admin_id'] = $admin_data['admin_id'];
+                $_SESSION['admin_id']       = $admin_data['admin_id'];
+                $_SESSION['admin_username'] = $admin_data['username'];
+                $_SESSION['admin_role']     = $admin_data['role'] ?? 'admin';
+                log_activity($con, 'Admin logged in', 'auth', $admin_data['username']);
                 header("Location: admin_home.php");
                 die;
             }

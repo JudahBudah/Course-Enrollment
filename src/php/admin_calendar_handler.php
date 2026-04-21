@@ -50,6 +50,7 @@ if ($action === 'add') {
     $stmt = mysqli_prepare($con, "INSERT INTO calendar_events (title, description, event_date, end_date, event_time, color, audience, image, created_by) VALUES (?,?,?,?,?,?,?,?,?)");
     mysqli_stmt_bind_param($stmt, 'ssssssssi', $title, $desc, $date, $end_date, $time, $color, $audience, $image, $admin_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Added calendar event', 'calendar', $title . ' (' . $date . ')');
     header("Location: ../pages/admin/admin_calendar.php?success=added");
     die;
 }
@@ -78,6 +79,7 @@ if ($action === 'edit') {
         mysqli_stmt_bind_param($stmt, 'sssssssi', $title, $desc, $date, $end_date, $time, $color, $audience, $id);
     }
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Updated calendar event', 'calendar', $title);
     header("Location: ../pages/admin/admin_calendar.php?success=updated");
     die;
 }
@@ -87,6 +89,7 @@ if ($action === 'delete') {
     $old = mysqli_fetch_assoc(mysqli_query($con, "SELECT image FROM calendar_events WHERE event_id=$id"));
     if (!empty($old['image'])) @unlink($upload_dir . $old['image']);
     mysqli_query($con, "DELETE FROM calendar_events WHERE event_id=$id");
+    log_activity($con, 'Deleted calendar event', 'calendar', 'Event ID ' . $id);
     header("Location: ../pages/admin/admin_calendar.php?success=deleted");
     die;
 }

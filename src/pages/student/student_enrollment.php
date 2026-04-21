@@ -5,6 +5,7 @@ header("Pragma: no-cache");
 
 require_once '../../php/connection.php';
 require_once '../../php/functions.php';
+require_once '../../php/admin_functions.php';
 
 if (!isset($_SESSION['student_number'])) {
     header('Location: ../../php/student_logout.php');
@@ -24,7 +25,12 @@ if (!$student) {
 
 $student_id     = $student['student_id'];
 $student_course = $student['course'] ?? '';
-$block_semester = $student['semester'] ?? null; // '1st', '2nd', 'summer' — from joined blocks table
+$block_semester = $student['semester'] ?? null;
+
+// System current semester — used to restrict enrollment
+require_once '../../php/admin_functions.php';
+$cur_semester       = get_setting($con, 'current_semester', '');
+$effective_semester = $cur_semester;
 
 // Get course_id — match against both course_name and course_code
 $course_id = null;
@@ -48,95 +54,211 @@ if ($course_id) {
     }
 }
 
-// Get student's grades keyed by subject_id
+// Get student's grades keyed by subject_id (latest grade)
 $grades = [];
+$all_grades_by_subject = []; // all grades per subject for retake display
 $stmt = mysqli_prepare($con, "SELECT subject_id, grade, status FROM grades WHERE student_id = ? ORDER BY grade_id DESC");
 mysqli_stmt_bind_param($stmt, "i", $student_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 while ($row = mysqli_fetch_assoc($result)) {
     if (!isset($grades[$row['subject_id']])) $grades[$row['subject_id']] = $row;
+    $all_grades_by_subject[$row['subject_id']][] = $row;
 }
 
-// Build set of failed subject codes (used to lock dependent subjects)
+// Build set of failed and passed subject codes
+// Check both finalized grades table AND pending grade_entries
 $failed_codes = [];
+$passed_codes = [];
 foreach ($grades as $g) {
+    $sc = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = {$g['subject_id']}"));
+    if (!$sc) continue;
     if ($g['grade'] === '5.00' || strtoupper($g['grade']) === 'INC') {
-        // Get subject code for this subject_id
-        $sc = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = {$g['subject_id']}"));
-        if ($sc) $failed_codes[] = $sc['subject_code'];
+        $failed_codes[] = $sc['subject_code'];
+    } elseif ($g['grade'] !== null && $g['grade'] !== '') {
+        $passed_codes[] = $sc['subject_code'];
     }
 }
 
-// Auto-detect and update irregular status if student has any failed subject
+// Also check grade_entries (submitted but not yet finalized)
+$ge_stmt = mysqli_prepare($con, "
+    SELECT ge.computed_grade, s.subject_code
+    FROM grade_entries ge
+    JOIN enrollments e ON ge.enrollment_id = e.enrollment_id
+    JOIN classes c ON e.class_id = c.class_id
+    JOIN subjects s ON c.subject_id = s.subject_id
+    WHERE ge.student_id = ?
+");
+mysqli_stmt_bind_param($ge_stmt, 'i', $student_id);
+mysqli_stmt_execute($ge_stmt);
+$ge_result = mysqli_stmt_get_result($ge_stmt);
+while ($ge = mysqli_fetch_assoc($ge_result)) {
+    $code = $ge['subject_code'];
+    // Only use grade_entries if not already in finalized grades
+    if (in_array($code, $failed_codes) || in_array($code, $passed_codes)) continue;
+    // computed_grade < 70 transmutes to 5.00 (failing)
+    if ($ge['computed_grade'] !== null) {
+        if ((float)$ge['computed_grade'] < 70) {
+            $failed_codes[] = $code;
+        } else {
+            $passed_codes[] = $code;
+        }
+    }
+}
+mysqli_stmt_close($ge_stmt);
+
+// If a subject was failed then retaken and passed, remove it from failed_codes
+$failed_codes = array_values(array_diff($failed_codes, $passed_codes));
 $is_irregular = !empty($failed_codes) || ($student['registration_status'] ?? 'Regular') === 'Irregular';
 if (!empty($failed_codes) && ($student['registration_status'] ?? 'Regular') !== 'Irregular') {
     mysqli_query($con, "UPDATE students SET registration_status = 'Irregular' WHERE student_id = $student_id");
     $student['registration_status'] = 'Irregular';
 }
 
-// Get currently active enrollments (reserved, confirmed, ongoing) keyed by subject_id
+$cur_school_year = get_setting($con, 'current_school_year', '');
+
+// Build set of year levels the student has touched (has grades or active enrollments in)
+$student_year = (int)($student['year_level'] ?? 1);
+$touched_years = [$student_year];
+if ($is_irregular) {
+    // Include years where the student has any grade
+    $ty_res = mysqli_query($con, "
+        SELECT DISTINCT s.year_level FROM grades g
+        JOIN subjects s ON g.subject_id = s.subject_id
+        WHERE g.student_id = $student_id AND s.year_level IS NOT NULL
+    ");
+    while ($ty = mysqli_fetch_assoc($ty_res)) {
+        $touched_years[] = (int)$ty['year_level'];
+    }
+    // Include years where the student has any active enrollment
+    $te_res = mysqli_query($con, "
+        SELECT DISTINCT s.year_level FROM enrollments e
+        JOIN classes c ON e.class_id = c.class_id
+        JOIN subjects s ON c.subject_id = s.subject_id
+        WHERE e.student_id = $student_id
+          AND e.status IN ('confirmed','ongoing','drop_requested','completed')
+          AND s.year_level IS NOT NULL
+    ");
+    while ($te = mysqli_fetch_assoc($te_res)) {
+        $touched_years[] = (int)$te['year_level'];
+    }
+    $touched_years = array_unique($touched_years);
+}
 $active_enrollments = [];
-$stmt = mysqli_prepare($con, "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id FROM enrollments e JOIN classes c ON e.class_id = c.class_id WHERE e.student_id = ? AND e.status IN ('reserved','confirmed','ongoing','drop_requested')");
-mysqli_stmt_bind_param($stmt, "i", $student_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-while ($row = mysqli_fetch_assoc($result)) {
+if ($is_irregular) {
+    $ae_stmt = mysqli_prepare($con,
+        "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id
+         FROM enrollments e
+         JOIN classes c ON e.class_id = c.class_id
+         WHERE e.student_id = ? AND e.status IN ('confirmed','drop_requested')"
+    );
+    mysqli_stmt_bind_param($ae_stmt, "i", $student_id);
+} else {
+    $ae_stmt = mysqli_prepare($con,
+        "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id
+         FROM enrollments e
+         JOIN classes c ON e.class_id = c.class_id
+         WHERE e.student_id = ? AND e.status IN ('confirmed','drop_requested')
+           AND c.semester = ? AND c.school_year = ?"
+    );
+    mysqli_stmt_bind_param($ae_stmt, "iss", $student_id, $cur_semester, $cur_school_year);
+}
+mysqli_stmt_execute($ae_stmt);
+$ae_result = mysqli_stmt_get_result($ae_stmt);
+while ($row = mysqli_fetch_assoc($ae_result)) {
     $active_enrollments[$row['subject_id']] = $row;
 }
+mysqli_stmt_close($ae_stmt);
 
 // Get available classes per subject for the modal (keyed by subject_id)
-// Only show classes matching the student's current block semester
 $available_classes = [];
 if ($course_id) {
-    $sem_filter = $block_semester ? "AND c.semester = '" . mysqli_real_escape_string($con, $block_semester) . "'" : '';
     $stmt = mysqli_prepare($con, "
-        SELECT c.class_id, c.subject_id, c.section, c.schedule_day, c.schedule_time, c.room, c.max_slots, c.enrolled_count,
+        SELECT c.class_id, c.subject_id, c.section, c.schedule_day, c.schedule_time, c.room, c.max_slots, c.enrolled_count, c.semester,
                CONCAT(f.first_name, ' ', f.last_name) as faculty_name
         FROM classes c
         JOIN subjects s ON c.subject_id = s.subject_id
         LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
-        WHERE c.status = 'open' AND s.course_id = ? $sem_filter
+        WHERE c.status = 'open' AND s.course_id = ?
         ORDER BY c.subject_id, c.section
     ");
     mysqli_stmt_bind_param($stmt, "i", $course_id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
+        // For irregular students, show all open classes regardless of semester
+        // For regular students, only show classes matching the current semester
+        if (!$is_irregular && !empty($effective_semester) && $row['semester'] !== $effective_semester) continue;
         $available_classes[$row['subject_id']][] = $row;
     }
 }
 
-// Fetch current enrolled subjects — exclude completed (grade given)
-$stmt = mysqli_prepare($con, "
-    SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
-           c.class_id, c.schedule_day, c.schedule_time, c.room, c.section,
-           CONCAT(f.first_name, ' ', f.last_name) as faculty_name
-    FROM enrollments e
-    JOIN classes c ON e.class_id = c.class_id
-    JOIN subjects s ON c.subject_id = s.subject_id
-    LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
-    WHERE e.student_id = ? AND e.status IN ('reserved','confirmed','ongoing','drop_requested')
-    ORDER BY s.subject_code
-");
-mysqli_stmt_bind_param($stmt, "i", $student_id);
+// Fetch current enrolled subjects — for irregular: all semesters/years; for regular: current only
+$enroll_query = $is_irregular
+    ? "SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
+              c.class_id, c.schedule_day, c.schedule_time, c.room, c.section, c.semester as class_semester, c.school_year as class_school_year,
+              CONCAT(f.first_name, ' ', f.last_name) as faculty_name
+       FROM enrollments e
+       JOIN classes c ON e.class_id = c.class_id
+       JOIN subjects s ON c.subject_id = s.subject_id
+       LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
+       WHERE e.student_id = ? AND e.status = 'confirmed'
+       ORDER BY s.subject_code"
+    : "SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
+              c.class_id, c.schedule_day, c.schedule_time, c.room, c.section, c.semester as class_semester, c.school_year as class_school_year,
+              CONCAT(f.first_name, ' ', f.last_name) as faculty_name
+       FROM enrollments e
+       JOIN classes c ON e.class_id = c.class_id
+       JOIN subjects s ON c.subject_id = s.subject_id
+       LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
+       WHERE e.student_id = ? AND e.status = 'confirmed'
+         AND c.semester = ? AND c.school_year = ?
+       ORDER BY s.subject_code";
+
+$stmt = mysqli_prepare($con, $enroll_query);
+if ($is_irregular) {
+    mysqli_stmt_bind_param($stmt, "i", $student_id);
+} else {
+    mysqli_stmt_bind_param($stmt, "iss", $student_id, $cur_semester, $cur_school_year);
+}
 mysqli_stmt_execute($stmt);
 $enrolled_subjects = mysqli_stmt_get_result($stmt);
 
-// Helper: check if a subject is locked due to failed prerequisites
-function is_prereq_locked($prereq_str, $failed_codes) {
+// Helper: check if a subject is locked due to missing/failed prerequisites
+function is_prereq_locked($prereq_str, $failed_codes, $passed_codes, $year_level = 0, $subj_semester = '', $con = null, $course_id = null) {
     if (empty($prereq_str)) return ['locked' => false, 'reason' => ''];
+    if ((int)$year_level === 1 && $subj_semester === '1st') return ['locked' => false, 'reason' => ''];
     $codes = array_map('trim', explode(',', $prereq_str));
     foreach ($codes as $code) {
-        if (in_array($code, $failed_codes)) {
-            return ['locked' => true, 'reason' => "Prerequisite $code was failed"];
+        if (empty($code)) continue;
+        if (!preg_match('/^[A-Z]{2,}\s+\d/', $code)) continue;
+
+        if ($con && $course_id) {
+            $escaped = mysqli_real_escape_string($con, $code);
+            $db_row = mysqli_fetch_assoc(mysqli_query($con,
+                "SELECT year_level as yl, semester as sem FROM subjects
+                 WHERE subject_code = '$escaped' AND course_id = $course_id LIMIT 1"
+            ));
+            if ($db_row) {
+                if ($db_row['yl'] == $year_level && $db_row['sem'] === $subj_semester) continue;
+            } else {
+                // Only skip codes that truly don't exist in the DB
+                continue;
+            }
+        }
+
+        if (!in_array($code, $passed_codes)) {
+            $reason = in_array($code, $failed_codes)
+                ? "Prerequisite $code was failed"
+                : "Prerequisite $code not yet taken";
+            return ['locked' => true, 'reason' => $reason];
         }
     }
     return ['locked' => false, 'reason' => ''];
 }
 
-// For irregular students: get all open classes NOT already in their curriculum
-// so they can add subjects from other year levels or retake failed ones
+// For irregular students: all open classes for unpassed subjects across ALL years and semesters
+// Grouped by subject_id — multiple classes per subject handled via modal
 $irregular_classes = [];
 if ($is_irregular && $course_id) {
     $stmt = mysqli_prepare($con, "
@@ -163,41 +285,61 @@ if ($is_irregular && $course_id) {
         $grade_info = $grades[$row['subject_id']] ?? null;
         $grade_val  = $grade_info['grade'] ?? null;
         $passed     = $grade_val && $grade_val !== '5.00' && strtoupper($grade_val) !== 'INC';
-        if (!$passed) $irregular_classes[] = $row;
+        if ($passed) continue;
+        // Only show subjects from years the student has touched or their current year
+        if (!in_array((int)$row['year_level'], $touched_years) && (int)$row['year_level'] > $student_year) continue;
+        $sid = $row['subject_id'];
+        if (!isset($irregular_classes[$sid])) {
+            // Store subject meta on first encounter
+            $irregular_classes[$sid] = [
+                'subject_id'  => $sid,
+                'subject_code'=> $row['subject_code'],
+                'subject_name'=> $row['subject_name'],
+                'units'       => $row['units'],
+                'year_level'  => $row['year_level'],
+                'subj_sem'    => $row['subj_sem'],
+                'prerequisite'=> $row['prerequisite'],
+                'classes'     => [],
+            ];
+        }
+        $irregular_classes[$sid]['classes'][] = [
+            'class_id'      => $row['class_id'],
+            'section'       => $row['section'],
+            'schedule_day'  => $row['schedule_day'],
+            'schedule_time' => $row['schedule_time'],
+            'room'          => $row['room'],
+            'faculty_name'  => $row['faculty_name'],
+            'max_slots'     => $row['max_slots'],
+            'enrolled_count'=> $row['enrolled_count'],
+            'semester'      => $row['semester'],
+            'school_year'   => $row['school_year'],
+        ];
     }
 }
 
-// Subjects needed for retake: failed grades with available open classes
-$retake_subjects = [];
-if (!empty($failed_codes) && $course_id) {
-    $stmt = mysqli_prepare($con, "
-        SELECT DISTINCT s.subject_id, s.subject_code, s.subject_name, s.units,
-               s.lecture_hours, s.lab_hours, g.grade,
-               c.class_id, c.section, c.schedule_day, c.schedule_time, c.room,
-               CONCAT(f.first_name, ' ', f.last_name) as faculty_name
-        FROM grades g
-        JOIN subjects s ON g.subject_id = s.subject_id
-        JOIN classes c ON c.subject_id = s.subject_id AND c.status = 'open'
-        LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
-        WHERE g.student_id = ?
-          AND (g.grade = '5.00' OR UPPER(g.grade) = 'INC')
-          AND s.course_id = ?
-          AND c.subject_id NOT IN (
-              SELECT cc.subject_id FROM enrollments e
-              JOIN classes cc ON e.class_id = cc.class_id
-              WHERE e.student_id = ? AND e.status IN ('reserved','confirmed','ongoing','drop_requested')
-          )
-        ORDER BY s.subject_code
-    ");
-    mysqli_stmt_bind_param($stmt, "iii", $student_id, $course_id, $student_id);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    while ($row = mysqli_fetch_assoc($res)) $retake_subjects[] = $row;
-    mysqli_stmt_close($stmt);
-}
+// Fetch drop-requested enrollments — filtered to current semester and school year
+$stmt = mysqli_prepare($con, "
+    SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.units,
+           c.class_id, c.schedule_day, c.schedule_time, c.room, c.section,
+           CONCAT(f.first_name, ' ', f.last_name) as faculty_name
+    FROM enrollments e
+    JOIN classes c ON e.class_id = c.class_id
+    JOIN subjects s ON c.subject_id = s.subject_id
+    LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
+    WHERE e.student_id = ? AND e.status = 'drop_requested'
+      AND c.semester = ? AND c.school_year = ?
+    ORDER BY s.subject_code
+");
+mysqli_stmt_bind_param($stmt, "iss", $student_id, $cur_semester, $cur_school_year);
+mysqli_stmt_execute($stmt);
+$drop_requests = mysqli_stmt_get_result($stmt);
 
-$year_labels = ['1' => '1st Year', '2' => '2nd Year', '3' => '3rd Year', '4' => '4th Year', '0' => 'Unassigned'];
+// Check enrollment period status
+$enrollment_open = get_setting($con, 'enrollment_open', '1') === '1';
+
+$year_labels = ['1' => '1st Year', '2' => '2nd Year', '3' => '3rd Year', '4' => '4th Year', '5' => '5th Year', '6' => '6th Year', '0' => 'Unassigned'];
 $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Summer', 'N/A' => 'Unassigned'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -226,7 +368,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="acc-display-container">
             <div class="acc-name"><?php echo htmlspecialchars(trim($student['first_name'] . ' ' . ($student['middle_name'] ?? '') . ' ' . $student['last_name'])); ?></div>
             <div class="acc-img">
-                <img src="<?php echo $student['profile_photo'] ? '../../' . $student['profile_photo'] : '../../assets/test/student-profile.webp'; ?>">
+                <img src="<?php echo $student['profile_photo'] ? '../../' . $student['profile_photo'] : '../../uploads/default.jpg'; ?>">
             </div>
         </div>
     </div>
@@ -237,6 +379,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 <li><a href="student_subjects.php"><i class="fa-solid fa-calendar"></i><div class="li-name">Schedule</div></a></li>
                 <li><a href="student_enrollment.php" class="active"><i class="fa-solid fa-id-card"></i><div class="li-name">Enrollment</div></a></li>
                 <li><a href="student_grades.php"><i class="fa-solid fa-book"></i><div class="li-name">Grades</div></a></li>
+                <li><a href="student_my_subjects.php"><i class="fa-solid fa-layer-group"></i><div class="li-name">My Subjects</div></a></li>
                 <li class="course-dropdown">
                     <a href="#" id="acad-dropdown">
                         <i class="fa-solid fa-school"></i>
@@ -268,18 +411,21 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
 <main>
 
     <!-- FLASH MESSAGES -->
+    <?php if (!$enrollment_open): ?>
+        <div class="flash flash-error" style="background:#f974161a;color:#c2410c;border-left-color:#f97416;">
+            <i class="fa-solid fa-lock"></i>
+            <strong>Enrollment is currently closed.</strong> The enrollment period has not started or has ended. Please check with the registrar.
+        </div>
+    <?php endif; ?>
     <?php if (isset($_GET['success'])): ?>
         <div class="flash flash-success">
             <i class="fa-solid fa-check-circle"></i>
             <?php
             $msgs = [
                 'enrolled'       => 'Successfully enrolled in subject.',
-                'confirmed'      => 'Enrollment confirmed.',
                 'drop_requested' => 'Drop request submitted. Awaiting admin approval.',
                 'drop_cancelled' => 'Drop request cancelled.',
-                'dropped'        => 'Reservation cancelled.',
                 'removed'        => 'Subject removed from enrollment.',
-                'submitted'      => 'Enrollment submitted for admin approval.',
             ];
             echo $msgs[$_GET['success']] ?? 'Action completed.';
             ?>
@@ -294,12 +440,66 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 'full'             => 'Class is full.',
                 'already_enrolled' => 'Already enrolled in this subject.',
                 'wrong_semester'   => 'This subject is not available for your current semester.',
+                'wrong_year'       => 'This subject is not available for your current year level.',
                 'prereq'           => 'Missing prerequisites: ' . htmlspecialchars(urldecode($_GET['missing'] ?? '')),
                 'no_class'         => 'No class selected.',
+                'enrollment_closed'=> 'Enrollment is currently closed. Please wait for the enrollment period to open.',
+                'max_units'        => 'You have reached the maximum of ' . htmlspecialchars($_GET['max'] ?? '') . ' units allowed this semester.',
             ];
             echo $errs[$_GET['error']] ?? 'An error occurred.';
             ?>
         </div>
+    <?php endif; ?>
+
+    <!-- DROP REQUESTS -->
+    <?php $drop_rows = mysqli_fetch_all($drop_requests, MYSQLI_ASSOC); if (!empty($drop_rows)): ?>
+    <div class="card" style="border-left:4px solid #dc2626;">
+        <div class="card-header" style="background:#dc2626;">
+            <h2><i class="fa-solid fa-right-from-bracket"></i> Pending Drop Requests</h2>
+            <span style="font-size:.8rem;color:rgba(255,255,255,.8);"><?php echo count($drop_rows); ?> awaiting admin approval</span>
+        </div>
+        <div style="padding:.6rem 1.25rem;background:rgba(220,38,38,.06);border-bottom:1px solid var(--off);font-size:.82rem;color:#dc2626;">
+            <i class="fa-solid fa-circle-info"></i>
+            Your drop request has been submitted. You will remain enrolled until an admin approves it. You may cancel the request below.
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th class="center">Units</th>
+                        <th>Section</th>
+                        <th>Schedule</th>
+                        <th>Professor</th>
+                        <th class="center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($drop_rows as $dr): ?>
+                <tr>
+                    <td><span class="subj-code"><?php echo htmlspecialchars($dr['subject_code']); ?></span></td>
+                    <td><?php echo htmlspecialchars($dr['subject_name']); ?></td>
+                    <td class="center"><?php echo $dr['units']; ?></td>
+                    <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
+                    <td><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '') . ($dr['room'] ? ' · ' . $dr['room'] : '')); ?></td>
+                    <td class="faculty-name"><?php echo htmlspecialchars($dr['faculty_name'] ?? 'TBA'); ?></td>
+                    <td class="center">
+                        <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
+                            <input type="hidden" name="action" value="cancel_drop_request">
+                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                            <button type="submit" class="action-btn cancel-btn"
+                                    onclick="return confirm('Cancel your drop request for <?php echo htmlspecialchars(addslashes($dr['subject_code'])); ?>?')">
+                                <i class="fa-solid fa-rotate-left"></i> Cancel Request
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <?php endif; ?>
 
     <!-- STUDENT INFO -->
@@ -307,15 +507,22 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="card-header"><h2>Student Information</h2></div>
         <div class="student-body">
             <div class="avatar-wrap">
-                <img src="<?php echo $student['profile_photo'] ? '../../' . $student['profile_photo'] : '../../assets/test/student-profile.webp'; ?>">
+                <img src="<?php echo $student['profile_photo'] ? '../../' . $student['profile_photo'] : '../../uploads/default.jpg'; ?>">
             </div>
             <div class="student-details">
-                <div class="detail-item"><label>Full Name</label><span><?php echo htmlspecialchars($student['first_name'] . ' ' . ($student['middle_name'] ?? '') . ' ' . $student['last_name']); ?></span></div>
+                <div class="detail-item"><label>Full Name</label><span><?php
+                    $parts = array_filter([
+                        $student['first_name'] ?? '',
+                        $student['middle_name'] ?? '',
+                        $student['last_name'] ?? ''
+                    ], fn($v) => trim($v) !== '');
+                    echo htmlspecialchars(implode(' ', $parts) ?: 'N/A');
+                ?></span></div>
                 <div class="detail-item"><label>Student Number</label><span><?php echo htmlspecialchars($student['student_number']); ?></span></div>
                 <div class="detail-item"><label>Program</label><span><?php echo htmlspecialchars($student['course']); ?></span></div>
                 <div class="detail-item"><label>Year Level</label><span><?php echo $year_labels[$student['year_level']] ?? 'N/A'; ?></span></div>
                 <div class="detail-item"><label>Status</label><span><?php echo htmlspecialchars(!empty($student['registration_status']) ? $student['registration_status'] : 'Regular'); ?></span></div>
-                <div class="detail-item"><label>School Year</label><span><?php echo htmlspecialchars($student['school_year'] ?? 'N/A'); ?></span></div>
+                <div class="detail-item"><label>School Year</label><span><?php echo htmlspecialchars($cur_school_year ?: 'N/A'); ?></span></div>
             </div>
         </div>
     </div>
@@ -341,47 +548,24 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 $has_enrolled = false;
                 while ($row = mysqli_fetch_assoc($enrolled_subjects)):
                     $has_enrolled = true;
-                    $status_map = [
-                        'reserved'      => ['label' => 'Pending',       'color' => '#f59e0b'],
-                        'confirmed'     => ['label' => 'Confirmed',      'color' => '#16a34a'],
-                        'ongoing'       => ['label' => 'Not Submitted',  'color' => '#2563eb'],
-                        'drop_requested'=> ['label' => 'Drop Requested', 'color' => '#dc2626'],
-                    ];
-                    $s = $status_map[$row['status']] ?? ['label' => ucfirst($row['status']), 'color' => '#888'];
+                    $s = ['label' => 'Enrolled', 'color' => '#16a34a'];
                 ?>
                 <tr>
                     <td><span class="subj-code"><?php echo htmlspecialchars($row['subject_code']); ?></span></td>
                     <td><?php echo htmlspecialchars($row['subject_name']); ?></td>
                     <td class="center"><?php echo $row['units']; ?></td>
-                    <td><div class="sched-cell"><span class="sched-tag"><?php echo htmlspecialchars($row['section'] . ' · ' . $row['schedule_day'] . ' ' . $row['schedule_time'] . ($row['room'] ? ' · ' . $row['room'] : '')); ?></span></div></td>
+                    <td><div class="sched-cell"><span class="sched-tag"><?php echo htmlspecialchars($row['section'] . ' · ' . $row['schedule_day'] . ' ' . $row['schedule_time'] . ($row['room'] ? ' · ' . $row['room'] : '')); ?></span><?php if ($is_irregular): ?><span style="font-size:.75rem;color:var(--text-label);display:block;margin-top:.2rem;"><?php echo htmlspecialchars(($sem_labels[$row['class_semester']] ?? $row['class_semester']) . ' ' . $row['class_school_year']); ?></span><?php endif; ?></div></td>
                     <td class="faculty-name"><?php echo htmlspecialchars($row['faculty_name'] ?? 'TBA'); ?></td>
                     <td><span class="status-badge" style="background:<?php echo $s['color']; ?>1a;color:<?php echo $s['color']; ?>;"><?php echo $s['label']; ?></span></td>
                     <td class="center">
-                        <?php if ($row['status'] === 'ongoing'): ?>
-                            <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
-                                <input type="hidden" name="action" value="cancel_self_enroll">
-                                <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
-                                <button type="submit" class="action-btn cancel-btn" onclick="return confirm('Remove this subject?')"><i class="fa-solid fa-xmark"></i></button>
-                            </form>
-                        <?php elseif ($row['status'] === 'confirmed'): ?>
-                            <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
-                                <input type="hidden" name="action" value="drop">
-                                <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
-                                <button type="submit" class="action-btn drop-btn" onclick="return confirm('Request to drop this subject?')"><i class="fa-solid fa-right-from-bracket"></i> Drop</button>
-                            </form>
-                        <?php elseif ($row['status'] === 'reserved'): ?>
-                            <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
-                                <input type="hidden" name="action" value="cancel_reserved">
-                                <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
-                                <button type="submit" class="action-btn cancel-btn" onclick="return confirm('Cancel this reservation?')"><i class="fa-solid fa-xmark"></i> Cancel</button>
-                            </form>
-                        <?php elseif ($row['status'] === 'drop_requested'): ?>
-                            <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
-                                <input type="hidden" name="action" value="cancel_drop_request">
-                                <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
-                                <button type="submit" class="action-btn cancel-btn" onclick="return confirm('Cancel drop request?')"><i class="fa-solid fa-rotate-left"></i> Undo</button>
-                            </form>
-                        <?php endif; ?>
+                        <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
+                            <input type="hidden" name="action" value="drop">
+                            <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
+                            <button type="submit" class="action-btn cancel-btn"
+                                    onclick="return confirm('Request to drop <?php echo htmlspecialchars(addslashes($row['subject_code'])); ?>? An admin must approve it.')">
+                                <i class="fa-solid fa-right-from-bracket"></i> Request Drop
+                            </button>
+                        </form>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -391,21 +575,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 </tbody>
             </table>
         </div>
-        <?php
-        // Check if there are ongoing (not yet submitted) enrollments
-        $ongoing_count = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM enrollments WHERE student_id = $student_id AND status = 'ongoing'"))['c'];
-        if ($ongoing_count > 0):
-        ?>
-        <div class="submit-bar">
-            <span><i class="fa-solid fa-circle-info"></i> You have <?php echo $ongoing_count; ?> subject(s) pending submission.</span>
-            <form method="POST" action="../../php/student_enrollment_action.php">
-                <input type="hidden" name="action" value="submit_enrollment">
-                <button type="submit" class="btn-submit-enroll" onclick="return confirm('Submit all pending subjects for admin approval?')">
-                    <i class="fa-solid fa-paper-plane"></i> Submit Enrollment
-                </button>
-            </form>
-        </div>
-        <?php endif; ?>
+
     </div>
 
     <!-- CURRICULUM VIEW -->
@@ -426,26 +596,28 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <?php else: ?>
 
         <!-- Year tabs -->
+        <?php
+        // $student_year already defined above
+        ?>
         <div class="curric-nav">
             <div class="curric-year-tabs">
-                <?php $yi = 0; foreach ($curriculum as $yr => $sems): ?>
-                <button class="year-tab <?php echo $yi === 0 ? 'active' : ''; ?>"
+                <?php foreach ($curriculum as $yr => $sems): ?>
+                <button class="year-tab <?php echo (int)$yr === $student_year ? 'active' : ''; ?>"
                         data-year="<?php echo $yr; ?>">
                     <?php echo $year_labels[$yr] ?? "Year $yr"; ?>
                 </button>
-                <?php $yi++; endforeach; ?>
+                <?php endforeach; ?>
             </div>
             <div class="curric-sem-tabs">
-                <?php
-                $first_yr = array_key_first($curriculum);
-                foreach ($curriculum as $yr => $sems):
+                <?php foreach ($curriculum as $yr => $sems):
                     foreach ($sems as $sem => $subjects):
+                        $is_active_sem = ((int)$yr === $student_year && $sem === $effective_semester);
                 ?>
-                <button class="sem-tab <?php echo ($yr == $first_yr && array_key_first($curriculum[$yr]) == $sem) ? 'active' : ''; ?>"
+                <button class="sem-tab <?php echo $is_active_sem ? 'active' : ''; ?>"
                         data-year="<?php echo $yr; ?>"
                         data-sem="<?php echo $sem; ?>"
                         data-target="panel_<?php echo "{$yr}_{$sem}"; ?>"
-                        style="<?php echo $yr == $first_yr ? '' : 'display:none;'; ?>">
+                        style="<?php echo (int)$yr === $student_year ? '' : 'display:none;'; ?>">
                     <?php echo $sem_labels[$sem] ?? $sem; ?>
                 </button>
                 <?php endforeach; endforeach; ?>
@@ -454,11 +626,22 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
 
         <!-- Curriculum Panels -->
         <?php
-        $pi = 0;
         foreach ($curriculum as $yr => $semesters):
             foreach ($semesters as $sem => $subjects):
+                $is_current_panel = ((int)$yr === $student_year && $sem === $effective_semester);
         ?>
-        <div class="curric-panel <?php echo $pi === 0 ? 'active' : ''; ?>" id="panel_<?php echo "{$yr}_{$sem}"; ?>">
+        <div class="curric-panel <?php echo $is_current_panel ? 'active' : ''; ?>" id="panel_<?php echo "{$yr}_{$sem}"; ?>">
+            <?php if (!$is_current_panel && !$is_irregular): ?>
+                <div style="padding:.6rem 1.25rem;background:rgba(107,114,128,0.08);border-bottom:1px solid var(--off);font-size:.82rem;color:var(--text-label);display:flex;align-items:center;gap:.5rem;">
+                    <i class="fa-solid fa-lock"></i>
+                    Enrollment is only open for <strong><?php echo htmlspecialchars($sem_labels[$effective_semester] ?? $effective_semester); ?></strong> — <strong><?php echo $year_labels[$student_year] ?? 'Year '.$student_year; ?></strong>.
+                </div>
+            <?php elseif (!$is_current_panel && $is_irregular): ?>
+                <div style="padding:.6rem 1.25rem;background:#f974161a;border-bottom:1px solid #fed7aa;font-size:.82rem;color:#c2410c;display:flex;align-items:center;gap:.5rem;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    You are <strong>Irregular</strong> — you may enroll in any unpassed subject from this panel alongside your current year's load.
+                </div>
+            <?php endif; ?>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -482,12 +665,13 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         $passed       = $grade_val && $grade_val !== '5.00' && strtoupper($grade_val) !== 'INC' && strtoupper($grade_val) !== 'DRP';
                         $failed       = $grade_val && ($grade_val === '5.00' || strtoupper($grade_val) === 'INC');
                         $hours        = $subj['lecture_hours'] + $subj['lab_hours'];
-                        $lock         = is_prereq_locked($subj['prerequisite'], $failed_codes);
-                        if ($enroll_info)       $row_class = 'row-enrolled';
-                        elseif ($passed)        $row_class = 'row-passed';
-                        elseif ($failed)        $row_class = 'row-failed';
-                        elseif ($lock['locked'])$row_class = 'row-locked';
-                        else                    $row_class = '';
+                        $is_future_year = !in_array((int)$yr, $touched_years) && (int)$yr > $student_year;
+                        $lock         = is_prereq_locked($subj['prerequisite'], $failed_codes, $passed_codes, $subj['year_level'], $subj['semester'], $con, $course_id);
+                        if ($enroll_info)            $row_class = 'row-enrolled';
+                        elseif ($passed)             $row_class = 'row-passed';
+                        elseif ($failed)             $row_class = 'row-failed';
+                        elseif ($lock['locked'])     $row_class = 'row-locked';
+                        else                         $row_class = '';
                     ?>
                     <tr class="<?php echo $row_class; ?>">
                         <td><span class="subj-code"><?php echo htmlspecialchars($subj['subject_code']); ?></span></td>
@@ -496,7 +680,19 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <td class="center"><?php echo $hours; ?></td>
                         <td class="prereq-cell"><?php echo htmlspecialchars($subj['prerequisite'] ?: '—'); ?></td>
                         <td class="center">
-                            <?php if ($grade_val): ?>
+                            <?php
+                            $subject_all_grades = $all_grades_by_subject[$subj['subject_id']] ?? [];
+                            if (count($subject_all_grades) > 1):
+                                // Multiple grades — show all (retake scenario)
+                                foreach ($subject_all_grades as $idx => $sg):
+                                    $is_latest = $idx === 0;
+                            ?>
+                                <span class="grade-badge <?php echo ($sg['grade'] !== '5.00' && strtoupper($sg['grade']) !== 'INC') ? 'grade-pass' : 'grade-fail'; ?>"
+                                      style="<?php echo !$is_latest ? 'opacity:0.5;text-decoration:line-through;font-size:.7rem;' : ''; ?>">
+                                    <?php echo htmlspecialchars($sg['grade']); ?>
+                                </span>
+                            <?php endforeach; ?>
+                            <?php elseif ($grade_val): ?>
                                 <span class="grade-badge <?php echo $passed ? 'grade-pass' : 'grade-fail'; ?>"><?php echo htmlspecialchars($grade_val); ?></span>
                             <?php else: ?>
                                 <span style="color:var(--text-label);">—</span>
@@ -504,7 +700,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         </td>
                         <td class="center">
                             <?php
-                            $es_map = ['reserved'=>['Pending','#f59e0b'],'confirmed'=>['Confirmed','#16a34a'],'ongoing'=>['Not Submitted','#2563eb'],'drop_requested'=>['Drop Requested','#dc2626']];
+                            $es_map = ['confirmed'=>['Enrolled','#16a34a'],'drop_requested'=>['Drop Requested','#dc2626']];
                             if ($enroll_info): [$elabel,$ecolor] = $es_map[$enroll_info['status']] ?? [ucfirst($enroll_info['status']),'#888']; ?>
                                 <span class="status-badge" style="background:<?php echo $ecolor; ?>1a;color:<?php echo $ecolor; ?>;"><?php echo $elabel; ?></span>
                             <?php elseif ($passed): ?>
@@ -524,6 +720,8 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                 <span style="font-size:.8rem;color:var(--text-label);">—</span>
                             <?php elseif ($lock['locked']): ?>
                                 <span class="lock-reason"><i class="fa-solid fa-lock"></i> <?php echo htmlspecialchars($lock['reason']); ?></span>
+                            <?php elseif ($is_future_year): ?>
+                                <span style="font-size:.8rem;color:var(--text-label);"><i class="fa-solid fa-lock"></i> Not current</span>
                             <?php elseif (!empty($classes_list)): ?>
                                 <button class="btn-select-sched"
                                         data-subject-id="<?php echo $subj['subject_id']; ?>"
@@ -542,58 +740,10 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 </table>
             </div>
         </div>
-        <?php $pi++; endforeach; endforeach; ?>
+        <?php endforeach; endforeach; ?>
 
         <?php endif; ?>
     </div>
-
-    <!-- SUBJECTS FOR RETAKE -->
-    <?php if (!empty($retake_subjects)): ?>
-    <div class="card" style="border-left:4px solid #dc2626;">
-        <div class="card-header" style="background:#dc2626;">
-            <h2><i class="fa-solid fa-rotate-right"></i> Subjects Needed for Retake</h2>
-        </div>
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th class="center">Units</th>
-                        <th>Section</th>
-                        <th>Schedule</th>
-                        <th>Professor</th>
-                        <th>Grade</th>
-                        <th class="center">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($retake_subjects as $rt): ?>
-                <tr>
-                    <td><span class="subj-code"><?php echo htmlspecialchars($rt['subject_code']); ?></span></td>
-                    <td><?php echo htmlspecialchars($rt['subject_name']); ?></td>
-                    <td class="center"><?php echo $rt['units']; ?></td>
-                    <td><?php echo htmlspecialchars($rt['section'] ?? 'TBA'); ?></td>
-                    <td><?php echo htmlspecialchars(($rt['schedule_day'] ?? '') . ' ' . ($rt['schedule_time'] ?? '')); ?></td>
-                    <td class="faculty-name"><?php echo htmlspecialchars($rt['faculty_name'] ?? 'TBA'); ?></td>
-                    <td><span class="status-badge" style="background:#dc26261a;color:#dc2626;"><?php echo htmlspecialchars($rt['grade']); ?></span></td>
-                    <td class="center">
-                        <form method="POST" action="../../php/student_enrollment_action.php">
-                            <input type="hidden" name="action" value="self_enroll">
-                            <input type="hidden" name="class_id" value="<?php echo $rt['class_id']; ?>">
-                            <button type="submit" class="action-btn" style="background:#dc2626;color:#fff;border:none;padding:.4rem .8rem;border-radius:6px;cursor:pointer;font-size:.82rem;"
-                                onclick="return confirm('Enroll in this retake class?')">
-                                <i class="fa-solid fa-rotate-right"></i> Enroll
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <!-- IRREGULAR STUDENT: ADD SUBJECT -->
     <?php if ($is_irregular): ?>
@@ -628,20 +778,20 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($irregular_classes as $cls):
-                    $grade_info  = $grades[$cls['subject_id']] ?? null;
+                <?php foreach ($irregular_classes as $subj):
+                    $grade_info  = $grades[$subj['subject_id']] ?? null;
                     $grade_val   = $grade_info['grade'] ?? null;
-                    $lock        = is_prereq_locked($cls['prerequisite'], $failed_codes);
+                    $lock        = is_prereq_locked($subj['prerequisite'], $failed_codes, $passed_codes, $subj['year_level'], $subj['subj_sem'] ?? '', $con, $course_id);
                     $failed_subj = $grade_val && ($grade_val === '5.00' || strtoupper($grade_val) === 'INC');
-                    $slots_left  = $cls['max_slots'] - $cls['enrolled_count'];
+                    $slots_total = array_sum(array_map(fn($c) => max(0, $c['max_slots'] - $c['enrolled_count']), $subj['classes']));
                 ?>
                 <tr class="<?php echo $lock['locked'] ? 'row-locked' : ($failed_subj ? 'row-failed' : ''); ?>">
-                    <td><span class="subj-code"><?php echo htmlspecialchars($cls['subject_code']); ?></span></td>
-                    <td><?php echo htmlspecialchars($cls['subject_name']); ?></td>
-                    <td class="center"><?php echo $cls['units']; ?></td>
-                    <td class="center"><?php echo $cls['year_level'] ?? '—'; ?></td>
-                    <td class="center" style="font-size:.78rem;"><?php echo $sem_labels[$cls['subj_sem'] ?? ''] ?? ($cls['subj_sem'] ?? '—'); ?></td>
-                    <td class="prereq-cell"><?php echo htmlspecialchars($cls['prerequisite'] ?: '—'); ?></td>
+                    <td><span class="subj-code"><?php echo htmlspecialchars($subj['subject_code']); ?></span></td>
+                    <td><?php echo htmlspecialchars($subj['subject_name']); ?></td>
+                    <td class="center"><?php echo $subj['units']; ?></td>
+                    <td class="center"><?php echo $subj['year_level'] ?? '—'; ?></td>
+                    <td class="center" style="font-size:.78rem;"><?php echo $sem_labels[$subj['subj_sem'] ?? ''] ?? ($subj['subj_sem'] ?? '—'); ?></td>
+                    <td class="prereq-cell"><?php echo htmlspecialchars($subj['prerequisite'] ?: '—'); ?></td>
                     <td class="center">
                         <?php if ($grade_val): ?>
                             <span class="grade-badge <?php echo $failed_subj ? 'grade-fail' : 'grade-pass'; ?>"><?php echo htmlspecialchars($grade_val); ?></span>
@@ -652,23 +802,14 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                     <td class="center">
                         <?php if ($lock['locked']): ?>
                             <span class="lock-reason"><i class="fa-solid fa-lock"></i> <?php echo htmlspecialchars($lock['reason']); ?></span>
-                        <?php elseif ($slots_left <= 0): ?>
-                            <span style="font-size:.8rem;color:#dc2626;">Class Full</span>
+                        <?php elseif ($slots_total <= 0): ?>
+                            <span style="font-size:.8rem;color:#dc2626;">All classes full</span>
                         <?php else: ?>
                             <button class="btn-select-sched"
-                                    data-subject-id="<?php echo $cls['subject_id']; ?>"
-                                    data-subject-code="<?php echo htmlspecialchars($cls['subject_code']); ?>"
-                                    data-subject-name="<?php echo htmlspecialchars($cls['subject_name']); ?>"
-                                    data-classes="<?php echo htmlspecialchars(json_encode([[
-                                        'class_id'       => $cls['class_id'],
-                                        'section'        => $cls['section'],
-                                        'schedule_day'   => $cls['schedule_day'],
-                                        'schedule_time'  => $cls['schedule_time'],
-                                        'room'           => $cls['room'],
-                                        'faculty_name'   => $cls['faculty_name'],
-                                        'max_slots'      => $cls['max_slots'],
-                                        'enrolled_count' => $cls['enrolled_count'],
-                                    ]])); ?>">
+                                    data-subject-id="<?php echo $subj['subject_id']; ?>"
+                                    data-subject-code="<?php echo htmlspecialchars($subj['subject_code']); ?>"
+                                    data-subject-name="<?php echo htmlspecialchars($subj['subject_name']); ?>"
+                                    data-classes="<?php echo htmlspecialchars(json_encode($subj['classes'])); ?>">
                                 <i class="fa-solid fa-calendar-plus"></i> Enroll
                             </button>
                         <?php endif; ?>

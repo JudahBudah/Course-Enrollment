@@ -96,11 +96,11 @@ function sel($field, $value, $applicant_data) {
 }
 
 // Fetch courses from DB grouped by college
-$courses_result = mysqli_query($con, "SELECT course_name, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
+$courses_result = mysqli_query($con, "SELECT course_name, course_code, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
 $courses = [];
 $course_college_map = [];
 while ($row = mysqli_fetch_assoc($courses_result)) {
-    $courses[$row['college_name']][] = $row['course_name'];
+    $courses[$row['college_name']][] = ['name' => $row['course_name'], 'code' => $row['course_code']];
     $course_college_map[$row['course_name']] = $row['college_name'];
 }
 
@@ -110,8 +110,10 @@ function programOptions($field, $applicant_data, $courses) {
     foreach ($courses as $college => $programs) {
         $out .= '<optgroup label="' . htmlspecialchars($college) . '">';
         foreach ($programs as $p) {
-            $sel = $current === $p ? ' selected' : '';
-            $out .= '<option value="' . htmlspecialchars($p) . '" data-college="' . htmlspecialchars($college) . '"' . $sel . '>' . htmlspecialchars($p) . '</option>';
+            $sel = $current === $p['name'] ? ' selected' : '';
+            $out .= '<option value="' . htmlspecialchars($p['name']) . '"'
+                  . ' data-college="' . htmlspecialchars($college) . '"'
+                  . $sel . '>' . htmlspecialchars($p['code'] . ' — ' . $p['name']) . '</option>';
         }
         $out .= '</optgroup>';
     }

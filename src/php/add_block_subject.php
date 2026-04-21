@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_stmt_close($stmt);
 
     if ($ok && mysqli_affected_rows($con) > 0) {
-        // Restrict this class to the block's course department
         $course = mysqli_real_escape_string($con, $block['course']);
         mysqli_query($con, "UPDATE classes SET specific_department = '$course' WHERE class_id = $class_id");
+        log_activity($con, 'Added subject to block', 'block', 'Block ID ' . $block_id . ' → Class ID ' . $class_id);
         header("Location: ../pages/admin/admin_block_subjects.php?block_id=$block_id&success=added");
     } else {
         header("Location: ../pages/admin/admin_block_subjects.php?block_id=$block_id&error=failed");

@@ -12,7 +12,7 @@ if (!$faculty) { session_destroy(); header("Location: faculty_login.php"); die; 
 
 $profile_src = !empty($faculty['profile_photo'])
     ? '../../' . htmlspecialchars($faculty['profile_photo'])
-    : '../../assets/test/faculty-profile.jpg';
+    : '../../uploads/default.jpg';
 
 function val($faculty, $key) {
     return htmlspecialchars($faculty[$key] ?? '');
@@ -100,6 +100,12 @@ function sel($faculty, $key, $option) {
                         <a href="faculty_gradebook.php">
                             <i class="fa-solid fa-book"></i>
                             <div class="li-name">Gradebook</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
                         </a>
                     </li>
                     <li>
@@ -200,7 +206,8 @@ function sel($faculty, $key, $option) {
                     </div>
                 </div>
                 </div><!-- /#section-faculty -->
-                
+
+                <hr>
 
                 <!-- ── SECTION: Personal Information ── -->
                 <div id="section-personal" class="profile-section" style="display:none;">

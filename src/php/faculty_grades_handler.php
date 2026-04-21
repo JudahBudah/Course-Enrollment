@@ -30,6 +30,66 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS grade_entries (
     UNIQUE KEY uq_enroll (enrollment_id)
 )");
 
+// Ensure grade_history table exists with unique constraint on (class_id, student_id)
+mysqli_query($con, "CREATE TABLE IF NOT EXISTS grade_history (
+    history_id     INT AUTO_INCREMENT PRIMARY KEY,
+    class_id       INT NOT NULL,
+    faculty_id     INT NOT NULL,
+    subject_code   VARCHAR(50) NOT NULL,
+    subject_name   VARCHAR(255) NOT NULL,
+    section        VARCHAR(100) NOT NULL,
+    semester       VARCHAR(20) NOT NULL,
+    school_year    VARCHAR(20) NOT NULL,
+    student_id     INT NOT NULL,
+    student_number VARCHAR(50) NOT NULL,
+    student_name   VARCHAR(255) NOT NULL,
+    class_standing DECIMAL(5,2) DEFAULT NULL,
+    quiz           DECIMAL(5,2) DEFAULT NULL,
+    midterms       DECIMAL(5,2) DEFAULT NULL,
+    finals         DECIMAL(5,2) DEFAULT NULL,
+    computed_grade DECIMAL(5,2) DEFAULT NULL,
+    point_grade    VARCHAR(10) DEFAULT NULL,
+    remarks        VARCHAR(20) DEFAULT NULL,
+    finalized_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    KEY idx_class   (class_id),
+    KEY idx_faculty (faculty_id),
+    UNIQUE KEY uq_class_student (class_id, student_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+// Add unique key to existing grade_history table if it doesn't exist yet
+$idx_check = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM information_schema.statistics
+     WHERE table_schema = DATABASE()
+       AND table_name = 'grade_history'
+       AND index_name = 'uq_class_student'"
+));
+if ((int)($idx_check['c'] ?? 0) === 0) {
+    // First deduplicate: keep only the latest row per (class_id, student_id)
+    mysqli_query($con,
+        "DELETE gh FROM grade_history gh
+         INNER JOIN grade_history gh2
+           ON gh.class_id = gh2.class_id
+          AND gh.student_id = gh2.student_id
+          AND gh.history_id < gh2.history_id"
+    );
+    // Then add the unique key
+    mysqli_query($con, "ALTER TABLE grade_history ADD UNIQUE KEY uq_class_student (class_id, student_id)");
+}
+
+// Fix computed_grade column to use simple weighted sum (missing fields = 0)
+$col_expr = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT GENERATION_EXPRESSION as expr FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'grade_entries' AND COLUMN_NAME = 'computed_grade'"
+));
+$correct_expr = 'ROUND(COALESCE(class_standing,0)*0.30+COALESCE(quiz,0)*0.30+COALESCE(midterms,0)*0.20+COALESCE(finals,0)*0.20,2)';
+if ($col_expr && trim(str_replace(' ', '', $col_expr['expr'] ?? '')) !== trim(str_replace(' ', '', $correct_expr))) {
+    mysqli_query($con,
+        "ALTER TABLE grade_entries MODIFY COLUMN computed_grade DECIMAL(5,2) GENERATED ALWAYS AS (
+            ROUND(COALESCE(class_standing,0)*0.30+COALESCE(quiz,0)*0.30+COALESCE(midterms,0)*0.20+COALESCE(finals,0)*0.20,2)
+        ) STORED"
+    );
+}
+
 header('Content-Type: application/json');
 $action = $_POST['action'] ?? '';
 
@@ -57,8 +117,8 @@ if ($action === 'save_cell') {
     if (!in_array($field, $allowed)) {
         echo json_encode(['ok'=>false,'msg'=>'Invalid field']); die;
     }
-    if ($value !== null && ($value < 0 || $value > 100)) {
-        echo json_encode(['ok'=>false,'msg'=>'Value must be 0–100']); die;
+    if ($value !== null && ($value < 1 || $value > 100)) {
+        echo json_encode(['ok'=>false,'msg'=>'Value must be 1–100']); die;
     }
 
     $stmt = mysqli_prepare($con,
@@ -71,11 +131,20 @@ if ($action === 'save_cell') {
     mysqli_stmt_execute($stmt);
 
     $row = mysqli_fetch_assoc(mysqli_query($con,
-        "SELECT class_standing, quiz, midterms, finals, computed_grade
+        "SELECT class_standing, quiz, midterms, finals
          FROM grade_entries WHERE enrollment_id = $enrollment_id"
     ));
 
-    $computed   = $row ? (float)$row['computed_grade'] : null;
+    if ($row) {
+        $computed = round(
+            (float)($row['class_standing'] ?? 0) * 0.30 +
+            (float)($row['quiz']           ?? 0) * 0.30 +
+            (float)($row['midterms']       ?? 0) * 0.20 +
+            (float)($row['finals']         ?? 0) * 0.20
+        , 2);
+    } else {
+        $computed = null;
+    }
     $transmuted = $computed !== null ? transmute($computed) : null;
     $point      = $transmuted !== null ? pointGrade($transmuted) : null;
     $remark     = $point !== null ? remark($point) : 'pending';
@@ -113,15 +182,36 @@ if ($action === 'finalize_class') {
 
     // Process each student's grade entry
     $entries = mysqli_query($con,
-        "SELECT ge.enrollment_id, ge.student_id, ge.computed_grade
-         FROM grade_entries ge
-         WHERE ge.class_id = $class_id"
+        "SELECT e.enrollment_id, e.student_id,
+                COALESCE(ge.computed_grade, 0) as computed_grade,
+                ge.enrollment_id as has_entry
+         FROM enrollments e
+         LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+         WHERE e.class_id = $class_id AND e.status IN ('confirmed','ongoing')"
     );
     while ($entry = mysqli_fetch_assoc($entries)) {
+        $student_id = (int)$entry['student_id'];
+
+        // No grade entry at all — mark INC
+        if ($entry['has_entry'] === null) {
+            $stmt = mysqli_prepare($con,
+                "INSERT INTO grades (student_id, subject_id, grade, status, semester, school_year)
+                 VALUES (?, ?, 'INC', 'Incomplete', ?, ?)
+                 ON DUPLICATE KEY UPDATE grade = 'INC', status = 'Incomplete'"
+            );
+            mysqli_stmt_bind_param($stmt, 'iiss',
+                $student_id, $class_info['subject_id'],
+                $class_info['semester'], $class_info['school_year']
+            );
+            mysqli_stmt_execute($stmt);
+            mysqli_stmt_close($stmt);
+            mysqli_query($con, "UPDATE students SET registration_status = 'Irregular' WHERE student_id = $student_id");
+            continue;
+        }
+
         $computed   = (float)$entry['computed_grade'];
         $point      = pointGrade(transmute($computed));
         $status     = $point === '5.00' ? 'Failed' : 'Passed';
-        $student_id = (int)$entry['student_id'];
 
         // Write final grade to grades table so admin can see it
         $stmt = mysqli_prepare($con,
@@ -137,11 +227,9 @@ if ($action === 'finalize_class') {
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
 
-        // Mark enrollment as completed
-        mysqli_query($con,
-            "UPDATE enrollments SET status = 'completed'
-             WHERE enrollment_id = {$entry['enrollment_id']}"
-        );
+        // Keep enrollment as 'confirmed' — students remain in the class record.
+        // The class itself is closed; enrollment status stays confirmed so
+        // students can still see their subjects until the next semester.
 
         // TC024: auto-flag student as Irregular if they failed
         if ($point === '5.00') {
@@ -153,8 +241,53 @@ if ($action === 'finalize_class') {
     }
 
     mysqli_query($con,
-        "UPDATE classes SET grades_finalized = 1, grades_finalized_at = NOW() WHERE class_id = $class_id"
+        "UPDATE classes SET grades_finalized = 1, grades_finalized_at = NOW(), status = 'closed' WHERE class_id = $class_id"
     );
+
+    // ── Snapshot full classlist into grade_history ──────────────────────────
+    $class_full = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT c.section, c.semester, c.school_year, s.subject_code, s.subject_name
+         FROM classes c JOIN subjects s ON c.subject_id = s.subject_id
+         WHERE c.class_id = $class_id"
+    ));
+    $snap_stmt = mysqli_prepare($con,
+        "INSERT IGNORE INTO grade_history
+            (class_id, faculty_id, subject_code, subject_name, section, semester, school_year,
+             student_id, student_number, student_name,
+             class_standing, quiz, midterms, finals, computed_grade, point_grade, remarks)
+         VALUES (?,?,?,?,?,?,?, ?,?,?, ?,?,?,?,?,?,?)"
+    );
+    $all_students = mysqli_query($con,
+        "SELECT e.student_id,
+                s.student_number,
+                CONCAT(s.last_name, ', ', s.first_name, IF(s.middle_name IS NOT NULL AND s.middle_name != '', CONCAT(' ', LEFT(s.middle_name,1), '.'), '')) AS student_name,
+                ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade
+         FROM enrollments e
+         JOIN students s ON e.student_id = s.student_id
+         LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+         WHERE e.class_id = $class_id"
+    );
+    while ($st = mysqli_fetch_assoc($all_students)) {
+        $cg  = $st['computed_grade'] !== null ? (float)$st['computed_grade'] : null;
+        $pg  = $cg !== null ? pointGrade(transmute($cg)) : null;
+        $rm  = $pg !== null ? remark($pg) : 'pending';
+        mysqli_stmt_bind_param($snap_stmt, 'iisssssissdddddss',
+            $class_id, $faculty_id,
+            $class_full['subject_code'], $class_full['subject_name'],
+            $class_full['section'], $class_full['semester'], $class_full['school_year'],
+            $st['student_id'], $st['student_number'], $st['student_name'],
+            $st['class_standing'], $st['quiz'], $st['midterms'], $st['finals'],
+            $cg, $pg, $rm
+        );
+        mysqli_stmt_execute($snap_stmt);
+    }
+    mysqli_stmt_close($snap_stmt);
+
+    // Do NOT change enrollment statuses — students remain 'confirmed' in the
+    // closed class so they can still see their subjects this semester.
+    // Enrollments will naturally disappear for students when the system
+    // semester/year advances and they enroll in new classes.
+
     echo json_encode(['ok'=>true]);
     die;
 }

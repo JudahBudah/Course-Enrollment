@@ -13,47 +13,41 @@ if ($action === 'add' || $action === 'edit') {
     $section = trim($_POST['section']);
     $school_year = trim($_POST['school_year']);
     $semester = $_POST['semester'];
-    $schedule_day = trim($_POST['schedule_day']);
-    $schedule_time = trim($_POST['schedule_time']);
 
-    // Normalize full day names to standard abbreviations to prevent misparse
-    $day_normalize = [
-        'monday'    => 'M',
-        'tuesday'   => 'T',
-        'wednesday' => 'W',
-        'thursday'  => 'TH',
-        'friday'    => 'F',
-        'saturday'  => 'S',
-        'sunday'    => 'SU',
-    ];
-    // Split by space or comma, normalize each token, rejoin
-    if (!empty($schedule_day)) {
-        $tokens = preg_split('/[\s,]+/', strtolower(trim($schedule_day)));
-        $normalized = [];
-        foreach ($tokens as $token) {
-            $token = trim($token);
-            if ($token === '') continue;
-            $normalized[] = $day_normalize[$token] ?? strtoupper($token);
-        }
-        $schedule_day = implode('', $normalized);
-    }
+    // Build schedule_day from checkbox array
+    $days_input = $_POST['schedule_days'] ?? [];
+    $valid_days = ['M','T','W','TH','F','S','SU'];
+    $day_order  = array_flip($valid_days);
+    $selected   = array_filter($days_input, fn($d) => in_array($d, $valid_days));
+    usort($selected, fn($a,$b) => $day_order[$a] - $day_order[$b]);
+    $schedule_day = implode('', $selected);
+
+    $schedule_time = trim($_POST['schedule_time']);
     $room = trim($_POST['room']);
     $max_slots = (int) $_POST['max_slots'];
     $status = $_POST['status'];
-    
-    // Handle department restriction
-    $availability_type = $_POST['availability_type'] ?? 'all';
     $specific_department = null;
-    if ($availability_type === 'specific' && !empty($_POST['specific_department'])) {
-        $specific_department = trim($_POST['specific_department']);
-    }
 
-    if (!$section || !$school_year || !$semester || !$max_slots) {
+    if (!$subject_id || !$section || !$school_year || !$semester || !$max_slots) {
         header("Location: ../pages/admin/admin_classes.php?error=missing_fields");
         die;
     }
 
+    // Block creation/edit if school year doesn't match the current system school year
+    $system_school_year = get_setting($con, 'current_school_year', '');
+    if (!empty($system_school_year) && $school_year !== $system_school_year) {
+        header("Location: ../pages/admin/admin_classes.php?error=wrong_school_year");
+        die;
+    }
+
     if ($action === 'add') {
+        // Block if school year doesn't match current system school year
+        $system_school_year = get_setting($con, 'current_school_year', '');
+        if (!empty($system_school_year) && $school_year !== $system_school_year) {
+            header("Location: ../pages/admin/admin_classes.php?error=wrong_school_year");
+            die;
+        }
+
         // TC017: check duplicate by subject_code + section + school_year + semester
         $dup_check = mysqli_prepare($con, "
             SELECT c.class_id FROM classes c
@@ -94,12 +88,15 @@ if ($action === 'add' || $action === 'edit') {
         }
 
         $stmt = mysqli_prepare($con, "INSERT INTO classes (subject_id, faculty_id, section, school_year, semester, schedule_day, schedule_time, room, max_slots, enrolled_count, status, specific_department) VALUES (?,?,?,?,?,?,?,?,?,0,?,?)");
-        mysqli_stmt_bind_param($stmt, "iisssssisss", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department);
+        mysqli_stmt_bind_param($stmt, "iissssssiss", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_classes.php?error=insert_failed");
             die;
         }
+        $new_class_id = mysqli_insert_id($con);
+        $subj_row = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = $subject_id"));
+        log_activity($con, 'Created class', 'class', ($subj_row['subject_code'] ?? '') . ' — ' . $section);
         header("Location: ../pages/admin/admin_classes.php?success=added");
 
     } else {
@@ -151,6 +148,8 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_classes.php?error=update_failed");
             die;
         }
+        $subj_row = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = $subject_id"));
+        log_activity($con, 'Updated class', 'class', ($subj_row['subject_code'] ?? '') . ' — ' . $section);
         header("Location: ../pages/admin/admin_classes.php?success=updated");
     }
     die;
@@ -169,9 +168,13 @@ if ($action === 'delete') {
         die;
     }
 
+    // grade_history was already populated when faculty finalized grades.
+    // No additional snapshot needed on delete.
+
     $stmt = mysqli_prepare($con, "DELETE FROM classes WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $class_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Deleted class', 'class', 'Class ID ' . $class_id);
     header("Location: ../pages/admin/admin_classes.php?success=deleted");
     die;
 }
@@ -182,6 +185,7 @@ if ($action === 'toggle_status') {
     $stmt = mysqli_prepare($con, "UPDATE classes SET status = ? WHERE class_id = ?");
     mysqli_stmt_bind_param($stmt, "si", $new_status, $class_id);
     mysqli_stmt_execute($stmt);
+    log_activity($con, 'Toggled class status to ' . $new_status, 'class', 'Class ID ' . $class_id);
     header("Location: ../pages/admin/admin_classes.php?success=updated");
     die;
 }

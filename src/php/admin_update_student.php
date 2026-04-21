@@ -103,4 +103,5 @@ if (!mysqli_stmt_execute($stmt)) {
 
 error_log("Student $student_id updated successfully with registration_status: $registration_status");
 header("Location: ../pages/admin/admin_students.php?success=updated");
+log_activity($con, 'Updated student record', 'student', $first_name . ' ' . $last_name . ' (' . $student_number . ')');
 die;

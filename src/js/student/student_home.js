@@ -326,6 +326,7 @@ function renderMiniGrid() {
     Thursday: "TH",
     Friday: "F",
     Saturday: "S",
+    Sunday: "SU",
   };
 
   let allowedDays = null;
@@ -383,7 +384,7 @@ function renderMiniGrid() {
   const E_HOUR = Math.min(24, Math.max(...allEnds) + 1);
   const GRID_H = (E_HOUR - S_HOUR) * 60 * PX;
 
-  const ALL_DAYS = ["M", "T", "W", "TH", "F", "S"];
+  const ALL_DAYS = ["M", "T", "W", "TH", "F", "S", "SU"];
   const ALL_LABELS = {
     M: "MON",
     T: "TUE",
@@ -391,6 +392,7 @@ function renderMiniGrid() {
     TH: "THU",
     F: "FRI",
     S: "SAT",
+    SU: "SUN",
   };
   const DAYS = allowedDays
     ? ALL_DAYS.filter((d) => allowedDays.has(d))

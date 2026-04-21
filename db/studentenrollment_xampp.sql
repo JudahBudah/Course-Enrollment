@@ -1,14 +1,15 @@
+﻿SET SQL_MODE = '';
+SET FOREIGN_KEY_CHECKS=0;
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 09, 2026 at 12:07 PM
+-- Generation Time: Apr 21, 2026 at 02:06 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET FOREIGN_KEY_CHECKS=0;
+SET SQL_MODE = "";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -31,15 +32,15 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `admins`;
 CREATE TABLE IF NOT EXISTS `admins` (
   `admin_id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `role` varchar(20) DEFAULT 'admin',
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'admin',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`admin_id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admins`
@@ -47,7 +48,160 @@ CREATE TABLE IF NOT EXISTS `admins` (
 
 INSERT INTO `admins` (`admin_id`, `username`, `email`, `password`, `role`, `created_at`) VALUES
 (4, 'admin3', '234@gmail.com', '$2y$10$gMSnPiC/592xZu0BdonF4eSia32HbuL6v2fBvXMivPWiJX8i8CI46', 'admin', '2026-04-08 15:57:53'),
-(2, 'admin2', 'admin2@plm.edu.ph', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'superadmin', '2026-03-12 03:27:30');
+(2, 'admin2', 'admin2@plm.edu.ph', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'superadmin', '2026-03-12 03:27:30'),
+(6, 'jevsadmin', 'jevs@gmail.com', '$2y$10$YeT.A6lJK.x86kNYVBL4iO66FHYEPKDtv82VLt1EGRsD2vt17S4me', 'admin', '2026-04-15 14:48:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_logs`
+--
+
+DROP TABLE IF EXISTS `admin_logs`;
+CREATE TABLE IF NOT EXISTS `admin_logs` (
+  `log_id` int NOT NULL AUTO_INCREMENT,
+  `admin_id` int DEFAULT NULL,
+  `admin_username` varchar(50) DEFAULT NULL,
+  `action` varchar(100) NOT NULL,
+  `entity` varchar(50) DEFAULT NULL,
+  `detail` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`log_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_logs`
+--
+
+INSERT INTO `admin_logs` (`log_id`, `admin_id`, `admin_username`, `action`, `entity`, `detail`, `created_at`) VALUES
+(1, 2, 'admin2', 'Updated applicant status to pending', 'applicant', '(ID 6)', '2026-04-18 11:32:38'),
+(2, 2, 'admin2', 'Updated applicant status to approved', 'applicant', '(ID 6)', '2026-04-18 11:32:47'),
+(3, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Khristian Gabriel Tiu (ID 5)', '2026-04-18 11:32:51'),
+(4, 2, 'admin2', 'Updated applicant status to incomplete', 'applicant', '(ID 6)', '2026-04-18 11:32:55'),
+(5, 2, 'admin2', 'Updated student record', 'student', 'Khristian Gabriel Tiu (202411443)', '2026-04-18 11:33:11'),
+(6, 2, 'admin2', 'Updated class', 'class', 'CET 0112.1 — BSCpE 1-A', '2026-04-18 11:36:43'),
+(7, 2, 'admin2', 'Created class', 'class', 'CET 0112.1 — asd', '2026-04-18 13:19:59'),
+(8, 2, 'admin2', 'Created class', 'class', 'MMW 0001 — BSCpE 1-A', '2026-04-18 13:21:18'),
+(9, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:51:47'),
+(10, 2, 'admin2', 'Created class', 'class', 'CET 0121 — BSCpE 1-A', '2026-04-18 13:52:34'),
+(11, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:53:18'),
+(12, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027', '2026-04-18 13:53:49'),
+(13, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027', '2026-04-18 13:53:51'),
+(14, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:53:52'),
+(15, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027', '2026-04-18 13:54:10'),
+(16, 2, 'admin2', 'Updated class', 'class', 'CET 0121 — CET 0111 - BSCpE', '2026-04-18 13:54:46'),
+(17, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:54:47'),
+(18, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:56:34'),
+(19, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (202412685)', '2026-04-18 13:58:05'),
+(20, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 13:58:11'),
+(21, 2, 'admin2', 'Updated block', 'block', 'panget — BSCpE', '2026-04-18 14:00:43'),
+(22, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:00:44'),
+(23, 2, 'admin2', 'Created class', 'class', 'CET 0111 — CET 0111 - BSCpE', '2026-04-18 14:02:16'),
+(24, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027', '2026-04-18 14:02:21'),
+(25, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:02:23'),
+(26, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:02:46'),
+(27, 2, 'admin2', 'Updated class', 'class', 'CET 0111 — CET 0111 - BSCpE', '2026-04-18 14:03:53'),
+(28, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:03:54'),
+(29, 2, 'admin2', 'Updated class', 'class', 'CET 0111 — CET 0111 - BSCpE', '2026-04-18 14:04:33'),
+(30, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:04:34'),
+(31, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027', '2026-04-18 14:05:12'),
+(32, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:05:14'),
+(33, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:10:17'),
+(34, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027', '2026-04-18 14:14:55'),
+(35, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:14:57'),
+(36, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (202412685)', '2026-04-18 14:25:32'),
+(37, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:25:34'),
+(38, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 14:39:44'),
+(39, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 15:01:14'),
+(40, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 15:10:25'),
+(41, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (2024-1244)', '2026-04-18 15:11:06'),
+(42, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-18 15:11:07'),
+(43, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 06:50:21'),
+(44, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027', '2026-04-19 06:52:46'),
+(45, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027', '2026-04-19 06:52:47'),
+(46, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 06:52:49'),
+(47, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Closed', '2026-04-19 07:02:49'),
+(48, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:02:51'),
+(49, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Open', '2026-04-19 07:03:16'),
+(50, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Open', '2026-04-19 07:03:22'),
+(51, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Open', '2026-04-19 07:07:51'),
+(52, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:10:23'),
+(53, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Closed', '2026-04-19 07:13:17'),
+(54, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:13:18'),
+(55, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2026-2027 | Enrollment: Open', '2026-04-19 07:16:19'),
+(56, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:16:21'),
+(57, 2, 'admin2', 'Updated class', 'class', 'CET 0112 — BSCpE 1-A', '2026-04-19 07:17:30'),
+(58, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:17:32'),
+(59, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:22:14'),
+(60, 2, 'admin2', 'Batch imported subjects', 'subject', '53 imported', '2026-04-19 07:25:02'),
+(61, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:25:09'),
+(62, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (2024-1244)', '2026-04-19 07:25:51'),
+(63, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:25:53'),
+(64, 2, 'admin2', 'Batch imported subjects', 'subject', '28 imported, 52 skipped', '2026-04-19 07:27:58'),
+(65, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:28:02'),
+(66, 2, 'admin2', 'Batch imported subjects', 'subject', '70 imported', '2026-04-19 07:30:37'),
+(67, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:30:40'),
+(68, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 07:35:22'),
+(69, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:16:10'),
+(70, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (2024-1244)', '2026-04-19 14:16:35'),
+(71, 2, 'admin2', 'Created class', 'class', 'CET 0111 — kl;d', '2026-04-19 14:20:54'),
+(72, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:20:55'),
+(73, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2026-2027 | Enrollment: Open', '2026-04-19 14:22:09'),
+(74, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:22:10'),
+(75, 2, 'admin2', 'Dropped enrollment', 'enrollment', 'Enrollment ID 70 — Student ID 2', '2026-04-19 14:23:32'),
+(76, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:23:34'),
+(77, 2, 'admin2', 'Created class', 'class', 'CET 0111 — retry', '2026-04-19 14:30:34'),
+(78, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:30:42'),
+(79, 2, 'admin2', 'Dropped enrollment', 'enrollment', 'Enrollment ID 72 — Student ID 2', '2026-04-19 14:36:54'),
+(80, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:36:55'),
+(81, 2, 'admin2', 'Promoted all students by one year level', 'student', '4 students promoted, 1 students marked INC', '2026-04-19 14:53:52'),
+(82, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:53:59'),
+(83, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-19 14:57:03'),
+(84, 2, 'admin2', 'Updated class', 'class', 'CET 0121 — BSCpE 1-A', '2026-04-20 06:29:23'),
+(85, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 06:29:24'),
+(86, 2, 'admin2', 'Deleted class', 'class', 'Class ID 22', '2026-04-20 10:03:04'),
+(87, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:03:07'),
+(88, 2, 'admin2', 'Created class', 'class', 'CET 0121 — sfgae', '2026-04-20 10:04:27'),
+(89, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:04:30'),
+(90, 2, 'admin2', 'Deleted class', 'class', 'Class ID 27', '2026-04-20 10:05:55'),
+(91, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:05:56'),
+(92, 2, 'admin2', 'Created class', 'class', 'CET 0121 — retrysadd', '2026-04-20 10:08:03'),
+(93, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:08:05'),
+(94, 2, 'admin2', 'Created class', 'class', 'CET 0216 — asdaaaaaaaa', '2026-04-20 10:09:04'),
+(95, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:09:05'),
+(96, 2, 'admin2', 'Deleted class', 'class', 'Class ID 29', '2026-04-20 10:09:42'),
+(97, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:09:43'),
+(98, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-20 10:12:02'),
+(99, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-20 10:13:34'),
+(100, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:17:57'),
+(101, 2, 'admin2', 'Added announcement', 'announcement', 'hujkhj', '2026-04-20 10:28:22'),
+(102, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:28:24'),
+(103, 2, 'admin2', 'Updated announcement', 'announcement', 'hujkhj', '2026-04-20 10:28:59'),
+(104, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:29:01'),
+(105, 2, 'admin2', 'Created class', 'class', 'ETH 0008 — retryhuyokl', '2026-04-20 10:30:52'),
+(106, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:30:55'),
+(107, 2, 'admin2', 'Created class', 'class', 'TCW 0005 — retryasdasd', '2026-04-20 10:35:50'),
+(108, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 10:35:57'),
+(109, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2027-2028 | Enrollment: Open', '2026-04-20 11:11:08'),
+(110, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 11:11:10'),
+(111, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-20 11:12:40'),
+(112, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-20 11:12:41'),
+(113, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 11:12:42'),
+(114, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 11:15:08'),
+(115, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 11:20:25'),
+(116, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (202412685)', '2026-04-20 14:47:33'),
+(117, 2, 'admin2', 'Created class', 'class', 'CPE 0112.1 — bvnbvvbnvbn', '2026-04-20 14:47:53'),
+(118, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 14:47:55'),
+(119, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2027-2028 | Enrollment: Open', '2026-04-20 14:48:24'),
+(120, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 14:48:25'),
+(121, 2, 'admin2', 'Created class', 'class', 'CPE 0121.1 — cvnbnbvn', '2026-04-20 14:49:12'),
+(122, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-20 14:49:16'),
+(123, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 14:49:17'),
+(124, 2, 'admin2', 'Created class', 'class', 'NSTP 01 — yessir', '2026-04-20 14:57:30'),
+(125, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 14:57:33'),
+(126, 2, 'admin2', 'Created class', 'class', 'PED 0001 — retryasdasdasdasd', '2026-04-20 15:00:45'),
+(127, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 15:00:47');
 
 -- --------------------------------------------------------
 
@@ -59,24 +213,26 @@ DROP TABLE IF EXISTS `announcements`;
 CREATE TABLE IF NOT EXISTS `announcements` (
   `announcement_id` int NOT NULL AUTO_INCREMENT,
   `admin_id` int DEFAULT NULL COMMENT 'Foreign key to admins table - who posted it',
-  `title` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `media` json DEFAULT NULL,
-  `target_audience` enum('all','students','applicants','faculty') DEFAULT 'all',
-  `priority` enum('normal','important','urgent') DEFAULT 'normal',
-  `status` enum('active','archived') DEFAULT 'active',
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `media` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `target_audience` enum('all','students','applicants','faculty') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'all',
+  `priority` enum('normal','important','urgent') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'normal',
+  `status` enum('active','archived') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`announcement_id`),
   KEY `admin_id` (`admin_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `announcements`
 --
 
 INSERT INTO `announcements` (`announcement_id`, `admin_id`, `title`, `message`, `media`, `target_audience`, `priority`, `status`, `created_at`, `updated_at`) VALUES
-(1, NULL, 'Enrollment Period Extended', 'The enrollment period for 2nd Semester AY 2024-2025 has been extended until January 31, 2025. All students are encouraged to complete their enrollment before the deadline.', '[{\"file\": \"ann_69c9f0333df712.62928093.png\", \"type\": \"image\"}]', 'all', 'important', 'active', '2026-03-09 06:47:19', '2026-04-08 08:19:57');
+(1, NULL, 'Enrollment Period Extended', 'The enrollment period for 2nd Semester AY 2024-2025 has been extended until January 31, 2025. All students are encouraged to complete their enrollment before the deadline.', '[{\"file\": \"ann_69c9f0333df712.62928093.png\", \"type\": \"image\"}]', 'all', 'important', 'active', '2026-03-09 06:47:19', '2026-04-08 08:19:57'),
+(5, 2, 'EHH', 'EHHHH', '[{\"type\":\"image\",\"file\":\"ann_69dcd11dea47f7.19576930.jpg\"}]', 'all', 'normal', 'active', '2026-04-13 11:15:50', '2026-04-13 11:19:11'),
+(6, 2, 'hujkhj', 'khjkhjk', '[{\"type\":\"image\",\"file\":\"ann_69e5ffeb088bd6.87566789.jpg\"}]', 'all', 'normal', 'active', '2026-04-20 10:28:22', '2026-04-20 10:28:59');
 
 -- --------------------------------------------------------
 
@@ -87,62 +243,62 @@ INSERT INTO `announcements` (`announcement_id`, `admin_id`, `title`, `message`, 
 DROP TABLE IF EXISTS `applicants`;
 CREATE TABLE IF NOT EXISTS `applicants` (
   `applicant_id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `lrn` varchar(12) DEFAULT NULL,
-  `first_choice` varchar(200) DEFAULT NULL,
-  `second_choice` varchar(200) DEFAULT NULL,
-  `third_choice` varchar(200) DEFAULT NULL,
-  `last_name` varchar(100) DEFAULT NULL,
-  `first_name` varchar(100) DEFAULT NULL,
-  `middle_name` varchar(100) DEFAULT NULL,
-  `suffix` varchar(10) DEFAULT NULL,
-  `married_name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `lrn` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `first_choice` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `second_choice` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `third_choice` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `middle_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `suffix` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `married_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
-  `nationality` varchar(50) DEFAULT NULL,
-  `place_of_birth` varchar(200) DEFAULT NULL,
-  `civil_status` varchar(20) DEFAULT NULL,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `religion` varchar(100) DEFAULT NULL,
-  `gender` varchar(10) DEFAULT NULL,
-  `disability` varchar(200) DEFAULT NULL,
-  `perm_region` varchar(100) DEFAULT NULL,
-  `perm_province` varchar(100) DEFAULT NULL,
-  `perm_municipality` varchar(100) DEFAULT NULL,
-  `perm_barangay` varchar(100) DEFAULT NULL,
-  `perm_address` text,
-  `perm_zipcode` varchar(10) DEFAULT NULL,
-  `mail_region` varchar(100) DEFAULT NULL,
-  `mail_province` varchar(100) DEFAULT NULL,
-  `mail_municipality` varchar(100) DEFAULT NULL,
-  `mail_barangay` varchar(100) DEFAULT NULL,
-  `mail_address` text,
-  `mail_zipcode` varchar(10) DEFAULT NULL,
-  `application_status` varchar(50) DEFAULT 'incomplete',
+  `nationality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `place_of_birth` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `civil_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `religion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gender` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `disability` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `perm_zipcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `mail_zipcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `application_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'incomplete',
   `documents_submitted` tinyint(1) DEFAULT '0',
   `exam_scheduled` tinyint(1) DEFAULT '0',
   `exam_date` date DEFAULT NULL,
-  `exam_time` varchar(50) DEFAULT NULL,
-  `exam_venue` varchar(200) DEFAULT NULL,
-  `exam_room` varchar(50) DEFAULT NULL,
+  `exam_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `exam_venue` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `exam_room` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `exam_taken` tinyint(1) DEFAULT '0',
-  `exam_result` varchar(20) DEFAULT NULL,
+  `exam_result` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `exam_score` decimal(5,2) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `exam_schedule_id` int DEFAULT NULL,
   `exam_notified` tinyint(1) DEFAULT '0',
-  `doc_form138` varchar(255) DEFAULT NULL,
-  `doc_birth_cert` varchar(255) DEFAULT NULL,
-  `doc_good_moral` varchar(255) DEFAULT NULL,
-  `doc_our_au001` varchar(255) DEFAULT NULL,
-  `doc_our_au002` varchar(255) DEFAULT NULL,
+  `doc_form138` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_birth_cert` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_good_moral` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_our_au001` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_our_au002` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`applicant_id`),
   UNIQUE KEY `email` (`email`),
   KEY `idx_email` (`email`),
   KEY `idx_lrn` (`lrn`),
   KEY `idx_application_status` (`application_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `applicants`
@@ -150,7 +306,9 @@ CREATE TABLE IF NOT EXISTS `applicants` (
 
 INSERT INTO `applicants` (`applicant_id`, `email`, `password`, `lrn`, `first_choice`, `second_choice`, `third_choice`, `last_name`, `first_name`, `middle_name`, `suffix`, `married_name`, `birthdate`, `nationality`, `place_of_birth`, `civil_status`, `contact_number`, `religion`, `gender`, `disability`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `application_status`, `documents_submitted`, `exam_scheduled`, `exam_date`, `exam_time`, `exam_venue`, `exam_room`, `exam_taken`, `exam_result`, `exam_score`, `created_at`, `updated_at`, `exam_schedule_id`, `exam_notified`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`) VALUES
 (2, '124@gmail.com', '$2y$10$KMppsxxZUlKrSE74rS6qvu.iCxO9HbLfwso3emP5.jVoVoAUKif0S', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'approved', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-03-27 12:02:16', '2026-03-30 04:55:54', 1, 0, NULL, NULL, NULL, NULL, NULL),
-(4, 'softdevset@gmail.com', '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', '123456789123', 'BS Computer Science', 'BS Information Technology', 'BS Business Administration', 'Muncada', 'Louie', 'Lopez', '', '', '2005-11-17', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-08 09:12:06', '2026-04-09 12:03:23', NULL, 0, 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png');
+(4, 'softdevset@gmail.com', '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', '123456789123', 'BS Computer Science', 'BS Information Technology', 'BS Business Administration', 'Muncada', 'Louie', 'Lopez', '', '', '2005-11-17', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-08 09:12:06', '2026-04-09 12:03:23', NULL, 0, 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png'),
+(5, 'kevsistired@gmail.com', '$2y$10$qCwamMHL5C/MjJdCgoZxee8tfQIkty1fwe6S3syzCJ0i.CDznx56W', '000000000000', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Civil Engineering', 'Tiu', 'Khristian Gabriel', 'Romero', '', '', '2026-04-28', 'Filipino', 'Marikina', 'single', '09493258417', 'Catholic', 'male', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'approved', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-12 11:09:14', '2026-04-18 11:32:51', 2, 0, 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf'),
+(6, 'foran94631@spotshops.com', '$2y$10$bGokp7nRykjNU8huBWRHM.pcElznHsnULOkr5cYfG6hCiU4tJzjG6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'incomplete', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-15 14:58:44', '2026-04-18 11:32:55', NULL, 0, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -161,27 +319,44 @@ INSERT INTO `applicants` (`applicant_id`, `email`, `password`, `lrn`, `first_cho
 DROP TABLE IF EXISTS `blocks`;
 CREATE TABLE IF NOT EXISTS `blocks` (
   `block_id` int NOT NULL AUTO_INCREMENT,
-  `block_name` varchar(50) NOT NULL COMMENT 'e.g., 1A, 1B, 2A, 2B',
-  `course` varchar(100) NOT NULL COMMENT 'e.g., BS Computer Science, BS Information Technology',
-  `year_level` enum('1','2','3','4') NOT NULL,
-  `semester` enum('1st','2nd','summer') NOT NULL,
-  `school_year` varchar(20) NOT NULL COMMENT 'e.g., 2024-2025',
+  `block_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., 1A, 1B, 2A, 2B',
+  `course` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., BS Computer Science, BS Information Technology',
+  `year_level` enum('1','2','3','4') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `semester` enum('1st','2nd','summer') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `school_year` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., 2024-2025',
   `max_students` int DEFAULT '40' COMMENT 'Maximum students per block',
   `current_students` int DEFAULT '0' COMMENT 'Current number of students',
-  `status` enum('active','inactive','full') DEFAULT 'active',
+  `status` enum('active','inactive','full') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`block_id`),
   UNIQUE KEY `unique_block` (`block_name`,`course`,`year_level`,`semester`,`school_year`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `blocks`
 --
 
 INSERT INTO `blocks` (`block_id`, `block_name`, `course`, `year_level`, `semester`, `school_year`, `max_students`, `current_students`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'panget', 'BSCpE', '1', '1st', '2026-2027', 40, 3, 'active', '2026-03-12 02:43:43', '2026-04-09 03:33:23'),
-(2, 'asdas', 'BS Information Technology', '2', '1st', 'asda', 40, 0, 'active', '2026-04-08 16:22:10', '2026-04-08 16:22:10');
+(1, 'panget', 'BSCpE', '1', '1st', '2027-2028', 40, 1, 'active', '2026-03-12 02:43:43', '2026-04-20 14:48:54'),
+(2, 'asdas', 'BS Information Technology', '2', '1st', '2027-2028', 40, 0, 'active', '2026-04-08 16:22:10', '2026-04-20 14:48:54'),
+(6, 'BSIT 1-1', 'BSCpE', '1', '1st', '2027-2028', 40, 0, 'active', '2026-04-15 15:21:12', '2026-04-20 14:48:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `block_subjects`
+--
+
+DROP TABLE IF EXISTS `block_subjects`;
+CREATE TABLE IF NOT EXISTS `block_subjects` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `block_id` int NOT NULL,
+  `class_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `block_id` (`block_id`),
+  KEY `class_id` (`class_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -192,18 +367,18 @@ INSERT INTO `blocks` (`block_id`, `block_name`, `course`, `year_level`, `semeste
 DROP TABLE IF EXISTS `calendar_events`;
 CREATE TABLE IF NOT EXISTS `calendar_events` (
   `event_id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `description` text,
+  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `event_date` date NOT NULL,
   `end_date` date DEFAULT NULL,
-  `event_time` varchar(50) DEFAULT NULL,
-  `color` varchar(20) DEFAULT '#8C1C24',
-  `audience` enum('all','students','faculty','applicants') DEFAULT 'all',
-  `image` varchar(255) DEFAULT NULL,
+  `event_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `color` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '#8C1C24',
+  `audience` enum('all','students','faculty','applicants') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'all',
+  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`event_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `calendar_events`
@@ -211,7 +386,9 @@ CREATE TABLE IF NOT EXISTS `calendar_events` (
 
 INSERT INTO `calendar_events` (`event_id`, `title`, `description`, `event_date`, `end_date`, `event_time`, `color`, `audience`, `image`, `created_by`, `created_at`) VALUES
 (1, 'Deadline ni Kevin', 'Ngayon daw', '2026-03-30', '2026-03-30', '', '#0B1F5B', 'all', 'event_69c9fc2ea666c9.63673763.jpg', 2, '2026-03-30 04:29:34'),
-(2, 'Tiktok Paylater ko', 'Wala pa kong pera', '2026-03-30', NULL, '', '#8C1C24', 'all', 'event_69c9fe82cc8264.65426342.jpg', 2, '2026-03-30 04:39:30');
+(2, 'Tiktok Paylater ko', 'Wala pa kong pera', '2026-03-30', NULL, '', '#8C1C24', 'all', 'event_69c9fe82cc8264.65426342.jpg', 2, '2026-03-30 04:39:30'),
+(3, 'BIRTHDAY NI LIAN', 'HAPPY BIRTHDAY BOSS', '2026-04-21', NULL, '9:00AM - 7:00PM', '#8C1C24', 'all', 'event_69dcd107f31848.96336601.jpg', 2, '2026-04-13 11:12:50'),
+(4, 'sd', 'set', '2026-04-16', NULL, '', '#ec4899', 'all', 'event_69e083c5797cc0.17472326.png', 2, '2026-04-16 06:37:57');
 
 -- --------------------------------------------------------
 
@@ -224,31 +401,51 @@ CREATE TABLE IF NOT EXISTS `classes` (
   `class_id` int NOT NULL AUTO_INCREMENT,
   `subject_id` int NOT NULL COMMENT 'Foreign key to subjects table',
   `faculty_id` int DEFAULT NULL COMMENT 'Foreign key to faculty table',
-  `section` varchar(20) NOT NULL COMMENT 'e.g., A, B, C, 1A, 2B',
-  `school_year` varchar(20) NOT NULL COMMENT 'e.g., 2024-2025',
-  `semester` enum('1st','2nd','summer') NOT NULL,
-  `schedule_day` varchar(50) DEFAULT NULL COMMENT 'e.g., Monday, Tuesday, MW, TTH',
-  `schedule_time` varchar(50) DEFAULT NULL COMMENT 'e.g., 8:00 AM - 10:00 AM',
-  `room` varchar(50) DEFAULT NULL COMMENT 'Room number or location',
+  `section` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., A, B, C, 1A, 2B',
+  `school_year` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., 2024-2025',
+  `semester` enum('1st','2nd','summer') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `schedule_day` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'e.g., Monday, Tuesday, MW, TTH',
+  `schedule_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'e.g., 8:00 AM - 10:00 AM',
+  `room` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Room number or location',
   `max_slots` int DEFAULT '40' COMMENT 'Maximum number of students',
   `enrolled_count` int DEFAULT '0' COMMENT 'Current number of enrolled students',
-  `status` enum('open','closed','cancelled') DEFAULT 'open',
+  `status` enum('open','closed','cancelled') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'open',
   `grades_finalized` tinyint(1) NOT NULL DEFAULT '0',
   `grades_finalized_at` timestamp NULL DEFAULT NULL,
-  `specific_department` varchar(100) DEFAULT NULL COMMENT 'Department restriction - NULL means available to all departments',
+  `specific_department` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Department restriction - NULL means available to all departments',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`class_id`),
   KEY `subject_id` (`subject_id`),
   KEY `faculty_id` (`faculty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `classes`
 --
 
 INSERT INTO `classes` (`class_id`, `subject_id`, `faculty_id`, `section`, `school_year`, `semester`, `schedule_day`, `schedule_time`, `room`, `max_slots`, `enrolled_count`, `status`, `grades_finalized`, `grades_finalized_at`, `specific_department`, `created_at`, `updated_at`) VALUES
-(6, 731, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MWF', '12:00PM - 3:00PM', '', 40, 2, 'open', 0, NULL, NULL, '2026-04-08 18:27:11', '2026-04-09 04:52:21');
+(6, 731, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MWF', '12:00PM - 3:00PM', '', 40, 4, 'open', 1, '2026-04-18 14:13:45', NULL, '2026-04-08 18:27:11', '2026-04-18 14:13:45'),
+(9, 732, 3, 'PLD 0001', '2025-2026', '1st', 'MW', '7:00AM - 11:00 AM', '0', 40, 2, 'open', 1, '2026-04-13 13:49:08', NULL, '2026-04-13 05:22:21', '2026-04-18 10:05:12'),
+(10, 811, 3, 'CET 0111 - BSCpE', '2026-2027', '2nd', 'MS', '1:00AM - 3:00 AM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-13 12:40:21', '2026-04-18 13:54:46'),
+(11, 801, 3, 'Calculus 0001', '2024-2025', '1st', 'Tuesday Thursday', '11:00 PM - 2:00 PM', '0', 40, 1, 'open', 1, '2026-04-13 13:49:44', NULL, '2026-04-13 12:41:23', '2026-04-16 05:49:19'),
+(12, 801, 3, 'basta calculus 1 nil', '2024-2025', '2nd', 'Wednesday', '9:00 AM - 12:00 PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-13 12:47:47', '2026-04-16 05:49:22'),
+(13, 506, 8, 'hwllo', '2024-2025', '2nd', 'TH S', '12:00PM - 3:00PM', '0', 40, 1, 'open', 0, NULL, NULL, '2026-04-13 12:55:37', '2026-04-15 16:00:04'),
+(17, 506, 7, 'JUSTEN BEIVER', '2024-2025', '1st', 'THURSDAY FRIDAY', '4:00PM - 4:30 PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-15 15:29:52', '2026-04-15 16:04:56'),
+(18, 729, 4, 'BSCpE 1-A', '2026-2027', '1st', 'WF', '8:00AM - 9:00PM', 'seth', 40, 2, 'open', 1, '2026-04-19 07:18:03', NULL, '2026-04-18 04:13:02', '2026-04-19 07:18:03'),
+(19, 730, 7, 'BSCpE 1-A', '2025-2026', '1st', 'TS', '12:00PM - 3:00PM', '35', 40, 1, 'open', 0, NULL, NULL, '2026-04-18 04:53:51', '2026-04-18 11:36:43'),
+(20, 730, 3, 'asd', '2026-2027', '1st', 'TTH', '12:00PM - 3:00PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-18 13:19:59', '2026-04-18 13:19:59'),
+(21, 733, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MTHS', '8:00AM - 9:00PM', 'GV311', 40, 1, 'open', 1, '2026-04-19 06:49:09', NULL, '2026-04-18 13:21:18', '2026-04-19 06:49:09'),
+(23, 728, 4, 'CET 0111 - BSCpE', '2026-2027', '1st', 'MF', '8:00AM - 9:00PM', 'GV911', 40, 1, 'open', 1, '2026-04-18 14:12:11', NULL, '2026-04-18 14:02:16', '2026-04-18 14:12:11'),
+(25, 728, 4, 'kl;d', '2026-2027', '1st', 'TTH', '8:00AM - 9:00PM', '35', 40, 1, 'open', 1, '2026-04-19 14:21:51', NULL, '2026-04-19 14:20:54', '2026-04-19 14:21:51'),
+(26, 728, 4, 'retry', '2026-2027', '2nd', 'WTH', '12:00PM - 3:00PM', 'GV311', 40, 1, 'open', 1, '2026-04-19 14:34:28', NULL, '2026-04-19 14:30:34', '2026-04-19 14:34:28'),
+(28, 739, 4, 'retrysadd', '2026-2027', '1st', 'WF', '1:00AM - 3:00 AM', 'GV311', 40, 0, 'open', 0, NULL, NULL, '2026-04-20 10:08:03', '2026-04-20 10:08:03'),
+(30, 767, 4, 'retryhuyokl', '2027-2028', '2nd', 'T', '8:00AM - 9:00PM', 'seth', 40, 1, 'closed', 1, '2026-04-20 10:31:36', NULL, '2026-04-20 10:30:52', '2026-04-20 10:31:36'),
+(31, 765, 4, 'retryasdasd', '2027-2028', '2nd', 'MTWTHF', '8:00AM - 10:00AM', 'GV911', 40, 1, 'closed', 1, '2026-04-20 11:10:42', NULL, '2026-04-20 10:35:50', '2026-04-20 11:10:42'),
+(32, 732, 4, 'bvnbvvbnvbn', '2027-2028', '1st', 'MW', '12:00PM - 3:00PM', '35', 40, 1, 'closed', 1, '2026-04-20 14:48:49', NULL, '2026-04-20 14:47:53', '2026-04-20 14:48:49'),
+(33, 743, 4, 'cvnbnbvn', '2027-2028', '2nd', 'TF', '8:00AM - 9:00PM', 'GV311', 40, 1, 'open', 0, NULL, NULL, '2026-04-20 14:49:12', '2026-04-20 14:49:30'),
+(34, 738, 4, 'yessir', '2027-2028', '2nd', 'WF', '12:00PM - 3:00PM', '0', 40, 1, 'open', 0, NULL, NULL, '2026-04-20 14:57:30', '2026-04-20 14:57:50'),
+(35, 737, 4, 'retryasdasdasdasd', '2027-2028', '2nd', 'THS', '8:00AM - 9:00PM', 'seth', 40, 1, 'closed', 1, '2026-04-20 15:01:21', NULL, '2026-04-20 15:00:45', '2026-04-20 15:01:21');
 
 -- --------------------------------------------------------
 
@@ -259,43 +456,40 @@ INSERT INTO `classes` (`class_id`, `subject_id`, `faculty_id`, `section`, `schoo
 DROP TABLE IF EXISTS `courses`;
 CREATE TABLE IF NOT EXISTS `courses` (
   `course_id` int NOT NULL AUTO_INCREMENT,
-  `college_code` varchar(10) NOT NULL,
-  `college_name` varchar(100) NOT NULL,
-  `curriculum_url` varchar(500) DEFAULT NULL,
-  `description` text,
-  `program_objectives` text,
-  `career_opportunities` text,
-  `college_description` text,
-  `college_history` text,
-  `college_vision` text,
-  `college_mission` text,
-  `college_objectives` text,
-  `college_location` varchar(255) DEFAULT NULL,
-  `college_local_number` varchar(100) DEFAULT NULL,
-  `course_code` varchar(20) NOT NULL,
-  `course_name` varchar(200) NOT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
+  `college_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `college_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `curriculum_url` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `program_objectives` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `career_opportunities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_history` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_vision` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_mission` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_objectives` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `college_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `college_local_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `course_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `course_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `status` enum('active','inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`course_id`),
   UNIQUE KEY `unique_course_code` (`course_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `courses`
 --
 
 INSERT INTO `courses` (`course_id`, `college_code`, `college_name`, `curriculum_url`, `description`, `program_objectives`, `career_opportunities`, `college_description`, `college_history`, `college_vision`, `college_mission`, `college_objectives`, `college_location`, `college_local_number`, `course_code`, `course_name`, `status`, `created_at`) VALUES
-(1, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSChE', 'Bachelor of Science in Chemical Engineering', 'active', '2026-04-08 16:35:27'),
-(2, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSCE', 'Bachelor of Science in Civil Engineering', 'active', '2026-04-08 16:35:27'),
-(5, 'CE', 'College of Engineering', 'https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSCpE', 'Bachelor of Science in Computer Engineering', 'active', '2026-04-08 16:35:27'),
-(6, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSEE', 'Bachelor of Science in Electrical Engineering', 'active', '2026-04-08 16:35:27'),
-(7, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSECE', 'Bachelor of Science in Electronics Engineering', 'active', '2026-04-08 16:35:27'),
-(8, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSMfgE', 'Bachelor of Science in Manufacturing Engineering', 'active', '2026-04-08 16:35:27'),
-(9, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSME', 'Bachelor of Science in Mechanical Engineering', 'active', '2026-04-08 16:35:27'),
-(10, 'CA', 'College of Accountancy', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSA', 'Bachelor of Science in Accountancy', 'active', '2026-04-08 16:35:27'),
-(11, 'CASBE', 'College of Architecture and Sustainable Built Environment', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BS Arch', 'Bachelor of Science in Architecture', 'active', '2026-04-08 16:35:27'),
-(12, 'GSL', 'Graduate School of Law', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'LL.M.', 'Master of Laws', 'active', '2026-04-08 16:35:27'),
-(13, 'CE', 'College of Engineering', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'BSIT', 'Bachelor of Science in Information Technology', 'active', '2026-04-08 16:37:36');
+(1, 'CE', 'College of Engineering', NULL, 'The Bachelor of Science in Chemical Engineering (BSCHE) program at the Pamantasan ng Lungsod ng Maynila (PLM) is a four-year degree program that envisions itself as a center of excellence, a leading institution for research, and with highly qualified faculty members duly recognized for producing technically competent, socially involved, and globally responsive professionals. The program is committed to providing students with a strong theoretical foundation and practical skills essential for success in the field. It also emphasizes the importance of ethical and social responsibility in engineering practice.', 'Key areas of study include:\n• Chemical Engineering Fundamentals: Thermodynamics, fluid mechanics, heat transfer, mass transfer, reaction kinetics, and process control.\n• Chemical Process Design: Development of flowsheets, equipment selection, process optimization, and economic evaluation.\n• Laboratory and Pilot Plant Operations: Hands-on experience in conducting experiments, analyzing data, and scaling up processes.\n• Industrial Safety and Environmental Protection: Emphasis on safe practices, hazard identification, risk assessment, and pollution prevention.', 'Graduates of the program are well-prepared for careers in various industries, such as:\n• Chemical Manufacturing: Petrochemicals, pharmaceuticals, food processing, and consumer goods.\n• Energy Production: Oil and gas, renewable energy, and nuclear power.\n• Environmental Engineering: Pollution control, waste treatment, and resource recovery.\n• Research and Development: Development of new products and processes.', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSChE', 'Bachelor of Science in Chemical Engineering', 'active', '2026-04-08 16:35:27'),
+(2, 'CE', 'College of Engineering', NULL, 'The Bachelor of Science in Civil Engineering (BSCE) program is designed to cultivate future engineers with a strong foundation in analytical thinking, teamwork, and technical expertise. This program focuses on the comprehensive understanding required for the design, construction, and maintenance of key infrastructure such as roads, bridges, buildings, water supply systems, irrigation, flood control systems, and ports. Students are trained to integrate new knowledge continuously, ensuring they stay at the forefront of technological and methodological advancements in civil engineering.\n\nThe BSCE program offers a broad-based education that prepares graduates to excel in various fields within civil engineering. Specialized tracks include Construction Management and Structural Engineering. Graduates are not only proficient in technical skills but also embody the core values of \"Karunungan, Kaunlaran, and Kadakilaan\". These values inspire them to contribute productively and ethically to society, engaging in nation-building through careers in academe, research, and industry.', NULL, '• Civil Engineer\n• Construction Engineer\n• Structural Engineer\n• Geotechnical Engineer\n• Transportation Engineer\n• Water Resources Engineer\n• Construction Manager\n• Quantity Surveyor\n• Project Manager\n• Safety Engineer\n• Environmental Engineer\n• Academician/Professor\n• Research and Development Engineer\n• Urban Planner\n• Consulting Engineer', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSCE', 'Bachelor of Science in Civil Engineering', 'active', '2026-04-08 16:35:27'),
+(5, 'CE', 'College of Engineering', 'https://web13.plm.edu.ph/media/courses/Bachelor_of_Science_in_Computer_Engineering.pdf', 'The Bachelor of Science in Computer Engineering (BSCpE) is a program that embodies the science and technology of design, development, implementation, maintenance and integration of software and hardware components in modern computing systems and computer-controlled equipment. This includes knowledge in mathematics and engineering sciences, associated with the broader scope of engineering and beyond that narrowly required for the field. It is a preparation for professional practice in engineering.\n\nGraduates of BS in Computer Engineering should possess the ability to design computers, computer-based systems and networks that include both hardware and software and their integration to solve novel engineering problems, subject to trade-offs involving a set of competing goals and constraints. In this context, \"design\" refers to a level of ability beyond \"assembling\" or \"configuring\" systems.', NULL, 'Graduates of the BSCpE program can pursue a variety of career paths, including but not limited to the following:\n• Computer Hardware Engineer\n• Systems Engineer\n• Software Engineer\n• Robotics Engineer\n• Back-end Developer\n• Full Stack Developer\n• Network Administrator/Engineer\n• Computer Programmer\n• App Developer\n• IT Security Consultant\n• Software Quality Assurance Engineer\n• Front End Software Engineer\n• Data Engineer/Analyst\n• Technical Support Specialist\n• Multimedia Programmer\n• Web Developer\n• Forensic Computer Analyst\n• Game Developer\n• UX/UI Design Engineer', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSCpE', 'Bachelor of Science in Computer Engineering', 'active', '2026-04-08 16:35:27'),
+(7, 'CE', 'College of Engineering', NULL, 'The Bachelor of Science in Electronics Engineering (BSECE) program of the Pamantasan ng Lungsod ng Maynila is a comprehensive undergraduate degree that equips students with the knowledge and skills necessary to design, develop, and maintain electronic systems and devices. The program aligns with the country\'s goals to produce globally competitive engineers who can contribute to technological advancements both locally and internationally.\n\nThe BSECE program is tailored to meet the specific needs of the Philippine electronics industry, which is a key sector in the country\'s economy. Graduates are prepared to work in various local industries, including telecommunications, semiconductor manufacturing, consumer electronics, and information technology. The program also emphasizes the development of solutions to local challenges, such as improving communication infrastructure in remote areas and advancing local manufacturing capabilities.\n\nThe curriculum is designed to meet international standards, ensuring that graduates are competitive in the global job market. The program adheres to guidelines set by the Commission on Higher Education (CHED). The emphasis on modern and emerging technologies, such as IoT (Internet of Things), AI (Artificial Intelligence), and renewable energy systems, prepares graduates for cutting-edge roles in the global electronics industry.\n\nAn Electronics Engineer is a professional who conceptualizes, develops, designs, improves and applies safe, healthy, ethical and economic ways in the field of electronics for the benefit of society and environment through the knowledge of basic sciences and mathematics, physical sciences, basic engineering sciences, information technology, electronics engineering and other natural, applied and social sciences, gained by study, research and practice.', NULL, 'Graduates of the BSECE program can pursue a variety of career paths, including but not limited to:\n• Electronics Design Engineer\n• Semiconductor Engineer\n• Telecommunications Engineer\n• Network Engineer\n• Broadcast Engineer\n• Acoustic Engineer\n• Control Systems Engineer\n• Instrumentation Engineer\n• Power Electronics Engineer\n• Biomedical Engineer\n• Test Engineer\n• Data Engineer\n• Software Engineer\n• Robotics Engineer\n• Artificial Intelligence Engineer\n• IoT Engineer\n• Embedded Systems Engineer\n• Technical Sales Engineer\n• Research and Development Engineer\n• Academic and Research Positions', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSECE', 'Bachelor of Science in Electronics Engineering', 'active', '2026-04-08 16:35:27'),
+(8, 'CE', 'College of Engineering', NULL, 'The Bachelor of Science in Manufacturing Engineering (BSMfgE) is a program that concerns itself with the understanding and application of engineering procedures in manufacturing processes and production methods. It requires the ability to plan the practices of manufacturing; research; develop tools, processes, machines and equipment; and to integrate the facilities and systems for producing quality product with the optimum expenditure of capital.', NULL, 'The scope of the practice of Manufacturing Engineering includes but is not limited to the following professional services in terms of consultation requiring manufacturing engineering knowledge, skills, and proficiency; design of equipment and processes in a manufacturing industry; operation and maintenance of a manufacturing plant; quality assurance; research and development; and teaching in the academy.', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSMfgE', 'Bachelor of Science in Manufacturing Engineering', 'active', '2026-04-08 16:35:27'),
+(9, 'CE', 'College of Engineering', NULL, 'The Bachelor of Science in Mechanical Engineering concerns itself with mechanical design, energy conversion, fuel and combustion technologies, heat transfer, materials, noise control and acoustics, manufacturing processes, rail transportation, automatic control, product safety and reliability, solar energy, and technological impacts to society.', NULL, 'The scope of the practice of Mechanical Engineering pertains to professional services to industrial plants in terms of: consultation requiring mechanical engineering knowledge, skill and proficiency; investigation; estimation and or valuation; planning, preparation of feasibility studies; designing; preparation of specifications; supervision of installation; operation including quality management; and research, among others.', 'Formerly the College of Engineering and Technology, the College of Engineering is one of the Colleges of the University effective 25 January 2024 after the Management Reorganization of the Pamantasan ng Lungsod ng Maynila.', 'With the conviction of providing quality education and offering technical manual skills in the field of technology, the College of Engineering was established on July 1, 1969 - six years after the late Mayor Antonio F. Villegas founded the university.\n\nOriginally under the College of Arts and Letters, the main trust of the college was to provide technical, industrial, vocational education to PLM students alongside the humanistic courses to prepare them for promoting out technology under two divisions, namely - the Division of Engineering and Technology which covered the Department of Civil, Mechanical, Electrical, Sanitary, Chemical, Naval and Industrial Engineering and the Division of Technical and Vocational Education which covered the Department of Electronics, Wood Working, Metal Works, Automotive Works, Ceramics, Graphics Arts and Teacher Education in Arts and Trades. Obtaining a degree in this college then, required the student to finish a six-year ladderized program which was later reduced to a five-year scheme during the term of former PLM President Consuelo Blanco who felt the imperative need of the engineering graduates to constitute the country\'s labor pool.\n\nToday, the College of Engineering stands committed to upholding the legacy conceived by Mayor Villegas and the late Mayor Arsenio H. Lacson by providing its present batch of Engineering students with quality education which is responsive to the needs of the time.', 'The College of Engineering will be the premier college in technological education, research and extension services.', 'Guided by this vision, we commit ourselves to:\n• Uphold excellence through curriculum development and teaching, significant advances in knowledge, and services to the community of which we are a part.\n• Nurture students with a technological education of the highest quality that will enable them to be professionally competent, community directed, and God centered individuals.\n• Develop faculty members and staff to be excellent examples in leadership and management.', 'Believing in our mission, we earnestly seek to:\n• Facilitate the achievement of academic goals by regularly reviewing curricular programs, ensuring that they surpass the standards set by governing bodies.\n• Provide a productive environment to facilitate quality research and socially responsive extension service.\n• Develop dynamism among administrators, faculty, student and services personnel, embracing diversities that contribute to the growth of the college.\n• Strengthen our ties with our alumni and industry partners, helping us establish a distinct place in the industry.', '3rd Floor - Gusaling Villegas (GV)', 'College Staff: 231 | Engineering Laboratory: 232', 'BSME', 'Bachelor of Science in Mechanical Engineering', 'active', '2026-04-08 16:35:27'),
+(10, 'CA', 'College of Accountancy', NULL, 'The Bachelor of Science in Accountancy (BSA) at Pamantasan ng Lungsod ng Maynila (PLM) is a comprehensive and rigorous academic program designed to develop highly competent accounting professionals. The curriculum integrates theoretical knowledge with practical application to ensure that graduates are well-prepared to meet the demands of the accounting profession.', NULL, 'Graduates of the BSA program have a wide range of career opportunities in various sectors, including public practice, commerce and industry, government, and education. Possible careers and professions include:\n\n• Certified Public Accountant (CPA): Licensed professionals providing audit, tax, and advisory services.\n• Financial Accountant: Responsible for preparing financial statements and ensuring accuracy in financial reporting.\n• Management Accountant: Focuses on internal financial analysis, budgeting, and cost management to support business decisions.\n• Auditor: Conducts audits to evaluate the accuracy and integrity of financial records.\n• Tax Consultant: Provides advice on tax planning, compliance, and strategy to individuals and businesses.\n• Internal Auditor: Assesses the effectiveness of internal controls and risk management processes within an organization.\n• Forensic Accountant: Investigates financial discrepancies and fraud, often working with legal authorities.\n• Financial Analyst: Analyzes financial data to assist in investment decisions and financial planning.\n• Accounting Information Systems Specialist: Manages and implements accounting software and information systems.\n• Budget Analyst: Develops and manages budgets for organizations, ensuring efficient allocation of resources.\n• Academician: Engages in teaching, research, and academic administration in educational institutions.\n• Consultant: Provides expert advice in accounting, finance, and business strategy to various clients.', 'The College of Accountancy at Pamantasan ng Lungsod ng Maynila is dedicated to becoming a leader in accountancy education through its commitment to academic excellence, innovation, and ethical leadership. With a rigorous curriculum, impactful research, strong industry partnerships, and a culture of integrity and social responsibility, the college aims to produce competent and socially responsible accountants who will contribute significantly to national development. The continuous professional growth of faculty and staff ensures that the college remains at the cutting edge of educational and professional practices, living up to its motto: \"Excellence. Integrity. Innovation.\"', NULL, 'To be a leading institution in accountancy education, recognized for academic excellence, innovation, and ethical leadership, committed to producing competent and socially responsible accountants who will contribute significantly to national development.', 'The College of Accountancy at Pamantasan ng Lungsod ng Maynila is dedicated to providing high-quality education that equips students with the knowledge, skills, and ethical grounding necessary for professional success. We aim to foster a learning environment that promotes critical thinking, innovation, and lifelong learning.', 'Guided by the college\'s vision and mission, we commit ourselves:\n• Deliver a rigorous and relevant curriculum that meets the highest academic and professional standards.\n• Engage in impactful research and extension services that address contemporary issues in the field of accountancy.\n• Forge strong partnerships with industry, government, and professional organizations to enhance educational and career opportunities for our students.\n• Cultivate a culture of integrity, accountability, and social responsibility among our students, faculty, and staff.\n• Support the continuous development of our faculty and staff to ensure they remain at the forefront of educational and professional practices.', '2nd Floor - Gusaling Lacson (GL)', 'College Staff: 211', 'BSA', 'Bachelor of Science in Accountancy', 'active', '2026-04-08 16:35:27'),
+(12, 'GSL', 'Graduate School of Law', NULL, 'The PLM Graduate School of Law Master of Laws (LL.M.) program is two-year degree program which culminates in a thesis.\n\nIts two-year LL.M. (Master of Laws) program provides students, who already have legal training and experience, with broad latitude to design a course of study that will give them an expanded understanding of law and jurisprudence.\n\nIts curriculum combines the best of traditional courses, as well as legal developments, effective advocacy before the appellate courts, thesis writing, and other allied subjects.\n\nSignificantly, the concept of its curriculum also prepares its graduates for the professional challenges globalization entails and thus, will enable them to approach the law in a more universally aware manner.', NULL, NULL, 'The PLM\'s Graduate School of Law provides legal education to lawyers and non-lawyers who have obtained their first law degree in any college or university in the country offering either a Bachelor of Laws or Juris Doctor program. It aims to attract in its fold lawyers, including judges, prosecutors, practitioners, and those employed in the government and private service. The GSL boasts of its professors who are experts in their respective areas of law, intellectually vigorous, engaged, and committed to quality teaching and high levels of service to students. They come to class with extensive experience having practiced law for the public sector, businesses, private firms, and the Judiciary.', 'On July 7, 2004, the Graduate School of Law was formally launched as the second graduate school of law in the Philippines. On July 29, 2004, the Board of Regents by virtue of BOR Resolution No. 2686 approved the offering of the graduate program of Master of Laws.\n\nThe Master of Laws Program (LLM) is offered by the PLM Graduate School of Law as a two-year program, trimestral terms, with strong focus on research that culminates in a thesis. Courses are delivered entirely in English using a multidisciplinary approach by distinguished Jurist and Law Practitioners.', 'The PLM Graduate School of Law envisions itself as the reflection of an ideal institution of intellectual and highly principled lawyers, with advanced excellent legal training, who will rise to higher callings with commitments to be of service to our country and people.', 'The PLM Graduate School of Law will stress the noble mission of lawyers and judges as well. It will likewise assist in raising the high standards of the legal profession needed in the effective and efficient dispensation of justice for the good of the country, and in contributing meaningful efforts in the pursuit of global peace, and cooperation through law and universal understanding. The PLM Graduate School of Law, inspired by the legacy left by the late President Diosdado M. Macapagal, whose brilliance, integrity and devotion to public duty and service, his concern for the common people, specially the poor and under privileged desirous of achieving higher learning in the midst of economic hardship---envisions to promote and develop educational advancement, leadership and sense of patriotism among members of the Philippine Bar.', 'The Graduate School of Law GSL committed to the mission and vision of the University guided by the values of academic excellence, integrity and social responsibility, and by the principles of Karunungan, Kaunlaran and Kadakilaan. Implicit from its noble mission and vision, the PLM Graduate School of law aims:\n• To develop intellectual expertise in law and jurisprudence among lawyers.\n• To assist in improving public service by stressing the lawyers\' mission of upholding justice and truth.\n• To elevate the standards of the legal profession.\n• To enhance the administration of justice for the welfare of the Filipino people, especially the marginalized.', '2nd Floor - Gusaling Ejercito (GEE)', 'College Staff: 281', 'LL.M.', 'Master of Laws', 'active', '2026-04-08 16:35:27');
 
 -- --------------------------------------------------------
 
@@ -308,16 +502,16 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
   `enrollment_id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
   `class_id` int NOT NULL COMMENT 'Foreign key to classes table',
-  `school_year` varchar(20) DEFAULT NULL,
+  `school_year` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `semester` int DEFAULT NULL,
   `enrollment_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('reserved','confirmed','ongoing','drop_requested','dropped','completed') DEFAULT 'reserved',
-  `previous_status` varchar(20) DEFAULT NULL,
+  `status` enum('reserved','confirmed','ongoing','drop_requested','dropped','completed') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'reserved',
+  `previous_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `grade` decimal(4,2) DEFAULT NULL,
-  `remarks` text,
+  `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`enrollment_id`),
   KEY `student_id` (`student_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `enrollments`
@@ -325,7 +519,7 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
 
 INSERT INTO `enrollments` (`enrollment_id`, `student_id`, `class_id`, `school_year`, `semester`, `enrollment_date`, `status`, `previous_status`, `grade`, `remarks`) VALUES
 (1, 1, 1, '2024-2025', 1, '2026-03-27 12:25:09', 'dropped', NULL, NULL, NULL),
-(2, 2, 1, '2024-2025', 1, '2026-03-27 12:27:41', 'ongoing', NULL, NULL, NULL),
+(2, 2, 1, '2024-2025', 1, '2026-03-27 12:27:41', 'reserved', NULL, NULL, NULL),
 (3, 1, 2, '2024-2025', 1, '2026-03-28 14:18:02', 'dropped', NULL, NULL, NULL),
 (4, 1, 2, '2024-2025', 1, '2026-03-28 14:18:13', 'confirmed', NULL, NULL, NULL),
 (5, 1, 2, '2024-2025', 1, '2026-03-28 14:18:32', 'dropped', NULL, NULL, NULL),
@@ -366,7 +560,45 @@ INSERT INTO `enrollments` (`enrollment_id`, `student_id`, `class_id`, `school_ye
 (41, 1, 6, '2026-2027', 1, '2026-04-09 04:40:53', 'dropped', NULL, NULL, NULL),
 (42, 1, 6, '2026-2027', 1, '2026-04-09 04:45:37', 'dropped', NULL, NULL, NULL),
 (43, 1, 6, '2026-2027', 1, '2026-04-09 04:46:07', 'dropped', NULL, NULL, NULL),
-(44, 1, 6, '2026-2027', 1, '2026-04-09 04:49:11', 'confirmed', NULL, NULL, NULL);
+(44, 1, 6, '2026-2027', 1, '2026-04-09 04:49:11', 'completed', NULL, NULL, NULL),
+(45, 1, 9, '2024-2025', 1, '2026-04-13 05:22:38', 'dropped', NULL, NULL, NULL),
+(46, 7, 9, '2024-2025', 1, '2026-04-13 05:22:56', 'completed', NULL, NULL, NULL),
+(47, 7, 6, '2026-2027', 1, '2026-04-13 05:28:40', 'completed', NULL, NULL, NULL),
+(48, 1, 10, '2024-2025', 2, '2026-04-13 12:42:19', 'dropped', NULL, NULL, NULL),
+(49, 1, 12, '2024-2025', 2, '2026-04-13 12:50:02', 'dropped', NULL, NULL, NULL),
+(50, 1, 11, '2024-2025', 2, '2026-04-13 12:50:26', 'dropped', NULL, NULL, NULL),
+(51, 1, 11, '2024-2025', 2, '2026-04-13 12:59:08', 'dropped', NULL, NULL, NULL),
+(52, 1, 12, '2024-2025', 2, '2026-04-13 12:59:19', 'dropped', NULL, NULL, NULL),
+(53, 7, 11, '2024-2025', 2, '2026-04-13 13:21:27', 'completed', NULL, NULL, NULL),
+(54, 7, 13, '2024-2025', 2, '2026-04-13 13:29:24', 'confirmed', NULL, NULL, NULL),
+(55, 7, 17, '2024-2025', 1, '2026-04-15 15:30:22', 'dropped', NULL, NULL, NULL),
+(56, 1, 13, '2024-2025', 2, '2026-04-16 05:49:04', 'dropped', NULL, NULL, NULL),
+(57, 2, 6, '2026-2027', 1, '2026-04-16 09:05:24', 'dropped', NULL, NULL, NULL),
+(58, 1, 18, '2026-2027', 1, '2026-04-18 04:55:54', 'dropped', NULL, NULL, NULL),
+(59, 1, 18, '2026-2027', 1, '2026-04-18 10:05:06', 'dropped', NULL, NULL, NULL),
+(60, 1, 19, '2025-2026', 1, '2026-04-18 10:05:08', 'completed', NULL, NULL, NULL),
+(61, 1, 6, '2026-2027', 1, '2026-04-18 10:05:10', 'completed', NULL, NULL, NULL),
+(62, 1, 9, '2025-2026', 1, '2026-04-18 10:05:12', 'completed', NULL, NULL, NULL),
+(63, 1, 22, '2026-2027', 2, '2026-04-18 14:01:17', 'dropped', NULL, NULL, NULL),
+(64, 1, 23, '2026-2027', 1, '2026-04-18 14:02:56', 'completed', NULL, NULL, NULL),
+(65, 1, 22, '2026-2027', 2, '2026-04-18 14:05:25', 'dropped', NULL, NULL, NULL),
+(66, 1, 22, '2026-2027', 2, '2026-04-18 14:12:21', 'dropped', NULL, NULL, NULL),
+(67, 1, 21, '2026-2027', 1, '2026-04-18 14:28:26', 'completed', NULL, NULL, NULL),
+(68, 1, 18, '2026-2027', 1, '2026-04-19 07:16:45', 'completed', NULL, NULL, NULL),
+(69, 2, 25, '2026-2027', 1, '2026-04-19 14:21:14', 'completed', NULL, NULL, NULL),
+(70, 2, 22, '2026-2027', 2, '2026-04-19 14:22:20', 'dropped', NULL, NULL, NULL),
+(71, 2, 26, '2026-2027', 2, '2026-04-19 14:33:13', 'completed', NULL, NULL, NULL),
+(72, 2, 22, '2026-2027', 2, '2026-04-19 14:34:46', 'dropped', NULL, NULL, NULL),
+(73, 2, 22, '2026-2027', 2, '2026-04-19 14:54:25', 'completed', NULL, NULL, NULL),
+(74, 1, 22, '2026-2027', 2, '2026-04-20 06:28:22', 'completed', NULL, NULL, NULL),
+(75, 2, 27, '2026-2027', 1, '2026-04-20 10:04:43', 'completed', NULL, NULL, NULL),
+(76, 2, 29, '2026-2027', 1, '2026-04-20 10:09:13', 'completed', NULL, NULL, NULL),
+(77, 1, 30, '2027-2028', 2, '2026-04-20 10:31:09', 'completed', NULL, NULL, NULL),
+(78, 1, 31, '2027-2028', 2, '2026-04-20 11:10:16', 'completed', NULL, NULL, NULL),
+(79, 1, 32, '2027-2028', 1, '2026-04-20 14:48:34', 'completed', NULL, NULL, NULL),
+(80, 1, 33, '2027-2028', 2, '2026-04-20 14:49:30', 'confirmed', NULL, NULL, NULL),
+(81, 1, 34, '2027-2028', 2, '2026-04-20 14:57:50', 'confirmed', NULL, NULL, NULL),
+(82, 1, 35, '2027-2028', 2, '2026-04-20 15:00:59', 'confirmed', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -378,20 +610,21 @@ DROP TABLE IF EXISTS `exam_schedules`;
 CREATE TABLE IF NOT EXISTS `exam_schedules` (
   `schedule_id` int NOT NULL AUTO_INCREMENT,
   `exam_date` date NOT NULL,
-  `exam_time` varchar(50) NOT NULL,
-  `location` varchar(255) NOT NULL,
-  `notes` text,
+  `exam_time` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `notes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `created_by` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`schedule_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `exam_schedules`
 --
 
 INSERT INTO `exam_schedules` (`schedule_id`, `exam_date`, `exam_time`, `location`, `notes`, `created_by`, `created_at`) VALUES
-(1, '2026-03-16', '5:00 AM', 'doon lang', 'punta ka na', 2, '2026-03-30 04:55:54');
+(1, '2026-03-16', '5:00 AM', 'doon lang', 'punta ka na', 2, '2026-03-30 04:55:54'),
+(2, '2026-04-14', '10:00pm', 'GV 204', 'Bruh review', 2, '2026-04-12 13:02:10');
 
 -- --------------------------------------------------------
 
@@ -402,57 +635,67 @@ INSERT INTO `exam_schedules` (`schedule_id`, `exam_date`, `exam_time`, `location
 DROP TABLE IF EXISTS `faculty`;
 CREATE TABLE IF NOT EXISTS `faculty` (
   `faculty_id` int NOT NULL AUTO_INCREMENT,
-  `employee_id` varchar(20) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
-  `middle_name` varchar(100) DEFAULT NULL,
-  `last_name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `phone` varchar(20) DEFAULT NULL,
-  `department` varchar(100) DEFAULT NULL,
-  `position` varchar(100) DEFAULT NULL COMMENT 'e.g., Professor, Associate Professor, Instructor',
-  `specialization` varchar(255) DEFAULT NULL,
-  `employment_status` enum('full-time','part-time','contractual') DEFAULT 'full-time',
-  `status` enum('active','inactive','on-leave') DEFAULT 'active',
+  `employee_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `first_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `middle_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `last_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `department` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `position` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'e.g., Professor, Associate Professor, Instructor',
+  `specialization` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `employment_status` enum('full-time','part-time','contractual') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'full-time',
+  `status` enum('active','inactive','on-leave') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
   `date_hired` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `suffix_name` varchar(20) DEFAULT NULL,
-  `college` varchar(100) DEFAULT NULL,
-  `personal_email` varchar(150) DEFAULT NULL,
+  `suffix_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `college` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `personal_email` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `place_of_birth` varchar(150) DEFAULT NULL,
-  `sex` enum('Male','Female','Other') DEFAULT NULL,
-  `civil_status` enum('Single','Married','Divorced','Widowed','Other') DEFAULT NULL,
-  `religion` varchar(100) DEFAULT NULL,
-  `nationality` varchar(100) DEFAULT NULL,
-  `disability` varchar(255) DEFAULT NULL,
-  `permanent_region` varchar(100) DEFAULT NULL,
-  `permanent_province` varchar(100) DEFAULT NULL,
-  `permanent_municipality` varchar(100) DEFAULT NULL,
-  `permanent_barangay` varchar(100) DEFAULT NULL,
-  `permanent_address` varchar(255) DEFAULT NULL,
-  `permanent_zip_code` varchar(10) DEFAULT NULL,
+  `place_of_birth` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `sex` enum('Male','Female','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `civil_status` enum('Single','Married','Divorced','Widowed','Other') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `religion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nationality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `disability` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `permanent_zip_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `mailing_same_as_permanent` tinyint(1) DEFAULT '1',
-  `mailing_region` varchar(100) DEFAULT NULL,
-  `mailing_province` varchar(100) DEFAULT NULL,
-  `mailing_municipality` varchar(100) DEFAULT NULL,
-  `mailing_barangay` varchar(100) DEFAULT NULL,
-  `mailing_address` varchar(255) DEFAULT NULL,
-  `mailing_zip_code` varchar(10) DEFAULT NULL,
-  `profile_photo` varchar(255) DEFAULT NULL,
+  `mailing_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mailing_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mailing_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mailing_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mailing_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mailing_zip_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `profile_photo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `emergency_name` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `emergency_relationship` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `emergency_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `emergency_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `highest_education` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `degree` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `school` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `year_graduated` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`faculty_id`),
   UNIQUE KEY `employee_id` (`employee_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `faculty`
 --
 
-INSERT INTO `faculty` (`faculty_id`, `employee_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `phone`, `department`, `position`, `specialization`, `employment_status`, `status`, `date_hired`, `created_at`, `updated_at`, `suffix_name`, `college`, `personal_email`, `date_of_birth`, `place_of_birth`, `sex`, `civil_status`, `religion`, `nationality`, `disability`, `permanent_region`, `permanent_province`, `permanent_municipality`, `permanent_barangay`, `permanent_address`, `permanent_zip_code`, `mailing_same_as_permanent`, `mailing_region`, `mailing_province`, `mailing_municipality`, `mailing_barangay`, `mailing_address`, `mailing_zip_code`, `profile_photo`) VALUES
-(3, 'EMP20260323002', 'Sarah', 'Michelle', 'Johnson', 'sarah.johnson@university.edu', '$2y$10$HMHOQ94MITLMutBlzRSfGOx8dKPlZeG3C0V1U5u51rW6sZL6It6Ke', '555-0201', 'Information Technology', 'Assistant Professor', 'Network Security', 'full-time', 'active', '2023-06-15', '2026-03-23 09:20:23', '2026-03-23 09:20:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'EMP20260323003', 'Robert', 'James', 'Martinez', 'robert.martinez@university.edu', '$2y$10$WaSrslQ1GeAKa03oDZcC/OMHyP8GR17TdcZFzjlECdji55/L40dTm', '555-0202', 'Engineering', 'Instructor', 'Civil Engineering', 'part-time', 'active', '2024-01-10', '2026-03-23 09:20:23', '2026-03-23 09:20:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `faculty` (`faculty_id`, `employee_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `phone`, `department`, `position`, `specialization`, `employment_status`, `status`, `date_hired`, `created_at`, `updated_at`, `suffix_name`, `college`, `personal_email`, `date_of_birth`, `place_of_birth`, `sex`, `civil_status`, `religion`, `nationality`, `disability`, `permanent_region`, `permanent_province`, `permanent_municipality`, `permanent_barangay`, `permanent_address`, `permanent_zip_code`, `mailing_same_as_permanent`, `mailing_region`, `mailing_province`, `mailing_municipality`, `mailing_barangay`, `mailing_address`, `mailing_zip_code`, `profile_photo`, `emergency_name`, `emergency_relationship`, `emergency_phone`, `emergency_address`, `highest_education`, `degree`, `school`, `year_graduated`) VALUES
+(3, 'EMP20260323002', 'Sarah', 'Michelle', 'Johnson', 'sarah.johnson@university.edu', '$2y$10$HMHOQ94MITLMutBlzRSfGOx8dKPlZeG3C0V1U5u51rW6sZL6It6Ke', '555-0201', 'Information Technology', 'Assistant Professor', 'Network Security', 'full-time', 'active', '2023-06-15', '2026-03-23 09:20:23', '2026-03-23 09:20:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'EMP20260323003', 'Robert', 'James', 'Martinez', 'robert.martinez@university.edu', '$2y$10$WaSrslQ1GeAKa03oDZcC/OMHyP8GR17TdcZFzjlECdji55/L40dTm', '555-0202', 'Engineering', 'Instructor', 'Civil Engineering', 'part-time', 'active', '2024-01-10', '2026-03-23 09:20:23', '2026-04-16 08:33:54', NULL, NULL, 'sd@gmail.com', NULL, 'Manila', 'Male', 'Single', 'asd', 'asd', 'sd', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'EMP2024', 'Kevin', 'Gregorio', 'Lumabi', 'kevinlumabi9@gmail.com', '$2y$10$PW3i6h0vou/sKDae4wwjEuf6AaiF.QfiTdb7YDhYrWEYCA4K5TN6q', NULL, 'Computer Engineering', 'INSTRUCTOR', NULL, 'full-time', 'active', NULL, '2026-04-14 16:36:01', '2026-04-14 16:38:18', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'EMP2025', 'Karl', 'GGZ', 'Jacob', 'educationalgabai@gmail.com', '$2y$10$avbH5i1va.nzusWSFoO0OOajIleg8Z6NuOYZZeYJldmYbjgr0xu4q', NULL, 'Computer Engineering', 'Assistant Professor', NULL, 'full-time', 'active', NULL, '2026-04-14 16:43:43', '2026-04-14 16:43:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -465,14 +708,36 @@ CREATE TABLE IF NOT EXISTS `grades` (
   `grade_id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
   `subject_id` int NOT NULL,
-  `grade` varchar(5) NOT NULL,
-  `status` varchar(20) NOT NULL,
-  `semester` varchar(20) DEFAULT NULL,
-  `school_year` varchar(20) DEFAULT NULL,
+  `grade` varchar(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `semester` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `school_year` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`grade_id`),
   KEY `student_id` (`student_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `grades`
+--
+
+INSERT INTO `grades` (`grade_id`, `student_id`, `subject_id`, `grade`, `status`, `semester`, `school_year`) VALUES
+(1, 1, 728, '1.00', 'Passed', '1st', '2026-2027'),
+(2, 1, 731, '1.75', 'Passed', '1st', '2026-2027'),
+(3, 1, 731, '1.00', 'Passed', '1st', '2026-2027'),
+(4, 1, 733, '1.00', 'Passed', '1st', '2026-2027'),
+(5, 1, 729, '1.00', 'Passed', '1st', '2026-2027'),
+(6, 2, 728, '5.00', 'Failed', '1st', '2026-2027'),
+(7, 2, 728, '1.00', 'Passed', '2nd', '2026-2027'),
+(8, 1, 730, 'INC', 'Incomplete', '1st', '2025-2026'),
+(9, 2, 739, '5.00', 'Failed', '2nd', '2026-2027'),
+(10, 1, 739, '5.00', 'Failed', '2nd', '2026-2027'),
+(11, 2, 739, '2.75', 'Passed', '1st', '2026-2027'),
+(12, 2, 742, '5.00', 'Failed', '1st', '2026-2027'),
+(13, 1, 767, '5.00', 'Failed', '2nd', '2027-2028'),
+(14, 1, 765, '1.00', 'Passed', '2nd', '2027-2028'),
+(15, 1, 732, '1.00', 'Passed', '1st', '2027-2028'),
+(16, 1, 737, '1.00', 'Passed', '2nd', '2027-2028');
 
 -- --------------------------------------------------------
 
@@ -494,7 +759,7 @@ CREATE TABLE IF NOT EXISTS `grade_entries` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`entry_id`),
   UNIQUE KEY `uq_enroll` (`enrollment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `grade_entries`
@@ -502,7 +767,77 @@ CREATE TABLE IF NOT EXISTS `grade_entries` (
 
 INSERT INTO `grade_entries` (`entry_id`, `enrollment_id`, `class_id`, `student_id`, `class_standing`, `quiz`, `midterms`, `finals`, `updated_at`) VALUES
 (1, 2, 1, 2, 90.00, 80.00, 89.00, 80.00, '2026-04-01 08:10:29'),
-(2, 44, 6, 1, 100.00, 100.00, 100.00, 44.00, '2026-04-09 05:14:20');
+(2, 44, 6, 1, 100.00, 100.00, 100.00, 44.00, '2026-04-09 05:14:20'),
+(3, 46, 9, 7, 99.00, 99.00, 99.00, 99.00, '2026-04-13 13:48:52'),
+(7, 45, 9, 1, 99.00, 99.00, 99.00, 99.00, '2026-04-13 13:49:06'),
+(11, 53, 11, 7, 0.00, 0.00, 0.00, 0.00, '2026-04-13 13:49:36'),
+(15, 51, 11, 1, 99.00, 99.00, 0.00, 99.00, '2026-04-13 13:49:43'),
+(19, 54, 13, 7, 0.04, 0.10, NULL, NULL, '2026-04-14 18:00:26'),
+(21, 64, 23, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-18 14:09:26'),
+(29, 61, 6, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-18 14:10:46'),
+(33, 67, 21, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-19 06:49:07'),
+(37, 68, 18, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-19 07:18:02'),
+(41, 69, 25, 2, 13.00, 13.00, 13.00, 13.00, '2026-04-19 14:21:42'),
+(45, 71, 26, 2, 99.00, 99.00, 99.00, 99.00, '2026-04-19 14:34:24'),
+(49, 73, 22, 2, 10.00, 10.00, 10.00, 10.00, '2026-04-20 06:30:28'),
+(53, 74, 22, 1, 10.00, 10.00, 10.00, 0.00, '2026-04-20 06:30:31'),
+(57, 75, 27, 2, 77.00, 77.00, 77.00, 77.00, '2026-04-20 10:05:08'),
+(61, 76, 29, 2, 0.00, 0.00, 0.00, 0.00, '2026-04-20 10:09:30'),
+(65, 77, 30, 1, 99.00, NULL, 99.00, 99.00, '2026-04-20 10:31:35'),
+(68, 78, 31, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 11:10:41'),
+(72, 79, 32, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 14:48:45'),
+(76, 81, 34, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 14:58:17'),
+(80, 82, 35, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 15:01:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `grade_history`
+--
+
+DROP TABLE IF EXISTS `grade_history`;
+CREATE TABLE IF NOT EXISTS `grade_history` (
+  `history_id` int NOT NULL AUTO_INCREMENT,
+  `class_id` int NOT NULL,
+  `faculty_id` int NOT NULL,
+  `subject_code` varchar(50) NOT NULL,
+  `subject_name` varchar(255) NOT NULL,
+  `section` varchar(100) NOT NULL,
+  `semester` varchar(20) NOT NULL,
+  `school_year` varchar(20) NOT NULL,
+  `student_id` int NOT NULL,
+  `student_number` varchar(50) NOT NULL,
+  `student_name` varchar(255) NOT NULL,
+  `class_standing` decimal(5,2) DEFAULT NULL,
+  `quiz` decimal(5,2) DEFAULT NULL,
+  `midterms` decimal(5,2) DEFAULT NULL,
+  `finals` decimal(5,2) DEFAULT NULL,
+  `computed_grade` decimal(5,2) DEFAULT NULL,
+  `point_grade` varchar(10) DEFAULT NULL,
+  `remarks` varchar(20) DEFAULT NULL,
+  `finalized_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`history_id`),
+  UNIQUE KEY `uq_class_student` (`class_id`,`student_id`),
+  KEY `idx_class` (`class_id`),
+  KEY `idx_faculty` (`faculty_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `grade_history`
+--
+
+INSERT INTO `grade_history` (`history_id`, `class_id`, `faculty_id`, `subject_code`, `subject_name`, `section`, `semester`, `school_year`, `student_id`, `student_number`, `student_name`, `class_standing`, `quiz`, `midterms`, `finals`, `computed_grade`, `point_grade`, `remarks`, `finalized_at`) VALUES
+(3, 18, 4, 'CET 0112', 'Chemistry for Engineers', 'BSCpE 1-A', '1st', '2026-2027', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-19 07:18:03'),
+(4, 25, 4, 'CET 0111', 'Calculus 1', 'kl;d', '1st', '2026-2027', 2, '2024-1244', 'Muncada, John Louie L.', 13.00, 13.00, 13.00, 13.00, 13.00, '5.00', 'failed', '2026-04-19 14:21:51'),
+(5, 26, 4, 'CET 0111', 'Calculus 1', 'retry', '2nd', '2026-2027', 2, '2024-1244', 'Muncada, John Louie L.', 99.00, 99.00, 99.00, 99.00, 99.00, '1.00', 'passed', '2026-04-19 14:34:28'),
+(11, 22, 4, 'CET 0121', 'Calculus 2', 'BSCpE 1-A', '2nd', '2026-2027', 2, '2024-1244', 'Muncada, John Louie L.', 10.00, 10.00, 10.00, 10.00, 10.00, '5.00', 'failed', '2026-04-20 06:30:33'),
+(12, 22, 4, 'CET 0121', 'Calculus 2', 'BSCpE 1-A', '2nd', '2026-2027', 1, '202412685', 'Muncada, John Louie L.', 10.00, 10.00, 10.00, 0.00, 8.00, '5.00', 'failed', '2026-04-20 06:30:33'),
+(13, 27, 4, 'CET 0121', 'Calculus 2', 'sfgae', '1st', '2026-2027', 2, '2024-1244', 'Muncada, John Louie L.', 77.00, 77.00, 77.00, 77.00, 77.00, '2.75', 'passed', '2026-04-20 10:05:10'),
+(14, 29, 4, 'CET 0216', 'Engineering Economics', 'asdaaaaaaaa', '1st', '2026-2027', 2, '2024-1244', 'Muncada, John Louie L.', 0.00, 0.00, 0.00, 0.00, 0.00, '5.00', 'failed', '2026-04-20 10:09:31'),
+(15, 30, 4, 'ETH 0008', 'Ethics', 'retryhuyokl', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 99.00, NULL, 99.00, 99.00, 69.30, '5.00', 'failed', '2026-04-20 10:31:36'),
+(16, 31, 4, 'TCW 0005', 'The Contemporary World', 'retryasdasd', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 11:10:42'),
+(17, 32, 4, 'CPE 0112.1', 'Programming Logic and Design (Laboratory)', 'bvnbvvbnvbn', '1st', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 14:48:49'),
+(18, 35, 4, 'PED 0001', 'Foundation of Physical Activities', 'retryasdasdasdasd', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 15:01:21');
 
 -- --------------------------------------------------------
 
@@ -514,12 +849,12 @@ DROP TABLE IF EXISTS `password_resets`;
 CREATE TABLE IF NOT EXISTS `password_resets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `student_id` int NOT NULL,
-  `token` varchar(64) DEFAULT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `expires_at` datetime NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`)
-) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `password_resets`
@@ -561,7 +896,7 @@ CREATE TABLE IF NOT EXISTS `registrations` (
   PRIMARY KEY (`registration_id`),
   KEY `student_id` (`student_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -572,14 +907,14 @@ CREATE TABLE IF NOT EXISTS `registrations` (
 DROP TABLE IF EXISTS `remember_tokens`;
 CREATE TABLE IF NOT EXISTS `remember_tokens` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `portal` varchar(20) NOT NULL,
+  `portal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `user_id` int NOT NULL,
-  `token` varchar(64) NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `expires_at` datetime NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -590,63 +925,64 @@ CREATE TABLE IF NOT EXISTS `remember_tokens` (
 DROP TABLE IF EXISTS `students`;
 CREATE TABLE IF NOT EXISTS `students` (
   `student_id` int NOT NULL AUTO_INCREMENT,
-  `student_number` varchar(20) NOT NULL,
-  `lrn` varchar(12) DEFAULT NULL,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `middle_name` varchar(50) DEFAULT NULL,
-  `gender` varchar(20) DEFAULT NULL,
+  `student_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `lrn` varchar(12) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `last_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `middle_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `gender` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `college` varchar(100) DEFAULT NULL,
-  `course` varchar(100) DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `contact_number` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `college` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `course` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `year_level` int DEFAULT NULL,
   `block_id` int DEFAULT NULL COMMENT 'Foreign key to blocks table',
-  `password` varchar(255) NOT NULL,
-  `account_status` enum('active','inactive') DEFAULT 'active',
-  `profile_photo` varchar(255) DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `account_status` enum('active','inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
+  `profile_photo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `suffix_name` varchar(20) DEFAULT NULL,
-  `registration_status` enum('Regular','Irregular') DEFAULT 'Regular',
-  `status` varchar(50) NOT NULL DEFAULT 'Not Enrolled',
-  `place_of_birth` varchar(200) DEFAULT NULL,
-  `civil_status` varchar(20) DEFAULT NULL,
-  `religion` varchar(100) DEFAULT NULL,
-  `nationality` varchar(50) DEFAULT NULL,
-  `disability` varchar(200) DEFAULT NULL,
-  `married_name` varchar(100) DEFAULT NULL,
-  `perm_region` varchar(100) DEFAULT NULL,
-  `perm_province` varchar(100) DEFAULT NULL,
-  `perm_municipality` varchar(100) DEFAULT NULL,
-  `perm_barangay` varchar(100) DEFAULT NULL,
-  `perm_address` text,
-  `perm_zipcode` varchar(10) DEFAULT NULL,
-  `mail_region` varchar(100) DEFAULT NULL,
-  `mail_province` varchar(100) DEFAULT NULL,
-  `mail_municipality` varchar(100) DEFAULT NULL,
-  `mail_barangay` varchar(100) DEFAULT NULL,
-  `mail_address` text,
-  `mail_zipcode` varchar(10) DEFAULT NULL,
-  `doc_form138` varchar(255) DEFAULT NULL,
-  `doc_birth_cert` varchar(255) DEFAULT NULL,
-  `doc_good_moral` varchar(255) DEFAULT NULL,
-  `doc_our_au001` varchar(255) DEFAULT NULL,
-  `doc_our_au002` varchar(255) DEFAULT NULL,
+  `suffix_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `registration_status` enum('Regular','Irregular') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'Regular',
+  `status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'Not Enrolled',
+  `place_of_birth` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `civil_status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `religion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `nationality` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `disability` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `married_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `perm_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `perm_zipcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_region` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_province` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_municipality` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_barangay` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mail_address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+  `mail_zipcode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_form138` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_birth_cert` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_good_moral` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_our_au001` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `doc_our_au002` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `applicant_id` int DEFAULT NULL,
   PRIMARY KEY (`student_id`),
   UNIQUE KEY `student_number` (`student_number`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
 INSERT INTO `students` (`student_id`, `student_number`, `lrn`, `first_name`, `last_name`, `middle_name`, `gender`, `birthdate`, `email`, `contact_number`, `college`, `course`, `year_level`, `block_id`, `password`, `account_status`, `profile_photo`, `created_at`, `suffix_name`, `registration_status`, `status`, `place_of_birth`, `civil_status`, `religion`, `nationality`, `disability`, `married_name`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`, `applicant_id`) VALUES
-(1, '202412685', NULL, 'John Louie', 'Muncada', 'Lopez', 'Male', '2005-11-17', 'xsurethingx@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69c1b0f24fe16_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-03-04 09:48:58', '', 'Regular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, '2024-1244', NULL, 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', '', 'Not Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, '123', '123456789123', 'Louie', 'Muncada', 'Lopez', 'male', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 1, NULL, '$2y$10$SRt3SGIcvvdnlXntYDcLIOAtOvbEK7nOCrvEtx3PMUY96F9eUyxXi', 'active', NULL, '2026-04-09 12:03:23', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png', 4);
+(1, '202412685', NULL, 'John Louie', 'Muncada', 'Lopez', 'Male', '2005-11-17', 'xsurethingx@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69c1b0f24fe16_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-03-04 09:48:58', '', 'Irregular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, '2024-1244', NULL, 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 2, NULL, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', 'Irregular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, '123', '123456789123', 'Louie', 'Muncada', 'Lopez', 'male', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 2, NULL, '$2y$10$SRt3SGIcvvdnlXntYDcLIOAtOvbEK7nOCrvEtx3PMUY96F9eUyxXi', 'active', NULL, '2026-04-09 12:03:23', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png', 4),
+(7, '202411443', '000000000000', 'Khristian Gabriel', 'Tiu', 'Romero', '', '2026-04-28', 'kevsistired@gmail.com', '09493258417', 'College of Engineering', 'BSCpE', 2, NULL, '$2y$10$l.BzqNV01H6m2wOpKaYgLudypV7FT25F7MPouAS6KlKvxFctujl/W', 'active', NULL, '2026-04-13 05:05:25', '', 'Regular', 'Dropped', 'Marikina', 'single', 'Catholic', 'Filipino', '', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf', 5);
 
 -- --------------------------------------------------------
 
@@ -658,26 +994,26 @@ DROP TABLE IF EXISTS `subjects`;
 CREATE TABLE IF NOT EXISTS `subjects` (
   `subject_id` int NOT NULL AUTO_INCREMENT,
   `course_id` int DEFAULT NULL,
-  `subject_code` varchar(20) NOT NULL COMMENT 'e.g., CS101, IT201',
-  `subject_name` varchar(255) NOT NULL,
-  `description` text,
+  `subject_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'e.g., CS101, IT201',
+  `subject_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   `units` int NOT NULL DEFAULT '3' COMMENT 'Credit units',
   `lecture_hours` decimal(3,1) DEFAULT '3.0',
   `lab_hours` decimal(3,1) DEFAULT '0.0',
-  `department` varchar(100) DEFAULT NULL,
-  `year_level` enum('1','2','3','4') DEFAULT NULL COMMENT 'Recommended year level',
-  `semester` enum('1st','2nd','summer') DEFAULT NULL COMMENT 'Recommended semester',
-  `prerequisite` varchar(255) DEFAULT NULL COMMENT 'Prerequisite subject codes',
-  `status` enum('active','inactive') DEFAULT 'active',
+  `department` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `year_level` enum('1','2','3','4') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Recommended year level',
+  `semester` enum('1st','2nd','summer') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Recommended semester',
+  `prerequisite` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Prerequisite subject codes',
+  `status` enum('active','inactive') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT 'active',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `hours` int GENERATED ALWAYS AS ((`lecture_hours` + `lab_hours`)) VIRTUAL,
-  `schedule` varchar(255) DEFAULT NULL,
+  `schedule` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `faculty_id` int DEFAULT NULL,
   PRIMARY KEY (`subject_id`),
   UNIQUE KEY `unique_subject_course` (`subject_code`,`course_id`),
   KEY `idx_subjects_course` (`course_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1019 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1170 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `subjects`
@@ -702,7 +1038,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (515, 10, 'ECO 4112', 'Economic Development', NULL, 3, 3.0, 0.0, 'ECO', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (516, 10, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (517, 10, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
-(518, 10, 'NSTP 02', 'National Service Training Program 1- (ROTC/CWTS/LITCY)', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 11', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
+(518, 10, 'NSTP 02', 'National Service Training Program 1- (ROTC/CWTS/LITCY)', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 011', 'active', '2026-04-08 17:52:44', '2026-04-20 14:59:33', NULL, NULL),
 (519, 10, 'PED 0002', 'Foundation of Physical Education', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (520, 10, 'ACN 0003', 'Business Logic', NULL, 3, 3.0, 0.0, 'ACN', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (521, 10, 'ECO 0015', 'Management Science', NULL, 3, 3.0, 0.0, 'ECO', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
@@ -840,7 +1176,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (653, 1, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (654, 1, 'NSTP 01', 'National Service Training Program 2-ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (655, 1, 'CHE 0121', 'Analytical Chemistry', NULL, 4, 4.0, 0.0, 'CHE', '1', '2nd', 'CET 0112', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(656, 1, 'CHE 0121.1', 'Analytical Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '1', '2nd', 'CET 0112.1, CHE 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(656, 1, 'CHE 0121.1', 'Analytical Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '1', '2nd', 'CET 0112.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (657, 1, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (658, 1, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (659, 1, 'CET 0122.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0111, CET 0122', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
@@ -848,9 +1184,9 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (661, 1, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '1', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (662, 1, 'IPP 0010A', 'Interdisiplinaryong Pagbasa at Pagsulat sa', NULL, 3, 3.0, 0.0, 'IPP', '1', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (663, 1, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(664, 1, 'NSTP 02', 'National Service Training Program 2-ROTC 2/CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(664, 1, 'NSTP 02', 'National Service Training Program 2-ROTC 2/CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:01', '2026-04-20 14:59:33', NULL, NULL),
 (665, 1, 'CHE 0211', 'Organic Chemistry', NULL, 4, 4.0, 0.0, 'CHE', '2', '1st', 'CHE 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(666, 1, 'CHE 0211.1', 'Organic Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '2', '1st', 'CHE 0121.1, CET 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(666, 1, 'CHE 0211.1', 'Organic Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '2', '1st', 'CHE 0121.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (667, 1, 'CHE 0212', 'Chemical Engineering Calculations', NULL, 2, 2.0, 0.0, 'CHE', '2', '1st', 'CHE 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (668, 1, 'CHE 0212.1', 'Chemical Engineering Calculations', NULL, 1, 0.0, 1.0, 'CHE', '2', '1st', 'CHE 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (669, 1, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
@@ -860,46 +1196,46 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (673, 1, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (674, 1, 'PED 0093', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (675, 1, 'CHE 0221', 'Physical Chemistry for Engineers 1', NULL, 2, 2.0, 0.0, 'CHE', '2', '2nd', 'CET 0211, CHE 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(676, 1, 'CHE 0221.1', 'Physical Chemistry for Engineers 1', NULL, 1, 0.0, 1.0, 'CHE', '2', '2nd', 'CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(676, 1, 'CHE 0221.1', 'Physical Chemistry for Engineers 1', NULL, 1, 0.0, 1.0, 'CHE', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (677, 1, 'CHE 0222', 'Momentum Transfer', NULL, 2, 2.0, 0.0, 'CHE', '2', '2nd', 'CHE 0212, CET 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(678, 1, 'CHE 0222.1', 'Momentum Transfer', NULL, 1, 0.0, 1.0, 'CHE', '2', '2nd', 'CHE 0222', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(678, 1, 'CHE 0222.1', 'Momentum Transfer', NULL, 1, 0.0, 1.0, 'CHE', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (679, 1, 'CHE 0223', 'Advanced Engineering Mathematics in CHE', NULL, 3, 3.0, 0.0, 'CHE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (680, 1, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '2', '2nd', 'CET 0113.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (681, 1, 'CET 0222', 'Fundamentals of Material Science and', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', 'CHE 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (682, 1, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (683, 1, 'ELE 0229', 'Basic Electrical and Electronics Engineering', NULL, 2, 2.0, 0.0, 'ELE', '2', '2nd', 'CET 0122', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(684, 1, 'ELE 0229.1', 'Basic Electrical and Electronics Engineering', NULL, 1, 0.0, 1.0, 'ELE', '2', '2nd', 'CET 0122.1, ELE 0229', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(684, 1, 'ELE 0229.1', 'Basic Electrical and Electronics Engineering', NULL, 1, 0.0, 1.0, 'ELE', '2', '2nd', 'CET 0122.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (685, 1, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (686, 1, 'PED 0014', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (687, 1, 'CHE 0311', 'Physical Chemistry for Engineers 2', NULL, 2, 2.0, 0.0, 'CHE', '3', '1st', 'CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(688, 1, 'CHE 0311.1', 'Physical Chemistry for Engineers 2', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', 'CHE 0221.1, CHE 0311', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(688, 1, 'CHE 0311.1', 'Physical Chemistry for Engineers 2', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', 'CHE 0221.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (689, 1, 'CHE 0312', 'Chemical Engineering Thermodynamics', NULL, 2, 2.0, 0.0, 'CHE', '3', '1st', 'CHE 0212, CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(690, 1, 'CHE 0312.1', 'Chemical Engineering Thermodynamics', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', 'CHE 0312', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(690, 1, 'CHE 0312.1', 'Chemical Engineering Thermodynamics', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (691, 1, 'CHE 0313', 'Heat and Mass Transfer', NULL, 3, 3.0, 0.0, 'CHE', '3', '1st', 'CHE 0222', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(692, 1, 'CHE 0313.1', 'Heat and Mass Transfer', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', 'CHE 0313', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(692, 1, 'CHE 0313.1', 'Heat and Mass Transfer', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (693, 1, 'CHE 0314.1', 'Computer Application in CHE', NULL, 1, 1.0, 0.0, 'CHE', '3', '1st', 'CHE 0223, EIT 0211.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (694, 1, 'CHE 0315', 'Environmental Science and Engineering', NULL, 3, 3.0, 0.0, 'CHE', '3', '1st', 'CET 0112', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (695, 1, 'CHE 0316.1', 'Methods of Research', NULL, 1, 1.0, 0.0, 'CHE', '3', '1st', 'CHE 0212, CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (696, 1, 'CHE 0317', 'Chemical Process Industries', NULL, 3, 3.0, 0.0, 'CHE', '3', '1st', 'CHE 0211, CHE 0222, CET 0222', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (697, 1, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '3', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (698, 1, 'CHE 0321', 'Solution Thermodynamics', NULL, 2, 2.0, 0.0, 'CHE', '3', '2nd', 'CHE 0223, CHE 0312, CHE 0314.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(699, 1, 'CHE 0321.1', 'Solution Thermodynamics', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', 'CHE 0321', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(699, 1, 'CHE 0321.1', 'Solution Thermodynamics', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (700, 1, 'CHE 0322', 'Chemical Reaction Engineering', NULL, 3, 3.0, 0.0, 'CHE', '3', '2nd', 'CHE 0223, CHE 0311, CHE 0313', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(701, 1, 'CHE 0322.1', 'Chemical Reaction Engineering', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', 'CHE 0322', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(701, 1, 'CHE 0322.1', 'Chemical Reaction Engineering', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (702, 1, 'CHE 0323', 'Separation Processes', NULL, 2, 2.0, 0.0, 'CHE', '3', '2nd', 'CHE 0312, CHE 0313', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(703, 1, 'CHE 0323.1', 'Separation Processes', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', 'CHE 0323', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(703, 1, 'CHE 0323.1', 'Separation Processes', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (704, 1, 'CHE 0324', 'Particle Technology', NULL, 2, 2.0, 0.0, 'CHE', '3', '2nd', 'CHE 0222', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(705, 1, 'CHE 0324.1', 'Particle Technology', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', 'CHE 0324', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(705, 1, 'CHE 0324.1', 'Particle Technology', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (706, 1, 'CHE 0325.1', 'Chemical Engineering Laboratory 1', NULL, 1, 0.0, 1.0, 'CHE', '3', '2nd', 'CHE 0222, CHE 0313', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (707, 1, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'CET', '3', '2nd', '3rd Year Standing', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (708, 1, 'CHE 0331.1', 'Chemical Engineering Immersion (240 hrs)', NULL, 2, 2.0, 0.0, 'CHE', '3', 'summer', 'CHE 0322, CHE 0323, CHE 0324', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (709, 1, 'CHE 0411', 'Chemical Engineering Design 1', NULL, 1, 1.0, 0.0, 'CHE', '4', '1st', 'CHE 0317, CHE 0322, CHE 0323, CHE 0324', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(710, 1, 'CHE 0411.1', 'Chemical Engineering Design 1', NULL, 2, 0.0, 1.0, 'CHE', '4', '1st', 'CHE 0411', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(710, 1, 'CHE 0411.1', 'Chemical Engineering Design 1', NULL, 2, 0.0, 1.0, 'CHE', '4', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (711, 1, 'CHE 0412', 'Biochemical Engineering', NULL, 3, 3.0, 0.0, 'CHE', '4', '1st', 'CHE 0211, CHE 0322', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (712, 1, 'CHE 0413', 'Chemical Engineering Laws and Ethics', NULL, 1, 1.0, 0.0, 'CHE', '4', '1st', 'ETH 0008', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (713, 1, 'CHE 0414', 'Process Safety', NULL, 1, 1.0, 0.0, 'CHE', '4', '1st', '4th Year Standing', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (714, 1, 'CHE 0415.1', 'Chemical Engineering Laboratory 2', NULL, 1, 0.0, 1.0, 'CHE', '4', '1st', 'CHE 0325.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(715, 1, 'CHE 0416.1', 'Chemical Process Laboratory', NULL, 1, 0.0, 1.0, 'CHE', '4', '1st', 'CHE 0411', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(715, 1, 'CHE 0416.1', 'Chemical Process Laboratory', NULL, 1, 0.0, 1.0, 'CHE', '4', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (716, 1, 'CHE 0417', 'Track Specialization 1', NULL, 3, 3.0, 0.0, 'CHE', '4', '1st', '4th Year Standing', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (717, 1, 'CHE 0418.1', 'ChE Thesis 1', NULL, 1, 1.0, 0.0, 'CHE', '4', '1st', 'CHE 0317, CHE 0322, CHE 0323, CHE 0324', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (718, 1, 'CET 0221', 'Engineering Management', NULL, 2, 2.0, 0.0, 'CET', '4', '1st', 'CET 0216', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
@@ -913,8 +1249,8 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (726, 1, 'CHE 0428.1', 'ChE Thesis 2', NULL, 1, 1.0, 0.0, 'CHE', '4', '2nd', 'CHE 0418.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (727, 1, 'CET 0411A', 'Technopreneurship', NULL, 3, 3.0, 0.0, 'CET', '4', '2nd', '4th Year Standing', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (728, 5, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(729, 5, 'CET 0112', 'Chemistry for Engineers', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', 'CET 0112.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(730, 5, 'CET 0112.1', 'Chemistry for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '1st', 'CET 0112.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(729, 5, 'CET 0112', 'Chemistry for Engineers', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(730, 5, 'CET 0112.1', 'Chemistry for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
 (731, 5, 'CPE 0111', 'Computer Engineering as a Discipline', NULL, 1, 1.0, 0.0, 'CPE', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (732, 5, 'CPE 0112.1', 'Programming Logic and Design (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (733, 5, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
@@ -924,66 +1260,66 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (737, 5, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (738, 5, 'NSTP 01', 'National Service Training Program 1- ROTC 1/ CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (739, 5, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(740, 5, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111, CET 0122.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(741, 5, 'CET 0122A.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0111, CET 0122', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(740, 5, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-20 14:56:46', NULL, NULL),
+(741, 5, 'CET 0122A.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-20 14:56:46', NULL, NULL),
 (742, 5, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (743, 5, 'CPE 0121.1', 'Object Oriented Programming (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '1', '2nd', 'CPE 0112.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (744, 5, 'CPE 0122', 'Discrete Mathematics', NULL, 3, 3.0, 0.0, 'CPE', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (745, 5, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (746, 5, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'PCM', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (747, 5, 'PED 0043', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(748, 5, 'NSTP 02', 'National Service Training Program 2 - ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(748, 5, 'NSTP 02', 'National Service Training Program 2 - ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:10', '2026-04-20 14:59:33', NULL, NULL),
 (749, 5, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '2', '1st', '2nd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (750, 5, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (751, 5, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(752, 5, 'CPE 0211.1', 'Data Structures and Algorithms (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '2', '1st', 'CET 0121.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(753, 5, 'CPE 0212', 'Fundamentals of Electrical Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '1st', 'CET 0122, CPE 0212.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(754, 5, 'CPE 0212.1', 'Fundamentals of Electrical Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '1st', 'CET 0122, CPE 0212', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(752, 5, 'CPE 0211.1', 'Data Structures and Algorithms (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '2', '1st', 'CPE 0121.1', 'active', '2026-04-08 17:53:10', '2026-04-21 01:58:45', NULL, NULL),
+(753, 5, 'CPE 0212', 'Fundamentals of Electrical Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-20 15:07:04', NULL, NULL),
+(754, 5, 'CPE 0212.1', 'Fundamentals of Electrical Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '1st', 'CET 0122A', 'active', '2026-04-08 17:53:10', '2026-04-21 01:58:45', NULL, NULL),
 (755, 5, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (756, 5, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (757, 5, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo sa Mabisang Pagpapahayag', NULL, 3, 3.0, 0.0, 'IPP', '2', '1st', 'New Mandated Course', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (758, 5, 'PED 0013', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (759, 5, 'CPE 0221', 'Numerical Methods', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(760, 5, 'CPE 0222', 'Software Design', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CET 0211.1, CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(761, 5, 'CPE 0222.1', 'Software Design', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CET 0211.1, CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(762, 5, 'CPE 0223', 'Fundamentals of Electronic Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CPE 0212, CPE 0223.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(763, 5, 'CPE 0223.1', 'Fundamentals of Electronic Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CPE 0212, CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(760, 5, 'CPE 0222', 'Software Design', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CET 0211.1.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(761, 5, 'CPE 0222.1', 'Software Design', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CET 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(762, 5, 'CPE 0223', 'Fundamentals of Electronic Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CPE 0212.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(763, 5, 'CPE 0223.1', 'Fundamentals of Electronic Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CPE 0212', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (764, 5, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (765, 5, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (766, 5, 'PPC 122', 'GEC ELECTIVE 3-Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (767, 5, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (768, 5, 'PED 0074', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(769, 5, 'CPE 0311', 'Logic Circuits and Design', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223, CPE 0311.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(770, 5, 'CPE 0311.1', 'Logic Circuits and Design', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0223, CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(769, 5, 'CPE 0311', 'Logic Circuits and Design', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(770, 5, 'CPE 0311.1', 'Logic Circuits and Design', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (771, 5, 'CPE 0312.1', 'Introduction to HDL (Laboratory)', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0112.1, CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (772, 5, 'CPE 0313', 'Operating Systems', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (773, 5, 'CPE 0314', 'Data and Digital Communications', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (774, 5, 'CPE 0315', 'Feedback and Control Systems', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0221, CPE 0212', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (775, 5, 'CPE 0316', 'Fundamentals of Mixed Signals and Sensors', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (776, 5, 'CPE 0317.1', 'Computer Engineering Drafting and Design (Design)', NULL, 1, 1.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(777, 5, 'CPE 0318', 'Elective 1 (Lecture)', NULL, 2, 2.0, 0.0, 'CPE', '3', '1st', 'CPE 0222, CPE 0318.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(778, 5, 'CPE 0318.1', 'Elective 1 (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0222, CPE 0318', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(777, 5, 'CPE 0318', 'Elective 1 (Lecture)', NULL, 2, 2.0, 0.0, 'CPE', '3', '1st', 'CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(778, 5, 'CPE 0318.1', 'Elective 1 (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (779, 5, 'CET 0411', 'Technopreneurship 101', NULL, 3, 3.0, 0.0, 'CET', '3', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (780, 5, 'CPE 0321', 'Basic Occupational Health and Safety', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', '3rd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(781, 5, 'CPE 0322', 'Computer Networks and Security (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0314, CPE 0322.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(782, 5, 'CPE 0322.1', 'Computer Networks and Security (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0314, CPE 0322', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(783, 5, 'CPE 0323', 'Computer Architecture and Organization (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0311, CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(784, 5, 'CPE 0323.1', 'Computer Architecture and Organization (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0311, CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(781, 5, 'CPE 0322', 'Computer Networks and Security (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0314.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(782, 5, 'CPE 0322.1', 'Computer Networks and Security (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0314', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(783, 5, 'CPE 0323', 'Computer Architecture and Organization (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0311.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(784, 5, 'CPE 0323.1', 'Computer Architecture and Organization (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (785, 5, 'CPE 0324', 'Methods of Research', NULL, 2, 2.0, 0.0, 'CPE', '3', '2nd', 'CET 0212, PCM 0006, CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (786, 5, 'CPE 0325', 'CPE Laws and Professional Practice', NULL, 2, 2.0, 0.0, 'CPE', '3', '2nd', '3rd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (787, 5, 'CPE 0326', 'Elective 2', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(788, 5, 'CPE 0331', 'Seminars and Field Trips (fld)', NULL, 1, 1.0, 0.0, 'CPE', '3', 'summer', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL);
+(788, 5, 'CPE 0331', 'Seminars and Field Trips (fld)', NULL, 1, 1.0, 0.0, 'CPE', '3', 'summer', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(789, 5, 'CPE 0332', 'Elective 3', NULL, 2, 2.0, 0.0, 'CPE', '3', 'summer', 'CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(790, 5, 'CPE 0332.1', 'Elective 3', NULL, 1, 0.0, 1.0, 'CPE', '3', 'summer', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL);
 INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name`, `description`, `units`, `lecture_hours`, `lab_hours`, `department`, `year_level`, `semester`, `prerequisite`, `status`, `created_at`, `updated_at`, `schedule`, `faculty_id`) VALUES
-(789, 5, 'CPE 0332', 'Elective 3', NULL, 2, 2.0, 0.0, 'CPE', '3', 'summer', 'CPE 0222, CPE 0332.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(790, 5, 'CPE 0332.1', 'Elective 3', NULL, 1, 0.0, 1.0, 'CPE', '3', 'summer', 'CPE 0222, CPE 0332', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(791, 5, 'CPE 0411', 'Embedded Systems', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0411.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(792, 5, 'CPE 0411.1', 'Embedded Systems', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0411', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(793, 5, 'CPE 0412', 'Microprocessors', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0412.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(794, 5, 'CPE 0412.1', 'Microprocessors', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0412', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(791, 5, 'CPE 0411', 'Embedded Systems', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(792, 5, 'CPE 0411.1', 'Embedded Systems', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(793, 5, 'CPE 0412', 'Microprocessors', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(794, 5, 'CPE 0412.1', 'Microprocessors', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (795, 5, 'CPE 0413', 'Emerging Technologies in CPE', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', '4th Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (796, 5, 'CPE 0414.1', 'CPE Practice and Design 1 (Design)', NULL, 1, 1.0, 0.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0324', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(797, 5, 'CPE 0415', 'Digital Signal Processing', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0315, CPE 0415.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(798, 5, 'CPE 0415.1', 'Digital Signal Processing', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0315, CPE 0415', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(797, 5, 'CPE 0415', 'Digital Signal Processing', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0315.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(798, 5, 'CPE 0415.1', 'Digital Signal Processing', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0315', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
 (799, 5, 'CPE 0421.1', 'CPE Practice and Design 2 (Design)', NULL, 2, 2.0, 0.0, 'CPE', '4', '2nd', 'CPE 0414.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (800, 5, 'CPE 0422.1', 'On-The-Job Training for CPE (240 hrs)', NULL, 3, 3.0, 0.0, 'CPE', '4', '2nd', '4th Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (801, 7, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -997,10 +1333,10 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (809, 7, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (810, 7, 'NSTP 01', 'National Service Training Program 1-ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (811, 7, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(812, 7, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(813, 7, 'CET 0122.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0122', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(814, 7, 'CET 0217', 'Physics 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0122', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(815, 7, 'CET 0217.1', 'Physics 2', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0122.1, CET 0217', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(812, 7, 'CET 0122', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:46', NULL, NULL),
+(813, 7, 'CET 0122.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
+(814, 7, 'CET 0217', 'Physics 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
+(815, 7, 'CET 0217.1', 'Physics 2', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
 (816, 7, 'CSE 0121.1', 'Computer Programming 1', NULL, 1, 1.0, 0.0, 'CSE', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (817, 7, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (818, 7, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1010,42 +1346,42 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (822, 7, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (823, 7, 'CSE 0211.1', 'Computer Programming 2', NULL, 1, 1.0, 0.0, 'CSE', '2', '1st', 'CSE 0121.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (824, 7, 'ECE 0211', 'Circuits 1', NULL, 4, 3.0, 0.0, 'ECE', '2', '1st', 'CET 0122', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(825, 7, 'ECE 0211.1', 'Circuits 1', NULL, 1, 0.0, 1.0, 'ECE', '2', '1st', 'ECE 0211, CET 0122.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(826, 7, 'ECE 0212', 'Electronics Devices and Circuits', NULL, 3, 3.0, 0.0, 'ECE', '2', '1st', 'CET 0122, ECE 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(827, 7, 'ECE 0212.1', 'Electronics Devices and Circuits', NULL, 1, 0.0, 1.0, 'ECE', '2', '1st', 'CET 0122.1, CET 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(825, 7, 'ECE 0211.1', 'Circuits 1', NULL, 1, 0.0, 1.0, 'ECE', '2', '1st', 'CET 0122.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
+(826, 7, 'ECE 0212', 'Electronics Devices and Circuits', NULL, 3, 3.0, 0.0, 'ECE', '2', '1st', 'CET 0122', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
+(827, 7, 'ECE 0212.1', 'Electronics Devices and Circuits', NULL, 1, 0.0, 1.0, 'ECE', '2', '1st', 'CET 0122.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (828, 7, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (829, 7, 'CET 0222', 'Fundamentals of Material Science and Engineering', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0112', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (830, 7, 'PED 0014', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (831, 7, 'ECE 0221', 'Circuits 2', NULL, 3, 3.0, 0.0, 'ECE', '2', '2nd', 'ECE 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(832, 7, 'ECE 0221.1', 'Circuits 2', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', 'ECE 0221, ECE 0221.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(832, 7, 'ECE 0221.1', 'Circuits 2', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (833, 7, 'ECE 0222', 'Electronics Circuits Analysis and Design', NULL, 4, 3.0, 0.0, 'ECE', '2', '2nd', 'ECE 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(834, 7, 'ECE 0222.1', 'Electronics Circuits Analysis and Design', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', 'ECE 0212.1. ECE 0222', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(834, 7, 'ECE 0222.1', 'Electronics Circuits Analysis and Design', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', 'ECE 0212.1', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:30', NULL, NULL),
 (835, 7, 'ECE 0223', 'Advanced Engineering Mathematics for ECE', NULL, 4, 3.0, 0.0, 'ECE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(836, 7, 'ECE 0223.1', 'Advanced Engineering Mathematics for ECE', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', 'ECE 0223', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(836, 7, 'ECE 0223.1', 'Advanced Engineering Mathematics for ECE', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (837, 7, 'ECE 0224', 'Electromagnetics', NULL, 4, 0.0, 0.0, 'ECE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (838, 7, 'CET 0216', 'Engineering Economics', NULL, 3, 0.0, 0.0, 'CET', '2', '2nd', 'CET 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (839, 7, 'PED 0023', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (840, 7, 'ECE 0311', 'Logic Circuits and Switching Theory', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(841, 7, 'ECE 0311.1', 'Logic Circuits and Switching Theory', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0212.1, ECE 0311', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(841, 7, 'ECE 0311.1', 'Logic Circuits and Switching Theory', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0212.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (842, 7, 'ECE 0312', 'Electronics Systems and Design', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0222', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(843, 7, 'ECE 0312.1', 'Electronics Systems and Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0312, ECE 0222.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(843, 7, 'ECE 0312.1', 'Electronics Systems and Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0222.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (844, 7, 'ECE 0313', 'Signals, Spectra, Signal Processing', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0223', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(845, 7, 'ECE 0313.1', 'Signals, Spectra, Signal Processing', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0313, ECE 0223.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(845, 7, 'ECE 0313.1', 'Signals, Spectra, Signal Processing', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0223.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (846, 7, 'ECE 0314', 'Principle of Communication System', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0223, ECE 0222', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(847, 7, 'ECE 0314.1', 'Principle of Communication System', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0312, ECE 0223.1,', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(847, 7, 'ECE 0314.1', 'Principle of Communication System', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0223.1,', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (848, 7, 'CET 0411', 'Technopreneurship 101', NULL, 3, 3.0, 0.0, 'CET', '3', '1st', '3rd Year Standing', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (849, 7, 'ECE 0213', 'ECE Laws, Contracts, Ethics, Standards & Safety', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', '2nd Year Standing', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (850, 7, 'ECE 0321', 'Transmission Media and Antenna System & Design', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 0314, ECE 0221', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(851, 7, 'ECE 0321.1', 'Transmission Media and Antenna System & Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0314.1, ECE 0321', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(851, 7, 'ECE 0321.1', 'Transmission Media and Antenna System & Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0314.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (852, 7, 'ECE 0322', 'Microprocessor, Microcontroller System and Design', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 0311', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(853, 7, 'ECE 0322.1', 'Microprocessor, Microcontroller System and Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0322, ECE 0311.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(853, 7, 'ECE 0322.1', 'Microprocessor, Microcontroller System and Design', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0311.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (854, 7, 'ECE 0323', 'Feedback and Control System', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 0223, ECE 0221', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(855, 7, 'ECE 0323.1', 'Feedback and Control System', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0223.1, ECE 0323', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(855, 7, 'ECE 0323.1', 'Feedback and Control System', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0223.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (856, 7, 'ECE 0324', 'Modulation and Coding Techniques', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 0314', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(857, 7, 'ECE 0324.1', 'Modulation and Coding Techniques', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0314.1, ECE 0324', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(858, 7, 'ECE 0412', 'Methods of Research', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'CET 0411', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(859, 7, 'ECE 0411', 'Data Communications', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 324, ECE 314', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(860, 7, 'ECE 0411.1', 'Data Communications', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0324.1, ECE 0411', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(857, 7, 'ECE 0324.1', 'Modulation and Coding Techniques', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', 'ECE 0314.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
+(858, 7, 'ECE 0412', 'Methods of Research', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:31', NULL, NULL),
+(859, 7, 'ECE 0411', 'Data Communications', NULL, 3, 3.0, 0.0, 'ECE', '3', '2nd', 'ECE 0314', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
+(860, 7, 'ECE 0411.1', 'Data Communications', NULL, 1, 0.0, 1.0, 'ECE', '3', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:31', NULL, NULL),
 (861, 7, 'ECE 0331A', 'On The Job Training for ECE (240 hrs)', NULL, 6, 6.0, 0.0, 'ECE', '3', 'summer', '3rd Year Standing', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (862, 7, 'ECE 0412.1', 'Design 1/Capstone Project 1', NULL, 1, 1.0, 0.0, 'ECE', '4', '1st', 'ECE 0331', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (863, 7, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '4', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1053,18 +1389,18 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (865, 7, 'CHE 0315', 'Environmental Science and Engineering', NULL, 3, 3.0, 0.0, 'CHE', '4', '1st', 'CET 0112', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (866, 7, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '4', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (867, 7, 'ECE 0316', 'Analog IC Design', NULL, 3, 3.0, 0.0, 'ECE', '4', '1st', 'ECE 0322', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(868, 7, 'ECE 0316.1', 'Analog IC Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '1st', 'ECE 0322.1. ECE 0316', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(868, 7, 'ECE 0316.1', 'Analog IC Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '1st', 'ECE 0322.1', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:30', NULL, NULL),
 (869, 7, 'ECE 0315', 'Advanced Communication System and Design', NULL, 3, 3.0, 0.0, 'ECE', '4', '1st', 'ECE 0324', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(870, 7, 'ECE 0315.1', 'Advanced Communication System and Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '1st', 'ECE 0324.1. ECE 315', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(870, 7, 'ECE 0315.1', 'Advanced Communication System and Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '1st', 'ECE 0324.1', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:30', NULL, NULL),
 (871, 7, 'CET 0221', 'Engineering Management', NULL, 2, 2.0, 0.0, 'CET', '4', '2nd', 'CET 0216', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (872, 7, 'ECE 0421.1', 'Design 2/Capstone Project 2', NULL, 1, 1.0, 0.0, 'ECE', '4', '2nd', 'ECE 412.1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (873, 7, 'ECE 0423.1', 'Seminars/Colloquium', NULL, 1, 1.0, 0.0, 'ECE', '4', '2nd', 'ECE 0412', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (874, 7, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '4', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (875, 7, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '4', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (876, 7, 'ECE 0326', 'Digital IC Design', NULL, 3, 3.0, 0.0, 'ECE', '4', '2nd', 'ECE 0316', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(877, 7, 'ECE 0326.1', 'Digital IC Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '2nd', 'ECE 0316.1, ECE0326', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(877, 7, 'ECE 0326.1', 'Digital IC Design', NULL, 1, 0.0, 1.0, 'ECE', '4', '2nd', 'ECE 0316.1', 'active', '2026-04-08 17:53:15', '2026-04-21 01:55:03', NULL, NULL),
 (878, 7, 'ECE 0325', 'Advanced Networking', NULL, 3, 3.0, 0.0, 'ECE', '4', '2nd', 'ECE 0315', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(879, 7, 'ECE 0325.1', 'Advanced Networking', NULL, 1, 0.0, 1.0, 'ECE', '4', '2nd', 'ECE 315.1, ECE 0325', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(879, 7, 'ECE 0325.1', 'Advanced Networking', NULL, 1, 0.0, 1.0, 'ECE', '4', '2nd', 'ECE 315.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (880, 9, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:19', '2026-04-08 17:53:19', NULL, NULL),
 (881, 9, 'CET 0112', 'Chemistry for Engineers', NULL, 4, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:19', '2026-04-08 17:53:19', NULL, NULL),
 (882, 9, 'CET 0113.1', 'Engineering Drawing', NULL, 1, 1.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:19', '2026-04-08 17:53:19', NULL, NULL),
@@ -1076,7 +1412,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (888, 9, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (889, 9, 'NSTP 01', 'National Service Training Program 1-ROTC 1/CWTS 1', NULL, 3, 2.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (890, 9, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(891, 9, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111, CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(891, 9, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:20', '2026-04-21 01:53:31', NULL, NULL),
 (892, 9, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (893, 9, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (894, 9, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
@@ -1084,7 +1420,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (896, 9, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (897, 9, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (898, 9, 'PED 0033', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(899, 9, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 1', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(899, 9, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:20', '2026-04-20 14:59:33', NULL, NULL),
 (900, 9, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (901, 9, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (902, 9, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '2', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
@@ -1136,7 +1472,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (948, 9, 'MEC 0426.1', 'Mechanical Engineering Laboratory 3', NULL, 2, 2.0, 0.0, 'MEC', '4', '2nd', 'MEC 0415', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (949, 9, 'MEC 0427', 'ME Laws. Ethics, Contracts, Codes & Standards', NULL, 2, 2.0, 0.0, 'MEC', '4', '2nd', 'ETH 0008', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (950, 8, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(951, 8, 'CET 0112', 'Chemistry for Engineers', NULL, 4, 3.0, 0.0, 'CET', '1', '1st', 'CET 0112', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(951, 8, 'CET 0112', 'Chemistry for Engineers', NULL, 4, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-20 15:05:38', NULL, NULL),
 (952, 8, 'CET 0113.1', 'Engineering Drawing', NULL, 1, 1.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (953, 8, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'PCM', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (954, 8, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1145,7 +1481,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (957, 8, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (958, 8, 'NSTP 01', 'National Service Training Program 1- ROTC 1/ CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (959, 8, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(960, 8, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111, CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(960, 8, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:24', '2026-04-21 01:53:31', NULL, NULL),
 (961, 8, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (962, 8, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (963, 8, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1153,7 +1489,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (965, 8, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (966, 8, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (967, 8, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(968, 8, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 1', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(968, 8, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:24', '2026-04-20 14:59:33', NULL, NULL),
 (969, 8, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (970, 8, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (971, 8, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '2', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1203,7 +1539,89 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (1015, 8, 'MFG 0423', 'Computer-Integrated Manufacturing (Lecture)', NULL, 1, 1.0, 0.0, 'MFG', '4', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (1016, 8, 'MFG 0423.1', 'Computer-Integrated Manufacturing', NULL, 1, 1.0, 0.0, 'MFG', '4', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (1017, 8, 'MFG 0424', 'Mechatronics (Lecture)', NULL, 3, 2.0, 0.0, 'MFG', '4', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(1018, 8, 'MFG 0425', 'Product Design (Lecture)', NULL, 3, 2.0, 0.0, 'MFG', '4', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL);
+(1018, 8, 'MFG 0425', 'Product Design (Lecture)', NULL, 3, 2.0, 0.0, 'MFG', '4', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(1019, 2, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'Civil Engineering', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1020, 2, 'CET 0112', 'Chemistry for Engineers', NULL, 4, 3.0, 0.0, 'Civil Engineering', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1021, 2, 'CET 0112.1', 'Chemistry Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-20 15:11:13', NULL, NULL),
+(1022, 2, 'CIV 0111', 'Civil Engineering Orientation', NULL, 2, 2.0, 0.0, 'Civil Engineering', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1023, 2, 'MMW 001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1024, 2, 'STS 002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1025, 2, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1026, 2, 'PED 0001', 'Physical Activities', NULL, 2, 2.0, 0.0, 'PE', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1027, 2, 'NSTP 1', 'National Service Training Program 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1028, 2, 'CET 0121', 'Calculus 2', NULL, 2, 2.0, 0.0, 'Civil Engineering', '1', '2nd', 'CET 0111', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1029, 2, 'CET 0122', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'Civil Engineering', '1', '2nd', 'CET 0111', 'active', '2026-04-19 07:25:02', '2026-04-21 01:53:31', NULL, NULL),
+(1030, 2, 'CET 0122.1', 'Physics Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-20 15:11:13', NULL, NULL),
+(1031, 2, 'CIV 0121', 'Engineering Drawing and Plans', NULL, 1, 1.0, 0.0, 'Civil Engineering', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1032, 2, 'EIT 0121.1', 'Computer Fundamentals and Programming 1', NULL, 1, 1.0, 0.0, 'IT', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1033, 2, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'General Education', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1034, 2, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'General Education', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1035, 2, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'General Education', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1036, 2, 'IPP 0010A', 'Pagbasa at Pagsulat', NULL, 3, 3.0, 0.0, 'General Education', '1', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1037, 2, 'NSTP 2', 'National Service Training Program 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-19 07:25:02', '2026-04-20 14:59:33', NULL, NULL),
+(1038, 2, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'Civil Engineering', '2', '1st', 'CET 0121,CET 0122', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1039, 2, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'Civil Engineering', '2', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1040, 2, 'CIV 0211A', 'Fundamentals of Surveying', NULL, 4, 4.0, 0.0, 'Civil Engineering', '2', '1st', 'CIV 0121', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1041, 2, 'CIV 0211.1', 'Surveying Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '2', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-20 15:11:13', NULL, NULL),
+(1042, 2, 'EIT 0211.1', 'Programming 2', NULL, 1, 1.0, 0.0, 'IT', '2', '1st', 'EIT 0121.1', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1043, 2, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'General Education', '2', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1044, 2, 'LWR 0009', 'Rizal', NULL, 3, 3.0, 0.0, 'General Education', '2', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1045, 2, 'RPH 0004', 'Philippine History', NULL, 3, 3.0, 0.0, 'General Education', '2', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1046, 2, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'Civil Engineering', '2', '2nd', 'CET 0121', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1047, 2, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'Civil Engineering', '2', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1048, 2, 'CET 0221', 'Engineering Management', NULL, 2, 2.0, 0.0, 'Civil Engineering', '2', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1049, 2, 'CET 0223', 'Dynamics of Rigid Bodies', NULL, 2, 2.0, 0.0, 'Civil Engineering', '2', '2nd', 'CET 0214', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1050, 2, 'CIV 0221', 'Geology for Civil Engineers', NULL, 2, 2.0, 0.0, 'Civil Engineering', '2', '2nd', 'CET 0112', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1051, 2, 'CIV 0222', 'Mechanics of Deformable Bodies', NULL, 4, 4.0, 0.0, 'Civil Engineering', '2', '2nd', 'CET 0214', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1052, 2, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'General Education', '2', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1053, 2, 'CIV 0311', 'Highway and Railroad Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '1st', 'CIV 0211A', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1054, 2, 'CIV 0312', 'Hydrology', NULL, 2, 2.0, 0.0, 'Civil Engineering', '3', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1055, 2, 'CIV 0313', 'Numerical Solutions', NULL, 2, 2.0, 0.0, 'Civil Engineering', '3', '1st', 'CET 0121', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1056, 2, 'CIV 0313.1', 'Numerical Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-20 15:11:13', NULL, NULL),
+(1057, 2, 'CIV 0314', 'Structural Theory', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '1st', 'CIV 0222', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1058, 2, 'CET 0411', 'Technopreneurship', NULL, 3, 3.0, 0.0, 'General Education', '3', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1059, 2, 'CIV 0321', 'Building Systems Design', NULL, 2, 2.0, 0.0, 'Civil Engineering', '3', '2nd', 'CIV 0121', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1060, 2, 'CIV 0322', 'Engineering Law and Contracts', NULL, 2, 2.0, 0.0, 'Civil Engineering', '3', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1061, 2, 'CIV 0323A', 'Hydraulics', NULL, 5, 5.0, 0.0, 'Civil Engineering', '3', '2nd', 'CET 0223', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1062, 2, 'CIV 0324', 'Reinforced Concrete', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '2nd', 'CIV 0314', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1063, 2, 'CIV 0325', 'Transportation Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '2nd', 'CIV 0311', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1064, 2, 'CIV 0331A', 'On-the-Job Training', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', 'summer', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1065, 2, 'CIV 0411', 'CE Project 1', NULL, 1, 1.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1066, 2, 'CIV 0412A', 'Geotechnical Engineering', NULL, 4, 4.0, 0.0, 'Civil Engineering', '4', '1st', 'CIV 0221,CIV 0222', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1067, 2, 'CIV 0413', 'Quantity Surveying', NULL, 1, 1.0, 0.0, 'Civil Engineering', '4', '1st', 'CIV 0321', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1068, 2, 'CIV 0414', 'Steel Design', NULL, 2, 2.0, 0.0, 'Civil Engineering', '4', '1st', 'CIV 0314', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1069, 2, 'CIV 0421', 'CE Project 2', NULL, 1, 1.0, 0.0, 'Civil Engineering', '4', '2nd', 'CIV 0411', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1070, 2, 'CIV 0422', 'Construction Management', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1071, 2, 'CIV 0423', 'Construction Materials', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', 'CIV 0222', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1072, 2, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'Civil Engineering', '1', '2nd', 'CET 0111', 'active', '2026-04-19 07:27:58', '2026-04-21 01:53:31', NULL, NULL),
+(1073, 2, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'Civil Engineering', '2', '2nd', 'CIV 0121', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1074, 2, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'General Education', '3', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1075, 2, 'CIV 0314.1', 'Structural Theory Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1076, 2, 'ELE 0318', 'Engineering Utilities 1', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '1st', 'CET 0122A', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1077, 2, 'MEC 0317', 'Engineering Utilities 2', NULL, 3, 3.0, 0.0, 'Civil Engineering', '3', '1st', 'CET 0122A', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1078, 2, 'CIV 0321.1', 'Building Systems Design Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1079, 2, 'CIV 0323.1', 'Hydraulics Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1080, 2, 'CIV 0324.1', 'Reinforced Concrete Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1081, 2, 'CIV 0331.1', 'OJT Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '3', 'summer', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1082, 2, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'General Education', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1083, 2, 'CIV 0411.1', 'CE Project 1 Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1084, 2, 'CIV 0412.1', 'Geotechnical Engineering Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1085, 2, 'CIV 0413.1', 'Quantity Surveying Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1086, 2, 'CIV 0414.1', 'Steel Design Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1087, 2, 'CIVCM 0415', 'Construction Cost Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL);
+INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name`, `description`, `units`, `lecture_hours`, `lab_hours`, `department`, `year_level`, `semester`, `prerequisite`, `status`, `created_at`, `updated_at`, `schedule`, `faculty_id`) VALUES
+(1088, 2, 'CIVCM 0416', 'Advanced Construction Methods and Equipment', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1089, 2, 'CIVST 0415', 'Matrix Analysis of Structures', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1090, 2, 'CIVST 0416', 'Earthquake Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1091, 2, 'CIV 0421.1', 'CE Project 2 Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1092, 2, 'CIV 0423.1', 'Construction Materials Lab', NULL, 0, 0.0, 2.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
+(1093, 2, 'CIVCM 0424', 'Project Construction and Management', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1094, 2, 'CIVCM 0425', 'Total Quantity Management', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1095, 2, 'CIVCM 0426', 'Construction Occupational Safety and Health', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1096, 2, 'CIVST 0424', 'Structural Design of Towers and Other Vertical Structures', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1097, 2, 'CIVST 0425', 'Bridge Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1098, 2, 'CIVST 0426', 'Foundation and Retaining Wall Design', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1099, 2, 'CIV 0427.1', 'Special Topics in Civil Engineering', NULL, 1, 1.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -1215,11 +1633,34 @@ DROP TABLE IF EXISTS `subject_blocks`;
 CREATE TABLE IF NOT EXISTS `subject_blocks` (
   `subject_block_id` int NOT NULL AUTO_INCREMENT,
   `class_id` int NOT NULL,
-  `block_name` varchar(20) NOT NULL,
+  `block_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `capacity` int DEFAULT '40',
   PRIMARY KEY (`subject_block_id`),
   KEY `subject_id` (`class_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `system_settings`
+--
+
+DROP TABLE IF EXISTS `system_settings`;
+CREATE TABLE IF NOT EXISTS `system_settings` (
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` varchar(255) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `system_settings`
+--
+
+INSERT INTO `system_settings` (`setting_key`, `setting_value`, `updated_at`) VALUES
+('current_school_year', '2027-2028', '2026-04-20 10:12:02'),
+('current_semester', '2nd', '2026-04-20 14:49:16'),
+('enrollment_open', '1', '2026-04-19 07:16:19');
 
 --
 -- Constraints for dumped tables
@@ -1239,8 +1680,8 @@ ALTER TABLE `subjects`
   ADD CONSTRAINT `subjects_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`) ON DELETE SET NULL;
 COMMIT;
 
-SET FOREIGN_KEY_CHECKS=1;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
+SET FOREIGN_KEY_CHECKS=1;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 
@@ -32,20 +32,28 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS grade_entries (
     UNIQUE KEY uq_enroll (enrollment_id)
 )");
 
-// Get classes assigned to this faculty
-$classes = [];
+// Get classes assigned to this faculty � split current vs past
+$current_classes = [];
+$past_classes    = [];
 $cq = mysqli_query($con,
-    "SELECT c.class_id, c.section, c.semester, c.school_year,
+    "SELECT c.class_id, c.section, c.semester, c.school_year, c.grades_finalized,
             s.subject_code, s.subject_name
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
      WHERE c.faculty_id = $faculty_id
-     ORDER BY s.subject_code, c.section"
+     ORDER BY c.grades_finalized ASC, s.subject_code, c.section"
 );
-while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
+while ($r = mysqli_fetch_assoc($cq)) {
+    if ((int)$r['grades_finalized'] === 1) $past_classes[] = $r;
+    else $current_classes[] = $r;
+}
+$classes = array_merge($current_classes, $past_classes);
+
+$view_mode = $_GET['view'] ?? 'current';
+$display_classes = $view_mode === 'past' ? $past_classes : $current_classes;
 
 // Selected class
-$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($classes[0]['class_id'] ?? 0);
+$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($display_classes[0]['class_id'] ?? 0);
 $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
@@ -61,7 +69,14 @@ if ($selected_class_id) {
                 s.student_number, s.last_name, s.first_name, s.middle_name
          FROM enrollments e
          JOIN students s ON e.student_id = s.student_id
-         WHERE e.class_id = $selected_class_id AND e.status IN ('ongoing','confirmed')
+         WHERE e.class_id = $selected_class_id
+           AND e.status IN ('ongoing','confirmed')
+           AND e.enrollment_id = (
+               SELECT MAX(e2.enrollment_id) FROM enrollments e2
+               WHERE e2.student_id = e.student_id
+                 AND e2.class_id = $selected_class_id
+                 AND e2.status IN ('ongoing','confirmed')
+           )
          ORDER BY s.last_name, s.first_name"
     );
     while ($r = mysqli_fetch_assoc($sq)) $students[] = $r;
@@ -135,7 +150,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -174,6 +189,12 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                         </a>
                     </li>
                     <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
+                        </a>
+                    </li>
+                    <li>
                         <a href="faculty_profile.php">
                             <i class="fa-solid fa-user"></i>
                             <div class="li-name">Profile</div>
@@ -206,10 +227,22 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
 
     <main>
 
+        <!-- Current / Past toggle -->
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <a href="?view=current" class="sched-toggle-btn <?php echo $view_mode==='current'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-chalkboard"></i> Current Classes
+                <?php if (count($current_classes)): ?><span style="background:var(--maroon);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($current_classes); ?></span><?php endif; ?>
+            </a>
+            <a href="?view=past" class="sched-toggle-btn <?php echo $view_mode==='past'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-clock-rotate-left"></i> Past Classes
+                <?php if (count($past_classes)): ?><span style="background:var(--navy);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($past_classes); ?></span><?php endif; ?>
+            </a>
+        </div>
+
         <!-- Class Selector Card -->
         <div class="class-nav">
             <div class="class-nav-left">
-                <div class="class-nav-title">Spreadsheet</div>
+                <div class="class-nav-title">Spreadsheet <?php if($view_mode==='past'): ?><span style="font-size:.75rem;color:var(--text-label);font-weight:400;"> - Past / Finalized</span><?php endif; ?></div>
                 <?php if ($selected_class): ?>
                 <div class="class-meta">
                     <span class="class-meta-badge code" id="metaCode"><?php echo htmlspecialchars($selected_class['subject_code']); ?></span>
@@ -222,19 +255,20 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             </div>
             <div class="class-nav-right">
                 <form method="GET" id="classSelectForm">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view_mode); ?>">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
-                            <?php if (empty($classes)): ?>
-                                <option>No classes assigned</option>
+                            <?php if (empty($display_classes)): ?>
+                                <option>No classes found</option>
                             <?php else: ?>
-                                <?php foreach ($classes as $c): ?>
+                                <?php foreach ($display_classes as $c): ?>
                                 <option value="<?php echo $c['class_id']; ?>"
                                     data-code="<?php echo htmlspecialchars($c['subject_code']); ?>"
                                     data-section="<?php echo htmlspecialchars($c['section']); ?>"
                                     data-name="<?php echo htmlspecialchars($c['subject_name']); ?>"
                                     <?php echo $c['class_id'] == $selected_class_id ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($c['subject_code'] . ' — ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
+                                    <?php echo htmlspecialchars($c['subject_code'] . ' - ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
                                 </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -248,7 +282,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
         <!-- Empty State -->
         <div class="sched-empty">
             <i class="fa-solid fa-table"></i>
-            <span><?php echo empty($classes) ? 'No classes assigned to you yet.' : 'No enrolled students in this class.'; ?></span>
+            <span><?php echo empty($display_classes) ? 'No ' . ($view_mode==='past'?'past':'current') . ' classes found.' : 'No enrolled students in this class.'; ?></span>
         </div>
 
         <?php else: ?>
@@ -256,11 +290,11 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
         <!-- Toolbar: Legend + Export -->
         <div class="ss-toolbar">
             <div class="ss-legend">
-                <span><i class="fa-solid fa-circle-check" style="color:var(--passed-green);"></i> Passed (1.00–3.00)</span>
+                <span><i class="fa-solid fa-circle-check" style="color:var(--passed-green);"></i> Passed (1.00&ndash;3.00)</span>
                 <span><i class="fa-solid fa-circle-half-stroke" style="color:var(--perm-navy);"></i> Conditional (4.00)</span>
                 <span><i class="fa-solid fa-circle-xmark" style="color:var(--red);"></i> Failed (5.00)</span>
                 <?php if (!$finalized): ?>
-                <span class="ss-legend-hint">Click any grade cell to edit · Tab / Enter to move · Values 0–100</span>
+                <span class="ss-legend-hint">Click any grade cell to edit &mdash; Tab / Enter to move &mdash; Values 0&ndash;100</span>
                 <?php endif; ?>
             </div>
             <div style="display:flex;gap:0.6rem;align-items:center;">
@@ -325,14 +359,14 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                             <input type="number" class="cell-input"
                                    data-field="<?php echo $field; ?>"
                                    value="<?php echo $val !== null ? htmlspecialchars($val) : ''; ?>"
-                                   placeholder="—" min="0" max="100" step="0.01"
-                                   title="<?php echo ucwords(str_replace('_', ' ', $field)); ?> (0–100)"
+                                   placeholder="-" min="1" max="100" step="0.01"
+                                   title="<?php echo ucwords(str_replace('_', ' ', $field)); ?> (0-100)"
                                    <?php echo $finalized ? 'disabled' : ''; ?>>
                         </span>
                         <?php endforeach; ?>
 
-                        <span class="col-tg col-computed" data-col="tg"><?php echo $tg ?? '—'; ?></span>
-                        <span class="col-fg col-computed" data-col="fg"><?php echo $pg ?? '—'; ?></span>
+                        <span class="col-tg col-computed" data-col="tg"><?php echo $tg ?? '-'; ?></span>
+                        <span class="col-fg col-computed" data-col="fg"><?php echo $pg ?? '-'; ?></span>
                         <span class="col-remark <?php echo $rm; ?>" data-col="remark">
                             <i class="fa-solid <?php echo $rmIco; ?>"></i>
                             <?php echo $rmLbl; ?>
@@ -358,7 +392,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
 
     <script src="../../js/faculty/faculty_main.js"></script>
     <script>
-        // ── Meta badge updater (instant feedback before form submits) ────────
+        // -- Meta badge updater (instant feedback before form submits) --------
         const classSelect = document.getElementById('classSelect');
         if (classSelect) {
             classSelect.addEventListener('change', function () {
@@ -372,7 +406,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             });
         }
 
-        // ── Transmutation (mirrors PHP) ──────────────────────────────────────
+        // -- Transmutation (mirrors PHP) --------------------------------------
         const HANDLER   = '../../php/faculty_grades_handler.php';
         const CLASS_ID  = <?php echo $selected_class_id; ?>;
         const FINALIZED = <?php echo $finalized ? 'true' : 'false'; ?>;
@@ -399,7 +433,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
         const remarkLabel = { passed:'Passed', failed:'Failed', conditional:'Conditional', pending:'Pending' };
         const remarkIcon  = { passed:'fa-circle-check', failed:'fa-circle-xmark', conditional:'fa-circle-half-stroke', pending:'fa-clock' };
 
-        // ── Update computed columns in the row ───────────────────────────────
+        // -- Update computed columns in the row -------------------------------
         function updateRowComputed(row) {
             const inputs = row.querySelectorAll('.cell-input');
             const vals = {};
@@ -411,18 +445,19 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             const rmEl = row.querySelector('[data-col="remark"]');
 
             if (allNull) {
-                tgEl.textContent = '—';
-                fgEl.textContent = '—';
+                tgEl.textContent = '-';
+                fgEl.textContent = '-';
                 rmEl.className = 'col-remark pending';
                 rmEl.innerHTML = '<i class="fa-solid fa-clock"></i> Pending';
                 return;
             }
 
-            const cs = vals.class_standing ?? 0;
-            const qz = vals.quiz           ?? 0;
-            const mt = vals.midterms       ?? 0;
-            const fn = vals.finals         ?? 0;
-            const computed = Math.round((cs*0.30 + qz*0.30 + mt*0.20 + fn*0.20) * 100) / 100;
+            const weights = { class_standing: 0.30, quiz: 0.30, midterms: 0.20, finals: 0.20 };
+            let weightedSum = 0;
+            for (const [field, w] of Object.entries(weights)) {
+                weightedSum += (vals[field] ?? 0) * w;
+            }
+            const computed = Math.round(weightedSum * 100) / 100;
             const tg = transmute(computed);
             const pg = pointGrade(tg);
             const rm = remark(pg);
@@ -433,16 +468,16 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             rmEl.innerHTML   = `<i class="fa-solid ${remarkIcon[rm]}"></i> ${remarkLabel[rm]}`;
         }
 
-        // ── Save toast ───────────────────────────────────────────────────────
+        // -- Save toast -------------------------------------------------------
         function showSaved(ok = true) {
             const el = document.getElementById('saveIndicator');
-            el.textContent = ok ? '✓ Saved' : '✗ Error saving';
+            el.textContent = ok ? 'Saved' : 'Error saving';
             el.className   = 'save-indicator show' + (ok ? '' : ' error');
             clearTimeout(saveTimer);
             saveTimer = setTimeout(() => el.classList.remove('show'), 1800);
         }
 
-        // ── Finalize grades ───────────────────────────────────────────────────
+        // -- Finalize grades ---------------------------------------------------
         function confirmFinalize() {
             if (!confirm('Finalize grades for this class?\n\nThis is permanent and cannot be undone. Students will see their final grades and no further edits will be allowed.')) return;
             const fd = new FormData();
@@ -457,7 +492,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                 .catch(() => alert('Error finalizing grades.'));
         }
 
-        // ── Save cell to server ──────────────────────────────────────────────
+        // -- Save cell to server ----------------------------------------------
         function saveCell(input, row) {
             const fd  = new FormData();
             fd.append('action',        'save_cell');
@@ -481,8 +516,8 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                         rmEl.className   = 'col-remark ' + d.remark;
                         rmEl.innerHTML   = `<i class="fa-solid ${remarkIcon[d.remark]}"></i> ${remarkLabel[d.remark]}`;
                     } else {
-                        tgEl.textContent = '—';
-                        fgEl.textContent = '—';
+                        tgEl.textContent = '-';
+                        fgEl.textContent = '-';
                         rmEl.className   = 'col-remark pending';
                         rmEl.innerHTML   = '<i class="fa-solid fa-clock"></i> Pending';
                     }
@@ -490,7 +525,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                 .catch(() => showSaved(false));
         }
 
-        // ── Keyboard navigation ──────────────────────────────────────────────
+        // -- Keyboard navigation ----------------------------------------------
         const allInputs = () => [...document.querySelectorAll('.cell-input')];
 
         function moveFocus(current, dir) {
@@ -500,7 +535,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             if (next) { next.focus(); next.select(); }
         }
 
-        // ── Wire up all inputs ───────────────────────────────────────────────
+        // -- Wire up all inputs -----------------------------------------------
         document.querySelectorAll('.cell-input').forEach(input => {
             // Live compute on every keystroke
             input.addEventListener('input', () => updateRowComputed(input.closest('.ss-row')));
@@ -532,7 +567,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             input.addEventListener('focus', () => input.select());
         });
 
-        // ── CSV Export ───────────────────────────────────────────────────────
+        // -- CSV Export -------------------------------------------------------
         function exportCSV() {
             const rows = document.querySelectorAll('.ss-row');
             const lines = [['#', 'Full Name', 'Class Standing', 'Quiz', 'Midterms', 'Finals', 'Transmuted Grade', 'Point Grade', 'Remarks']];
@@ -557,3 +592,4 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
     </script>
   </body>
 </html>
+

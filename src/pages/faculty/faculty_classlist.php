@@ -10,19 +10,27 @@ $faculty = mysqli_fetch_assoc(mysqli_query($con,
 ));
 if (!$faculty) { session_destroy(); header("Location: faculty_login.php"); die; }
 
-// Classes assigned to this faculty
-$classes = [];
+// Classes assigned to this faculty - split into current and past
+$current_classes = [];
+$past_classes    = [];
 $cq = mysqli_query($con,
-    "SELECT c.class_id, c.section, c.semester, c.school_year,
+    "SELECT c.class_id, c.section, c.semester, c.school_year, c.grades_finalized,
             s.subject_code, s.subject_name
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
      WHERE c.faculty_id = $faculty_id
-     ORDER BY s.subject_code, c.section"
+     ORDER BY c.grades_finalized ASC, s.subject_code, c.section"
 );
-while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
+while ($r = mysqli_fetch_assoc($cq)) {
+    if ((int)$r['grades_finalized'] === 1) $past_classes[] = $r;
+    else $current_classes[] = $r;
+}
+$classes = array_merge($current_classes, $past_classes);
 
-$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($classes[0]['class_id'] ?? 0);
+$view_mode = $_GET['view'] ?? 'current'; // 'current' or 'past'
+$display_classes = $view_mode === 'past' ? $past_classes : $current_classes;
+
+$selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($display_classes[0]['class_id'] ?? 0);
 $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
@@ -45,6 +53,11 @@ if ($selected_class_id) {
          JOIN students s ON e.student_id = s.student_id
          WHERE e.class_id = $selected_class_id
            AND e.status IN ('ongoing','confirmed','dropped')
+           AND e.enrollment_id = (
+               SELECT MAX(e2.enrollment_id) FROM enrollments e2
+               WHERE e2.student_id = e.student_id
+                 AND e2.class_id = $selected_class_id
+           )
            $search_clause
          ORDER BY s.last_name, s.first_name"
     );
@@ -83,7 +96,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -122,6 +135,12 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                         </a>
                     </li>
                     <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
+                        </a>
+                    </li>
+                    <li>
                         <a href="faculty_profile.php">
                             <i class="fa-solid fa-user"></i>
                             <div class="li-name">Profile</div>
@@ -154,10 +173,22 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
 
     <main>
 
+        <!-- Current / Past toggle -->
+        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
+            <a href="?view=current" class="sched-toggle-btn <?php echo $view_mode==='current'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-chalkboard"></i> Current Classes
+                <?php if (count($current_classes)): ?><span style="background:var(--maroon);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($current_classes); ?></span><?php endif; ?>
+            </a>
+            <a href="?view=past" class="sched-toggle-btn <?php echo $view_mode==='past'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+                <i class="fa-solid fa-clock-rotate-left"></i> Past Classes
+                <?php if (count($past_classes)): ?><span style="background:var(--navy);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($past_classes); ?></span><?php endif; ?>
+            </a>
+        </div>
+
         <!-- Class Selector Card -->
         <div class="class-nav">
             <div class="class-nav-left">
-                <div class="class-nav-title">Class List</div>
+                <div class="class-nav-title">Class List <?php if($view_mode==='past'): ?><span style="font-size:.75rem;color:var(--text-label);font-weight:400;"> - Past / Finalized</span><?php endif; ?></div>
                 <?php if ($selected_class): ?>
                 <div class="class-meta" id="classMeta">
                     <span class="class-meta-badge code" id="metaCode"><?php echo htmlspecialchars($selected_class['subject_code']); ?></span>
@@ -170,19 +201,20 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
             </div>
             <div class="class-nav-right">
                 <form method="GET" id="classSelectForm">
+                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view_mode); ?>">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
-                            <?php if (empty($classes)): ?>
-                                <option>No classes assigned</option>
+                            <?php if (empty($display_classes)): ?>
+                                <option>No classes found</option>
                             <?php else: ?>
-                                <?php foreach ($classes as $c): ?>
+                                <?php foreach ($display_classes as $c): ?>
                                 <option value="<?php echo $c['class_id']; ?>"
                                     data-code="<?php echo htmlspecialchars($c['subject_code']); ?>"
                                     data-section="<?php echo htmlspecialchars($c['section']); ?>"
                                     data-name="<?php echo htmlspecialchars($c['subject_name']); ?>"
                                     <?php echo $c['class_id'] == $selected_class_id ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($c['subject_code'] . ' — ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
+                                    <?php echo htmlspecialchars($c['subject_code'] . ' - ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
                                 </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -196,7 +228,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
         <!-- Empty State -->
         <div class="sched-empty">
             <i class="fa-solid fa-list"></i>
-            <span><?php echo empty($classes) ? 'No classes assigned to you yet.' : 'No enrolled students in this class.'; ?></span>
+            <span><?php echo empty($display_classes) ? 'No ' . ($view_mode==='past'?'past':'current') . ' classes found.' : 'No students in this class.'; ?></span>
         </div>
 
         <?php else: ?>
@@ -224,7 +256,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                     <input type="hidden" name="class_id" value="<?php echo $selected_class_id; ?>">
                     <div class="cl-search-wrapper">
                         <i class="fa-solid fa-magnifying-glass cl-search-icon"></i>
-                        <input type="text" name="search" class="cl-search" placeholder="Search student…"
+                        <input type="text" name="search" class="cl-search" placeholder="Search student-"
                                value="<?php echo htmlspecialchars($search); ?>"
                                oninput="filterRows(this.value)">
                     </div>
@@ -250,7 +282,9 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                     <span class="col-head">STUDENT NO.</span>
                     <span class="col-head col-align-left">FULL NAME (LN, FN MI)</span>
                     <span class="col-head col-align-left">EMAIL</span>
+                    <span class="col-head">COURSE</span>
                     <span class="col-head">SECTION</span>
+                    <span class="col-head">YEAR</span>
                     <span class="col-head">STATUS</span>
                 </div>
 
@@ -259,7 +293,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                         $mi = $st['middle_name'] ? ' ' . $st['middle_name'][0] . '.' : '';
                         $fullname = $st['last_name'] . ', ' . $st['first_name'] . $mi;
                         $status   = in_array($st['enroll_status'], ['ongoing', 'confirmed']) ? 'enrolled' : $st['enroll_status'];
-                        $course_yr = trim(($st['course'] ?? '') . ' ' . ($st['year_level'] ? $st['year_level'] . 'Y' : ''));
+                        $year_labels = ['1'=>'1st Year','2'=>'2nd Year','3'=>'3rd Year','4'=>'4th Year','5'=>'5th Year','6'=>'6th Year'];
                     ?>
                     <div class="sec-row cl-row" data-status="<?php echo $status; ?>">
                         <span class="col-num"><?php echo $idx + 1; ?></span>
@@ -267,9 +301,15 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
                             <span class="student-no"><?php echo htmlspecialchars($st['student_number']); ?></span>
                         </span>
                         <span class="col-side"><?php echo htmlspecialchars($fullname); ?></span>
-                        <span class="col-email"><?php echo htmlspecialchars($st['email'] ?? '—'); ?></span>
+                        <span class="col-email"><?php echo htmlspecialchars($st['email'] ?? '-'); ?></span>
                         <span class="col-container">
-                            <span class="section-badge"><?php echo htmlspecialchars($course_yr ?: $selected_class['section']); ?></span>
+                            <span class="section-badge"><?php echo htmlspecialchars($st['course'] ?? '—'); ?></span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge"><?php echo htmlspecialchars($selected_class['section']); ?></span>
+                        </span>
+                        <span class="col-container">
+                            <span class="section-badge"><?php echo htmlspecialchars($year_labels[$st['year_level']] ?? '—'); ?></span>
                         </span>
                         <span class="col-container">
                             <span class="status-badge <?php echo $status; ?>">
@@ -314,7 +354,8 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
         function setTab(tab) {
             _currentTab = tab;
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
+            const tabEl = document.getElementById('tab-' + tab);
+            if (tabEl) tabEl.classList.add('active');
             applyFilters();
         }
 
@@ -341,7 +382,7 @@ $dropped_count  = count(array_filter($students, fn($s) => $s['enroll_status'] ==
 
         function exportCSV() {
             const rows = document.querySelectorAll('.cl-row');
-            const lines = [['#', 'Student No.', 'Full Name', 'Email', 'Section', 'Status']];
+            const lines = [['#', 'Student No.', 'Full Name', 'Email', 'Course', 'Section', 'Year', 'Status']];
             let i = 1;
             rows.forEach(row => {
                 if (row.style.display === 'none') return;

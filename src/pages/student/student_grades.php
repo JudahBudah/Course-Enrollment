@@ -7,7 +7,7 @@ include("../../php/grade_helpers.php");
 $user_data = check_login($con);
 $profile_src = !empty($user_data['profile_photo'])
     ? '../../' . $user_data['profile_photo']
-    : '../../assets/test/student-profile.webp';
+    : '../../uploads/default.jpg';
 
 $program            = htmlspecialchars($user_data['course'] ?? 'N/A');
 $year_level         = $user_data['year_level'] ?? null;
@@ -25,6 +25,7 @@ function formatYear(int|null $year): string {
     return match($year) {
         1 => "1st Year", 2 => "2nd Year",
         3 => "3rd Year", 4 => "4th Year",
+        5 => "5th Year", 6 => "6th Year",
         default => "N/A",
     };
 }
@@ -47,13 +48,32 @@ function pointGrade(int $t): string {
 
 /* ── Fetch grades from grade_entries (saved by faculty) ── */
 $grades_by_year = [];
-for ($y = 1; $y <= 4; $y++) {
+for ($y = 1; $y <= 6; $y++) {
     $grades_by_year[$y] = ['1st' => [], '2nd' => []];
 }
 
+// Determine the student's earliest school year to compute relative year bucket
+$first_year_row = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT MIN(c.school_year) as first_sy FROM enrollments e
+     JOIN classes c ON e.class_id = c.class_id
+     WHERE e.student_id = {$user_data['student_id']}
+       AND e.status IN ('reserved','ongoing','confirmed','completed','drop_requested')"
+));
+$first_sy = $first_year_row['first_sy'] ?? null; // e.g. '2026-2027'
+
+function sy_to_year_bucket(?string $first_sy, string $class_sy): int {
+    if (!$first_sy) return 1;
+    // Extract start year from '2026-2027' format
+    $first_start = (int)explode('-', $first_sy)[0];
+    $class_start = (int)explode('-', $class_sy)[0];
+    $diff = $class_start - $first_start + 1;
+    return max(1, min(6, $diff));
+}
+
+// 1) Live grades from active/completed enrollments (class still exists)
 $query = "SELECT ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade,
                  e.enrollment_id, e.status AS enroll_status,
-                 c.semester, c.section, c.school_year,
+                 c.semester, c.section, c.school_year, c.grades_finalized,
                  s.subject_code, s.subject_name, s.units, s.year_level,
                  CONCAT(f.first_name, ' ', f.last_name) AS faculty_name
           FROM enrollments e
@@ -70,17 +90,78 @@ mysqli_stmt_bind_param($stmt, "i", $user_data['student_id']);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
+// Track which class instances are already covered (by class_id for live, by subject+sem+year+section for history)
+$seen_class_ids = [];
+
 while ($row = mysqli_fetch_assoc($result)) {
+    if (!$row['grades_finalized']) {
+        $row['class_standing'] = null;
+        $row['quiz']           = null;
+        $row['midterms']       = null;
+        $row['finals']         = null;
+        $row['computed_grade'] = null;
+    }
+
     $cg = $row['computed_grade'] !== null ? (float)$row['computed_grade'] : null;
     $row['grade'] = $cg !== null ? pointGrade(transmute($cg)) : null;
 
     $sem_key  = $row['semester'] === '2nd' ? '2nd' : '1st';
-    $year_num = (int)($row['year_level'] ?? 1);
-    if ($year_num < 1 || $year_num > 4) $year_num = 1;
+    $year_num = sy_to_year_bucket($first_sy, $row['school_year']);
+
+    // Track by the unique class instance key so history fallback skips exact duplicates only
+    $seen_class_ids[$row['subject_code'] . '|' . $row['semester'] . '|' . $row['school_year'] . '|' . $row['section']] = true;
 
     $grades_by_year[$year_num][$sem_key][] = $row;
 }
 mysqli_stmt_close($stmt);
+
+// 2) Archived grades from grade_history (class was deleted but grades were finalized)
+$hist_query = "SELECT gh.class_id, gh.class_standing, gh.quiz, gh.midterms, gh.finals,
+                      gh.computed_grade, gh.point_grade,
+                      gh.semester, gh.section, gh.school_year,
+                      gh.subject_code, gh.subject_name, gh.remarks,
+                      CONCAT(f.first_name, ' ', f.last_name) AS faculty_name,
+                      s.units, s.year_level
+               FROM grade_history gh
+               INNER JOIN (
+                   SELECT MAX(history_id) as max_id
+                   FROM grade_history
+                   WHERE student_id = ?
+                     AND class_id NOT IN (SELECT class_id FROM classes)
+                   GROUP BY class_id
+               ) latest ON gh.history_id = latest.max_id
+               LEFT JOIN subjects s ON s.subject_code COLLATE utf8mb4_general_ci = gh.subject_code
+                   AND (s.course_id IS NULL OR s.course_id = (
+                       SELECT course_id FROM courses
+                       WHERE course_name = ? OR course_code = ? LIMIT 1
+                   ))
+               LEFT JOIN faculty f ON f.faculty_id = gh.faculty_id
+               ORDER BY gh.school_year, gh.semester, gh.subject_code";
+
+$hist_stmt = mysqli_prepare($con, $hist_query);
+$course = $user_data['course'] ?? '';
+mysqli_stmt_bind_param($hist_stmt, "iss", $user_data['student_id'], $course, $course);
+mysqli_stmt_execute($hist_stmt);
+$hist_result = mysqli_stmt_get_result($hist_stmt);
+
+while ($row = mysqli_fetch_assoc($hist_result)) {
+    // Skip if this class_id was already shown from live data or a previous history row
+    $instance_key = $row['subject_code'] . '|' . $row['semester'] . '|' . $row['school_year'] . '|' . $row['section'];
+    if (isset($seen_class_ids[$instance_key])) continue;
+    $seen_class_ids[$instance_key] = true;
+
+    $cg = $row['computed_grade'] !== null ? (float)$row['computed_grade'] : null;
+    $row['grade']            = $row['point_grade'] ?? ($cg !== null ? pointGrade(transmute($cg)) : null);
+    $row['grades_finalized'] = 1;
+    $row['enroll_status']    = 'completed';
+    $row['enrollment_id']    = null;
+
+    $sem_key  = $row['semester'] === '2nd' ? '2nd' : '1st';
+    $year_num = sy_to_year_bucket($first_sy, $row['school_year']);
+
+    $grades_by_year[$year_num][$sem_key][] = $row;
+}
+mysqli_stmt_close($hist_stmt);
 
 /* ── GWA calculator ── */
 function calculateGWA(array $grades): ?float {
@@ -185,6 +266,12 @@ $overall_gwa = calculateGWA($all_grades);
                             <div class="li-name">Grades</div>
                         </a>
                     </li>
+                    <li>
+                        <a href="student_my_subjects.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div class="li-name">My Subjects</div>
+                        </a>
+                    </li>
                     <li class="course-dropdown">
                         <a href="#" id="acad-dropdown">
                             <i class="fa-solid fa-school"></i>
@@ -279,7 +366,7 @@ $overall_gwa = calculateGWA($all_grades);
             <div class="folder-card">
                 <!-- Year Tabs -->
                 <div class="tab-row">
-                    <?php for ($y = 1; $y <= 4; $y++): ?>
+                    <?php for ($y = 1; $y <= 6; $y++): ?>
                     <button class="tab <?php echo $y === 1 ? 'active' : ''; ?>" data-year="<?php echo $y; ?>">
                         <?php echo formatYear($y); ?>
                     </button>
@@ -289,7 +376,7 @@ $overall_gwa = calculateGWA($all_grades);
                 <!-- Folder Body -->
                 <div class="folder-body">
 
-                    <?php for ($year = 1; $year <= 4; $year++): ?>
+                    <?php for ($year = 1; $year <= 6; $year++): ?>
                     <div class="year-panel <?php echo $year === 1 ? 'active' : ''; ?>" data-year="<?php echo $year; ?>">
 
                         <?php foreach (['1st', '2nd'] as $sem): ?>

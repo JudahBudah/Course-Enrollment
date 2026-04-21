@@ -40,7 +40,7 @@ $total_classes = count($classes);
 // TODO: Query the faculty's department from the DB and assign to $department
 // $department = $faculty['department'] ?? 'N/A';
 
-// Parse schedule_day string into grid day tokens (e.g. "TTH" → ['T','TH'])
+// Parse schedule_day string into grid day tokens (e.g. "TTH" ? ['T','TH'])
 function parse_days_to_tokens(string $raw): array {
     $raw = strtoupper(trim($raw));
     $combos = [
@@ -65,9 +65,9 @@ function parse_days_to_tokens(string $raw): array {
     return array_unique($out);
 }
 
-// Parse "8:00 AM - 10:00 AM" or "08:00 - 10:00" → ['start'=>'08:00', 'end'=>'10:00']
+// Parse "8:00 AM - 10:00 AM" or "08:00 - 10:00" ? ['start'=>'08:00', 'end'=>'10:00']
 function parse_time_range(string $raw): array {
-    if (preg_match('/(\d{1,2}:\d{2})\s*(AM|PM)?\s*[-–]\s*(\d{1,2}:\d{2})\s*(AM|PM)?/i', $raw, $m)) {
+    if (preg_match('/(\d{1,2}:\d{2})\s*(AM|PM)?\s*[--]\s*(\d{1,2}:\d{2})\s*(AM|PM)?/i', $raw, $m)) {
         $to24 = function($t, $ampm) {
             [$h,$min] = explode(':', $t);
             $h = (int)$h; $min = (int)$min;
@@ -77,7 +77,7 @@ function parse_time_range(string $raw): array {
         };
         return ['start' => $to24($m[1], $m[2]), 'end' => $to24($m[3], $m[4] ?? $m[2])];
     }
-    if (preg_match('/(\d{1,2}:\d{2})\s*[-–]\s*(\d{1,2}:\d{2})/', $raw, $m)) {
+    if (preg_match('/(\d{1,2}:\d{2})\s*[--]\s*(\d{1,2}:\d{2})/', $raw, $m)) {
         return ['start' => $m[1], 'end' => $m[2]];
     }
     return ['start' => '08:00', 'end' => '09:00'];
@@ -94,7 +94,7 @@ foreach ($classes as $cls) {
     $js_data[] = [
         'code'      => $cls['subject_code'],
         'name'      => $cls['subject_name'],
-        'shortName' => mb_strimwidth($cls['subject_name'], 0, 18, '…'),
+        'shortName' => mb_strimwidth($cls['subject_name'], 0, 18, '-'),
         'section'   => $cls['section'],
         'room'      => $cls['room'] ?? '',
         'slots'     => $slots,
@@ -131,7 +131,7 @@ foreach ($classes as $cls) {
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../assets/test/faculty-profile.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
                 </div>
             </div>
         </div>
@@ -167,6 +167,12 @@ foreach ($classes as $cls) {
                         <a href="faculty_gradebook.php">
                             <i class="fa-solid fa-book"></i>
                             <div class="li-name">Gradebook</div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="faculty_grade_history.php">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                            <div class="li-name">Grade History</div>
                         </a>
                     </li>
                     <li>
@@ -217,7 +223,7 @@ foreach ($classes as $cls) {
                             <span class="stat-label">Units</span>
                         </div>
                         <div class="sched-stat-divider"></div>
-                        <!-- TODO: Replace hardcoded department — query faculty's department from DB into $department
+                        <!-- TODO: Replace hardcoded department - query faculty's department from DB into $department
                              then replace the empty echo below with: echo htmlspecialchars($department); -->
                         <div class="sched-stat-chip">
                             <span class="stat-value"><?php /* echo htmlspecialchars($department); */ ?></span>
@@ -247,6 +253,11 @@ foreach ($classes as $cls) {
                                 <option value="summer" <?php echo $sel_sem === 'summer' ? 'selected' : ''; ?>>Summer</option>
                             </select>
                         </div>
+                        <?php if ($sel_year || $sel_sem): ?>
+                            <div class="sched-label-container" style="justify-content:flex-end;">
+                                <a href="faculty_load.php" class="sched-clear-link">Clear</a>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
@@ -294,7 +305,7 @@ foreach ($classes as $cls) {
                                     <span style="color:var(--text);opacity:0.4;">TBA</span>
                                 <?php endif; ?>
                             </span>
-                            <span class="col-room"><?php echo htmlspecialchars($cls['room'] ?: '—'); ?></span>
+                            <span class="col-room"><?php echo htmlspecialchars($cls['room'] ?: '-'); ?></span>
                             <span class="col-container">
                                 <span class="units-badge"><?php echo htmlspecialchars($cls['units']); ?></span>
                             </span>
@@ -329,7 +340,7 @@ foreach ($classes as $cls) {
 
         const scheduleData = <?php echo json_encode($js_data, JSON_UNESCAPED_UNICODE); ?>;
 
-        /* ─── Config ─────────────────────────────────────────────────── */
+        /* --- Config --------------------------------------------------- */
         const PX_PER_MIN = 1.1;
 
         if (!scheduleData.length) return;
@@ -342,8 +353,8 @@ foreach ($classes as $cls) {
         const END_HOUR   = Math.min(24, Math.ceil(Math.max(...allEnds)   / 60) + 1);
         const GRID_H     = (END_HOUR - START_HOUR) * 60 * PX_PER_MIN;
 
-        const DAYS       = ['M','T','W','TH','F','S'];
-        const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT' };
+        const DAYS       = ['M','T','W','TH','F','S','SU'];
+        const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT', SU:'SUN' };
         const COLORS     = ['#8C1C24','#0B1F5B','#1a6b3c','#8a4f00','#5a1018','#1a3a8f'];
 
         const toTop = t      => (toMin(t) - START_HOUR * 60) * PX_PER_MIN;

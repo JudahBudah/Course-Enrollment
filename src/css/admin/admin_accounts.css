@@ -34,6 +34,44 @@
 }
 
 
+/* ── System Settings row ──────────────────────────────── */
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--off);
+    margin-bottom: 0.25rem;
+}
+
+.setting-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.2rem;
+}
+
+.setting-desc {
+    font-size: 0.78rem;
+    color: var(--text-label);
+}
+
+.setting-toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.setting-toggle-text {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--dark);
+    min-width: 42px;
+    text-align: right;
+}
+
 /* ── Stats Grid (2-card layout) ────────────────────────── */
 
 .stats-grid {

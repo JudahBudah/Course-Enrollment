@@ -23,6 +23,9 @@ function admin_login($con,$user,$pass){
         $a=mysqli_fetch_assoc($res);
         if(password_verify($pass,$a["password"])){
             $_SESSION["admin_id"]=$a["admin_id"];
+            $_SESSION["admin_username"]=$a["username"];
+            // Log login
+            if (function_exists('log_activity')) log_activity($con, 'Admin logged in', 'auth', $a['username']);
             return true;
         }
     }

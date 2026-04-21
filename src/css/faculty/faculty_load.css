@@ -305,7 +305,7 @@ select:focus {
     padding: 0 0 20px 0;
     background-color: var(--white-pr);
     display: grid;
-    grid-template-columns: 50px repeat(6, 1fr);
+    grid-template-columns: 50px repeat(7, 1fr);
 }
 
 

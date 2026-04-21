@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
@@ -8,19 +8,29 @@ $admin_data = check_admin_login($con);
 // Handle delete
 if (isset($_POST['delete_applicant'])) {
     $applicant_id = (int)$_POST['applicant_id'];
+    $ap = mysqli_fetch_assoc(mysqli_query($con, "SELECT first_name, last_name FROM applicants WHERE applicant_id = $applicant_id"));
     $stmt = mysqli_prepare($con, "DELETE FROM applicants WHERE applicant_id = ?");
     mysqli_stmt_bind_param($stmt, "i", $applicant_id);
     mysqli_stmt_execute($stmt);
+    if ($ap) {
+        log_activity($con, 'Deleted applicant', 'applicant', $ap['first_name'] . ' ' . $ap['last_name'] . ' (ID ' . $applicant_id . ')');
+    }
     $success = "Applicant deleted successfully.";
 }
 
 // Handle status update
 if (isset($_POST['update_status'])) {
-    $applicant_id = $_POST['applicant_id'];
+    $applicant_id = (int)$_POST['applicant_id'];
     $new_status   = $_POST['status'];
+    // Fetch applicant name for the log
+    $ap = mysqli_fetch_assoc(mysqli_query($con, "SELECT first_name, last_name FROM applicants WHERE applicant_id = $applicant_id"));
     $stmt = mysqli_prepare($con, "UPDATE applicants SET application_status = ? WHERE applicant_id = ?");
     mysqli_stmt_bind_param($stmt, "si", $new_status, $applicant_id);
     mysqli_stmt_execute($stmt);
+    if ($ap) {
+        log_activity($con, 'Updated applicant status to ' . $new_status, 'applicant',
+            $ap['first_name'] . ' ' . $ap['last_name'] . ' (ID ' . $applicant_id . ')');
+    }
     $success = "Application status updated successfully!";
 }
 
@@ -70,12 +80,10 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS exam_schedules (
 )");
 
 // Fetch courses for convert modal
-$courses_map = []; // course_name => college_name
-$courses_by_college = []; // college_name => [course_name, ...]
-$cr = mysqli_query($con, "SELECT course_name, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
+$courses_by_college = []; // college_name => [ ['course_name'=>..., 'course_code'=>...], ... ]
+$cr = mysqli_query($con, "SELECT course_name, course_code, college_name FROM courses WHERE status='active' ORDER BY college_name, course_name");
 while ($row = mysqli_fetch_assoc($cr)) {
-    $courses_map[$row['course_name']] = $row['college_name'];
-    $courses_by_college[$row['college_name']][] = $row['course_name'];
+    $courses_by_college[$row['college_name']][] = ['course_name' => $row['course_name'], 'course_code' => $row['course_code']];
 }
 
 // Stats
@@ -192,6 +200,13 @@ $applicants = mysqli_query($con, $query);
                         <a href="admin_enrollments.php">
                             <i class="fa-solid fa-file-lines"></i>
                             <span class="li-name">Enrollments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin_drop_requests.php">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Drop Requests</span>
+                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
                         </a>
                     </li>
                     <li>
@@ -346,7 +361,7 @@ $applicants = mysqli_query($con, $query);
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
                                             <?php if ($applicant['application_status'] === 'approved'): ?>
-                                            <button onclick="openConvertModal(<?php echo $applicant['applicant_id']; ?>, '<?php echo htmlspecialchars(addslashes($applicant['first_name'] . ' ' . $applicant['last_name'])); ?>', '<?php echo htmlspecialchars(addslashes($applicant['first_choice'] ?? '')); ?>')" class="btn-icon convert" title="Convert to Student">
+                                            <button onclick="openConvertModal(<?php echo $applicant['applicant_id']; ?>, '<?php echo htmlspecialchars(addslashes($applicant['first_name'] . ' ' . $applicant['last_name'])); ?>', '<?php echo htmlspecialchars(addslashes($applicant['first_choice'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($applicant['second_choice'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($applicant['third_choice'] ?? '')); ?>')" class="btn-icon convert" title="Convert to Student">
                                                 <i class="fa-solid fa-user-graduate"></i>
                                             </button>
                                             <?php endif; ?>
@@ -420,6 +435,7 @@ $applicants = mysqli_query($con, $query);
             </p>
             <form id="convertForm">
                 <input type="hidden" name="applicant_id" id="convert_applicant_id">
+                <div class="convert-choices" id="convertChoices"></div>
                 <div class="form-group">
                     <label>Student Number <span style="color:var(--red)">*</span></label>
                     <input type="text" name="student_number" placeholder="e.g., 202412345"
@@ -429,24 +445,24 @@ $applicants = mysqli_query($con, $query);
                            title="Student number must be exactly 9 digits" required>
                 </div>
                 <div class="form-group">
-                    <label>College <span style="color:var(--red)">*</span></label>
-                    <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
-                </div>
-                <div class="form-group">
                     <label>Course <span style="color:var(--red)">*</span></label>
-                    <select name="course" id="convert_course" required>
-                        <option value="">Select Course</option>
+                    <select name="course" id="convert_course" class="modal-filter-select" style="width:100%;" required>
+                        <option value="">— Select a course —</option>
                         <?php foreach ($courses_by_college as $college => $programs): ?>
                             <optgroup label="<?php echo htmlspecialchars($college); ?>">
                                 <?php foreach ($programs as $p): ?>
-                                    <option value="<?php echo htmlspecialchars($p); ?>"
+                                    <option value="<?php echo htmlspecialchars($p['course_name']); ?>"
                                             data-college="<?php echo htmlspecialchars($college); ?>">
-                                        <?php echo htmlspecialchars($p); ?>
+                                        <?php echo htmlspecialchars($p['course_code'] . ' — ' . $p['course_name']); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </optgroup>
                         <?php endforeach; ?>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>College <span style="color:var(--red)">*</span></label>
+                    <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
                 </div>
                 <div class="form-group">
                     <label>Year Level <span style="color:var(--red)">*</span></label>

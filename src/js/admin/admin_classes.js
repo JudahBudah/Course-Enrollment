@@ -1,131 +1,124 @@
-/* admin_classes.js — page-specific scripts */
-
-/* ── Close modal ───────────────────────────────────────── */
+/* admin_classes.js */
 
 function closeModal(id) {
     document.getElementById(id).style.display = 'none';
 }
 
 window.addEventListener('click', function(e) {
-    const m = document.getElementById('formModal');
-    if (e.target === m) m.style.display = 'none';
-    const sm = document.getElementById('studentsModal');
-    if (e.target === sm) sm.style.display = 'none';
+    ['formModal','studentsModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (e.target === m) m.style.display = 'none';
+    });
 });
 
-/* ── Filter subjects in the dropdown ──────────────────── */
+/* ── Course → Subject checklist ─────────────────────── */
 
-function filterSubjects() {
-    const deptFilter = document.getElementById('filter_dept').value.toLowerCase();
-    const yearFilter = document.getElementById('filter_year').value;
-    const semFilter  = document.getElementById('filter_sem').value.toLowerCase();
-    const searchFilter = document.getElementById('filter_search').value.toLowerCase();
-    const select     = document.getElementById('form_subject_id');
-    const options    = select.querySelectorAll('option');
+function loadCourseSubjects() {
+    const courseId = document.getElementById('modal_course_select').value;
+    const wrap     = document.getElementById('subject_checklist_wrap');
+    const list     = document.getElementById('subject_checklist');
+    const hiddenId = document.getElementById('form_subject_id');
 
-    let visibleCount = 0;
+    hiddenId.value = '';
+    list.innerHTML = '';
 
-    options.forEach((option, index) => {
-        if (index === 0) return; // skip placeholder
+    if (!courseId) { wrap.style.display = 'none'; return; }
 
-        const dept = (option.dataset.dept || '').toLowerCase();
-        const year = option.dataset.year || '';
-        const sem  = (option.dataset.sem  || '').toLowerCase();
-        const code = (option.dataset.code || '').toLowerCase();
-        const name = (option.dataset.name || '').toLowerCase();
+    const data = SUBJECTS_BY_COURSE[courseId] || SUBJECTS_BY_COURSE[0] || {};
+    if (!Object.keys(data).length) {
+        list.innerHTML = '<p style="color:var(--text-label);font-size:.85rem;padding:.5rem 0;">No subjects found for this course.</p>';
+        wrap.style.display = 'block';
+        return;
+    }
 
-        let show = true;
-        if (deptFilter && !dept.includes(deptFilter)) show = false;
-        if (yearFilter && year !== yearFilter)         show = false;
-        if (semFilter  && sem  !== semFilter)          show = false;
-        if (searchFilter && !code.includes(searchFilter) && !name.includes(searchFilter)) show = false;
+    Object.keys(data).sort((a,b) => +a - +b).forEach(yr => {
+        const yrLabel = document.createElement('div');
+        yrLabel.className = 'checklist-year-label';
+        yrLabel.textContent = YEAR_LABELS[yr] || ('Year ' + yr);
+        list.appendChild(yrLabel);
 
-        option.style.display = show ? '' : 'none';
-        if (show) visibleCount++;
+        Object.keys(data[yr]).forEach(sem => {
+            const semLabel = document.createElement('div');
+            semLabel.className = 'checklist-sem-label';
+            semLabel.textContent = SEM_LABELS[sem] || sem;
+            list.appendChild(semLabel);
+
+            data[yr][sem].forEach(subj => {
+                const row = document.createElement('label');
+                row.className = 'checklist-row';
+                row.innerHTML = `
+                    <input type="radio" name="_subject_radio" value="${subj.subject_id}"
+                           onchange="document.getElementById('form_subject_id').value=this.value">
+                    <span class="checklist-code">${subj.subject_code}</span>
+                    <span class="checklist-name">${subj.subject_name}</span>
+                    <span class="checklist-units">${subj.units} u</span>
+                `;
+                list.appendChild(row);
+            });
+        });
     });
 
-    const countEl = document.getElementById('filter_count');
-    if (deptFilter || yearFilter || semFilter || searchFilter) {
-        countEl.textContent = `Showing ${visibleCount} subject${visibleCount !== 1 ? 's' : ''}`;
-        countEl.style.color = visibleCount === 0 ? 'var(--red)' : 'var(--text-label)';
-    } else {
-        countEl.textContent = 'Showing all subjects';
-        countEl.style.color = 'var(--text-label)';
-    }
+    wrap.style.display = 'block';
 }
 
-/* ── Reset modal filters ───────────────────────────────── */
+/* ── Day checkboxes helpers ─────────────────────────── */
 
-function resetModalFilters() {
-    document.getElementById('filter_dept').value = '';
-    document.getElementById('filter_year').value = '';
-    document.getElementById('filter_sem').value  = '';
-    document.getElementById('filter_search').value = '';
-    filterSubjects();
+function setDayCheckboxes(dayStr) {
+    document.querySelectorAll('.day-cb').forEach(cb => {
+        cb.checked = dayStr && dayStr.includes(cb.value);
+    });
 }
 
-/* ── Toggle department select ──────────────────────────── */
-
-function toggleDepartmentSelect() {
-    const specificRadio = document.querySelector('input[name="availability_type"][value="specific"]');
-    const deptGroup = document.getElementById('specific_dept_group');
-    const deptSelect = document.getElementById('form_specific_department');
-    
-    if (specificRadio && specificRadio.checked) {
-        deptGroup.style.display = 'block';
-        deptSelect.required = true;
-    } else {
-        deptGroup.style.display = 'none';
-        deptSelect.required = false;
-        deptSelect.value = '';
-    }
+function getSelectedDays() {
+    return Array.from(document.querySelectorAll('.day-cb:checked')).map(cb => cb.value).join('');
 }
 
-/* ── Add Class modal ───────────────────────────────────── */
+/* ── Open Add modal ─────────────────────────────────── */
+
+/* ── Form submit guard ──────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('#formModal form').addEventListener('submit', function(e) {
+        const subjectId = document.getElementById('form_subject_id').value;
+        if (!subjectId) {
+            e.preventDefault();
+            alert('Please select a subject before submitting.');
+        }
+    });
+});
 
 function openAdd() {
     document.getElementById('formModalTitle').textContent = 'Add Class';
     document.getElementById('formSubmitBtn').textContent  = 'Create Class';
     document.getElementById('form_action').value          = 'add';
     document.getElementById('form_class_id').value        = '';
+    document.getElementById('form_subject_id').value      = '';
 
-    ['subject_id','section','faculty_id','schedule_day','schedule_time','room'].forEach(f => {
+    ['section','faculty_id','schedule_time','room'].forEach(f => {
         const el = document.getElementById('form_' + f);
         if (el) el.value = '';
     });
 
-    document.getElementById('form_school_year').value = '2024-2025';
-    document.getElementById('form_semester').value    = '';
+    const y = new Date().getFullYear();
+    document.getElementById('form_school_year').value = CURRENT_SCHOOL_YEAR;
+    document.getElementById('form_semester').value    = CURRENT_SEMESTER;
     document.getElementById('form_max_slots').value   = 40;
     document.getElementById('form_status').value      = 'open';
-    
-    // Re-enable subject selection when adding
-    const subjectSelect = document.getElementById('form_subject_id');
-    const subjectLockedNote = document.getElementById('subject_locked_note');
-    const filterBox = document.querySelector('.subject-filter-box');
-    
-    if (subjectSelect) {
-        subjectSelect.disabled = false;
-        subjectSelect.style.opacity = '1';
-        subjectSelect.style.cursor = 'pointer';
-    }
-    if (subjectLockedNote) {
-        subjectLockedNote.style.display = 'none';
-    }
-    if (filterBox) {
-        filterBox.style.opacity = '1';
-        filterBox.style.pointerEvents = 'auto';
-    }
-    
-    // Reset availability type
-    document.querySelector('input[name="availability_type"][value="all"]').checked = true;
-    toggleDepartmentSelect();
 
-    resetModalFilters();
+    setDayCheckboxes('');
+
+    // Reset course selector & checklist
+    document.getElementById('modal_course_select').value = '';
+    document.getElementById('subject_checklist_wrap').style.display = 'none';
+    document.getElementById('subject_checklist').innerHTML = '';
+    document.getElementById('subject_locked_note').style.display = 'none';
+    document.getElementById('modal_course_select').disabled = false;
+    document.getElementById('course_selector_group').style.opacity = '1';
+
     document.getElementById('formModal').style.display = 'block';
 }
 
-/* ── Edit Class modal ──────────────────────────────────── */
+/* ── Open Edit modal ────────────────────────────────── */
 
 function openEdit(raw) {
     const c = JSON.parse(raw);
@@ -133,178 +126,89 @@ function openEdit(raw) {
     document.getElementById('formSubmitBtn').textContent  = 'Save Changes';
     document.getElementById('form_action').value          = 'edit';
     document.getElementById('form_class_id').value        = c.class_id;
+    document.getElementById('form_subject_id').value      = c.subject_id;
 
-    ['subject_id','section','faculty_id','school_year','semester',
-     'schedule_day','schedule_time','room','max_slots','status'].forEach(f => {
+    ['section','faculty_id','school_year','semester','schedule_time','room','max_slots','status'].forEach(f => {
         const el = document.getElementById('form_' + f);
         if (el) el.value = c[f] ?? '';
     });
-    
-    // Disable subject selection when editing
-    const subjectSelect = document.getElementById('form_subject_id');
-    const subjectLockedNote = document.getElementById('subject_locked_note');
-    const filterBox = document.querySelector('.subject-filter-box');
-    
-    if (subjectSelect) {
-        subjectSelect.disabled = true;
-        subjectSelect.style.opacity = '0.6';
-        subjectSelect.style.cursor = 'not-allowed';
-    }
-    if (subjectLockedNote) {
-        subjectLockedNote.style.display = 'block';
-    }
-    if (filterBox) {
-        filterBox.style.opacity = '0.6';
-        filterBox.style.pointerEvents = 'none';
-    }
 
-    // Restore availability type and specific department
-    const hasDept = c.specific_department && c.specific_department !== '';
-    document.querySelector('input[name="availability_type"][value="' + (hasDept ? 'specific' : 'all') + '"]').checked = true;
-    toggleDepartmentSelect();
-    if (hasDept) {
-        document.getElementById('form_specific_department').value = c.specific_department;
-    }
+    setDayCheckboxes(c.schedule_day || '');
 
-    resetModalFilters();
+    // Show locked note, hide course selector
+    document.getElementById('subject_locked_note').style.display = 'block';
+    document.getElementById('modal_course_select').disabled = true;
+    document.getElementById('course_selector_group').style.opacity = '0.5';
+    document.getElementById('subject_checklist_wrap').style.display = 'none';
+
     document.getElementById('formModal').style.display = 'block';
 }
 
-/* ── View Students modal ───────────────────────────────── */
+/* ── View Students modal ────────────────────────────── */
 
 function viewStudents(classId, subjectCode) {
     document.getElementById('studentsModalTitle').textContent = `Enrolled Students - ${subjectCode}`;
     document.getElementById('studentsModal').style.display = 'block';
-    
-    // Show loading
     document.getElementById('studentsContent').innerHTML = `
         <div style="text-align:center;padding:2rem;color:var(--text-label);">
             <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;"></i>
             <p style="margin-top:1rem;">Loading students...</p>
-        </div>
-    `;
-    
-    // Fetch students
+        </div>`;
+
     fetch(`../../php/admin_class_students.php?action=get_students&class_id=${classId}`)
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
-            if (data.success) {
-                displayStudents(data.students, classId);
-            } else {
-                document.getElementById('studentsContent').innerHTML = `
-                    <div style="text-align:center;padding:2rem;color:var(--red);">
-                        <i class="fa-solid fa-exclamation-circle" style="font-size:2rem;"></i>
-                        <p style="margin-top:1rem;">${data.message || 'Failed to load students'}</p>
-                    </div>
-                `;
-            }
+            if (data.success) displayStudents(data.students, classId);
+            else document.getElementById('studentsContent').innerHTML =
+                `<div style="text-align:center;padding:2rem;color:var(--red);">${data.message || 'Failed to load students'}</div>`;
         })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('studentsContent').innerHTML = `
-                <div style="text-align:center;padding:2rem;color:var(--red);">
-                    <i class="fa-solid fa-exclamation-circle" style="font-size:2rem;"></i>
-                    <p style="margin-top:1rem;">Error loading students</p>
-                </div>
-            `;
+        .catch(() => {
+            document.getElementById('studentsContent').innerHTML =
+                `<div style="text-align:center;padding:2rem;color:var(--red);">Error loading students</div>`;
         });
 }
 
 function displayStudents(students, classId) {
-    if (students.length === 0) {
-        document.getElementById('studentsContent').innerHTML = `
-            <div style="text-align:center;padding:2rem;color:var(--text-label);">
-                <i class="fa-solid fa-users" style="font-size:2rem;"></i>
-                <p style="margin-top:1rem;">No students enrolled in this class</p>
-            </div>
-        `;
+    if (!students.length) {
+        document.getElementById('studentsContent').innerHTML =
+            `<div style="text-align:center;padding:2rem;color:var(--text-label);">No students enrolled in this class</div>`;
         return;
     }
-    
-    let html = `
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Student Number</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Year Level</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-    `;
-    
-    students.forEach(student => {
-        const fullName = `${student.last_name}, ${student.first_name} ${student.middle_name || ''}`;
-        html += `
-            <tr id="student-row-${student.enrollment_id}">
-                <td>${student.student_number}</td>
-                <td>${fullName}</td>
-                <td>${student.email}</td>
-                <td>${student.year_level}</td>
-                <td><span class="badge ${student.status}">${student.status}</span></td>
-                <td>
-                    <button class="btn-icon danger" title="Remove Student" 
-                            onclick="removeStudent(${student.enrollment_id}, ${classId}, '${fullName}')">
-                        <i class="fa-solid fa-user-minus"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
+    let html = `<div class="table-responsive"><table class="data-table"><thead><tr>
+        <th>Student Number</th><th>Name</th><th>Email</th><th>Year Level</th><th>Status</th><th>Action</th>
+    </tr></thead><tbody>`;
+    students.forEach(s => {
+        const name = `${s.last_name}, ${s.first_name} ${s.middle_name || ''}`;
+        html += `<tr id="student-row-${s.enrollment_id}">
+            <td>${s.student_number}</td><td>${name}</td><td>${s.email}</td>
+            <td>${s.year_level}</td>
+            <td><span class="badge ${s.status}">${s.status}</span></td>
+            <td><button class="btn-icon danger" onclick="removeStudent(${s.enrollment_id},${classId},'${name}')">
+                <i class="fa-solid fa-user-minus"></i></button></td>
+        </tr>`;
     });
-    
-    html += `
-                </tbody>
-            </table>
-        </div>
-    `;
-    
+    html += '</tbody></table></div>';
     document.getElementById('studentsContent').innerHTML = html;
 }
 
 function removeStudent(enrollmentId, classId, studentName) {
-    if (!confirm(`Remove ${studentName} from this class?`)) {
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('action', 'remove_student');
-    formData.append('enrollment_id', enrollmentId);
-    formData.append('class_id', classId);
-    
-    fetch('../../php/admin_class_students.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Remove row from table
-            const row = document.getElementById(`student-row-${enrollmentId}`);
-            if (row) row.remove();
-            
-            // Check if table is now empty
-            const tbody = document.querySelector('#studentsContent tbody');
-            if (tbody && tbody.children.length === 0) {
-                document.getElementById('studentsContent').innerHTML = `
-                    <div style="text-align:center;padding:2rem;color:var(--text-label);">
-                        <i class="fa-solid fa-users" style="font-size:2rem;"></i>
-                        <p style="margin-top:1rem;">No students enrolled in this class</p>
-                    </div>
-                `;
-            }
-            
-            // Reload page to update enrollment count
-            setTimeout(() => location.reload(), 1000);
-        } else {
-            alert(data.message || 'Failed to remove student');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Error removing student');
-    });
+    if (!confirm(`Remove ${studentName} from this class?`)) return;
+    const fd = new FormData();
+    fd.append('action','remove_student');
+    fd.append('enrollment_id', enrollmentId);
+    fd.append('class_id', classId);
+    fetch('../../php/admin_class_students.php', { method:'POST', body:fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                const row = document.getElementById(`student-row-${enrollmentId}`);
+                if (row) row.remove();
+                const tbody = document.querySelector('#studentsContent tbody');
+                if (tbody && !tbody.children.length)
+                    document.getElementById('studentsContent').innerHTML =
+                        `<div style="text-align:center;padding:2rem;color:var(--text-label);">No students enrolled in this class</div>`;
+                setTimeout(() => location.reload(), 800);
+            } else alert(data.message || 'Failed to remove student');
+        })
+        .catch(() => alert('Error removing student'));
 }

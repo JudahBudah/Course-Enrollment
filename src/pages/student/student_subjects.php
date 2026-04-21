@@ -2,12 +2,17 @@
 session_start();
 include("../../php/connection.php");
 include("../../php/functions.php");
+include("../../php/admin_functions.php");
 
 $user_data = check_login($con);
 
+// System current semester
+$cur_semester    = get_setting($con, 'current_semester', '1st');
+$cur_school_year = get_setting($con, 'current_school_year', '');
+
 $profile_src = !empty($user_data['profile_photo'])
     ? '../../' . $user_data['profile_photo']
-    : '../../assets/test/student-profile.webp';
+    : '../../uploads/default.jpg';
 
 $program = htmlspecialchars($user_data['course'] ?? 'N/A');
 
@@ -38,14 +43,14 @@ $semester_map = [
 ];
 $semester_reverse_map = array_flip($semester_map);
 
-// Determine selected semester from GET param or default to student's block semester
-$selected_semester_label = $_GET['semester'] ?? ($semester_map[$block_semester] ?? 'First Semester');
-$selected_semester_db    = $semester_reverse_map[$selected_semester_label] ?? '1st';
+// Determine selected semester from GET param or default to system current semester
+$selected_semester_label = $_GET['semester'] ?? ($semester_map[$cur_semester] ?? 'First Semester');
+$selected_semester_db    = $semester_reverse_map[$selected_semester_label] ?? $cur_semester;
 
 // Fetch enrolled subjects filtered by semester
 $stmt = mysqli_prepare($con, "
     SELECT s.subject_code, s.subject_name, s.units, s.lab_hours,
-           c.section, c.schedule_day, c.schedule_time, c.room,
+           c.class_id, c.section, c.schedule_day, c.schedule_time, c.room,
            c.semester AS class_semester,
            CONCAT(f.first_name, ' ', f.last_name) AS faculty_name
     FROM enrollments e
@@ -53,10 +58,10 @@ $stmt = mysqli_prepare($con, "
     JOIN subjects s ON c.subject_id = s.subject_id
     LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
     WHERE e.student_id = ? AND e.status IN ('confirmed','ongoing')
-      AND c.semester = ?
+      AND c.semester = ? AND c.school_year = ?
     ORDER BY s.subject_code
 ");
-mysqli_stmt_bind_param($stmt, "is", $user_data['student_id'], $selected_semester_db);
+mysqli_stmt_bind_param($stmt, "iss", $user_data['student_id'], $selected_semester_db, $cur_school_year);
 mysqli_stmt_execute($stmt);
 $rows = mysqli_stmt_get_result($stmt);
 
@@ -273,6 +278,12 @@ foreach ($subjects as $subj) {
                             <div class="li-name">Grades</div>
                         </a>
                     </li>
+                    <li>
+                        <a href="student_my_subjects.php">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <div class="li-name">My Subjects</div>
+                        </a>
+                    </li>
                     <li class="course-dropdown">
                         <a href="#" id="acad-dropdown">
                             <i class="fa-solid fa-school"></i>
@@ -345,10 +356,8 @@ foreach ($subjects as $subj) {
                 <form method="GET" action="" id="schedFilterForm">
                 <div class="sched-nav-options">
                     <div class="sched-label-container">
-                        <label>Year</label>
-                        <select name="sched-year">
-                            <option value="2025 - 2026">2025 - 2026</option>
-                        </select>
+                        <label>School Year</label>
+                        <span style="font-size:.9rem;font-weight:600;"><?php echo htmlspecialchars($cur_school_year); ?></span>
                     </div>
                     <div class="sched-label-container">
                         <label>Semester</label>
@@ -375,6 +384,7 @@ foreach ($subjects as $subj) {
                         <span class="col-side">SUBJECT NAME</span>
                         <span class="col-head">UNITS</span>
                         <span class="col-head">PROFESSOR</span>
+                        <span class="col-head">CLASSMATES</span>
                     </div>
 
                     <div class="sched-table-body">
@@ -404,6 +414,13 @@ foreach ($subjects as $subj) {
                             <span class="col-prof">
                                 <?php echo htmlspecialchars($subj['faculty_name'] ?? 'TBA'); ?>
                             </span>
+                            <span class="col-container">
+                                <button class="btn-classmates"
+                                    data-class-id="<?php echo $subj['class_id']; ?>"
+                                    data-subject="<?php echo htmlspecialchars($subj['subject_code'] . ' — ' . $subj['subject_name']); ?>">
+                                    <i class="fa-solid fa-users"></i> View
+                                </button>
+                            </span>
                         </div>
                         <?php endforeach; ?>
                         <?php endif; ?>
@@ -426,7 +443,35 @@ foreach ($subjects as $subj) {
         </main>
     </div>
 
+    <!-- Classmates Modal -->
+    <div id="classmatesModal" class="cm-overlay" style="display:none;">
+        <div class="cm-box">
+            <div class="cm-header">
+                <div>
+                    <div class="cm-title" id="cmTitle">Classmates</div>
+                    <div class="cm-sub" id="cmSub"></div>
+                </div>
+                <button class="cm-close" id="cmClose"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="cm-body" id="cmBody">
+                <div class="cm-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="cm-overlay" style="display:none;">
+        <div class="cm-box cm-profile-box">
+            <div class="cm-header">
+                <div class="cm-title">Student Profile</div>
+                <button class="cm-close" id="pmClose"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="cm-body" id="pmBody"></div>
+        </div>
+    </div>
+
     <script src="../../js/student/student_main.js"></script>
+    <script src="../../js/student/student_subjects.js"></script>
     <script>
     (function () {
 
@@ -445,14 +490,16 @@ foreach ($subjects as $subj) {
             return;
         }
 
-        const allStarts  = scheduleData.flatMap(s => s.slots.map(sl => parseInt(sl.start)));
-        const allEnds    = scheduleData.flatMap(s => s.slots.map(sl => Math.ceil(parseInt(sl.end))));
-        const START_HOUR = Math.max(0,  Math.min(...allStarts) - 1);
-        const END_HOUR   = Math.min(24, Math.max(...allEnds)   + 1);
+        const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+
+        const allStarts  = scheduleData.flatMap(s => s.slots.map(sl => toMin(sl.start)));
+        const allEnds    = scheduleData.flatMap(s => s.slots.map(sl => toMin(sl.end)));
+        const START_HOUR = Math.max(0,  Math.floor(Math.min(...allStarts) / 60) - 1);
+        const END_HOUR   = Math.min(24, Math.ceil(Math.max(...allEnds)   / 60) + 1);
         const GRID_H     = (END_HOUR - START_HOUR) * 60 * PX_PER_MIN;
 
-        const DAYS       = ['M','T','W','TH','F','S'];
-        const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT' };
+        const DAYS       = ['M','T','W','TH','F','S','SU'];
+        const DAY_LABELS = { M:'MON', T:'TUE', W:'WED', TH:'THU', F:'FRI', S:'SAT', SU:'SUN' };
 
         const DEFAULT_COLOR = { bg:'#1A3A8F', fg:'#fff' };
         const COLORS = {
@@ -466,7 +513,6 @@ foreach ($subjects as $subj) {
         });
 
         /* ─── Helpers ─────────────────────────────────────────────── */
-        const toMin = t      => { const [h,m] = t.split(':').map(Number); return h*60+m; };
         const toTop = t      => (toMin(t) - START_HOUR*60) * PX_PER_MIN;
         const toHgt = (s,e)  => (toMin(e) - toMin(s)) * PX_PER_MIN;
 
