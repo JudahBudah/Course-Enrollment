@@ -38,6 +38,7 @@
     --orange:   #f97316;
 
     --gold-spc: #a8881c;
+    --placeholder: rgba(242,243,242,0.5);
 
     --perm-gold-dk: #D4AF37;
     --perm-navy:    #0B1F5B;
@@ -64,6 +65,7 @@ body.dark-mode {
     --surface-alt: #252118;
 
     --gold-spc: #b52332;
+    --placeholder: rgba(20, 21, 20, 0.5);
 
     --dark:     #f0ece4;
     --text:     #9e9484;
@@ -94,6 +96,10 @@ ul {
 
 p {
     line-height: 1.5;
+}
+
+input::placeholder {
+    color: var(--placeholder);
 }
 
 /* ── Top Nav Bar ───────────────────────────────────────── */
@@ -588,7 +594,7 @@ main {
 
 .modal-content {
     background: var(--white-pr);
-    margin: 5% auto;
+    margin: 2% auto;
     padding: 2rem;
     border-radius: 12px;
     width: 90%;

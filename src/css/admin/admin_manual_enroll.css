@@ -1,3 +1,49 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 145px; }    /* Subject Code */
+.data-table thead th:nth-child(2)  { width: 220px; }    /* Subject Name */
+.data-table thead th:nth-child(3)  { width: 80px; }    /* Units */
+.data-table thead th:nth-child(4)  { width: 120px; }    /* Prerequisite */
+.data-table thead th:nth-child(5)  { width: 80px; }    /* Grades */
+.data-table thead th:nth-child(6)  { width: 100px;  }    /* Status */
+.data-table thead th:nth-child(7)  { width: 200px; }    /* Class / Schedule */
+.data-table thead th:nth-child(8)  { width: 140px; }    /* ACtion */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  /* Subject Code */
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }  /* Units */
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; }  /* Prerequisite */
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) { text-align: center; }  /* Grades */
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; }  /* Status */
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; }  /* Class / Schedule */
+
+.data-table th:nth-child(8),
+.data-table td:nth-child(8) { text-align: center; }  /* Action */
+
+
 /* ── Stats Grid (5-card layout) ────────────────────────── */
 
 .stats-grid {
@@ -17,11 +63,6 @@
     gap: 1rem;
     transition: transform 0.25s, box-shadow 0.25s;
     border-left: 4px solid transparent;
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .stat-card.gold  { border-left-color: #D4AF37; }

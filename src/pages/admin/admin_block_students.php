@@ -264,15 +264,17 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                                                 </span>
                                             </td>
                                             <td>
-                                                <form method="POST" action="../../php/remove_student_from_block.php"
-                                                      style="display:inline;">
-                                                    <input type="hidden" name="student_id" value="<?php echo $s['student_id']; ?>">
-                                                    <input type="hidden" name="block_id"   value="<?php echo $block_id; ?>">
-                                                    <button type="submit" class="btn-icon remove" title="Remove from Block"
-                                                            onclick="return confirm('Remove student from this block?')">
-                                                        <i class="fa-solid fa-user-minus"></i>
-                                                    </button>
-                                                </form>
+                                                <div class="action-buttons">
+                                                    <form method="POST" action="../../php/remove_student_from_block.php"
+                                                        style="display:inline;">
+                                                        <input type="hidden" name="student_id" value="<?php echo $s['student_id']; ?>">
+                                                        <input type="hidden" name="block_id"   value="<?php echo $block_id; ?>">
+                                                        <button type="submit" class="btn-icon remove" title="Remove from Block"
+                                                                onclick="return confirm('Remove student from this block?')">
+                                                            <i class="fa-solid fa-user-minus"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endwhile; ?>

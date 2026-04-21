@@ -82,10 +82,6 @@
     transition: background 0.2s, border-color 0.2s;
 }
 
-.search-form input::placeholder {
-    color: rgba(242,243,242,0.5);
-}
-
 .search-form input:focus {
     outline: none;
     background: rgba(255,255,255,0.18);
@@ -194,10 +190,23 @@
 
 /* ── Modals (wide exam + convert + status) ─────────────── */
 
-.modal-content.exam-modal  { max-width: 520px; }
-.modal-content.convert-modal { max-width: 480px; }
-.modal-content.view-modal { max-width: 800px; }
-.modal-content.doc-viewer-modal { max-width: 90vw; max-height: 90vh; padding: 0; }
+.modal-content.exam-modal  { 
+    max-width: 520px; 
+}
+
+.modal-content.convert-modal { 
+    max-width: 480px; 
+}
+
+.modal-content.view-modal { 
+    max-width: 800px; 
+}
+
+.modal-content.doc-viewer-modal {
+    max-width: 90vw; 
+    max-height: 90vh; 
+    padding: 0; 
+}
 
 /* View modal sections */
 .view-sections { display: grid; gap: 1.5rem; }

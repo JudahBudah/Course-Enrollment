@@ -245,15 +245,17 @@ $available_query = mysqli_query($con, "
                                             </td>
                                             <td><?php echo htmlspecialchars($sub['room'] ?? 'TBA'); ?></td>
                                             <td>
-                                                <form method="POST" action="../../php/remove_block_subject.php"
-                                                      style="display:inline;">
-                                                    <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
-                                                    <input type="hidden" name="class_id" value="<?php echo $sub['class_id']; ?>">
-                                                    <button type="submit" class="btn-icon remove" title="Remove"
-                                                            onclick="return confirm('Remove this subject from block?')">
-                                                        <i class="fa-solid fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <div class="action-buttons">
+                                                    <form method="POST" action="../../php/remove_block_subject.php"
+                                                        style="display:inline;">
+                                                        <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
+                                                        <input type="hidden" name="class_id" value="<?php echo $sub['class_id']; ?>">
+                                                        <button type="submit" class="btn-icon remove" title="Remove"
+                                                                onclick="return confirm('Remove this subject from block?')">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                         <?php endwhile; ?>

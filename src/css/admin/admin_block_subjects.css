@@ -1,3 +1,51 @@
+/* Card Size "Don't Touch - Judah" */
+
+/* Fixed */
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--off); 
+}
+
+.data-table {
+    table-layout: fixed;
+    min-width: auto;
+}
+
+.data-table thead th:nth-child(1)  { width: 120px; }    /* Subject Code */
+.data-table thead th:nth-child(2)  { width: 200px; }    /* Subject Name */
+.data-table thead th:nth-child(3)  { width: 100px; }    /* Units */
+.data-table thead th:nth-child(4)  { width: 120px; }    /* Schedule */
+.data-table thead th:nth-child(5)  { width: 200px; }    /* Instructor */
+.data-table thead th:nth-child(6)  { width: 120px;  }    /* Room */
+.data-table thead th:nth-child(7)  { width: 100px; }    /* Action */
+
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) { text-align: center; }  
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) { text-align: center; }
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) { text-align: center; } 
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) { text-align: center; } 
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) { text-align: center; } 
+
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.table-responsive {
+    flex: 1;
+}
+
+
 /* ── Content Grid (2-col: assigned + add panel) ────────── */
 
 .content-grid {

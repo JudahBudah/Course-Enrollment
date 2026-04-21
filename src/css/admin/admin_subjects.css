@@ -174,10 +174,6 @@
     transition: background 0.2s, border-color 0.2s;
 }
 
-.header-search-input::placeholder {
-    color: var(--off);
-}
-
 .header-search-input:focus {
     outline: none;
     background: rgba(255,255,255,0.18);

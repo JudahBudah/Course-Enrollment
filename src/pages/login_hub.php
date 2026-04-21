@@ -99,10 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Portal display config
 $portals = [
-    'applicant' => ['label' => 'Applicant', 'icon' => 'fa-user-plus',       'id_label' => 'Email Address',       'id_placeholder' => 'your.email@example.com',       'heading' => 'Welcome, <em>Future Iskolar</em>',     'sub' => 'Sign in to check your application status.'],
-    'student'   => ['label' => 'Student',   'icon' => 'fa-user-graduate',   'id_label' => 'Student ID Number',  'id_placeholder' => 'e.g. 202400000',              'heading' => 'Welcome back, <em>Iskolar</em>',       'sub' => 'Sign in to manage your enrollment and grades.'],
-    'faculty'   => ['label' => 'Faculty',   'icon' => 'fa-chalkboard-user', 'id_label' => 'Email Address',       'id_placeholder' => 'juan.delacruz@plm.edu.ph',     'heading' => 'Welcome, <em>Faculty Member</em>',     'sub' => 'Sign in to manage your classes and records.'],
-    'admin'     => ['label' => 'Admin',     'icon' => 'fa-shield-halved',   'id_label' => 'Username',            'id_placeholder' => 'Enter your admin username',    'heading' => 'Welcome, <em>Adminitrator</em>',                'sub' => 'Sign in to manage the system.'],
+    'applicant' => ['label' => 'Applicant', 'icon' => 'fa-user-plus',       'id_label' => 'Email Address',       'id_placeholder' => 'your.email@example.com',       'heading' => 'Welcome, <em>Future Iskolar</em>',  'sub' => 'Sign in to check your application status.',
+        'brand_sub' => 'Access your application portal. Submit requirements, track your admission status, and manage your application in one secure place.'],
+    'student'   => ['label' => 'Student',   'icon' => 'fa-user-graduate',   'id_label' => 'Student ID Number',  'id_placeholder' => 'e.g. 202400000',              'heading' => 'Welcome back, <em>Iskolar</em>',    'sub' => 'Sign in to manage your enrollment and grades.',
+        'brand_sub' => 'Access your academic portal. Manage enrollment, grades, and university services in one secure place.'],
+    'faculty'   => ['label' => 'Faculty',   'icon' => 'fa-chalkboard-user', 'id_label' => 'Email Address',       'id_placeholder' => 'juan.delacruz@plm.edu.ph',     'heading' => 'Welcome, <em>Faculty Member</em>',  'sub' => 'Sign in to manage your classes and records.',
+        'brand_sub' => 'Access your faculty portal. Manage classes, grading, and academic responsibilities in one secure place.'],
+    'admin'     => ['label' => 'Admin',     'icon' => 'fa-shield-halved',   'id_label' => 'Username',            'id_placeholder' => 'Enter your admin username',    'heading' => 'Welcome, <em>Administrator</em>',   'sub' => 'Sign in to manage the system.',
+        'brand_sub' => 'Access your administration portal. Oversee records, manage system operations, and handle university services in one secure place.'],
 ];
 
 $current  = $portals[$portal];
@@ -183,8 +187,8 @@ $subs = [
                 <span class="line"><span>NG LUNGSOD</span></span>
                 <span class="line"><span>ng Maynila</span></span>
             </h1>
-            <p class="brand-sub">
-                Access your academic portal. Manage enrollment, grades, and university services in one secure place.
+            <p class="brand-sub" id="brand-sub">
+                <?php echo htmlspecialchars($current['brand_sub']); ?>
             </p>
         </div>
 
@@ -486,27 +490,62 @@ $subs = [
     <script>
         // ── Portal tab switching ──
         const portalConfig = {
-            student:   { idLabel: 'Student ID Number',  idPlaceholder: 'e.g. 202400000',           idType: 'text',  idIcon: 'fa-id-card',     heading: 'Welcome back, <em>Iskolar</em>',      sub: 'Sign in to manage your enrollment and grades.' },
-            applicant: { idLabel: 'Email Address',       idPlaceholder: 'your.email@example.com',    idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Future Iskolar</em>',    sub: 'Sign in to check your application status.' },
-            faculty:   { idLabel: 'Email Address',       idPlaceholder: 'juan.delacruz@plm.edu.ph',  idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Faculty Member</em>',    sub: 'Sign in to manage your classes and records.' },
-            admin:     { idLabel: 'Username',            idPlaceholder: 'Enter your admin username', idType: 'text',  idIcon: 'fa-user-shield', heading: 'Welcome, <em>Adminitrator</em>',               sub: 'Sign in to manage the system.' },
+            student:   { idLabel: 'Student ID Number',  idPlaceholder: 'e.g. 202400000',           idType: 'text',  idIcon: 'fa-id-card',     heading: 'Welcome back, <em>Iskolar</em>',      sub: 'Sign in to manage your enrollment and grades.',     brandSub: 'Access your academic portal. Manage enrollment, grades, and university services in one secure place.' },
+            applicant: { idLabel: 'Email Address',       idPlaceholder: 'your.email@example.com',    idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Future Iskolar</em>',    sub: 'Sign in to check your application status.', brandSub: 'Access your application portal. Submit requirements, track your admission status, and manage your application in one secure place.' },
+            faculty:   { idLabel: 'Email Address',       idPlaceholder: 'juan.delacruz@plm.edu.ph',  idType: 'email', idIcon: 'fa-envelope',    heading: 'Welcome, <em>Faculty Member</em>',    sub: 'Sign in to manage your classes and records.', brandSub: 'Access your faculty portal. Manage classes, grading, and academic responsibilities in one secure place.' },
+            admin:     { idLabel: 'Username',            idPlaceholder: 'Enter your admin username', idType: 'text',  idIcon: 'fa-user-shield', heading: 'Welcome, <em>Administrator</em>',               sub: 'Sign in to manage the system.', brandSub: 'Access your administration portal. Oversee records, manage system operations, and handle university services in one secure place.' },
         };
 
         function switchPortal(key) {
-            const cfg = portalConfig[key];
-            if (!cfg) return;
-            document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector(`.portal-tab[data-portal="${key}"]`).classList.add('active');
-            document.getElementById('portal-input').value = key;
-            const idInput = document.getElementById('identifier');
-            const idLabel = document.getElementById('id-label');
-            const idIcon  = document.getElementById('id-icon');
-            if (idLabel) idLabel.textContent = cfg.idLabel;
-            if (idInput) { idInput.placeholder = cfg.idPlaceholder; idInput.type = cfg.idType; idInput.value = ''; }
-            if (idIcon)  idIcon.className = 'field-icon fa-solid ' + cfg.idIcon;
-            document.querySelector('.login-card-header h2').innerHTML  = cfg.heading;
-            document.querySelector('.login-card-header p').textContent = cfg.sub;
+        const cfg = portalConfig[key];
+        if (!cfg) return;
+
+        document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.portal-tab[data-portal="${key}"]`).classList.add('active');
+        document.getElementById('portal-input').value = key;
+
+        const idInput  = document.getElementById('identifier');
+        const idLabel  = document.getElementById('id-label');
+        const idIcon   = document.getElementById('id-icon');
+        if (idLabel) idLabel.textContent = cfg.idLabel;
+        if (idInput) { idInput.placeholder = cfg.idPlaceholder; idInput.type = cfg.idType; idInput.value = ''; }
+        if (idIcon)  idIcon.className = 'field-icon fa-solid ' + cfg.idIcon;
+
+        // Animate heading
+        const h2 = document.querySelector('.login-card-header h2');
+        if (h2) {
+            h2.classList.remove('anim-fade-up');
+            void h2.offsetWidth; // reflow to restart animation
+            h2.innerHTML = cfg.heading;
+            h2.classList.add('anim-fade-up');
         }
+
+        // Animate subheading (with slight delay)
+        const sub = document.querySelector('.login-card-header p');
+        if (sub) {
+            sub.classList.remove('anim-fade-up');
+            void sub.offsetWidth;
+            sub.textContent = cfg.sub;
+            sub.style.animationDelay = '0.07s';
+            sub.classList.add('anim-fade-up');
+        }
+
+        // Animate brand subtitle (left panel)
+        const brandSub = document.getElementById('brand-sub');
+        if (brandSub) {
+            brandSub.classList.remove('anim-fade-left');
+            void brandSub.offsetWidth;
+            brandSub.textContent = cfg.brandSub;
+            brandSub.classList.add('anim-fade-left');
+        }
+
+        // Animate field label
+        if (idLabel) {
+            idLabel.classList.remove('anim-fade-up');
+            void idLabel.offsetWidth;
+            idLabel.classList.add('anim-fade-up');
+        }
+    }
 
         document.querySelectorAll('.portal-tab').forEach(tab => {
             tab.addEventListener('click', () => {

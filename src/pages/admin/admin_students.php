@@ -476,10 +476,6 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
             <div id="tab-docs" class="tab-panel">
                 <div class="doc-list" id="vw_doc_list"></div>
             </div>
-
-            <div class="modal-actions" style="margin-top:1.5rem;">
-                <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
-            </div>
         </div>
     </div>
 

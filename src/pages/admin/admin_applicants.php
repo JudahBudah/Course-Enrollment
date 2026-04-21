@@ -467,10 +467,7 @@ $applicants = mysqli_query($con, $query);
         <div class="modal-content view-modal">
             <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
             <h2>Applicant Details</h2>
-            <div id="viewContent" style="max-height:70vh;overflow-y:auto;padding:1rem 0;"></div>
-            <div class="modal-actions">
-                <button type="button" class="btn-secondary" onclick="document.getElementById('viewModal').style.display='none'">Close</button>
-            </div>
+            <div id="viewContent" style="max-height:65vh; overflow-y:auto;padding:1rem 0;"></div>
         </div>
     </div>
 

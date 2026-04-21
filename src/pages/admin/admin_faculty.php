@@ -593,10 +593,6 @@ foreach ($faculty_classes as $cls) {
                 <div class="section-title">Mailing Address</div>
                 <div class="view-item full"><label>Address</label><span id="vw_mailing_address_full"></span></div>
             </div>
-
-            <div class="modal-actions" style="margin-top:1.5rem;">
-                <button class="btn-secondary" onclick="closeModal('viewModal')">Close</button>
-            </div>
         </div>
     </div>
 
