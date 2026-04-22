@@ -54,6 +54,13 @@ $is_full         = $block['current_students'] >= $block['max_students'];
     <title>Block Students - PLM Admin</title>
     <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script>
+        (function() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        })();
+    </script>
     <link rel="stylesheet" href="../../css/admin/admin_main.css">
     <link rel="stylesheet" href="../../css/admin/admin_block_students.css">
 </head>

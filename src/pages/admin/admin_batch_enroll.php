@@ -38,6 +38,13 @@ while ($c = mysqli_fetch_assoc($courses_query)) $courses[] = $c['course'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Batch Enrollment - PLM Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script>
+        (function() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        })();
+    </script>
     <link rel="stylesheet" href="../../css/admin.css">
     <style>
         .batch-container { max-width: 1000px; margin: 0 auto; }

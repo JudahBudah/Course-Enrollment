@@ -40,7 +40,7 @@ const modeIcon    = document.getElementById('modeIcon');
 const modeLabel   = document.getElementById('modeLabel');
 
 function applyTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
+    document.documentElement.classList.toggle('dark-mode', isDark); // ← updated
     toggleTrack.classList.toggle('active', isDark);
     modeIcon.className  = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     modeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
@@ -48,7 +48,7 @@ function applyTheme(isDark) {
 }
 
 toggleTrack.addEventListener('click', () => {
-    applyTheme(!document.body.classList.contains('dark-mode'));
+    applyTheme(!document.documentElement.classList.contains('dark-mode')); // ← updated
 });
 
 // Restore saved preference on page load

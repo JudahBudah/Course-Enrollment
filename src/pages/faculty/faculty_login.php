@@ -46,6 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <link rel="icon" href="../../assets/favicon.ico">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        (function() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        })();
+    </script>
     <link rel="stylesheet" href="../../css/faculty/faculty_login.css">
 </head>
 <body>

@@ -212,6 +212,13 @@ $overall_gwa = calculateGWA($all_grades);
     <title>Grades</title>
     <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script>
+        (function() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        })();
+    </script>
     <link rel="stylesheet" href="../../css/student/student_grades.css">
     <link rel="stylesheet" href="../../css/student/student_main.css">
 </head>

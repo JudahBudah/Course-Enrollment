@@ -64,7 +64,7 @@
 }
 
 
-body.dark-mode {
+html.dark-mode {
 
     /* Gold primary accent */
     --red:    #D4AF37;

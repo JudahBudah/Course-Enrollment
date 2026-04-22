@@ -47,7 +47,7 @@
 
 /* ── Dark Mode ─────────────────────────────────────────── */
 
-body.dark-mode {
+html.dark-mode {
     --red:      #D4AF37;
     --red-dk:   #a8881c;
     --red-lt:   #f0d060;

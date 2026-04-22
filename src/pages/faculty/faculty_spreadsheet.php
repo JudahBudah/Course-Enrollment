@@ -129,6 +129,13 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
     <title>Spreadsheet</title>
     <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
+    <script>
+        (function() {
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark-mode');
+        }
+        })();
+    </script>
     <link rel="stylesheet" href="../../css/faculty/faculty_tables.css" />
     <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
   </head>

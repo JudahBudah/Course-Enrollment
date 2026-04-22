@@ -10,28 +10,26 @@ if (navButton && navMenu) {
 }
 
 
-/* ── Dark Mode Toggle ──────────────────────────────────── */
+/* Dark Mode Toggle */
 
 const toggleTrack = document.getElementById('toggleTrack');
 const modeIcon    = document.getElementById('modeIcon');
 const modeLabel   = document.getElementById('modeLabel');
 
 function applyTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
-    if (toggleTrack) toggleTrack.classList.toggle('active', isDark);
-    if (modeIcon)    modeIcon.className  = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    if (modeLabel)   modeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-    localStorage.setItem('adminDarkMode', isDark);
+    document.documentElement.classList.toggle('dark-mode', isDark); // ← updated
+    toggleTrack.classList.toggle('active', isDark);
+    modeIcon.className  = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    modeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    localStorage.setItem('darkMode', isDark);
 }
 
-if (toggleTrack) {
-    toggleTrack.addEventListener('click', () => {
-        applyTheme(!document.body.classList.contains('dark-mode'));
-    });
-}
+toggleTrack.addEventListener('click', () => {
+    applyTheme(!document.documentElement.classList.contains('dark-mode')); // ← updated
+});
 
 // Restore saved preference on page load
-applyTheme(localStorage.getItem('adminDarkMode') === 'true');
+applyTheme(localStorage.getItem('darkMode') === 'true');
 
 
 /* ── Active Sidebar Link ───────────────────────────────── */

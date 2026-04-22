@@ -9,22 +9,22 @@ navButton.addEventListener('click', () => {
 });
 
 
-/* ── Dark Mode Toggle ───────────────────────────────────── */
+/* Dark Mode Toggle */
 
 const toggleTrack = document.getElementById('toggleTrack');
 const modeIcon    = document.getElementById('modeIcon');
 const modeLabel   = document.getElementById('modeLabel');
 
 function applyTheme(isDark) {
-    document.body.classList.toggle('dark-mode', isDark);
+    document.documentElement.classList.toggle('dark-mode', isDark); // ← updated
     toggleTrack.classList.toggle('active', isDark);
-    modeIcon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    modeIcon.className  = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     modeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     localStorage.setItem('darkMode', isDark);
 }
 
 toggleTrack.addEventListener('click', () => {
-    applyTheme(!document.body.classList.contains('dark-mode'));
+    applyTheme(!document.documentElement.classList.contains('dark-mode')); // ← updated
 });
 
 // Restore saved preference on page load
