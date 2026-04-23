@@ -22,6 +22,10 @@ main {
 
 /* ── Class Selector Card ─────────────────────────────────── */
 
+.sched-toggle-btn {
+    color: var(--text)
+}
+
 .class-nav {
     display: flex;
     align-items: center;

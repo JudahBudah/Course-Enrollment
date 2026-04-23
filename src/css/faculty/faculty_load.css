@@ -52,7 +52,6 @@ select:focus {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
-    white-space: nowrap;
     flex-shrink: 0;
 }
 
@@ -160,7 +159,7 @@ select:focus {
 .sched-table-header,
 .sched-row {
     display: grid;
-    grid-template-columns: 34px 110px 100px 1fr 150px 120px 40px;
+    grid-template-columns: 34px 110px 150px 1fr 150px 120px 40px;
     gap: 12px;
     padding: 14px;
     text-align: center;
@@ -209,7 +208,6 @@ select:focus {
 
 .code-badge {
     color: var(--navy);
-    white-space: nowrap;
     font-weight: 700;
     font-size: 0.75rem;
     letter-spacing: 0.03em;
@@ -219,7 +217,6 @@ select:focus {
 .section-badge {
     background: var(--badge-navy);
     color: var(--perm-navy);
-    white-space: nowrap;
     font-weight: 600;
     font-size: 0.75rem;
     padding: 3px 10px;
@@ -239,22 +236,6 @@ select:focus {
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
-
-.units-badge {
-    /* Wala muna */
-}
-
-/* Enrollment count chip */
-.enroll-chip {
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: var(--text);
-    background: var(--off);
-    padding: 3px 10px;
-    border-radius: 6px;
-    white-space: nowrap;
-}
-
 
 /* Sched Footer */
 
