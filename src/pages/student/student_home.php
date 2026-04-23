@@ -9,6 +9,13 @@
 
     $user_data = check_login($con);
 
+    // Check if student must change their password
+    if (!empty($user_data['must_change_password'])) {
+        $_SESSION['must_change_password'] = true;
+    } else {
+        unset($_SESSION['must_change_password']);
+    }
+
     // Profile photo fallback
     $profile_src = !empty($user_data['profile_photo']) 
         ? '../../' . $user_data['profile_photo'] 
@@ -516,5 +523,84 @@
     <script src="../../js/student/student_main.js"></script>
     <script src="../../js/no_cache.js"></script>
     <script src="../../js/plm_loader.js"></script>
+
+    <?php if (!empty($_SESSION['must_change_password'])): ?>
+    <div id="pwChangeOverlay" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+            <div style="text-align:center;margin-bottom:1.25rem;">
+                <i class="fa-solid fa-lock" style="font-size:2rem;color:#8C1C24;"></i>
+                <h2 style="margin:0.5rem 0 0.25rem;font-size:1.2rem;">Change Your Password</h2>
+                <p style="font-size:0.85rem;color:#666;margin:0;">Your account was created with a temporary password. Please set a new one to continue.</p>
+            </div>
+            <div id="pwChangeError" style="display:none;background:#fde8ea;color:#8C1C24;border-radius:6px;padding:0.6rem 0.9rem;font-size:0.83rem;margin-bottom:1rem;"></div>
+            <div style="display:flex;flex-direction:column;gap:0.85rem;">
+                <div style="position:relative;">
+                    <input type="password" id="pw_new" placeholder="New password (min. 6 characters)"
+                        style="width:100%;padding:0.6rem 2.5rem 0.6rem 0.75rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;box-sizing:border-box;">
+                    <i class="fa-regular fa-eye" id="pw_new_icon" onclick="togglePwVis('pw_new','pw_new_icon')"
+                        style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;"></i>
+                </div>
+                <div style="position:relative;">
+                    <input type="password" id="pw_confirm" placeholder="Confirm new password"
+                        style="width:100%;padding:0.6rem 2.5rem 0.6rem 0.75rem;border:1px solid #ddd;border-radius:6px;font-size:0.9rem;box-sizing:border-box;">
+                    <i class="fa-regular fa-eye" id="pw_confirm_icon" onclick="togglePwVis('pw_confirm','pw_confirm_icon')"
+                        style="position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;"></i>
+                </div>
+                <button onclick="submitPwChange()"
+                    style="background:#8C1C24;color:#fff;border:none;border-radius:6px;padding:0.7rem;font-size:0.95rem;font-weight:600;cursor:pointer;">
+                    Set New Password
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        function togglePwVis(inputId, iconId) {
+            const inp  = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                inp.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+        function submitPwChange() {
+            const newPw  = document.getElementById('pw_new').value;
+            const confPw = document.getElementById('pw_confirm').value;
+            const errEl  = document.getElementById('pwChangeError');
+            errEl.style.display = 'none';
+            if (newPw.length < 6) {
+                errEl.textContent = 'Password must be at least 6 characters.';
+                errEl.style.display = 'block'; return;
+            }
+            if (newPw !== confPw) {
+                errEl.textContent = 'Passwords do not match.';
+                errEl.style.display = 'block'; return;
+            }
+            const fd = new FormData();
+            fd.append('action',           'change_password');
+            fd.append('new_password',     newPw);
+            fd.append('confirm_password', confPw);
+            fetch('../../php/update_student_profile.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) {
+                        document.getElementById('pwChangeOverlay').remove();
+                    } else {
+                        errEl.textContent = d.msg || 'Failed to change password.';
+                        errEl.style.display = 'block';
+                    }
+                })
+                .catch(() => {
+                    errEl.textContent = 'An error occurred. Please try again.';
+                    errEl.style.display = 'block';
+                });
+        }
+        document.getElementById('pw_confirm').addEventListener('keydown', e => {
+            if (e.key === 'Enter') submitPwChange();
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html>

@@ -471,23 +471,7 @@ $applicants = mysqli_query($con, $query);
                     <label>College <span style="color:var(--red)">*</span></label>
                     <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
                 </div>
-                <div class="form-group">
-                    <label>Year Level <span style="color:var(--red)">*</span></label>
-                    <select name="year_level" required>
-                        <option value="1">1st Year</option>
-                        <option value="2">2nd Year</option>
-                        <option value="3">3rd Year</option>
-                        <option value="4">4th Year</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-submit-green">Convert to Student</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ── View Applicant Details Modal ──────────────── -->
-    <div id="viewModal" class="modal">
-        <div class="modal-content view-modal">
+                <input type="hidden" name="year_level" value="1">
             <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
             <h2>Applicant Details</h2>
             <div id="viewContent" style="max-height:65vh; overflow-y:auto;padding:1rem 0;"></div>

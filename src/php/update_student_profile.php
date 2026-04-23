@@ -11,6 +11,37 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die;
 }
 
+// ── Change password ──────────────────────────────────────────────────────────
+if (($_POST['action'] ?? '') === 'change_password') {
+    header('Content-Type: application/json');
+    $new     = $_POST['new_password']     ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+
+    if (strlen($new) < 6) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must be at least 6 characters.']); die;
+    }
+    if ($new !== $confirm) {
+        echo json_encode(['ok'=>false,'msg'=>'Passwords do not match.']); die;
+    }
+
+    $forced = !empty($_SESSION['must_change_password']);
+    if (!$forced) {
+        $current = $_POST['current_password'] ?? '';
+        $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT password FROM students WHERE student_id=$user_id"));
+        if (!password_verify($current, $row['password'])) {
+            echo json_encode(['ok'=>false,'msg'=>'Current password is incorrect.']); die;
+        }
+    }
+
+    $hashed = password_hash($new, PASSWORD_DEFAULT);
+    $stmt = mysqli_prepare($con, "UPDATE students SET password=?, must_change_password=0 WHERE student_id=?");
+    mysqli_stmt_bind_param($stmt, 'si', $hashed, $user_id);
+    $ok = mysqli_stmt_execute($stmt);
+    if ($ok) unset($_SESSION['must_change_password']);
+    echo json_encode(['ok'=>$ok]);
+    die;
+}
+
 $profile_path = null;
 if (isset($_FILES['profile_photo']) && $_FILES['profile_photo']['error'] === 0) {
     $upload_dir = "../uploads/";

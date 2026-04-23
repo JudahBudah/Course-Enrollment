@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 if ($user_data['status'] === 'active') {
                     $_SESSION['email'] = $user_data['email'];
                     $_SESSION['faculty_id'] = $user_data['faculty_id'];
+                    // If password is still the default (employee_id), force change
+                    if (password_verify($user_data['employee_id'], $user_data['password'])) {
+                        $_SESSION['must_change_password'] = true;
+                    }
                     header("Location: faculty_home.php");
                     die;
                 } else {

@@ -149,8 +149,8 @@ $insert = mysqli_prepare($con, "INSERT INTO students
      perm_region, perm_province, perm_municipality, perm_barangay, perm_address, perm_zipcode,
      mail_region, mail_province, mail_municipality, mail_barangay, mail_address, mail_zipcode,
      doc_form138, doc_birth_cert, doc_good_moral, doc_our_au001, doc_our_au002,
-     applicant_id, account_status, registration_status, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'Regular', 'Not Enrolled')");
+     applicant_id, account_status, registration_status, status, must_change_password)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 'Regular', 'Not Enrolled', 1)");
 
 if (!$insert) {
     json_out(['success' => false, 'error' => 'Query prepare failed: ' . mysqli_error($con)]);

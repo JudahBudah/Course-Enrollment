@@ -115,5 +115,39 @@ if ($action === 'save_profile') {
     die;
 }
 
+// ── Change password ─────────────────────────────────────────────────────────
+if ($action === 'change_password') {
+    header('Content-Type: application/json');
+    $current  = $_POST['current_password'] ?? '';
+    $new      = $_POST['new_password'] ?? '';
+    $confirm  = $_POST['confirm_password'] ?? '';
+
+    if (strlen($new) < 6) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must be at least 6 characters.']); die;
+    }
+    if ($new !== $confirm) {
+        echo json_encode(['ok'=>false,'msg'=>'Passwords do not match.']); die;
+    }
+
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT password FROM faculty WHERE faculty_id=$faculty_id"));
+
+    // Only verify current password when NOT a forced first-login change
+    if (empty($_SESSION['must_change_password'])) {
+        if (!password_verify($current, $row['password'])) {
+            echo json_encode(['ok'=>false,'msg'=>'Current password is incorrect.']); die;
+        }
+    }
+
+    $hashed = password_hash($new, PASSWORD_DEFAULT);
+    $stmt = mysqli_prepare($con, "UPDATE faculty SET password=? WHERE faculty_id=?");
+    mysqli_stmt_bind_param($stmt, 'si', $hashed, $faculty_id);
+    $ok = mysqli_stmt_execute($stmt);
+
+    if ($ok) unset($_SESSION['must_change_password']);
+
+    echo json_encode(['ok'=>$ok, 'msg'=> $ok ? 'Password changed successfully.' : mysqli_error($con)]);
+    die;
+}
+
 echo json_encode(['ok'=>false,'msg'=>'Unknown action']);
 ?>
