@@ -472,6 +472,17 @@ $applicants = mysqli_query($con, $query);
                     <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
                 </div>
                 <input type="hidden" name="year_level" value="1">
+                <div class="modal-actions">
+                    <button type="submit" class="btn-primary">Convert to Student</button>
+                    <button type="button" class="btn-secondary" onclick="document.getElementById('convertModal').style.display='none'">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── View Applicant Modal ──────────────────────────── -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content" style="max-width:750px;">
             <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
             <h2>Applicant Details</h2>
             <div id="viewContent" style="max-height:65vh; overflow-y:auto;padding:1rem 0;"></div>
