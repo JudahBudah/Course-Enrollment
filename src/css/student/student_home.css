@@ -19,10 +19,10 @@
 }
 
 .card-header h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
+    font-weight: 400;
     color: var(--white);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.03rem;
     letter-spacing: .03em;
 }
 

@@ -177,37 +177,37 @@ function sel($faculty, $key, $option) {
                         <div class="main-row-1">
                             <div class="info-input">
                                 <label>Faculty ID</label>
-                                <input value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo val($faculty, 'employee_id'); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                             <div class="info-input">
                                 <label>Position</label>
-                                <input value="<?php echo val($faculty, 'position'); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo val($faculty, 'position'); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
                         <div class="main-row-2">
                             <div class="info-input">
                                 <label>College</label>
-                                <input value="<?php echo val($faculty, 'college'); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo val($faculty, 'college'); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                             <div class="info-input">
                                 <label>Department</label>
-                                <input value="<?php echo val($faculty, 'department'); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo val($faculty, 'department'); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
                         <div class="main-row-1">
                             <div class="info-input">
                                 <label>Employment Status</label>
-                                <input value="<?php echo ucfirst(val($faculty, 'employment_status')); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo ucfirst(val($faculty, 'employment_status')); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                             <div class="info-input">
                                 <label>PLM Email</label>
-                                <input value="<?php echo val($faculty, 'email'); ?>" disabled style="background:#f5f5f5;color:#888;">
-                                <small style="color:#888;font-size:.72rem;">Assigned by admin — cannot be changed</small>
+                                <input value="<?php echo val($faculty, 'email'); ?>" disabled style="background:var(--white)" >
+                                <small style="color:var(--text);font-size:.72rem;">Assigned by admin — cannot be changed</small>
                             </div>
                         </div>
                     </div>
@@ -422,31 +422,31 @@ function sel($faculty, $key, $option) {
                         <div class="full-name">
                             <div class="info-input">
                                 <label>Highest Educational Attainment</label>
-                                <input type="text" value="<?php echo val($faculty, 'highest_education'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'highest_education'); ?>" disabled style="background:var(--white)" >
                             </div>
                             <div class="info-input">
                                 <label>Degree / Course</label>
-                                <input type="text" value="<?php echo val($faculty, 'degree'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'degree'); ?>" disabled style="background:var(--white)" >
                             </div>
                         </div>
                         <div class="full-name">
                             <div class="info-input">
                                 <label>School / University</label>
-                                <input type="text" value="<?php echo val($faculty, 'school'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'school'); ?>" disabled style="background:var(--white)" >
                             </div>
                             <div class="info-input">
                                 <label>Year Graduated</label>
-                                <input type="text" value="<?php echo val($faculty, 'year_graduated'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'year_graduated'); ?>" disabled style="background:var(--white)" >
                             </div>
                         </div>
                         <div class="full-name">
                             <div class="info-input">
                                 <label>Specialization</label>
-                                <input type="text" value="<?php echo val($faculty, 'specialization'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'specialization'); ?>" disabled style="background:var(--white)" >
                             </div>
                             <div class="info-input">
                                 <label>Date Hired</label>
-                                <input type="text" value="<?php echo val($faculty, 'date_hired'); ?>" disabled style="background:#f5f5f5;color:#888;">
+                                <input type="text" value="<?php echo val($faculty, 'date_hired'); ?>" disabled style="background:var(--white)" >
                             </div>
                         </div>
                     </div>

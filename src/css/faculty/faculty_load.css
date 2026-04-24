@@ -52,7 +52,6 @@ select:focus {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
-    white-space: nowrap;
     flex-shrink: 0;
 }
 
@@ -293,6 +292,7 @@ select:focus {
     background-color: var(--white-pr);
     display: grid;
     grid-template-columns: 50px repeat(7, 1fr);
+    color: var(--text);
 }
 
 

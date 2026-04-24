@@ -26,6 +26,10 @@ main {
 
 /* ── Class Selector Card ─────────────────────────────────── */
 
+.sched-toggle-btn {
+    color: var(--text)
+}
+
 .class-nav {
     display: flex;
     align-items: center;
@@ -553,23 +557,24 @@ select:focus {
 
 /* ── Gradebook Table ──────────────────────────────────────── */
 
-.gb-table-wrapper { 
-    overflow-x: auto; 
+.gb-table-wrapper {
+    overflow-x: auto;
     margin-bottom: 25px;
+    -webkit-overflow-scrolling: touch; 
 }
 
 .gb-table {
-    min-width: 900px;
+    min-width: 1108px; 
     margin-top: 25px;
     border-radius: 15px;
-    overflow: hidden;
+    overflow: hidden; 
     box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 .gb-table-header,
 .gb-row {
     display: grid;
-    grid-template-columns: 40px 130px 1fr 90px 110px 110px 100px;
+    grid-template-columns: 40px 120px 170px 90px 90px 90px 90px 90px 90px 90px; 
     align-items: center;
     gap: 12px;
     padding: 11px 20px;

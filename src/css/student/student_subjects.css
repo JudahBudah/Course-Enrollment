@@ -294,6 +294,8 @@ select:focus {
     background-color: var(--white-pr);
     display: grid;
     grid-template-columns: 50px repeat(7, 1fr);
+    color: var(--text-label);
+    font-size: 0.9rem;
 }
 
 
