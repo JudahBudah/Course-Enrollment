@@ -358,26 +358,27 @@ foreach ($subjects as $subj) {
                             <span class="stat-value"><?php echo $year_display; ?></span>
                             <span class="stat-label">Level</span>
                         </div>
+                        <div class="sched-stat-divider"></div>
+                        <div class="sched-stat-chip">
+                            <span class="stat-value"><?php echo htmlspecialchars($cur_school_year); ?></span>
+                            <span class="stat-label">School Year</span>
+                        </div>
                     </div>
                 </div>
                 <form method="GET" action="" id="schedFilterForm">
-                <div class="sched-nav-options">
-                    <div class="sched-label-container">
-                        <label>School Year</label>
-                        <span style="font-size:.9rem;font-weight:600;"><?php echo htmlspecialchars($cur_school_year); ?></span>
+                    <div class="sched-nav-options">
+                        <div class="sched-label-container">
+                            <label>Semester</label>
+                            <select name="semester" id="semesterSelect" onchange="this.form.submit()">
+                                <?php foreach ($semester_map as $db_val => $label): ?>
+                                <option value="<?php echo htmlspecialchars($label); ?>"
+                                    <?php echo ($selected_semester_label === $label) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($label); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-                    <div class="sched-label-container">
-                        <label>Semester</label>
-                        <select name="semester" id="semesterSelect" onchange="this.form.submit()">
-                            <?php foreach ($semester_map as $db_val => $label): ?>
-                            <option value="<?php echo htmlspecialchars($label); ?>"
-                                <?php echo ($selected_semester_label === $label) ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($label); ?>
-                            </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
                 </form>
             </div>
 
@@ -396,7 +397,7 @@ foreach ($subjects as $subj) {
 
                     <div class="sched-table-body">
                         <?php if (empty($subjects)): ?>
-                        <div style="text-align:center; color:var(--text-label); font-size: 0.9rem; padding:2rem; background:var(--white-pr);">
+                        <div style="text-align:center; color:var(--text); font-size: 0.9rem; padding:2rem; background:var(--white-pr);">
                             No enrolled subjects found.
                         </div>
                         <?php else: ?>
@@ -491,11 +492,12 @@ foreach ($subjects as $subj) {
         if (!scheduleData.length) {
             const grid = document.getElementById('weeklyGrid');
             if (grid) {
-                grid.style.cssText = 'display:flex;align-items:center;justify-content:center;padding:3rem;';
-                grid.textContent   = 'No schedule data available.';
+                grid.style.cssText = 'display:flex; align-items:center; justify-content:center; font-size: 0.9rem; color:var(--text); padding: 2rem;';
+                grid.textContent   = 'No enrolled subjects found.';
             }
             return;
         }
+
 
         const toMin = t => { const [h,m] = t.split(':').map(Number); return h*60+m; };
 

@@ -191,11 +191,11 @@ $sem_labels = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Su
                 <h1>My Subjects</h1>
                 <p><?php echo htmlspecialchars($user_data['course'] ?? ''); ?> &bull; <?php echo count($subjects); ?> subject<?php echo count($subjects) !== 1 ? 's' : ''; ?> &bull; <?php echo $total_units; ?> units</p>
             </div>
-            <div style="display:flex;gap:.5rem;">
-                <a href="?view=current" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);background:<?php echo $view_mode==='current'?'var(--maroon)':'transparent'; ?>;color:<?php echo $view_mode==='current'?'#fff':'var(--text)'; ?>;">
+            <div class="ms-options">
+                <a href="?view=current" class="ms-opt <?php echo $view_mode === 'current' ? 'ms-opt--current active' : ''; ?>">
                     <i class="fa-solid fa-chalkboard"></i> Current
                 </a>
-                <a href="?view=past" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);background:<?php echo $view_mode==='past'?'var(--navy)':'transparent'; ?>;color:<?php echo $view_mode==='past'?'#fff':'var(--text)'; ?>;">
+                <a href="?view=past" class="ms-opt <?php echo $view_mode === 'past' ? 'ms-opt--past active' : ''; ?>">
                     <i class="fa-solid fa-clock-rotate-left"></i> Past
                 </a>
             </div>
@@ -207,10 +207,36 @@ $sem_labels = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Su
             <p>No <?php echo $view_mode === 'past' ? 'past' : 'current'; ?> subjects found.</p>
             <?php if ($view_mode === 'current'): ?><a href="student_enrollment.php">Go to Enrollment</a><?php endif; ?>
         </div>
-        <?php else: ?>
+        <?php else:
+    // Group by school year + semester
+    $grouped = [];
+    foreach ($subjects as $subj) {
+        $key = $subj['school_year'] . '||' . $subj['semester'];
+        $grouped[$key][] = $subj;
+    }
+?>
+
+<div class="ms-sections">
+<?php foreach ($grouped as $key => $group):
+    [$sy, $sem] = explode('||', $key);
+    $sem_label  = $sem_labels[$sem] ?? $sem;
+    $grp_units  = array_sum(array_column($group, 'units'));
+?>
+    <div class="ms-section">
+        <div class="ms-section-label">
+            <div class="ms-section-label-left">
+                <span class="ms-section-sem"><?php echo htmlspecialchars($sem_label); ?></span>
+                <span class="ms-section-sy">S.Y. <?php echo htmlspecialchars($sy); ?></span>
+            </div>
+            <span class="ms-section-meta">
+                <?php echo count($group); ?> subject<?php echo count($group) !== 1 ? 's' : ''; ?>
+                &bull;
+                <?php echo $grp_units; ?> units
+            </span>
+        </div>
 
         <div class="ms-grid">
-            <?php foreach ($subjects as $subj):
+            <?php foreach ($group as $subj):
                 $hours = $subj['lecture_hours'] + $subj['lab_hours'];
                 $data  = htmlspecialchars(json_encode($subj), ENT_QUOTES);
             ?>
@@ -228,8 +254,11 @@ $sem_labels = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Su
             </div>
             <?php endforeach; ?>
         </div>
+    </div>
+<?php endforeach; ?>
+</div>
 
-        <?php endif; ?>
+<?php endif; ?>
 
     </main>
 </div>

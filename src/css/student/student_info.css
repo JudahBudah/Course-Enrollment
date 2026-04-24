@@ -84,6 +84,7 @@ strong {
     width: 56px;
     height: 56px;
     background: rgba(255,255,255,0.15);
+    color: var(--white);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -96,6 +97,7 @@ strong {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    color: var(--white)
 }
 
 .info-page-breadcrumb {
@@ -108,7 +110,7 @@ strong {
     font-size: 1.45rem;
     font-weight: 700;
     margin: 0;
-    color: #fff;
+    color: var(--white);
     line-height: 1.25;
 }
 
@@ -125,7 +127,7 @@ strong {
     gap: 0.35rem;
     background: rgba(255,255,255,0.18);
     border: 1px solid rgba(255,255,255,0.3);
-    color: #fff;
+    color: var(--white);
     font-size: 0.78rem;
     padding: 0.25rem 0.7rem;
     border-radius: 20px;

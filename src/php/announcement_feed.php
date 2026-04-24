@@ -19,7 +19,7 @@ while ($_r = mysqli_fetch_assoc($_q)) $_anns[] = $_r;
 $_media_base = '../../uploads/announcements/';
 
 // Priority colours
-$_pri_colors = ['urgent'=>'var(--red)','important'=>'var(--red)','normal'=>'var(----block-blue)'];
+$_pri_colors = ['urgent'=>'var(--red)','important'=>'var(--red)','normal'=>'var(--block-blue)'];
 $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info','normal'=>'fa-bullhorn'];
 ?>
 
@@ -74,7 +74,7 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
 <!-- Detail Modal -->
 <div id="annDetailModal" class="ann-modal-overlay" onclick="if(event.target===this)closeAnnModal()">
     <div class="ann-modal-box">
-        <button class="ann-modal-close" onclick="closeAnnModal()">&times;</button>
+        <button class="ann-modal-close" onclick="closeAnnModal()"><i class="fa-solid fa-xmark"></i></button>
         <div id="annModalInner"></div>
     </div>
 </div>
@@ -147,14 +147,16 @@ $_pri_icons  = ['urgent'=>'fa-triangle-exclamation','important'=>'fa-circle-info
     box-shadow:0 20px 60px rgba(0,0,0,0.3);
 }
 .ann-modal-close {
-    position:sticky; top:0; float:right;
-    background:rgba(0,0,0,0.07); border:none;
-    font-size:1.4rem; width:34px; height:34px;
-    border-radius:50%; cursor:pointer; margin:10px 10px 0 0;
+    position:absolute; top:10px; right:10px;  
+    background:rgba(0,0,0,0.7);      
+    border:none;
+    font-size:1.2rem; width:40px; height:40px;
+    border-radius:50%; cursor:pointer;
     display:flex; align-items:center; justify-content:center;
-    transition:background 0.2s; z-index:1;
+    transition:background 0.2s; z-index:2;
+    color: white;
 }
-.ann-modal-close:hover { background:rgba(0,0,0,0.15); }
+.ann-modal-close:hover { background:rgba(0,0,0); }
 
 /* Modal inner content */
 .ann-detail-hero { width:100%; max-height:420px; object-fit:contain; display:block; background:var(--off); }

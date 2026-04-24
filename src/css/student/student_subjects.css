@@ -116,10 +116,13 @@ select:focus {
 
 .sched-table-wrapper {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px
 }
 
 .sched-table {
     min-width: 900px;
+    max-height: 300px;
     margin-top: 25px;
     border-radius: 15px;
     overflow: hidden;

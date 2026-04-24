@@ -19,6 +19,10 @@ main {
     flex-direction: column;
 }
 
+.sched-toggle-btn {
+    color: var(--dark)
+}
+
 
 /* ── Class Selector Card ─────────────────────────────────── */
 

@@ -143,6 +143,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.55rem 1.1rem;
+    border: none;
     background: var(--red);
     color: #fff;
     border-radius: 6px;

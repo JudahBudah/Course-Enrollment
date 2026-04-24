@@ -355,8 +355,16 @@ $subs = [
                                 maxlength="6" inputmode="numeric"
                                 autocomplete="one-time-code" required>
                         </div>
-                        <div style="margin-top:0.5rem;font-size:0.72rem;color:rgba(242,243,242,0.35);">
-                            Code expires in <span id="countdown">10:00</span>
+                        <div class="login-help-container">
+                            <p class="login-help">
+                                Wrong email?
+                                <a href="login_hub.php?portal=applicant&view=register" class="link space">
+                                    Start over
+                                </a>
+                            </p>
+                            <div style="margin-top:0.5rem;font-size:0.72rem;color:rgba(242,243,242,0.35);">
+                                Code expires in <span id="countdown">10:00</span>
+                            </div>
                         </div>
                     </div>
 
@@ -366,10 +374,6 @@ $subs = [
                 </form>
 
                 <div class="login-divider"><span>PLM Portal</span></div>
-                <p class="login-help">
-                    Wrong email?
-                    <a href="login_hub.php?portal=applicant&view=register" class="link space">Start over</a>
-                </p>
                 <?php endif; ?>
 
 

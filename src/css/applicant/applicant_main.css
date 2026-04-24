@@ -394,7 +394,7 @@ ul { list-style: none; }
 
     /* JS-toggled open state */
     .main-nav.open {
-        max-width: 200px;
+        max-width: 230px;
     }
 
     .main-nav.open .li-name {

@@ -75,8 +75,10 @@ while ($b = mysqli_fetch_assoc($blocks_list)) $blocks_arr[] = $b;
 // Get courses from courses table
 $courses_query = mysqli_query($con, "SELECT course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_name");
 $courses = [];
+$course_name_to_code = [];
 while ($row = mysqli_fetch_assoc($courses_query)) {
     $courses[] = $row;
+    $course_name_to_code[$row['course_name']] = $row['course_code'];
 }
 ?>
 <!DOCTYPE html>
@@ -352,7 +354,11 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                 </td>
                                 <td><?php echo $fullname; ?></td>
                                 <td><?php echo htmlspecialchars($student['email'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($student['course'] ?? 'N/A'); ?></td>
+                                <td><?php 
+                                    $c = $student['course'] ?? 'N/A';
+                                    // If stored as full name, show just the code; if already a code, show as-is
+                                    echo htmlspecialchars(isset($course_name_to_code[$c]) ? $course_name_to_code[$c] : $c);
+                                ?></td>
                                 <td><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></td>
                                 <td>
                                     <?php if ($student['block_name']): ?>
@@ -638,6 +644,7 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
 
     <script>
     const ALL_BLOCKS = <?php echo json_encode($blocks_arr); ?>;
+    const COURSE_NAME_TO_CODE = <?php echo json_encode($course_name_to_code); ?>;
     </script>
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_students.js"></script>

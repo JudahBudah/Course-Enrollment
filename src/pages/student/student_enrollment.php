@@ -577,7 +577,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 </tr>
                 <?php endwhile; ?>
                 <?php if (!$has_enrolled): ?>
-                <tr><td colspan="7" class="center" style="padding:2rem; font-size: 0.9rem; color:var(--text-label);">No current enrollments.</td></tr>
+                <tr><td colspan="7" class="center" style="padding:2rem; font-size: 0.9rem; color:var(--text);">No current enrollments.</td></tr>
                 <?php endif; ?>
                 </tbody>
             </table>
@@ -656,7 +656,6 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                             <th>Subject Code</th>
                             <th>Subject Name</th>
                             <th class="center">Units</th>
-                            <th class="center">Hrs</th>
                             <th>Prerequisite</th>
                             <th class="center">Grade</th>
                             <th class="center">Status</th>
@@ -671,7 +670,6 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         $grade_val    = $grade_info['grade'] ?? null;
                         $passed       = $grade_val && $grade_val !== '5.00' && strtoupper($grade_val) !== 'INC' && strtoupper($grade_val) !== 'DRP';
                         $failed       = $grade_val && ($grade_val === '5.00' || strtoupper($grade_val) === 'INC');
-                        $hours        = $subj['lecture_hours'] + $subj['lab_hours'];
                         $is_future_year = !in_array((int)$yr, $touched_years) && (int)$yr > $student_year;
                         $lock         = is_prereq_locked($subj['prerequisite'], $failed_codes, $passed_codes, $subj['year_level'], $subj['semester'], $con, $course_id);
                         if ($enroll_info)            $row_class = 'row-enrolled';
@@ -684,7 +682,6 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <td><span class="subj-code"><?php echo htmlspecialchars($subj['subject_code']); ?></span></td>
                         <td><?php echo htmlspecialchars($subj['subject_name']); ?></td>
                         <td class="center"><?php echo $subj['units']; ?></td>
-                        <td class="center"><?php echo $hours; ?></td>
                         <td class="prereq-cell"><?php echo htmlspecialchars($subj['prerequisite'] ?: '—'); ?></td>
                         <td class="center">
                             <?php
@@ -717,7 +714,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                             <?php elseif ($lock['locked']): ?>
                                 <span class="status-badge" style="background:#f974161a;color:#f97416;">Locked</span>
                             <?php else: ?>
-                                <span class="status-badge" style="background:#6b72801a;color:#6b7280;">Not Taken</span>
+                                <span class="status-badge" style="background:#6b72801a;color:var(--text);">Not Taken</span>
                             <?php endif; ?>
                         </td>
                         <td class="center">
@@ -738,7 +735,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                     <i class="fa-solid fa-calendar-plus"></i> Select Schedule
                                 </button>
                             <?php else: ?>
-                                <span style="font-size:.8rem;color:var(--text-label);">No class available</span>
+                                <span style="font-size:.8rem;color:var(--text);">No class available</span>
                             <?php endif; ?>
                         </td>
                     </tr>

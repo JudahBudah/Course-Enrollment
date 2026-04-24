@@ -89,13 +89,9 @@ input, select {
     transition: border-color 0.2s;
 }
 
-input:focus, select:focus {
-    border-color: var(--red);
-}
-
 input[readonly] {
     background-color: var(--surface-alt);
-    cursor: default;
+    cursor: not-allowed;
     opacity: 0.75;
 }
 
@@ -186,8 +182,8 @@ select {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
-    margin: 30px 0 10px 0;
-    color: var(--dark-spc);
+    margin-bottom: 10px;
+    color: var(--dark);
 }
 
 .full-name, .birth-info, .sex-status,
@@ -210,8 +206,8 @@ select {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
-    margin: 30px 0 10px 0;
-    color: var(--dark-spc);
+    margin-bottom: 10px;
+    color: var(--dark);
 }
 
 .mailing-address-header {
@@ -221,12 +217,12 @@ select {
     align-items: center;
 }
 
-.mailing-address-header h3 {
+.mailing-address h3 {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
     font-style: normal;
-    margin: 0;
-    color: var(--dark-spc);
+    margin: 40px 0 10px 0;
+    color: var(--dark);
 }
 
 .same-address-checkbox {
@@ -305,19 +301,11 @@ select {
 
 /* ── Documents Section ── */
 
-.documents-section {
-    background-color: var(--white-pr);
-    border-radius: 20px;
-    padding: 30px 40px;
-    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
-    margin-bottom: 20px;
-}
-
 .documents-section h3 {
     font-family: "Poppins", sans-serif;
     font-weight: 500;
-    margin: 0 0 20px 0;
-    color: var(--dark-spc);
+    margin: 0 0 10px 0;
+    color: var(--dark);
 }
 
 .doc-list {
@@ -450,4 +438,287 @@ select {
     width: 100%;
     height: 100%;
     border: none;
+}
+
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE STYLES
+   Breakpoints:
+     - 1024px  tablet landscape
+     -  768px  tablet portrait / large phone
+     -  480px  small phone
+   ═══════════════════════════════════════════════ */
+
+
+/* ── 1024px – Tablet Landscape ── */
+
+@media (max-width: 1024px) {
+
+    .content-section {
+        padding: 30px;
+    }
+
+    /* Wrap 4-column name row into 2 columns */
+    .full-name {
+        flex-wrap: wrap;
+    }
+
+    .full-name .info-input {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 0;
+    }
+
+    /* Wrap 3-column rows */
+    .background-info,
+    .address-row-1 {
+        flex-wrap: wrap;
+    }
+
+    .background-info .info-input,
+    .address-row-1 .info-input {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 0;
+    }
+}
+
+
+/* ── 768px – Tablet Portrait / Large Phone ── */
+
+@media (max-width: 768px) {
+
+    /* Tab nav: 2×2 grid */
+    .account-nav {
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .account-nav ul {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+    }
+
+    .account-nav li {
+        flex: none;
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Remove right border on every second item (right column) */
+    .account-nav li:nth-child(2n) {
+        border-right: none;
+    }
+
+    /* Remove bottom border on the last two items (bottom row) */
+    .account-nav li:nth-last-child(-n+2) {
+        border-bottom: none;
+    }
+
+    .account-nav li a {
+        padding: 14px 10px;
+        font-size: 0.83rem;
+        border-bottom: none;
+    }
+
+    /* Active indicator: left border instead of bottom border in grid layout */
+    .account-nav li a.active {
+        border-bottom: none;
+        border-left: 3px solid var(--red);
+    }
+
+    .account-nav li a:not(.active) {
+        border-left: 3px solid transparent;
+    }
+
+    /* Content section padding */
+    .content-section {
+        padding: 24px 20px;
+        border-radius: 14px;
+    }
+
+    /* Profile photo + ID fields: stack vertically */
+    .main-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .img-container {
+        width: 130px;
+        height: 160px;
+    }
+
+    .main-info-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* All two-column ID rows → single column */
+    .main-row-1,
+    .main-row-2 {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Personal info rows → single column */
+    .full-name,
+    .birth-info,
+    .sex-status,
+    .contact-info,
+    .background-info {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Address rows → single column */
+    .address-row-1,
+    .address-row-2,
+    .address-row-3 {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* Restore bottom margin on inputs that lost it from flex-direction change */
+    .main-info-content .info-input,
+    .personal-info .info-input,
+    .complete-address .info-input,
+    .mailing-address .info-input {
+        margin-bottom: 16px;
+    }
+
+    /* Last item in address-row-3 still needs margin in column layout */
+    .address-row-3 .info-input {
+        margin-bottom: 16px;
+    }
+
+    /* Section headings */
+    .personal-info h3,
+    .complete-address h3,
+    .mailing-address h3,
+    .documents-section h3 {
+        margin-top: 24px;
+    }
+
+    .mailing-address h3 {
+        margin-top: 28px;
+    }
+
+    /* Mailing address header (h3 + checkbox) */
+    .mailing-address-header {
+        margin-top: 28px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Document items: let label/filename shrink, keep View button */
+    .doc-item {
+        padding: 12px 14px;
+        gap: 10px;
+    }
+
+    .doc-info {
+        gap: 10px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .doc-info div {
+        min-width: 0;
+    }
+
+    .doc-info strong,
+    .doc-info span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Save button full-width */
+    .save-changes {
+        margin-top: 32px;
+    }
+
+    .save-changes button {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    /* Document preview modal: nearly full screen */
+    .doc-preview-content {
+        width: 95%;
+        height: 85vh;
+        border-radius: 12px;
+    }
+}
+
+
+/* ── 480px – Small Phone ── */
+
+@media (max-width: 480px) {
+
+    .content-section {
+        padding: 18px 14px;
+        border-radius: 12px;
+    }
+
+    .account-nav li a {
+        padding: 12px 14px;
+        font-size: 0.8rem;
+    }
+
+    label {
+        font-size: 0.82rem;
+    }
+
+    input, select {
+        padding: 11px 12px;
+        font-size: 0.85rem;
+    }
+
+    .img-container {
+        width: 110px;
+        height: 140px;
+    }
+
+    .img-container img {
+        height: 115px;
+    }
+
+    .change-photo {
+        font-size: 0.78rem;
+    }
+
+    /* Tighter section heading spacing */
+    .personal-info h3,
+    .complete-address h3,
+    .mailing-address h3,
+    .documents-section h3 {
+        font-size: 1rem;
+        margin-top: 20px;
+    }
+
+    /* Documents: stack info and button vertically on very small screens */
+    .doc-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .doc-view-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Preview modal full screen */
+    .doc-preview-content {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+
+    .save-changes {
+        margin-top: 24px;
+    }
 }

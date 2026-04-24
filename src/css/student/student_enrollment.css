@@ -97,10 +97,13 @@ main {
 
 .table-wrapper {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
 }
 
 table {
     width: 100%;
+    max-height: 300px;
     border-collapse: collapse;
     font-size: .84rem;
 }
@@ -266,7 +269,7 @@ input[type="checkbox"] {
 .search-bar {
     display: flex;
     align-items: center;
-    background: var(--off);
+    background: var(--white-pr);
     border: 1px solid var(--dark);
     border-radius: 8px;
     padding: 7px 14px;

@@ -1,3 +1,55 @@
+/* Append */
+
+.ms-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.ms-section {
+    display: flex;
+    flex-direction: column;
+    gap: .85rem;
+}
+
+.ms-section-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding-bottom: .55rem;
+    border-bottom: 2px solid var(--red);
+}
+
+.ms-section-label-left {
+    display: flex;
+    align-items: baseline;
+    gap: .55rem;
+}
+
+.ms-section-sem {
+    font-size: .9rem;
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: .01em;
+}
+
+.ms-section-sy {
+    font-size: .75rem;
+    font-weight: 500;
+    color: var(--text-label);
+    background: var(--off);
+    padding: .15rem .5rem;
+    border-radius: 999px;
+}
+
+.ms-section-meta {
+    font-size: .75rem;
+    color: var(--text-label);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
 main {
     display: flex;
     flex-direction: column;
@@ -15,12 +67,41 @@ main {
 .ms-header p {
     font-size: 0.85rem;
     color: var(--text-label);
-    margin-top: 0.25rem;
+    margin-top: 10px;
+}
+
+.ms-options {
+    display: flex;
+    gap: .5rem;
+    margin-top: 10px;
+}
+
+.ms-opt {
+    padding: .4rem .9rem;
+    border-radius: 6px;
+    font-size: .85rem;
+    border: 1px solid var(--red);
+    background: transparent;
+    color: var(--text);
+}
+
+.ms-opt--current.active {
+    background: var(--red);
+    color: var(--white);
+}
+
+.ms-opt--past.active {
+    background: var(--red);
+    color: var(--white);
 }
 
 /* Empty state */
 .ms-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    margin: 0 auto;
     padding: 4rem 2rem;
     color: var(--text-label);
 }

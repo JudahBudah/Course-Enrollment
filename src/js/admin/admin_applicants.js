@@ -154,49 +154,59 @@ function updateStatus(id) {
 
 /* ── Convert modal ─────────────────────────────────────── */
 
+// Find an option whose text contains the course name (full name match)
+function findOptionByCourseName(courseName) {
+  if (!courseName) return null;
+  const courseSelect = document.getElementById("convert_course");
+  const needle = courseName.trim().toLowerCase();
+  for (const opt of courseSelect.options) {
+    if (opt.text.toLowerCase().includes(needle)) return opt;
+  }
+  return null;
+}
+
 function openConvertModal(id, name, choice1, choice2, choice3) {
   document.getElementById("convert_applicant_id").value = id;
   document.getElementById("convertName").textContent = name;
 
-  // Render program choices
   const choices = [
-    { label: "1st Choice", value: choice1 },
-    { label: "2nd Choice", value: choice2 },
-    { label: "3rd Choice", value: choice3 },
-  ].filter(c => c.value);
+    { label: "1st Choice", name: choice1 },
+    { label: "2nd Choice", name: choice2 },
+    { label: "3rd Choice", name: choice3 },
+  ].filter(c => c.name);
+
   document.getElementById("convertChoices").innerHTML = choices.length ? `
     <div class="convert-choices-box">
       <p class="convert-choices-title"><i class="fa-solid fa-list-ol"></i> Program Choices</p>
-      ${choices.map((c, i) => `
+      ${choices.map(c => {
+        const opt = findOptionByCourseName(c.name);
+        const label = opt ? opt.text : c.name;
+        return `
         <div class="convert-choice-row">
           <span class="convert-choice-label">${c.label}</span>
-          <button type="button" class="convert-choice-btn" onclick="applyChoice('${c.value.replace(/'/g, "\\'")}')"
-                  title="Use this choice">${c.value}</button>
-        </div>`).join('')}
+          <button type="button" class="convert-choice-btn" onclick="applyChoice('${c.name.replace(/'/g, "\\'")}')"
+                  title="Use this choice">${label}</button>
+        </div>`;
+      }).join('')}
     </div>` : '';
 
-  // Pre-select first choice in course dropdown
-  const courseSelect = document.getElementById("convert_course");
-  courseSelect.value = "";
+  // Pre-select first choice
   document.getElementById("convert_college").value = "";
-  for (const opt of courseSelect.options) {
-    if (opt.value === choice1) {
-      opt.selected = true;
-      document.getElementById("convert_college").value = opt.dataset.college || "";
-      break;
-    }
+  const firstOpt = findOptionByCourseName(choice1);
+  if (firstOpt) {
+    firstOpt.selected = true;
+    document.getElementById("convert_college").value = firstOpt.dataset.college || "";
+  } else {
+    document.getElementById("convert_course").value = "";
   }
   document.getElementById("convertModal").style.display = "block";
 }
 
 function applyChoice(courseName) {
-  const courseSelect = document.getElementById("convert_course");
-  for (const opt of courseSelect.options) {
-    if (opt.value === courseName) {
-      opt.selected = true;
-      document.getElementById("convert_college").value = opt.dataset.college || "";
-      return;
-    }
+  const opt = findOptionByCourseName(courseName);
+  if (opt) {
+    opt.selected = true;
+    document.getElementById("convert_college").value = opt.dataset.college || "";
   }
 }
 

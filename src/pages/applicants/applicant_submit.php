@@ -262,7 +262,7 @@ $documents = [
                                 <h4><?php echo htmlspecialchars($doc['label']); ?></h4>
                                 <p><?php echo htmlspecialchars($doc['desc']); ?></p>
                                 <?php if ($uploaded): ?>
-                                    <p style="color:var(--green);font-size:0.85rem;margin-top:0.25rem;">
+                                    <p style="color:var(--text);font-size:0.85rem;margin-top:0.25rem;">
                                         <i class="fa-solid fa-check-circle"></i> Uploaded: <?php echo htmlspecialchars($uploaded); ?>
                                     </p>
                                 <?php endif; ?>

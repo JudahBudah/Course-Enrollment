@@ -117,13 +117,6 @@ $applicants = mysqli_query($con, $query);
     <title>Manage Applicants - PLM Admin</title>
     <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <script>
-        (function() {
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark-mode');
-        }
-        })();
-    </script>
     <link rel="stylesheet" href="../../css/admin/admin_main.css">
     <link rel="stylesheet" href="../../css/admin/admin_applicants.css">
 </head>
@@ -458,7 +451,7 @@ $applicants = mysqli_query($con, $query);
                         <?php foreach ($courses_by_college as $college => $programs): ?>
                             <optgroup label="<?php echo htmlspecialchars($college); ?>">
                                 <?php foreach ($programs as $p): ?>
-                                    <option value="<?php echo htmlspecialchars($p['course_name']); ?>"
+                                    <option value="<?php echo htmlspecialchars($p['course_code']); ?>"
                                             data-college="<?php echo htmlspecialchars($college); ?>">
                                         <?php echo htmlspecialchars($p['course_code'] . ' — ' . $p['course_name']); ?>
                                     </option>
@@ -472,9 +465,20 @@ $applicants = mysqli_query($con, $query);
                     <input type="text" name="college" id="convert_college" placeholder="Auto-filled from course" readonly required>
                 </div>
                 <input type="hidden" name="year_level" value="1">
+                <button type="submit" class="btn-submit-green">Convert to Student</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── View Applicant Details Modal ──────────────── -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content view-modal">
             <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
             <h2>Applicant Details</h2>
-            <div id="viewContent" style="max-height:65vh; overflow-y:auto;padding:1rem 0;"></div>
+            <div id="viewContent" style="max-height:70vh;overflow-y:auto;padding:1rem 0;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('viewModal').style.display='none'">Close</button>
+            </div>
         </div>
     </div>
 

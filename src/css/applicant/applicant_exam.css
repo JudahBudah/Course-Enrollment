@@ -278,6 +278,13 @@
 
 /* Pending / Not Taken states */
 
+.result-not-taken,
+.result-pending {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .result-pending,
 .result-not-taken {
     text-align: center;
@@ -287,7 +294,7 @@
 .result-pending > i,
 .result-not-taken > i {
     font-size: 2.75rem;
-    color: var(--gold-dk);
+    color: var(--red-dk);
     margin-bottom: 0.85rem;
     display: block;
 }

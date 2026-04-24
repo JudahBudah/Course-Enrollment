@@ -40,7 +40,7 @@ $total_classes = count($classes);
 // TODO: Query the faculty's department from the DB and assign to $department
 // $department = $faculty['department'] ?? 'N/A';
 
-// Parse schedule_day string into grid day tokens (e.g. "TTH" ? ['T','TH'])
+// Parse schedule_day string into grid day tokens (e.g. "TTH" => ['T','TH'])
 function parse_days_to_tokens(string $raw): array {
     $raw = strtoupper(trim($raw));
     $combos = [
@@ -65,9 +65,10 @@ function parse_days_to_tokens(string $raw): array {
     return array_unique($out);
 }
 
-// Parse "8:00 AM - 10:00 AM" or "08:00 - 10:00" ? ['start'=>'08:00', 'end'=>'10:00']
+// Parse "8:00 AM - 10:00 AM" or "08:00 - 10:00" => ['start'=>'08:00', 'end'=>'10:00']
 function parse_time_range(string $raw): array {
-    if (preg_match('/(\d{1,2}:\d{2})\s*(AM|PM)?\s*[--]\s*(\d{1,2}:\d{2})\s*(AM|PM)?/i', $raw, $m)) {
+    // Fix 1 & 2: [-\x{2013}\x{2014}] covers hyphen, en-dash, and em-dash
+    if (preg_match('/(\d{1,2}:\d{2})\s*(AM|PM)?\s*[-\x{2013}\x{2014}]\s*(\d{1,2}:\d{2})\s*(AM|PM)?/iu', $raw, $m)) {
         $to24 = function($t, $ampm) {
             [$h,$min] = explode(':', $t);
             $h = (int)$h; $min = (int)$min;
@@ -77,7 +78,7 @@ function parse_time_range(string $raw): array {
         };
         return ['start' => $to24($m[1], $m[2]), 'end' => $to24($m[3], $m[4] ?? $m[2])];
     }
-    if (preg_match('/(\d{1,2}:\d{2})\s*[--]\s*(\d{1,2}:\d{2})/', $raw, $m)) {
+    if (preg_match('/(\d{1,2}:\d{2})\s*[-\x{2013}\x{2014}]\s*(\d{1,2}:\d{2})/u', $raw, $m)) {
         return ['start' => $m[1], 'end' => $m[2]];
     }
     return ['start' => '08:00', 'end' => '09:00'];
@@ -94,7 +95,8 @@ foreach ($classes as $cls) {
     $js_data[] = [
         'code'      => $cls['subject_code'],
         'name'      => $cls['subject_name'],
-        'shortName' => mb_strimwidth($cls['subject_name'], 0, 18, '-'),
+        // Fix 3: replaced corrupted ellipsis character with plain ASCII '...'
+        'shortName' => mb_strimwidth($cls['subject_name'], 0, 18, '...'),
         'section'   => $cls['section'],
         'room'      => $cls['room'] ?? '',
         'slots'     => $slots,
@@ -230,7 +232,7 @@ foreach ($classes as $cls) {
                             <span class="stat-label">Units</span>
                         </div>
                         <div class="sched-stat-divider"></div>
-                        <!-- TODO: Replace hardcoded department - query faculty's department from DB into $department
+                        <!-- TODO: Replace hardcoded department — query faculty's department from DB into $department
                              then replace the empty echo below with: echo htmlspecialchars($department); -->
                         <div class="sched-stat-chip">
                             <span class="stat-value"><?php /* echo htmlspecialchars($department); */ ?></span>
@@ -260,11 +262,6 @@ foreach ($classes as $cls) {
                                 <option value="summer" <?php echo $sel_sem === 'summer' ? 'selected' : ''; ?>>Summer</option>
                             </select>
                         </div>
-                        <?php if ($sel_year || $sel_sem): ?>
-                            <div class="sched-label-container" style="justify-content:flex-end;">
-                                <a href="faculty_load.php" class="sched-clear-link">Clear</a>
-                            </div>
-                        <?php endif; ?>
                     </form>
                 </div>
             </div>
@@ -312,7 +309,7 @@ foreach ($classes as $cls) {
                                     <span style="color:var(--text);opacity:0.4;">TBA</span>
                                 <?php endif; ?>
                             </span>
-                            <span class="col-room"><?php echo htmlspecialchars($cls['room'] ?: '-'); ?></span>
+                            <span class="col-room"><?php echo htmlspecialchars($cls['room'] ?: '—'); ?></span>
                             <span class="col-container">
                                 <span class="units-badge"><?php echo htmlspecialchars($cls['units']); ?></span>
                             </span>

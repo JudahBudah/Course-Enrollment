@@ -53,7 +53,13 @@ function openView(raw) {
     ];
     fields.forEach(f => {
         const el = document.getElementById('vw_' + f);
-        if (el) el.textContent = s[f] || '—';
+        if (el) {
+            let val = s[f] || '—';
+            if (f === 'course' && s[f] && COURSE_NAME_TO_CODE[s[f]]) {
+                val = COURSE_NAME_TO_CODE[s[f]] + ' — ' + s[f];
+            }
+            el.textContent = val;
+        }
     });
     document.getElementById('vw_block').textContent = s.block_name || 'No Block';
 
@@ -150,16 +156,21 @@ function openEdit(raw) {
 
     const fields = ['student_id','student_number','first_name','last_name','middle_name',
                     'suffix_name','gender','birthdate','email','contact_number','college',
-                    'course','year_level','account_status','status'];
+                    'year_level','account_status','status'];
     fields.forEach(f => {
         const el = document.getElementById('edit_' + f);
         if (el) el.value = s[f] || '';
     });
 
+    // course may be stored as full name or code — normalize to code for the select
+    const courseCode = COURSE_NAME_TO_CODE[s.course] || s.course;
+    const courseSelect = document.getElementById('edit_course');
+    if (courseSelect) courseSelect.value = courseCode || '';
+
     const regStatusEl = document.getElementById('edit_registration_status');
     if (regStatusEl) regStatusEl.value = s.registration_status || 'Unknown';
 
-    populateBlocks(s.course || '', s.block_id || '');
+    populateBlocks(courseCode || s.course || '', s.block_id || '');
     document.getElementById('editModal').style.display = 'block';
 }
 

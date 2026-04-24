@@ -32,7 +32,7 @@ mysqli_query($con, "CREATE TABLE IF NOT EXISTS grade_entries (
     UNIQUE KEY uq_enroll (enrollment_id)
 )");
 
-// Get classes assigned to this faculty � split current vs past
+// Get classes assigned to this faculty - split current vs past
 $current_classes = [];
 $past_classes    = [];
 $cq = mysqli_query($con,
