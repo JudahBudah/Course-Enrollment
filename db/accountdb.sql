@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   `view_count` int DEFAULT '0',
   `click_count` int DEFAULT '0',
   PRIMARY KEY (`article_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `articles`
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `article_comments` (
   `user_no` int DEFAULT NULL,
   PRIMARY KEY (`comment_id`),
   KEY `article_id` (`article_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `article_comments`
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `article_flags` (
   `flag_date` datetime NOT NULL,
   `status` enum('pending','reviewed','resolved') DEFAULT 'pending',
   PRIMARY KEY (`flag_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `article_flags`
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   PRIMARY KEY (`comment_no`),
   KEY `post_ID` (`post_ID`),
   KEY `user_no` (`user_no`)
-) ENGINE=MyISAM AUTO_INCREMENT=182 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=182 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `comment`
@@ -326,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `comment_likes` (
   PRIMARY KEY (`like_id`),
   UNIQUE KEY `unique_comment_like` (`comment_no`,`user_no`),
   KEY `user_no` (`user_no`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `comment_likes`
@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `friends` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `friend_id` (`friend_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `friends`
@@ -391,7 +391,7 @@ CREATE TABLE IF NOT EXISTS `games` (
   `trailer_youtube_url` varchar(255) DEFAULT NULL,
   `download_links` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `games`
@@ -450,7 +450,7 @@ CREATE TABLE IF NOT EXISTS `game_comments` (
   PRIMARY KEY (`id`),
   KEY `game_id` (`game_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `game_comments`
@@ -490,7 +490,7 @@ CREATE TABLE IF NOT EXISTS `game_guides` (
   KEY `idx_user_id` (`user_id`),
   KEY `idx_date_added` (`date_added`),
   KEY `idx_status` (`status`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `game_guides`
@@ -519,7 +519,7 @@ CREATE TABLE IF NOT EXISTS `game_user_data` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_game` (`user_id`,`game_id`),
   KEY `game_id` (`game_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `game_user_data`
@@ -548,7 +548,7 @@ CREATE TABLE IF NOT EXISTS `guide_categories` (
   `category_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `guide_id` (`guide_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -568,7 +568,7 @@ CREATE TABLE IF NOT EXISTS `guide_comments` (
   PRIMARY KEY (`id`),
   KEY `guide_id` (`guide_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `guide_comments`
@@ -592,7 +592,7 @@ CREATE TABLE IF NOT EXISTS `guide_contents` (
   `image_paths` text,
   PRIMARY KEY (`id`),
   KEY `guide_id` (`guide_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `guide_contents`
@@ -639,7 +639,7 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `notifications`
@@ -663,7 +663,7 @@ CREATE TABLE IF NOT EXISTS `post_likes` (
   `post_id` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_like` (`user_no`,`post_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `post_likes`
@@ -703,7 +703,7 @@ CREATE TABLE IF NOT EXISTS `private_messages` (
   PRIMARY KEY (`message_id`),
   KEY `sender_id` (`sender_id`),
   KEY `recipient_id` (`recipient_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `private_messages`
@@ -737,7 +737,7 @@ CREATE TABLE IF NOT EXISTS `review_reactions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_review` (`user_id`,`review_id`),
   KEY `review_id` (`review_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `review_reactions`
@@ -771,7 +771,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`user_no`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
@@ -811,7 +811,7 @@ CREATE TABLE IF NOT EXISTS `user_post` (
   PRIMARY KEY (`post_ID`),
   KEY `user_no` (`user_no`),
   KEY `game` (`game`)
-) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `user_post`

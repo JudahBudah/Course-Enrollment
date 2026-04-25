@@ -130,7 +130,7 @@ $hist_query = "SELECT gh.class_id, gh.class_standing, gh.quiz, gh.midterms, gh.f
                      AND class_id NOT IN (SELECT class_id FROM classes)
                    GROUP BY class_id
                ) latest ON gh.history_id = latest.max_id
-               LEFT JOIN subjects s ON s.subject_code COLLATE utf8mb4_general_ci = gh.subject_code
+               LEFT JOIN subjects s ON s.subject_code COLLATE utf8mb4_0900_ai_ci = gh.subject_code
                    AND (s.course_id IS NULL OR s.course_id = (
                        SELECT course_id FROM courses
                        WHERE course_name = ? OR course_code = ? LIMIT 1
