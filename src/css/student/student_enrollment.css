@@ -206,7 +206,6 @@ input[type="checkbox"] {
     padding: 3px 9px;
     border-radius: 6px;
     margin: 2px 0;
-    white-space: nowrap;
 }
 .sched-cell { display: flex; flex-direction: column; gap: 3px; }
 
@@ -542,3 +541,274 @@ input[type="checkbox"] {
     white-space: nowrap;
 }
 .btn-enroll-class:hover { opacity: .88; }
+
+
+
+
+
+/* ── DROP REQUESTS TABLE ── */
+
+.drop-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.drop-table {
+    min-width: 750px;
+    width: 100%;
+}
+
+.drop-table-header,
+.drop-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 60px 100px 1fr 150px 140px;
+    gap: 12px;
+    text-align: center;
+}
+
+.drop-table-header {
+    background: var(--red);
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.drop-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.drop-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.drop-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.drop-row > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.drop-col-left {
+    text-align: left;
+}
+
+
+/* ── CURRENT ENROLLMENTS TABLE ── */
+
+.enroll-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.enroll-table {
+    min-width: 900px;
+    width: 100%;
+}
+
+.enroll-table-header,
+.enroll-row {
+    display: grid;
+    grid-template-columns: 100px 2fr 50px 2fr 1fr 90px 140px;
+    gap: 12px;
+    text-align: center;
+}
+
+.enroll-table-header {
+    background: var(--red);
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.enroll-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.enroll-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.enroll-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.enroll-col-left {
+    text-align: left;
+}
+
+.enroll-empty {
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+
+/* ── CURRICULUM TABLE ── */
+
+.curric-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.curric-table {
+    min-width: 900px;
+    width: 100%;
+}
+
+.curric-table-header,
+.curric-row {
+    display: grid;
+    grid-template-columns: 100px 2fr 60px 1fr 70px 100px 155px;
+    gap: 12px;
+    text-align: center;
+}
+
+.curric-table-header {
+    background: var(--red);
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.curric-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.curric-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.curric-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.curric-col-left {
+    text-align: left;
+}
+
+/* Row states — mirrors the old tr classes */
+.curric-row.row-passed { opacity: .6; }
+.curric-row.row-failed { background: #dc262608 !important; }
+.curric-row.row-enrolled { background: #2563eb08 !important; }
+.curric-row.row-locked { background: #f9741608 !important; opacity: .75; }
+
+
+/* ── IRREGULAR TABLE ── */
+
+.irreg-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.irreg-table {
+    min-width: 900px;
+    width: 100%;
+}
+
+.irreg-table-header,
+.irreg-row {
+    display: grid;
+    grid-template-columns: 100px 2fr 60px 60px 1fr 1fr 100px 155px;
+    gap: 12px;
+    text-align: center;
+}
+
+.irreg-table-header {
+    background: #f97416;
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.irreg-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.irreg-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.irreg-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.irreg-col-left {
+    text-align: left;
+}
+
+.irreg-row.row-locked { background: #f9741608 !important; opacity: .75; }
+.irreg-row.row-failed { background: #dc262608 !important; }
+
+.irreg-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+}

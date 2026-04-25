@@ -130,7 +130,7 @@ $hist_query = "SELECT gh.class_id, gh.class_standing, gh.quiz, gh.midterms, gh.f
                      AND class_id NOT IN (SELECT class_id FROM classes)
                    GROUP BY class_id
                ) latest ON gh.history_id = latest.max_id
-               LEFT JOIN subjects s ON s.subject_code COLLATE utf8mb4_0900_ai_ci = gh.subject_code
+               LEFT JOIN subjects s ON s.subject_code COLLATE utf8mb4_general_ci = gh.subject_code
                    AND (s.course_id IS NULL OR s.course_id = (
                        SELECT course_id FROM courses
                        WHERE course_name = ? OR course_code = ? LIMIT 1
@@ -390,66 +390,59 @@ $overall_gwa = calculateGWA($all_grades);
                         <?php $sem_grades = $grades_by_year[$year][$sem]; ?>
                         <div class="semester-panel">
                             <div class="semester-label"><?php echo $sem; ?> Semester</div>
-                            <div class="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th class="center">#</th>
-                                            <th class="center">Subject Code</th>
-                                            <th>Subject Title</th>
-                                            <th class="center">Units</th>
-                                            <th class="center">Section</th>
-                                            <th class="center">Professor</th>
-                                            <th class="center">Class Standing</th>
-                                            <th class="center">Quiz</th>
-                                            <th class="center">Midterms</th>
-                                            <th class="center">Finals</th>
-                                            <th class="center">Final Grade</th>
-                                            <th class="center">Remarks</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if (empty($sem_grades)): ?>
-                                        <tr>
-                                            <td colspan="12" style="text-align:center; padding:2rem; color:var(--text);">
-                                                No grades recorded for this semester.
-                                            </td>
-                                        </tr>
-                                        <?php else: ?>
+
+                            <div class="grades-table-wrapper">
+                                <div class="grades-table">
+
+                                    <div class="grades-table-header">
+                                        <div>#</div>
+                                        <div>Subject Code</div>
+                                        <div class="grades-col-left">Subject Title</div>
+                                        <div>Units</div>
+                                        <div>Section</div>
+                                        <div>Professor</div>
+                                        <div>Class Standing</div>
+                                        <div>Quiz</div>
+                                        <div>Midterms</div>
+                                        <div>Finals</div>
+                                        <div>Final Grade</div>
+                                        <div>Remarks</div>
+                                    </div>
+
+                                    <div class="grades-table-body">
+                                    <?php if (empty($sem_grades)): ?>
+                                        <div class="grades-empty">No grades recorded for this semester.</div>
+                                    <?php else: ?>
                                         <?php $counter = 1; foreach ($sem_grades as $g): ?>
-                                        <tr>
-                                            <td class="center row-num"><?php echo $counter++; ?></td>
-                                            <td><span class="subj-code"><?php echo htmlspecialchars($g['subject_code']); ?></span></td>
-                                            <td><?php echo htmlspecialchars($g['subject_name']); ?></td>
-                                            <td class="center"><?php echo htmlspecialchars($g['units']); ?></td>
-                                            <td class="center"><?php echo htmlspecialchars($g['section'] ?? '—'); ?></td>
-                                            <td class="center"><?php echo htmlspecialchars($g['faculty_name'] ?? '—'); ?></td>
-                                            <td class="center"><?php echo $g['class_standing'] !== null ? number_format($g['class_standing'], 2) : '<span style="color:#999;">—</span>'; ?></td>
-                                            <td class="center"><?php echo $g['quiz'] !== null ? number_format($g['quiz'], 2) : '<span style="color:#999;">—</span>'; ?></td>
-                                            <td class="center"><?php echo $g['midterms'] !== null ? number_format($g['midterms'], 2) : '<span style="color:#999;">—</span>'; ?></td>
-                                            <td class="center"><?php echo $g['finals'] !== null ? number_format($g['finals'], 2) : '<span style="color:#999;">—</span>'; ?></td>
-                                            <td class="center">
-                                                <?php echo $g['grade'] !== null ? renderGradeValue($g['grade']) : '<span class="grade-val" style="color:#999;">—</span>'; ?>
-                                            </td>
-                                            <td class="center">
-                                                <?php echo $g['grade'] !== null ? renderGradeStatus($g['grade']) : '<span class="grade-status ongoing"><i class="fa-solid fa-clock" style="font-size:.65rem"></i>Pending</span>'; ?>
-                                            </td>
-                                        </tr>
+                                        <div class="grades-row">
+                                            <div class="row-num"><?php echo $counter++; ?></div>
+                                            <div><span class="subj-code"><?php echo htmlspecialchars($g['subject_code']); ?></span></div>
+                                            <div class="grades-col-left"><?php echo htmlspecialchars($g['subject_name']); ?></div>
+                                            <div><?php echo htmlspecialchars($g['units']); ?></div>
+                                            <div><?php echo htmlspecialchars($g['section'] ?? '—'); ?></div>
+                                            <div><?php echo htmlspecialchars($g['faculty_name'] ?? '—'); ?></div>
+                                            <div><?php echo $g['class_standing'] !== null ? number_format($g['class_standing'], 2) : '<span style="color:#999;">—</span>'; ?></div>
+                                            <div><?php echo $g['quiz'] !== null ? number_format($g['quiz'], 2) : '<span style="color:#999;">—</span>'; ?></div>
+                                            <div><?php echo $g['midterms'] !== null ? number_format($g['midterms'], 2) : '<span style="color:#999;">—</span>'; ?></div>
+                                            <div><?php echo $g['finals'] !== null ? number_format($g['finals'], 2) : '<span style="color:#999;">—</span>'; ?></div>
+                                            <div><?php echo $g['grade'] !== null ? renderGradeValue($g['grade']) : '<span class="grade-val" style="color:#999;">—</span>'; ?></div>
+                                            <div><?php echo $g['grade'] !== null ? renderGradeStatus($g['grade']) : '<span class="grade-status ongoing"><i class="fa-solid fa-clock" style="font-size:.65rem"></i>Pending</span>'; ?></div>
+                                        </div>
                                         <?php endforeach; ?>
-                                        <tr class="gwa-row">
-                                            <td colspan="12" class="gwa-label">
-                                                GWA: <span class="gwa-val">
-                                                    <?php
-                                                        $gwa = calculateGWA($sem_grades);
-                                                        echo $gwa ? number_format($gwa, 4) : '—';
-                                                    ?>
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div><!-- .table-wrapper -->
+
+                                        <div class="grades-gwa-row">
+                                            GWA: <span class="gwa-val">
+                                                <?php
+                                                    $gwa = calculateGWA($sem_grades);
+                                                    echo $gwa ? number_format($gwa, 4) : '—';
+                                                ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div><!-- .semester-panel -->
                         <?php endforeach; ?>
 

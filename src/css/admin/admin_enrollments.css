@@ -1,44 +1,130 @@
 /* Card Size "Don't Touch - Judah" */
 
-/* Fixed */
-.data-table thead th {
+/* ── ENROLLMENTS TABLE ── */
+
+.enrollment-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.enrollment-table {
+    min-width: 900px;
+    width: 100%;
+}
+
+.enrollment-table-header,
+.enrollment-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 80px 100px 130px 100px 80px;
+    gap: 12px;
+    text-align: center;
+}
+
+.enrollment-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
     position: sticky;
     top: 0;
-    z-index: 5;
-    background: var(--off); 
+    z-index: 1;
 }
 
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
+.enrollment-table-body {
+    display: flex;
+    flex-direction: column;
 }
 
-.data-table thead th:nth-child(1)  { width: 130px; }    /* Student ID */
-.data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(3)  { width: 200px; }    /* Course */
-.data-table thead th:nth-child(4)  { width: 120px; }    /* Year Level */
-.data-table thead th:nth-child(5)  { width: 120px; }    /* Block */
-.data-table thead th:nth-child(6)  { width: 180px;  }    /* Enrolled Subjects */
-.data-table thead th:nth-child(7)  { width: 120px; }    /* Total Units */
-.data-table thead th:nth-child(8)  { width: 120px; }    /* Actions */
+.enrollment-row {
+    align-items: center;
 
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Student ID */
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
 
-.data-table th:nth-child(4),
-.data-table td:nth-child(4) { text-align: center; }  /* Year Level */
+    font-size: 0.8rem;
+    color: var(--dark);
+}
 
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* Block */
+.enrollment-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
 
-.data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Enrolled Subjects */
+.enrollment-col-left {
+    text-align: left;
+}
 
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Total Units */
 
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Actions */
+/* ── DROP REQUESTS TABLE (admin) ── */
+
+.admin-drop-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.admin-drop-table {
+    min-width: 700px;
+    width: 100%;
+}
+
+.admin-drop-table-header,
+.admin-drop-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 110px minmax(0, 1.5fr) 90px minmax(0, 1fr) 60px 120px;
+    gap: 12px;
+    text-align: center;
+}
+
+.admin-drop-table-header {
+    background: #dc2626;
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.admin-drop-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-drop-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.admin-drop-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.admin-drop-row > * {
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
+}
+
+.admin-drop-col-left {
+    text-align: left;
+}
 
 
 /* ── Stats Grid (3-card layout) ────────────────────────── */

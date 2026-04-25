@@ -435,3 +435,81 @@ td {
         padding: 16px 14px 20px; 
     }
 }
+
+
+/* ── GRADES TABLE ── */
+
+.grades-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 350px;
+}
+
+.grades-table {
+    min-width: 1200px;
+    width: 100%;
+}
+
+.grades-table-header,
+.grades-row {
+    display: grid;
+    grid-template-columns: 30px 100px 2fr 50px 1fr 1fr 100px 60px 80px 60px 85px 90px;
+    gap: 12px;
+    text-align: center;
+}
+
+.grades-table-header {
+    background: var(--red);
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.grades-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.grades-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.grades-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.grades-col-left {
+    text-align: left;
+}
+
+.grades-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text);
+}
+
+.grades-gwa-row {
+    padding: 10px 20px;
+    background-color: var(--white-pr);
+    border-top: 2px solid var(--off);
+    text-align: left;
+    font-size: 0.82rem;
+
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+}

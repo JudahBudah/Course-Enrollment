@@ -244,118 +244,119 @@ $drop_requests = mysqli_query($con, "
                     </div>
                 </div>
 
-                <!-- Table -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Drop Requests</h2>
-                        <form method="GET" class="header-search-form">
-                            <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
-                            <div class="search-bar-wrap">
-                                <i class="fa-solid fa-search"></i>
-                                <input type="text" name="search" placeholder="Search student or subject…" value="<?php echo htmlspecialchars($search); ?>">
+            <!-- Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Drop Requests</h2>
+                    <form method="GET" class="header-search-form">
+                        <input type="hidden" name="filter" value="<?php echo htmlspecialchars($filter); ?>">
+                        <div class="search-bar-wrap">
+                            <i class="fa-solid fa-search"></i>
+                            <input type="text" name="search" placeholder="Search student or subject…" value="<?php echo htmlspecialchars($search); ?>">
+                        </div>
+                        <button type="submit" class="btn-secondary" style="padding:.45rem .75rem;"><i class="fa-solid fa-search"></i></button>
+                        <?php if ($search): ?><a href="?filter=<?php echo $filter; ?>" class="btn-secondary" style="padding:.45rem .75rem;">Clear</a><?php endif; ?>
+                    </form>
+                </div>
+
+                <div class="filter-tabs">
+                    <a href="?filter=all<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
+                        All</a>
+                    <a href="?filter=pending<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'pending' ? 'active' : ''; ?>">
+                        Pending <?php if ($total_pending > 0): ?><span class="tab-badge"><?php echo $total_pending; ?></span><?php endif; ?>
+                    </a>
+                </div>
+
+                <div class="drop-req-table-wrapper">
+                    <div class="drop-req-table">
+
+                        <div class="drop-req-table-header">
+                            <div class="drop-req-col-left">Student</div>
+                            <div>Student No.</div>
+                            <div>Course / Year</div>
+                            <div class="drop-req-col-left">Subject</div>
+                            <div>Section</div>
+                            <div>Schedule</div>
+                            <div>Units</div>
+                            <div>Status</div>
+                            <div>Actions</div>
+                        </div>
+
+                        <div class="drop-req-table-body">
+                        <?php if (mysqli_num_rows($drop_requests) === 0): ?>
+                            <div class="drop-req-empty">No drop requests found.</div>
+                        <?php else: ?>
+                        <?php while ($dr = mysqli_fetch_assoc($drop_requests)): ?>
+                        <div class="drop-req-row">
+                            <div class="drop-req-col-left">
+                                <strong><?php echo htmlspecialchars($dr['first_name'] . ' ' . $dr['last_name']); ?></strong>
                             </div>
-                            <button type="submit" class="btn-secondary" style="padding:.45rem .75rem;"><i class="fa-solid fa-search"></i></button>
-                            <?php if ($search): ?><a href="?filter=<?php echo $filter; ?>" class="btn-secondary" style="padding:.45rem .75rem;">Clear</a><?php endif; ?>
-                        </form>
-                    </div>
+                            <div><?php echo htmlspecialchars($dr['student_number']); ?></div>
+                            <div>
+                                <span style="font-size:.82rem;"><?php echo htmlspecialchars($dr['course']); ?></span><br>
+                                <span style="font-size:.75rem;color:var(--text-label);">Year <?php echo $dr['year_level']; ?></span>
+                            </div>
+                            <div class="drop-req-col-left">
+                                <strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong><br>
+                                <span style="font-size:.78rem;color:var(--text-label);"><?php echo htmlspecialchars($dr['subject_name']); ?></span>
+                            </div>
+                            <div><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></div>
+                            <div style="font-size:.82rem;">
+                                <?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?>
+                                <?php if ($dr['room']): ?><br><span style="color:var(--text-label);font-size:.75rem;"><?php echo htmlspecialchars($dr['room']); ?></span><?php endif; ?>
+                            </div>
+                            <div><?php echo $dr['units']; ?></div>
+                            <div>
+                                <?php if ($dr['status'] === 'drop_requested'): ?>
+                                    <span class="badge pending">Pending</span>
+                                <?php elseif ($dr['status'] === 'dropped'): ?>
+                                    <span class="badge rejected">Dropped</span>
+                                <?php else: ?>
+                                    <span class="badge active"><?php echo ucfirst($dr['status']); ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="center-btn">
+                                <?php if ($dr['status'] === 'drop_requested'): ?>
+                                <div class="action-buttons">
+                                    <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
+                                        <input type="hidden" name="student_id"    value="<?php echo $dr['student_id']; ?>">
+                                        <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                        <input type="hidden" name="class_id"      value="<?php echo $dr['class_id']; ?>">
+                                        <input type="hidden" name="action"        value="accept">
+                                        <input type="hidden" name="redirect"      value="drop_requests">
+                                        <button type="submit" class="btn-icon approve" title="Approve"
+                                                onclick="return confirm('Approve drop request for <?php echo htmlspecialchars(addslashes($dr['subject_code'])); ?>?')">
+                                            <i class="fa-solid fa-check"></i>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
+                                        <input type="hidden" name="student_id"    value="<?php echo $dr['student_id']; ?>">
+                                        <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                        <input type="hidden" name="action"        value="reject">
+                                        <input type="hidden" name="redirect"      value="drop_requests">
+                                        <button type="submit" class="btn-icon danger" title="Reject"
+                                                onclick="return confirm('Reject drop request for <?php echo htmlspecialchars(addslashes($dr['subject_code'])); ?>?')">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </form>
+                                    <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                                <?php else: ?>
+                                    <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <?php endwhile; ?>
+                        <?php endif; ?>
+                        </div>
 
-                    <div class="filter-tabs">
-                        <a href="?filter=all<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
-                            All</a>
-                        <a href="?filter=pending<?php echo $search ? '&search='.urlencode($search) : ''; ?>" class="filter-tab <?php echo $filter === 'pending' ? 'active' : ''; ?>">
-                            Pending <?php if ($total_pending > 0): ?><span class="tab-badge"><?php echo $total_pending; ?></span><?php endif; ?>
-                        </a>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Student No.</th>
-                                    <th>Course / Year</th>
-                                    <th>Subject</th>
-                                    <th>Section</th>
-                                    <th>Schedule</th>
-                                    <th>Units</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            <?php if (mysqli_num_rows($drop_requests) === 0): ?>
-                                <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-label);">No drop requests found.</td></tr>
-                            <?php else: ?>
-                            <?php while ($dr = mysqli_fetch_assoc($drop_requests)): ?>
-                            <tr>
-                                <td>
-                                    <strong><?php echo htmlspecialchars($dr['first_name'] . ' ' . $dr['last_name']); ?></strong>
-                                </td>
-                                <td><?php echo htmlspecialchars($dr['student_number']); ?></td>
-                                <td>
-                                    <span style="font-size:.82rem;"><?php echo htmlspecialchars($dr['course']); ?></span><br>
-                                    <span style="font-size:.75rem;color:var(--text-label);">Year <?php echo $dr['year_level']; ?></span>
-                                </td>
-                                <td>
-                                    <strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong><br>
-                                    <span style="font-size:.78rem;color:var(--text-label);"><?php echo htmlspecialchars($dr['subject_name']); ?></span>
-                                </td>
-                                <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
-                                <td style="font-size:.82rem;">
-                                    <?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?>
-                                    <?php if ($dr['room']): ?><br><span style="color:var(--text-label);font-size:.75rem;"><?php echo htmlspecialchars($dr['room']); ?></span><?php endif; ?>
-                                </td>
-                                <td class="center"><?php echo $dr['units']; ?></td>
-                                <td>
-                                    <?php if ($dr['status'] === 'drop_requested'): ?>
-                                        <span class="badge pending">Pending</span>
-                                    <?php elseif ($dr['status'] === 'dropped'): ?>
-                                        <span class="badge rejected">Dropped</span>
-                                    <?php else: ?>
-                                        <span class="badge active"><?php echo ucfirst($dr['status']); ?></span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php if ($dr['status'] === 'drop_requested'): ?>
-                                    <div class="action-buttons">
-                                        <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
-                                            <input type="hidden" name="student_id"    value="<?php echo $dr['student_id']; ?>">
-                                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
-                                            <input type="hidden" name="class_id"      value="<?php echo $dr['class_id']; ?>">
-                                            <input type="hidden" name="action"        value="accept">
-                                            <input type="hidden" name="redirect"      value="drop_requests">
-                                            <button type="submit" class="btn-icon approve" title="Approve"
-                                                    onclick="return confirm('Approve drop request for <?php echo htmlspecialchars(addslashes($dr['subject_code'])); ?>?')">
-                                                <i class="fa-solid fa-check"></i>
-                                            </button>
-                                        </form>
-                                        <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
-                                            <input type="hidden" name="student_id"    value="<?php echo $dr['student_id']; ?>">
-                                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
-                                            <input type="hidden" name="action"        value="reject">
-                                            <input type="hidden" name="redirect"      value="drop_requests">
-                                            <button type="submit" class="btn-icon danger" title="Reject"
-                                                    onclick="return confirm('Reject drop request for <?php echo htmlspecialchars(addslashes($dr['subject_code'])); ?>?')">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </button>
-                                        </form>
-                                        <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                    </div>
-                                    <?php else: ?>
-                                        <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                            <?php endif; ?>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
+            </div>
 
             </div>
         </main>

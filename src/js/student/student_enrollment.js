@@ -104,7 +104,7 @@ const irregularSearch = document.getElementById('irregularSearch');
 if (irregularSearch) {
     irregularSearch.addEventListener('input', function () {
         const q = this.value.toLowerCase();
-        document.querySelectorAll('#irregularTable tbody tr').forEach(row => {
+        document.querySelectorAll('#irregularTable .irreg-row').forEach(row => {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
     });
@@ -115,7 +115,7 @@ const curricSearch = document.getElementById('curricSearch');
 if (curricSearch) {
     curricSearch.addEventListener('input', function () {
         const q = this.value.toLowerCase();
-        document.querySelectorAll('.curric-panel table tbody tr').forEach(row => {
+        document.querySelectorAll('.curric-panel .curric-row').forEach(row => {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
         // Show all panels when searching

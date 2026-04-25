@@ -392,6 +392,19 @@
 }
 
 
+/* ── Height Fixed ── */
+
+#schedListView {
+    overflow-x: auto;
+    max-height: 400px;
+}
+
+#schedGridView {
+    overflow-x: auto;
+    max-height: 400px;
+}
+
+
 /* ── CALENDAR ── */
 
 .cal-nav {

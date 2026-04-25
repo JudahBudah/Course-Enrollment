@@ -37,6 +37,7 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
     <!-- ── Top Nav Bar ────────────────────────────────── -->
     <header>
         <div class="nav-section">
+            <!-- Mobile toggle -->
             <button class="nav-button" id="navButton">
                 <i class="fa-solid fa-bars" id="trans-bars"></i>
             </button>
@@ -78,67 +79,86 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
                             <?php endif; ?>
                         </a>
                     </li>
-                    <li>
-                        <a href="admin_students.php">
-                            <i class="fa-solid fa-users"></i>
-                            <span class="li-name">Students</span>
+
+                    <!-- Student Records Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="student-records-dropdown">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span class="li-name chev-space">
+                                Student Records
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
                         </a>
+                        <div class="acad-dropdown-menu" id="student-records-menu">
+                            <ul>
+                                <li><a href="admin_students.php">Students</a></li>
+                                <li><a href="admin_enrollments.php">Enrollments</a></li>
+                                <li>
+                                    <a href="admin_drop_requests.php">
+                                        Drop Requests
+                                        <?php if (!empty($GLOBALS['pending_drops'])): ?>
+                                            <span class="sidebar-badge"><?php echo $GLOBALS['pending_drops']; ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
-                    <li>
-                        <a href="admin_blocks.php">
-                            <i class="fa-solid fa-layer-group"></i>
-                            <span class="li-name">Blocks</span>
+
+                    <!-- Academic Records Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="acad-records-dropdown">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span class="li-name chev-space">
+                                Academic Records
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
                         </a>
+                        <div class="acad-dropdown-menu" id="acad-records-menu">
+                            <ul>
+                                <li><a href="admin_subjects.php">Subjects</a></li>
+                                <li><a href="admin_classes.php">Classes</a></li>
+                                <li><a href="admin_blocks.php">Blocks</a></li>
+                            </ul>
+                        </div>
                     </li>
-                    <li>
-                        <a href="admin_faculty.php">
-                            <i class="fa-solid fa-chalkboard-user"></i>
-                            <span class="li-name">Faculty</span>
+
+                    <!-- Personnel Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="personnel-dropdown">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span class="li-name chev-space">
+                                Personnel
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
                         </a>
+                        <div class="acad-dropdown-menu" id="personnel-menu">
+                            <ul>
+                                <li><a href="admin_faculty.php">Faculty</a></li>
+                                <?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
+                                    <li><a href="admin_accounts.php">Admin Accounts</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
                     </li>
-                    <li>
-                        <a href="admin_subjects.php">
-                            <i class="fa-solid fa-book"></i>
-                            <span class="li-name">Subjects</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_classes.php">
-                            <i class="fa-solid fa-door-open"></i>
-                            <span class="li-name">Classes</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_enrollments.php" class="active">
-                            <i class="fa-solid fa-file-lines"></i>
-                            <span class="li-name">Enrollments</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_drop_requests.php">
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            <span class="li-name">Drop Requests</span>
-                            <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_announcements.php">
+
+                    <!-- Communications Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="comms-dropdown">
                             <i class="fa-solid fa-bullhorn"></i>
-                            <span class="li-name">Announcements</span>
+                            <span class="li-name chev-space">
+                                Communications
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
                         </a>
+                        <div class="acad-dropdown-menu" id="comms-menu">
+                            <ul>
+                                <li><a href="admin_announcements.php">Announcements</a></li>
+                                <li><a href="admin_calendar.php">Calendar</a></li>
+                            </ul>
+                        </div>
                     </li>
-                    <li>
-                        <a href="admin_calendar.php">
-                            <i class="fa-solid fa-calendar-days"></i>
-                            <span class="li-name">Calendar</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin_accounts.php">
-                            <i class="fa-solid fa-user-shield"></i>
-                            <span class="li-name">Admin Accounts</span>
-                        </a>
-                    </li>
+
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -206,9 +226,9 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
                 <?php
                 $drop_reqs = mysqli_query($con, "
                     SELECT e.enrollment_id, e.class_id, e.student_id,
-                           st.first_name, st.last_name, st.student_number,
-                           s.subject_code, s.subject_name, s.units,
-                           c.section, c.schedule_day, c.schedule_time
+                        st.first_name, st.last_name, st.student_number,
+                        s.subject_code, s.subject_name, s.units,
+                        c.section, c.schedule_day, c.schedule_time
                     FROM enrollments e
                     JOIN students st ON e.student_id = st.student_id
                     JOIN classes c ON e.class_id = c.class_id
@@ -222,29 +242,30 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
                     <div class="card-header" style="background:#dc2626;">
                         <h2><i class="fa-solid fa-right-from-bracket"></i> Pending Drop Requests</h2>
                     </div>
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Student No.</th>
-                                    <th>Subject</th>
-                                    <th>Section</th>
-                                    <th>Schedule</th>
-                                    <th>Units</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+
+                    <div class="admin-drop-table-wrapper">
+                        <div class="admin-drop-table">
+
+                            <div class="admin-drop-table-header">
+                                <div class="admin-drop-col-left">Student</div>
+                                <div>Student No.</div>
+                                <div class="admin-drop-col-left">Subject</div>
+                                <div>Section</div>
+                                <div>Schedule</div>
+                                <div>Units</div>
+                                <div>Action</div>
+                            </div>
+
+                            <div class="admin-drop-table-body">
                             <?php while ($dr = mysqli_fetch_assoc($drop_reqs)): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($dr['first_name'] . ' ' . $dr['last_name']); ?></td>
-                                <td><?php echo htmlspecialchars($dr['student_number']); ?></td>
-                                <td><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong> — <?php echo htmlspecialchars($dr['subject_name']); ?></td>
-                                <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
-                                <td><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?></td>
-                                <td><?php echo $dr['units']; ?></td>
-                                <td>
+                            <div class="admin-drop-row">
+                                <div class="admin-drop-col-left"><?php echo htmlspecialchars($dr['first_name'] . ' ' . $dr['last_name']); ?></div>
+                                <div><?php echo htmlspecialchars($dr['student_number']); ?></div>
+                                <div class="admin-drop-col-left"><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong> — <?php echo htmlspecialchars($dr['subject_name']); ?></div>
+                                <div><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></div>
+                                <div><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?></div>
+                                <div><?php echo $dr['units']; ?></div>
+                                <div>
                                     <form method="POST" action="../../php/handle_drop_request_v2.php" style="display:inline;">
                                         <input type="hidden" name="student_id" value="<?php echo $dr['student_id']; ?>">
                                         <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
@@ -263,11 +284,12 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
                                     <a href="admin_manual_enroll.php?student_id=<?php echo $dr['student_id']; ?>" class="btn-icon" title="View Student">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                             <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <?php endif; ?>
@@ -282,21 +304,21 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Student ID</th>
-                                    <th>Name</th>
-                                    <th>Course</th>
-                                    <th>Year Level</th>
-                                    <th>Block</th>
-                                    <th>Enrolled Subjects</th>
-                                    <th>Total Units</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="enrollmentTable">
+                    <div class="enrollment-table-wrapper">
+                        <div class="enrollment-table">
+
+                            <div class="enrollment-table-header">
+                                <div>Student ID</div>
+                                <div class="enrollment-col-left">Name</div>
+                                <div class="enrollment-col-left">Course</div>
+                                <div>Year Level</div>
+                                <div>Block</div>
+                                <div>Enrolled Subjects</div>
+                                <div>Total Units</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="enrollment-table-body" id="enrollmentTable">
                                 <?php
                                 $students = mysqli_query($con, "
                                     SELECT s.*, b.block_name
@@ -314,39 +336,40 @@ $sem_labels      = ['1st' => '1st Sem', '2nd' => '2nd Sem', 'summer' => 'Summer'
 
                                     $uq = mysqli_fetch_assoc(mysqli_query($con,
                                         "SELECT SUM(s.units) as t
-                                         FROM enrollments e
-                                         JOIN classes c ON e.class_id = c.class_id
-                                         JOIN subjects s ON c.subject_id = s.subject_id
-                                         WHERE e.student_id = $sid AND e.status NOT IN ('dropped', 'cancelled')"
+                                        FROM enrollments e
+                                        JOIN classes c ON e.class_id = c.class_id
+                                        JOIN subjects s ON c.subject_id = s.subject_id
+                                        WHERE e.student_id = $sid AND e.status NOT IN ('dropped', 'cancelled')"
                                     ));
                                     $total_units = $uq['t'] ?? 0;
                                 ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($student['student_id'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars(trim(($student['first_name'] ?? '') . ' ' . ($student['last_name'] ?? ''))); ?></td>
-                                    <td><?php echo htmlspecialchars($student['course'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></td>
-                                    <td>
+                                <div class="enrollment-row">
+                                    <div><?php echo htmlspecialchars($student['student_id'] ?? 'N/A'); ?></div>
+                                    <div class="enrollment-col-left"><?php echo htmlspecialchars(trim(($student['first_name'] ?? '') . ' ' . ($student['last_name'] ?? ''))); ?></div>
+                                    <div class="enrollment-col-left"><?php echo htmlspecialchars($student['course'] ?? 'N/A'); ?></div>
+                                    <div><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></div>
+                                    <div>
                                         <?php if (!empty($student['block_name'])): ?>
                                             <span class="badge blue"><?php echo htmlspecialchars($student['block_name']); ?></span>
                                         <?php else: ?>
                                             <span class="badge incomplete">No Block</span>
                                         <?php endif; ?>
-                                    </td>
-                                    <td><span class="enroll-count"><?php echo $enrolled_count; ?> subjects</span></td>
-                                    <td><span class="enroll-units"><?php echo $total_units; ?> units</span></td>
-                                    <td>
+                                    </div>
+                                    <div><span class="enroll-count"><?php echo $enrolled_count; ?> subjects</span></div>
+                                    <div><span class="enroll-units"><?php echo $total_units; ?> units</span></div>
+                                    <div>
                                         <div class="action-buttons">
                                             <a href="admin_manual_enroll.php?student_id=<?php echo $sid; ?>"
                                             class="btn-icon" title="View/Edit Enrollment">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                                 <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

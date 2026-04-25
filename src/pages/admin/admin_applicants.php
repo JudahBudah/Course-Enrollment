@@ -326,39 +326,39 @@ $applicants = mysqli_query($con, $query);
                         <a href="?filter=enrolled"   class="filter-tab <?php echo $filter==='enrolled'   ? 'active':''; ?>">Converted</a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="selectAll" onchange="toggleAll(this)" title="Select all"></th>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>LRN</th>
-                                    <th>First Choice</th>
-                                    <th>Status</th>
-                                    <th>Exam Schedule</th>
-                                    <th>Applied Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="applicants-table-wrapper">
+                        <div class="applicants-table">
+
+                            <div class="applicants-table-header">
+                                <div><input type="checkbox" id="selectAll" onchange="toggleAll(this)" title="Select all"></div>
+                                <div>ID</div>
+                                <div class="applicants-col-left">Name</div>
+                                <div class="applicants-col-left">Email</div>
+                                <div>LRN</div>
+                                <div class="applicants-col-left">First Choice</div>
+                                <div>Status</div>
+                                <div>Exam Schedule</div>
+                                <div>Applied Date</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="applicants-table-body">
                                 <?php while ($applicant = mysqli_fetch_assoc($applicants)): ?>
-                                <tr>
-                                    <td>
+                                <div class="applicants-row">
+                                    <div>
                                         <input type="checkbox" class="row-check" value="<?php echo $applicant['applicant_id']; ?>" onchange="updateBatch()">
-                                    </td>
-                                    <td><?php echo $applicant['applicant_id']; ?></td>
-                                    <td><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></td>
-                                    <td><?php echo htmlspecialchars($applicant['email']); ?></td>
-                                    <td><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></td>
-                                    <td><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></td>
-                                    <td>
+                                    </div>
+                                    <div><?php echo $applicant['applicant_id']; ?></div>
+                                    <div class="applicants-col-left"><?php echo htmlspecialchars(($applicant['first_name'] ?? '') . ' ' . ($applicant['last_name'] ?? 'N/A')); ?></div>
+                                    <div class="applicants-col-left"><?php echo htmlspecialchars($applicant['email']); ?></div>
+                                    <div><?php echo htmlspecialchars($applicant['lrn'] ?? 'N/A'); ?></div>
+                                    <div class="applicants-col-left"><?php echo htmlspecialchars($applicant['first_choice'] ?? 'N/A'); ?></div>
+                                    <div>
                                         <span class="badge <?php echo strtolower($applicant['application_status']); ?>">
                                             <?php echo htmlspecialchars(ucfirst($applicant['application_status'])); ?>
                                         </span>
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div>
                                         <?php if ($applicant['exam_schedule_id']): ?>
                                             <div class="exam-cell">
                                                 <div class="exam-cell-date"><?php echo date('M j, Y', strtotime($applicant['exam_date'])); ?></div>
@@ -368,9 +368,9 @@ $applicants = mysqli_query($con, $query);
                                         <?php else: ?>
                                             <span class="exam-cell-empty">—</span>
                                         <?php endif; ?>
-                                    </td>
-                                    <td><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></td>
-                                    <td>
+                                    </div>
+                                    <div><?php echo date('M d, Y', strtotime($applicant['created_at'])); ?></div>
+                                    <div>
                                         <div class="action-buttons">
                                             <button onclick="viewApplicant(<?php echo $applicant['applicant_id']; ?>)" class="btn-icon" title="View Details">
                                                 <i class="fa-solid fa-eye"></i>
@@ -390,11 +390,12 @@ $applicants = mysqli_query($con, $query);
                                                 </button>
                                             </form>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                                 <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

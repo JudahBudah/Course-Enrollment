@@ -1,49 +1,70 @@
 /* Card Size "Don't Touch - Judah" */
 
-/* Fixed */
-.data-table thead th {
+/* ── STUDENTS TABLE ── */
+
+.students-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.students-table {
+    min-width: 1100px;
+    width: 100%;
+}
+
+.students-table-header,
+.students-row {
+    display: grid;
+    grid-template-columns: 100px 60px 1fr 1fr 100px 50px 90px 100px 100px 155px;
+    gap: 12px;
+    text-align: center;
+}
+
+.students-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
     position: sticky;
     top: 0;
-    z-index: 5;
-    background: var(--off); 
+    z-index: 1;
 }
 
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
+.students-table-body {
+    display: flex;
+    flex-direction: column;
 }
 
-.data-table thead th:nth-child(1)  { width: 140px; }    /* Student No. */
-.data-table thead th:nth-child(2)  { width: 110px; }    /* Photo */
-.data-table thead th:nth-child(3)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(4)  { width: 220px; }    /* Email */
-.data-table thead th:nth-child(5)  { width: 200px; }    /* Course */
-.data-table thead th:nth-child(6)  { width: 80px;  }    /* Year */
-.data-table thead th:nth-child(7)  { width: 110px; }    /* Block */
-.data-table thead th:nth-child(8)  { width: 110px; }    /* Type */
-.data-table thead th:nth-child(9)  { width: 110px;  }    /* Status */
-.data-table thead th:nth-child(10) { width: 200px;  }    /* Actions */
+.students-row {
+    align-items: center;
 
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Student No. */
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
 
-.data-table th:nth-child(2),
-.data-table td:nth-child(2) { text-align: center; }  /* Photo */
+    font-size: 0.8rem;
+    color: var(--dark);
+}
 
-.data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Year */
+.students-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
 
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Block */
+.students-row > * {
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
+}
 
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Type */
-
-.data-table th:nth-child(9),
-.data-table td:nth-child(9) { text-align: center; }  /* Status */
-
-.data-table th:nth-child(10),
-.data-table td:nth-child(10) { text-align: center; }  /* Actions */
+.students-col-left {
+    text-align: left;
+}
 
 
 /* ── Stats Grid (student counts) ──────────────────────── */

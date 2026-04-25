@@ -17,7 +17,6 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--red);
-    white-space: nowrap;
     flex-shrink: 0;
 }
 
@@ -117,7 +116,7 @@ select:focus {
 .sched-table-wrapper {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 300px;
+    max-height: 350px;
 
 
     margin-top: 25px;
@@ -126,7 +125,8 @@ select:focus {
 }
 
 .sched-table {
-    min-width: 800px;
+    min-width: 900px;
+    width: 100%;
 }
 
 
@@ -135,7 +135,7 @@ select:focus {
 .sched-table-header,
 .sched-row {
     display: grid;
-    grid-template-columns: 40px 130px 120px 1fr 60px 200px 100px;
+    grid-template-columns: 40px 120px 1fr 2fr 50px 1fr 100px;
     gap: 12px;
     text-align: center;
 }
@@ -204,7 +204,6 @@ select:focus {
 
 .code-badge {
     color: var(--navy);
-    white-space: nowrap;
     font-weight: 700;
     font-size: 0.75rem;
     letter-spacing: 0.03em;
@@ -214,7 +213,6 @@ select:focus {
 .section-badge {
     background: var(--badge-navy);
     color: var(--perm-navy);
-    white-space: nowrap;
     font-weight: 600;
     font-size: 0.75rem;
 
@@ -260,6 +258,10 @@ select:focus {
     background: var(--off);
     color: var(--text);
     font-size: 0.75rem;
+
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
 }
 
 .sched-table-footer strong {
@@ -374,7 +376,7 @@ select:focus {
     font-weight: 700;
     color: var(--dark-spc);
     line-height: 1;
-    white-space: nowrap;
+    white-space: nowrap; /* Goods ito judah */
     transform: translateY(-50%);
     pointer-events: none;
 }
@@ -466,8 +468,8 @@ select:focus {
     color: #fff;
     flex-shrink: 0;
 }
-.cm-title { font-weight: 700; font-size: 1rem; }
-.cm-sub   { font-size: .8rem; opacity: .85; margin-top: .15rem; }
+.cm-title { font-weight: 700; font-size: 1rem; color: var(--white);}
+.cm-sub   { font-size: .8rem; opacity: .85; margin-top: .15rem; color: var(--white);}
 .cm-close {
     background: none;
     border: none;

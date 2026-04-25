@@ -315,36 +315,34 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                     </div>
 
                     <div class="filter-tabs">
-                        <a href="?filter=all&search=<?php echo urlencode($search); ?>"         class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
-                        <a href="?filter=enrolled&search=<?php echo urlencode($search); ?>"    class="filter-tab <?php echo $filter==='enrolled'?'active':''; ?>">Enrolled</a>
+                        <a href="?filter=all&search=<?php echo urlencode($search); ?>"          class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
+                        <a href="?filter=enrolled&search=<?php echo urlencode($search); ?>"     class="filter-tab <?php echo $filter==='enrolled'?'active':''; ?>">Enrolled</a>
                         <a href="?filter=not_enrolled&search=<?php echo urlencode($search); ?>" class="filter-tab <?php echo $filter==='not_enrolled'?'active':''; ?>">Not Enrolled</a>
-                        <a href="?filter=dropped&search=<?php echo urlencode($search); ?>"     class="filter-tab <?php echo $filter==='dropped'?'active':''; ?>">Dropped</a>
-                        <a href="?filter=irregular&search=<?php echo urlencode($search); ?>"   class="filter-tab <?php echo $filter==='irregular'?'active':''; ?>">Irregular</a>
+                        <a href="?filter=dropped&search=<?php echo urlencode($search); ?>"      class="filter-tab <?php echo $filter==='dropped'?'active':''; ?>">Dropped</a>
+                        <a href="?filter=irregular&search=<?php echo urlencode($search); ?>"    class="filter-tab <?php echo $filter==='irregular'?'active':''; ?>">Irregular</a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Student No.</th>
-                                    <th>Photo</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Course</th>
-                                    <th>Year</th>
-                                    <th>Block</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="studentsTable">
+                    <div class="students-table-wrapper">
+                        <div class="students-table">
+
+                            <div class="students-table-header">
+                                <div>Student No.</div>
+                                <div>Photo</div>
+                                <div class="students-col-left">Name</div>
+                                <div class="students-col-left">Email</div>
+                                <div>Course</div>
+                                <div>Year</div>
+                                <div>Block</div>
+                                <div>Type</div>
+                                <div>Status</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="students-table-body" id="studentsTable">
                             <?php while ($student = mysqli_fetch_assoc($students_query)):
-                                // Ensure registration_status has a default value
                                 if (empty($student['registration_status'])) {
                                     $student['registration_status'] = 'Unknown';
                                 }
-                                
                                 $initials     = strtoupper(substr($student['first_name'] ?? '', 0, 1) . substr($student['last_name'] ?? '', 0, 1));
                                 $photo        = $student['profile_photo'] ? '../../' . $student['profile_photo'] : null;
                                 $fullname     = htmlspecialchars(trim(
@@ -356,9 +354,9 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                 $status_class = strtolower(str_replace(' ', '-', $student['status'] ?? ''));
                                 $js_data      = htmlspecialchars(json_encode($student), ENT_QUOTES);
                             ?>
-                            <tr>
-                                <td><strong><?php echo htmlspecialchars($student['student_number']); ?></strong></td>
-                                <td>
+                            <div class="students-row">
+                                <div><strong><?php echo htmlspecialchars($student['student_number']); ?></strong></div>
+                                <div>
                                     <?php if ($photo): ?>
                                         <div class="photo-container">
                                             <img src="<?php echo htmlspecialchars($photo); ?>"
@@ -371,44 +369,35 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             <?php echo $initials; ?>
                                         </div>
                                     </div>
-                                </td>
-                                <td><?php echo $fullname; ?></td>
-                                <td><?php echo htmlspecialchars($student['email'] ?? ''); ?></td>
-                                <td><?php 
+                                </div>
+                                <div class="students-col-left"><?php echo $fullname; ?></div>
+                                <div class="students-col-left"><?php echo htmlspecialchars($student['email'] ?? ''); ?></div>
+                                <div><?php
                                     $c = $student['course'] ?? 'N/A';
-                                    // If stored as full name, show just the code; if already a code, show as-is
                                     echo htmlspecialchars(isset($course_name_to_code[$c]) ? $course_name_to_code[$c] : $c);
-                                ?></td>
-                                <td><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></td>
-                                <td>
+                                ?></div>
+                                <div><?php echo htmlspecialchars($student['year_level'] ?? 'N/A'); ?></div>
+                                <div>
                                     <?php if ($student['block_name']): ?>
                                         <span class="badge blue"><?php echo htmlspecialchars($student['block_name']); ?></span>
                                     <?php else: ?>
                                         <span class="badge no-block">No Block</span>
                                     <?php endif; ?>
-                                </td>
-                                <td>
-                                    <?php 
+                                </div>
+                                <div>
+                                    <?php
                                     $reg_status = $student['registration_status'] ?? 'Unknown';
                                     if (empty($reg_status)) $reg_status = 'Unknown';
-                                    if ($reg_status === 'Irregular') {
-                                        $badge_class = 'pending';
-                                    } elseif ($reg_status === 'Unknown') {
-                                        $badge_class = 'no-block';
-                                    } else {
-                                        $badge_class = 'approved';
-                                    }
+                                    if ($reg_status === 'Irregular')    $badge_class = 'pending';
+                                    elseif ($reg_status === 'Unknown')  $badge_class = 'no-block';
+                                    else                                $badge_class = 'approved';
                                     ?>
-                                    <span class="badge <?php echo $badge_class; ?>">
-                                        <?php echo htmlspecialchars($reg_status); ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge <?php echo $status_class; ?>">
-                                        <?php echo htmlspecialchars($student['status'] ?? 'N/A'); ?>
-                                    </span>
-                                </td>
-                                <td>
+                                    <span class="badge <?php echo $badge_class; ?>"><?php echo htmlspecialchars($reg_status); ?></span>
+                                </div>
+                                <div>
+                                    <span class="badge <?php echo $status_class; ?>"><?php echo htmlspecialchars($student['status'] ?? 'N/A'); ?></span>
+                                </div>
+                                <div>
                                     <div class="action-buttons">
                                         <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js_data; ?>')">
                                             <i class="fa-solid fa-eye"></i>
@@ -423,11 +412,12 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                             <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

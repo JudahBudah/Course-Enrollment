@@ -1,48 +1,76 @@
-/* Card Size "Don't Touch - Judah" */
+/* ── DROP REQUESTS PAGE TABLE ── */
 
-/* Fixed */
-.data-table thead th {
+.drop-req-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.drop-req-table {
+    min-width: 1100px;
+    width: 100%;
+}
+
+.drop-req-table-header,
+.drop-req-row {
+    display: grid;
+    grid-template-columns: 1.5fr 110px 1.5fr 1fr 1fr 100px 60px 100px 70px;
+    gap: 12px;
+    text-align: center;
+}
+
+.drop-req-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
     position: sticky;
     top: 0;
-    z-index: 5;
-    background: var(--off); 
+    z-index: 1;
 }
 
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
+.drop-req-table-body {
+    display: flex;
+    flex-direction: column;
 }
 
-.data-table thead th:nth-child(1)  { width: 200px; }    /* Student */
-.data-table thead th:nth-child(2)  { width: 140px; }    /* Student No. */
-.data-table thead th:nth-child(3)  { width: 110px; }    /* Course / Year */
-.data-table thead th:nth-child(4)  { width: 200px; }    /* Subject */
-.data-table thead th:nth-child(5)  { width: 140px; }    /* Section */
-.data-table thead th:nth-child(6)  { width: 140px;  }    /* Schedule */
-.data-table thead th:nth-child(7)  { width: 80px; }    /* Units */
-.data-table thead th:nth-child(8)  { width: 121px; }    /* Status */
-.data-table thead th:nth-child(9)  { width: 100px;  }    /* Actions */
+.drop-req-row {
+    align-items: center;
 
-.data-table th:nth-child(2),
-.data-table td:nth-child(2) { text-align: center; }  /* Student No. */
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
 
-.data-table th:nth-child(3),
-.data-table td:nth-child(3) { text-align: center; }  /* Course / Year */
+    font-size: 0.8rem;
+    color: var(--dark);
+}
 
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* Section */
+.drop-req-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
 
-.data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Schedule */
+.drop-req-col-left {
+    text-align: left;
+}
 
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Units */
+.drop-req-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+}
 
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Status */
+.drop-req-row .action-buttons {
+    justify-content: center;
+}
 
-.data-table th:nth-child(9),
-.data-table td:nth-child(9) { text-align: center; }  /* Actions */
+.center-btn {
+  display: flex;
+  justify-content: center;
+}
 
 
 .stats-grid {

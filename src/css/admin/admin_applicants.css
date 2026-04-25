@@ -1,52 +1,73 @@
 /* Card Size "Don't Touch - Judah" */
 
-/* Fixed */
-.data-table thead th {
+/* ── APPLICANTS TABLE ── */
+
+.applicants-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.applicants-table {
+    min-width: 1100px;
+    width: 100%;
+}
+
+.applicants-table-header,
+.applicants-row {
+    display: grid;
+    grid-template-columns: 40px 40px 1fr 1fr 130px 1fr 110px 130px 120px 160px;
+    gap: 12px;
+    text-align: center;
+}
+
+.applicants-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
     position: sticky;
     top: 0;
-    z-index: 5;
-    background: var(--off); 
+    z-index: 1;
 }
 
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
+.applicants-table-body {
+    display: flex;
+    flex-direction: column;
 }
 
-.data-table thead th:nth-child(1)  { width: 70px; }    /* Checkbox */
-.data-table thead th:nth-child(2)  { width: 40px; }    /* ID */
-.data-table thead th:nth-child(3)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(4)  { width: 220px; }    /* Email */
-.data-table thead th:nth-child(5)  { width: 130px; }    /* LRN */
-.data-table thead th:nth-child(6)  { width: 220px;  }    /* First Choice */
-.data-table thead th:nth-child(7)  { width: 110px; }    /* Status */
-.data-table thead th:nth-child(8)  { width: 140px; }    /* Exam Schedule */
-.data-table thead th:nth-child(9)  { width: 130px;  }    /* Applied Date */
-.data-table thead th:nth-child(10) { width: 200px;  }    /* Actions */
+.applicants-row {
+    align-items: center;
 
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Checkbox */
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
 
-.data-table th:nth-child(2),
-.data-table td:nth-child(2) { text-align: center; }  /* ID */
+    font-size: 0.8rem;
+    color: var(--dark);
+}
 
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* LRN */
+.applicants-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
 
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Status */
-
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Exam Schedule */
-
-.data-table th:nth-child(9),
-.data-table td:nth-child(9) { text-align: center; }  /* Appliead Date */
-
-.data-table th:nth-child(10),
-.data-table td:nth-child(10) { text-align: center; }  /* Actions */
+.applicants-col-left {
+    text-align: left;
+}
 
 .action-buttons {
     justify-self: flex-start;
+}
+
+.applicants-row > * {
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
 }
 
 
