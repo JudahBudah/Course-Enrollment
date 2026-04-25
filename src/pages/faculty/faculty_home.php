@@ -367,20 +367,6 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
         </main>
     </div>
 
-    <!-- Calendar Event Modal -->
-    <div id="calEventModal">
-        <div class="cem-inner">
-            <div id="cem_banner_wrap"></div>
-            <div id="cem_color_strip"></div>
-            <div class="cem-body">
-                <h3 id="cem_title"></h3>
-                <div id="cem_meta"></div>
-                <p id="cem_desc"></p>
-            </div>
-            <button class="cem-close-btn" onclick="closeCalEventModal()">Close</button>
-        </div>
-    </div>
-
     <!-- Pass PHP data to JS -->
     <script>
     window._weekSchedule = <?php echo json_encode($week_schedule, JSON_UNESCAPED_UNICODE); ?>;
@@ -388,9 +374,76 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
     window._evImageBase  = '../../uploads/events/';
     </script>
 
+    <!-- Calendar Event Modal -->
+    <div id="calEventModal" style="display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,0,0,0.55);">
+        <div style="background:#fff;border-radius:12px;max-width:480px;width:90%;margin:5vh auto;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+            <div id="cem_banner_wrap"></div>
+            <div id="cem_color_strip" style="height:5px;"></div>
+            <div style="padding:1.5rem;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+                    <h3 id="cem_title" style="font-family:'Playfair Display',serif;font-size:1.3rem;color:#1a1612;margin:0;flex:1;"></h3>
+                    <button onclick="closeCalEventModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;line-height:1;margin-left:0.5rem;">&times;</button>
+                </div>
+                <div id="cem_meta" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;font-size:0.82rem;color:#666;"></div>
+                <p id="cem_desc" style="font-size:0.9rem;color:#444;line-height:1.7;white-space:pre-wrap;margin:0;"></p>
+            </div>
+        </div>
+    </div>
+
     <script src="../../js/faculty/faculty_home.js"></script>
     <script src="../../js/faculty/faculty_main.js"></script>
     <script src="../../js/no_cache.js"></script>
     <script src="../../js/plm_loader.js"></script>
+
+    <?php if (!empty($_SESSION['must_change_password']) || !empty($faculty_data['must_change_password'])): ?>
+    <!-- Force password change modal -->
+    <div id="pwChangeModal" style="display:flex;position:fixed;z-index:2000;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+        <div style="background:var(--card,#fff);border-radius:12px;padding:2rem;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+            <h3 style="margin:0 0 0.5rem;font-size:1.15rem;"><i class="fa-solid fa-lock" style="color:#8c1c24;margin-right:0.5rem;"></i>Change Your Password</h3>
+            <p style="font-size:0.88rem;color:var(--text-label,#666);margin:0 0 1.25rem;">Your account is using a temporary password. Please set a new password to continue.</p>
+            <div id="pwChangeError" style="display:none;color:#c0392b;font-size:0.85rem;margin-bottom:0.75rem;"></div>
+            <form id="pwChangeForm">
+                <div style="margin-bottom:1rem;">
+                    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.35rem;">New Password</label>
+                    <input type="password" id="newPw" placeholder="Enter new password" required
+                        style="width:100%;padding:0.6rem 0.75rem;border:1px solid var(--border,#ddd);border-radius:6px;font-size:0.9rem;box-sizing:border-box;">
+                </div>
+                <div style="margin-bottom:1.25rem;">
+                    <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.35rem;">Confirm Password</label>
+                    <input type="password" id="confirmPw" placeholder="Confirm new password" required
+                        style="width:100%;padding:0.6rem 0.75rem;border:1px solid var(--border,#ddd);border-radius:6px;font-size:0.9rem;box-sizing:border-box;">
+                </div>
+                <button type="submit" style="width:100%;padding:0.7rem;background:#8c1c24;color:#fff;border:none;border-radius:6px;font-size:0.95rem;cursor:pointer;font-weight:600;">Update Password</button>
+            </form>
+        </div>
+    </div>
+    <script>
+    document.getElementById('pwChangeForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const np = document.getElementById('newPw').value;
+        const cp = document.getElementById('confirmPw').value;
+        const err = document.getElementById('pwChangeError');
+        if (np.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.style.display='block'; return; }
+        if (np !== cp)     { err.textContent = 'Passwords do not match.'; err.style.display='block'; return; }
+        err.style.display = 'none';
+        fetch('../../php/faculty_profile_handler.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            body: 'action=change_password&new_password=' + encodeURIComponent(np) + '&confirm_password=' + encodeURIComponent(cp)
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.ok) {
+                document.getElementById('pwChangeModal').style.display = 'none';
+            } else {
+                err.textContent = d.msg || 'Failed to update password.';
+                err.style.display = 'block';
+            }
+        })
+        .catch(() => { err.textContent = 'An error occurred.'; err.style.display='block'; });
+    });
+    </script>
+    <?php endif; ?>
+
   </body>
 </html>

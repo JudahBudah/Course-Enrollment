@@ -129,17 +129,17 @@ if ($action === 'change_password') {
         echo json_encode(['ok'=>false,'msg'=>'Passwords do not match.']); die;
     }
 
-    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT password FROM faculty WHERE faculty_id=$faculty_id"));
-
     // Only verify current password when NOT a forced first-login change
-    if (empty($_SESSION['must_change_password'])) {
+    $row = mysqli_fetch_assoc(mysqli_query($con, "SELECT password, must_change_password FROM faculty WHERE faculty_id=$faculty_id"));
+
+    if (empty($_SESSION['must_change_password']) && empty($row['must_change_password'])) {
         if (!password_verify($current, $row['password'])) {
             echo json_encode(['ok'=>false,'msg'=>'Current password is incorrect.']); die;
         }
     }
 
     $hashed = password_hash($new, PASSWORD_DEFAULT);
-    $stmt = mysqli_prepare($con, "UPDATE faculty SET password=? WHERE faculty_id=?");
+    $stmt = mysqli_prepare($con, "UPDATE faculty SET password=?, must_change_password=0 WHERE faculty_id=?");
     mysqli_stmt_bind_param($stmt, 'si', $hashed, $faculty_id);
     $ok = mysqli_stmt_execute($stmt);
 

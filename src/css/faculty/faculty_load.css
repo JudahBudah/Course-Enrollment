@@ -132,14 +132,17 @@ select:focus {
 
 .sched-table-wrapper {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: 350px;
+
+
+    margin-top: 25px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 .sched-table {
     min-width: 800px;
-    margin-top: 25px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 
@@ -151,6 +154,10 @@ select:focus {
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 
@@ -254,6 +261,10 @@ select:focus {
     background: var(--off);
     color: var(--text);
     font-size: 0.75rem;
+
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
 }
 
 .sched-table-footer strong {

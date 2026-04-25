@@ -24,11 +24,52 @@ main {
 }
 
 
-/* ── Class Selector Card ─────────────────────────────────── */
+/* Options */
+
+.sched-toggle-wrapper {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1rem;
+}
 
 .sched-toggle-btn {
-    color: var(--text)
+    text-decoration: none;
+    padding: .4rem .9rem;
+    border-radius: 6px;
+    font-size: .85rem;
+    border: 1px solid var(--off);
+    background: transparent;
+    color: var(--text);
 }
+
+.sched-toggle-btn--current.active {
+    background: var(--red);
+    color: var(--white);
+}
+
+.sched-toggle-btn--past.active {
+    background: var(--red);
+    color: var(--white);
+}
+
+.sched-toggle-badge {
+    border-radius: 10px;
+    padding: 0 6px;
+    font-size: .75rem;
+    margin-left: 4px;
+    color: #fff;
+}
+
+.sched-toggle-badge--maroon {
+    background: var(--maroon);
+}
+
+.sched-toggle-badge--navy {
+    background: var(--navy);
+}
+
+
+/* ── Class Selector Card ─────────────────────────────────── */
 
 .class-nav {
     display: flex;
@@ -280,6 +321,10 @@ select:focus {
     background: var(--off);
     color: var(--text);
     font-size: 0.75rem;
+
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
 }
 
 .table-footer strong {
@@ -559,22 +604,22 @@ select:focus {
 
 .gb-table-wrapper {
     overflow-x: auto;
-    margin-bottom: 25px;
-    -webkit-overflow-scrolling: touch; 
+    overflow-y: auto;
+    max-height: 440px;
+
+    margin: 25px 0;
+    border-radius: 15px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
 }
 
 .gb-table {
-    min-width: 1108px; 
-    margin-top: 25px;
-    border-radius: 15px;
-    overflow: hidden; 
-    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.08);
+    min-width: 1000px; 
 }
 
 .gb-table-header,
 .gb-row {
     display: grid;
-    grid-template-columns: 40px 120px 170px 90px 90px 90px 90px 90px 90px 90px; 
+    grid-template-columns: 34px 110px 1fr 90px 90px 90px 90px 90px 90px 100px; 
     align-items: center;
     gap: 12px;
     padding: 11px 20px;
@@ -587,6 +632,10 @@ select:focus {
     font-weight: 600;
     letter-spacing: 0.06em;
     text-align: center;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
 }
 
 .gb-table-body { display: flex; flex-direction: column; }

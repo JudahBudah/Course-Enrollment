@@ -306,6 +306,42 @@ main {
     color: var(--red);
 }
 
+
+/* Dropdown styles (copy from student portal) */
+.chev-space { /* None muna */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.chev-space i {
+    position: absolute;
+    left: 210px;
+}
+
+.acad-dropdown-menu li a {
+    padding-left: 67px;
+}
+
+.acad-dropdown-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.acad-dropdown-menu.open {
+    max-height: 500px; /* increased from 200px to fit 6 items */
+}
+
+.course-dropdown a .fa-chevron-down {
+    transition: transform 0.1s ease;
+}
+
+.course-dropdown a.open .fa-chevron-down {
+    transform: rotate(-180deg);
+}
+
+
 /* ── Dark Mode Toggle ──────────────────────────────────── */
 
 .drk-mode-container {
@@ -836,15 +872,24 @@ main {
 
     /* When open via JS */
     .main-nav.open {
-        max-width: 200px;
+        max-width: 240px;
     }
 
     .main-nav.open .li-name {
         display: block;
     }
 
+    .chev-space i {
+        position: absolute;
+        left: 195px;
+    }
+
     .main-nav.open .main-ul li a {
         padding-right: 20px;
+    }
+
+    .acad-dropdown-menu li a {
+        padding-left: 55px;
     }
 }
 

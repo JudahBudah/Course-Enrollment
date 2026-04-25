@@ -50,28 +50,6 @@ if ($action === 'add' || $action === 'edit') {
             header("Location: ../pages/admin/admin_faculty.php?error=insert_failed");
             die;
         }
-        
-        // Send welcome email with credentials
-        $full_name = $first_name . ' ' . $last_name;
-        $subject = 'PLM Faculty Account Created';
-        $body = "
-        <div style='font-family:DM Sans,sans-serif;max-width:480px;margin:0 auto;background:#0d0a07;color:#F2F3F2;padding:2rem;border-radius:8px;'>
-            <div style='text-align:center;margin-bottom:1.5rem;'>
-                <img src='https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Pamantasan_ng_Lungsod_ng_Maynila_logo.png/200px-Pamantasan_ng_Lungsod_ng_Maynila_logo.png' width='60' style='border-radius:50%;'>
-                <h2 style='font-family:Georgia,serif;color:#D4AF37;margin:0.5rem 0 0;'>PLM Faculty Portal</h2>
-            </div>
-            <p style='margin-bottom:0.5rem;'>Hello {$full_name},</p>
-            <p style='margin-bottom:1.5rem;color:rgba(242,243,242,0.7);'>Your faculty account has been created. You can now access the PLM Faculty Portal using the credentials below:</p>
-            <div style='background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem;'>
-                <p style='margin:0 0 0.5rem;'><strong style='color:#D4AF37;'>Employee ID:</strong> {$employee_id}</p>
-                <p style='margin:0;'><strong style='color:#D4AF37;'>Default Password:</strong> {$employee_id}</p>
-            </div>
-            <p style='font-size:0.9rem;color:rgba(242,243,242,0.7);margin-bottom:1rem;'><strong>Important:</strong> Please change your password after your first login for security purposes.</p>
-            <p style='font-size:0.8rem;color:rgba(242,243,242,0.35);text-align:center;'>If you have any questions, please contact the administrator.</p>
-        </div>";
-        
-        mailer_send($email, $subject, $body, ['is_html' => true]);
-        
         log_activity($con, 'Added faculty', 'faculty', $first_name . ' ' . $last_name);
 
         $display_name = htmlspecialchars($first_name . ' ' . $last_name);

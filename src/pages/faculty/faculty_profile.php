@@ -214,8 +214,6 @@ function sel($faculty, $key, $option) {
                 </div>
                 </div><!-- /#section-faculty -->
 
-                <hr>
-
                 <!-- ── SECTION: Personal Information ── -->
                 <div id="section-personal" class="profile-section" style="display:none;">
                     <h3>Personal Information</h3>

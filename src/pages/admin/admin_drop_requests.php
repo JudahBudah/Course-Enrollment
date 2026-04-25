@@ -68,7 +68,11 @@ $drop_requests = mysqli_query($con, "
 
     <header>
         <div class="nav-section">
-            <button class="nav-button" id="navButton"><i class="fa-solid fa-bars" id="trans-bars"></i></button>
+            <!-- Mobile toggle -->
+            <button class="nav-button" id="navButton">
+                <i class="fa-solid fa-bars" id="trans-bars"></i>
+            </button>
+
             <div class="logo-container">
                 <img src="../../assets/plm-logo.png" alt="PLM Logo" loading="lazy">
                 <div class="title-container">
@@ -76,43 +80,134 @@ $drop_requests = mysqli_query($con, "
                     <div class="logo-sub">University of the City of Manila</div>
                 </div>
             </div>
+
             <div class="acc-display-container">
-                <div class="acc-name"><?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?></div>
-                <div class="user-avatar"><?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?></div>
+                <div class="acc-name">
+                    <?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?>
+                </div>
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($admin_data['username'] ?? 'A', 0, 1)); ?>
+                </div>
             </div>
         </div>
 
+        <!-- ── Side Nav ───────────────────────────────── -->
         <nav class="main-nav" id="navMenu">
             <div class="nav-wrapper">
                 <ul class="main-ul">
-                    <li><a href="admin_home.php"><i class="fa-solid fa-house"></i><span class="li-name">Dashboard</span></a></li>
                     <li>
-                        <a href="admin_applicants.php"><i class="fa-solid fa-user-plus"></i><span class="li-name">Applicants</span>
-                        <?php if ($pending_applicants > 0): ?><span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span><?php endif; ?>
+                        <a href="admin_home.php">
+                            <i class="fa-solid fa-house"></i>
+                            <span class="li-name">Dashboard</span>
                         </a>
                     </li>
-                    <li><a href="admin_students.php"><i class="fa-solid fa-users"></i><span class="li-name">Students</span></a></li>
-                    <li><a href="admin_blocks.php"><i class="fa-solid fa-layer-group"></i><span class="li-name">Blocks</span></a></li>
-                    <li><a href="admin_faculty.php"><i class="fa-solid fa-chalkboard-user"></i><span class="li-name">Faculty</span></a></li>
-                    <li><a href="admin_subjects.php"><i class="fa-solid fa-book"></i><span class="li-name">Subjects</span></a></li>
-                    <li><a href="admin_classes.php"><i class="fa-solid fa-door-open"></i><span class="li-name">Classes</span></a></li>
-                    <li><a href="admin_enrollments.php"><i class="fa-solid fa-file-lines"></i><span class="li-name">Enrollments</span></a></li>
                     <li>
-                        <a href="admin_drop_requests.php" class="active"><i class="fa-solid fa-right-from-bracket"></i><span class="li-name">Drop Requests</span>
-                        <?php if (!empty($GLOBALS['pending_drops'])): ?><span class="sidebar-badge li-name"><?php echo $GLOBALS['pending_drops']; ?></span><?php endif; ?>
+                        <a href="admin_applicants.php">
+                            <i class="fa-solid fa-user-plus"></i>
+                            <span class="li-name">Applicants</span>
+                            <?php if ($pending_applicants > 0): ?>
+                                <span class="sidebar-badge li-name"><?php echo $pending_applicants; ?></span>
+                            <?php endif; ?>
                         </a>
                     </li>
-                    <li><a href="admin_announcements.php"><i class="fa-solid fa-bullhorn"></i><span class="li-name">Announcements</span></a></li>
-                    <li><a href="admin_calendar.php"><i class="fa-solid fa-calendar-days"></i><span class="li-name">Calendar</span></a></li>
-                    <li><?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
-                        <a href="admin_accounts.php"><i class="fa-solid fa-user-shield"></i><span class="li-name">Admin Accounts</span></a>
-                    <?php endif; ?></li>
-                    <li><a href="../../php/admin_logout.php" class="logout-bg"><i class="fa-solid fa-right-from-bracket"></i><span class="li-name">Logout</span></a></li>
+
+                    <!-- Student Records Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="student-records-dropdown">
+                            <i class="fa-solid fa-user-graduate"></i>
+                            <span class="li-name chev-space">
+                                Student Records
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </a>
+                        <div class="acad-dropdown-menu" id="student-records-menu">
+                            <ul>
+                                <li><a href="admin_students.php">Students</a></li>
+                                <li><a href="admin_enrollments.php">Enrollments</a></li>
+                                <li>
+                                    <a href="admin_drop_requests.php">
+                                        Drop Requests
+                                        <?php if (!empty($GLOBALS['pending_drops'])): ?>
+                                            <span class="sidebar-badge"><?php echo $GLOBALS['pending_drops']; ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Academic Records Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="acad-records-dropdown">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <span class="li-name chev-space">
+                                Academic Records
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </a>
+                        <div class="acad-dropdown-menu" id="acad-records-menu">
+                            <ul>
+                                <li><a href="admin_subjects.php">Subjects</a></li>
+                                <li><a href="admin_classes.php">Classes</a></li>
+                                <li><a href="admin_blocks.php">Blocks</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Personnel Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="personnel-dropdown">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span class="li-name chev-space">
+                                Personnel
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </a>
+                        <div class="acad-dropdown-menu" id="personnel-menu">
+                            <ul>
+                                <li><a href="admin_faculty.php">Faculty</a></li>
+                                <?php if (($admin_data['role'] ?? 'admin') === 'superadmin'): ?>
+                                    <li><a href="admin_accounts.php">Admin Accounts</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!-- Communications Dropdown -->
+                    <li class="course-dropdown">
+                        <a href="#" id="comms-dropdown">
+                            <i class="fa-solid fa-bullhorn"></i>
+                            <span class="li-name chev-space">
+                                Communications
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </a>
+                        <div class="acad-dropdown-menu" id="comms-menu">
+                            <ul>
+                                <li><a href="admin_announcements.php">Announcements</a></li>
+                                <li><a href="admin_calendar.php">Calendar</a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <a href="../../php/admin_logout.php" class="logout-bg">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            <span class="li-name">Logout</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
+
+            <!-- Dark Mode Toggle -->
             <div class="drk-mode-container">
-                <div class="drk-label"><i class="fa-solid fa-moon" id="modeIcon"></i><span class="li-name" id="modeLabel">Dark Mode</span></div>
-                <div class="toggle-track li-name" id="toggleTrack"><div class="toggle-thumb"></div></div>
+                <div class="drk-label">
+                    <i class="fa-solid fa-moon" id="modeIcon"></i>
+                    <span class="li-name" id="modeLabel">Dark Mode</span>
+                </div>
+                <div class="toggle-track li-name" id="toggleTrack">
+                    <div class="toggle-thumb"></div>
+                </div>
             </div>
         </nav>
     </header>

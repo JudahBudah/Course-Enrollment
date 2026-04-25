@@ -1,13 +1,61 @@
-/* ── Mobile Nav Button ─────────────────────────────────── */
-
+/* Mobile Nav Button */
 const navButton = document.getElementById('navButton');
 const navMenu   = document.getElementById('navMenu');
 
+/* Dropdowns */
+const dropdowns = [
+    {
+        trigger: document.getElementById('student-records-dropdown'),
+        menu:    document.getElementById('student-records-menu')
+    },
+    {
+        trigger: document.getElementById('acad-records-dropdown'),
+        menu:    document.getElementById('acad-records-menu')
+    },
+    {
+        trigger: document.getElementById('personnel-dropdown'),
+        menu:    document.getElementById('personnel-menu')
+    },
+    {
+        trigger: document.getElementById('comms-dropdown'),
+        menu:    document.getElementById('comms-menu')
+    }
+];
+
+/* Mobile Nav */
 if (navButton && navMenu) {
     navButton.addEventListener('click', () => {
         navMenu.classList.toggle('open');
     });
 }
+
+/* Dropdown toggle — closes others when one opens */
+dropdowns.forEach(({ trigger, menu }) => {
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', event => {
+        event.preventDefault();
+
+        const isOpen = menu.classList.contains('open');
+
+        // Close all
+        dropdowns.forEach(d => {
+            d.trigger?.classList.remove('open');
+            d.menu?.classList.remove('open');
+        });
+
+        // Re-open if it wasn't open before
+        if (!isOpen) {
+            trigger.classList.add('open');
+            menu.classList.add('open');
+
+            // Open sidebar on mobile if collapsed
+            if (navMenu.offsetWidth <= 60) {
+                navMenu.classList.add('open');
+            }
+        }
+    });
+});
 
 
 /* Dark Mode Toggle */

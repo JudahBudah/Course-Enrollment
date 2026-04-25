@@ -235,14 +235,18 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
     <main>
 
         <!-- Current / Past toggle -->
-        <div style="display:flex;gap:.5rem;margin-bottom:1rem;">
-            <a href="?view=current" class="sched-toggle-btn <?php echo $view_mode==='current'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+        <div class="sched-toggle-wrapper">
+            <a href="?view=current" class="sched-toggle-btn sched-toggle-btn--current <?php echo $view_mode==='current'?'active':''; ?>">
                 <i class="fa-solid fa-chalkboard"></i> Current Classes
-                <?php if (count($current_classes)): ?><span style="background:var(--maroon);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($current_classes); ?></span><?php endif; ?>
+                <?php if (count($current_classes)): ?>
+                    <span class="sched-toggle-badge sched-toggle-badge--maroon"><?php echo count($current_classes); ?></span>
+                <?php endif; ?>
             </a>
-            <a href="?view=past" class="sched-toggle-btn <?php echo $view_mode==='past'?'active':''; ?>" style="text-decoration:none;padding:.4rem .9rem;border-radius:6px;font-size:.85rem;border:1px solid var(--off);">
+            <a href="?view=past" class="sched-toggle-btn sched-toggle-btn--past <?php echo $view_mode==='past'?'active':''; ?>">
                 <i class="fa-solid fa-clock-rotate-left"></i> Past Classes
-                <?php if (count($past_classes)): ?><span style="background:var(--navy);color:#fff;border-radius:10px;padding:0 6px;font-size:.75rem;margin-left:4px;"><?php echo count($past_classes); ?></span><?php endif; ?>
+                <?php if (count($past_classes)): ?>
+                    <span class="sched-toggle-badge sched-toggle-badge--navy"><?php echo count($past_classes); ?></span>
+                <?php endif; ?>
             </a>
         </div>
 
