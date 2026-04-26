@@ -1,16 +1,10 @@
 <?php
-session_start();
-include("connection.php");
-include("functions.php");
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-$user_data  = check_login($con);
-$student_id = $user_data['student_id'];
-$action     = $_POST['action'] ?? '';
-
-// Requires a passing grade in every prereq subject<?php
-session_start();
-include("connection.php");
-include("functions.php");
+include_once "connection.php";
+include_once "functions.php";
 
 $user_data  = check_login($con);
 $student_id = $user_data['student_id'];

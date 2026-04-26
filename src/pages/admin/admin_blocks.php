@@ -224,6 +224,7 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                     <div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> <?php echo htmlspecialchars($error_msg); ?></div>
                 <?php endif; ?>
 
+                <!-- Blocks Table -->
                 <div class="card">
                     <div class="card-header">
                         <h2>All Blocks</h2>
@@ -233,58 +234,60 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                         </button>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Block Name</th>
-                                    <th>Course</th>
-                                    <th>Year Level</th>
-                                    <th>Semester</th>
-                                    <th>School Year</th>
-                                    <th>Students</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php while ($block = mysqli_fetch_assoc($blocks_query)): ?>
-                                <tr>
-                                    <td><strong><?php echo htmlspecialchars($block['block_name']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($block['course']); ?></td>
-                                    <td><?php echo htmlspecialchars($block['year_level']); ?></td>
-                                    <td><?php echo htmlspecialchars($block['semester']); ?></td>
-                                    <td><?php echo htmlspecialchars($block['school_year']); ?></td>
-                                    <td>
-                                        <span class="student-count <?php echo ($block['current_students'] >= $block['max_students']) ? 'full' : ''; ?>">
-                                            <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge <?php echo strtolower($block['status']); ?>">
-                                            <?php echo htmlspecialchars(ucfirst($block['status'])); ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="admin_block_subjects.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="Manage Subjects">
-                                                <i class="fa-solid fa-book"></i>
-                                            </a>
-                                            <a href="admin_block_students.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="View Students">
-                                                <i class="fa-solid fa-users"></i>
-                                            </a>
-                                            <button class="btn-icon" title="Edit" onclick="editBlock(<?php echo $block['block_id']; ?>)">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
-                                            <button class="btn-icon danger" title="Delete" onclick="deleteBlock(<?php echo $block['block_id']; ?>, '<?php echo htmlspecialchars($block['block_name'], ENT_QUOTES); ?>')">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                    <div class="blocks-table-wrapper">
+                        <div class="blocks-table">
+
+                            <div class="blocks-table-header">
+                                <div class="blocks-col-left">Block Name</div>
+                                <div class="blocks-col-left">Course</div>
+                                <div>Year Level</div>
+                                <div>Semester</div>
+                                <div>School Year</div>
+                                <div>Students</div>
+                                <div>Status</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="blocks-table-body">
+                            <?php while ($block = mysqli_fetch_assoc($blocks_query)): ?>
+                            <div class="blocks-row">
+                                <div class="blocks-col-left"><strong><?php echo htmlspecialchars($block['block_name']); ?></strong></div>
+                                <div class="blocks-col-left"><?php echo htmlspecialchars($block['course']); ?></div>
+                                <div><?php echo htmlspecialchars($block['year_level']); ?></div>
+                                <div><?php echo htmlspecialchars($block['semester']); ?></div>
+                                <div><?php echo htmlspecialchars($block['school_year']); ?></div>
+                                <div>
+                                    <span class="student-count <?php echo ($block['current_students'] >= $block['max_students']) ? 'full' : ''; ?>">
+                                        <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="badge <?php echo strtolower($block['status']); ?>">
+                                        <?php echo htmlspecialchars(ucfirst($block['status'])); ?>
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="action-buttons">
+                                        <a href="admin_block_subjects.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="Manage Subjects">
+                                            <i class="fa-solid fa-book"></i>
+                                        </a>
+                                        <a href="admin_block_students.php?block_id=<?php echo $block['block_id']; ?>" class="btn-icon" title="View Students">
+                                            <i class="fa-solid fa-users"></i>
+                                        </a>
+                                        <button class="btn-icon" title="Edit" onclick="editBlock(<?php echo $block['block_id']; ?>)">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+                                        <button class="btn-icon danger" title="Delete"
+                                                onclick="deleteBlock(<?php echo $block['block_id']; ?>, '<?php echo htmlspecialchars($block['block_name'], ENT_QUOTES); ?>')">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endwhile; ?>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

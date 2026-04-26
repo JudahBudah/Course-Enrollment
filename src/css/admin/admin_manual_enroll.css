@@ -1,49 +1,3 @@
-/* Card Size "Don't Touch - Judah" */
-
-/* Fixed */
-.data-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--off); 
-}
-
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
-}
-
-.data-table thead th:nth-child(1)  { width: 145px; }    /* Subject Code */
-.data-table thead th:nth-child(2)  { width: 220px; }    /* Subject Name */
-.data-table thead th:nth-child(3)  { width: 80px; }    /* Units */
-.data-table thead th:nth-child(4)  { width: 120px; }    /* Prerequisite */
-.data-table thead th:nth-child(5)  { width: 80px; }    /* Grades */
-.data-table thead th:nth-child(6)  { width: 100px;  }    /* Status */
-.data-table thead th:nth-child(7)  { width: 200px; }    /* Class / Schedule */
-.data-table thead th:nth-child(8)  { width: 140px; }    /* ACtion */
-
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Subject Code */
-
-.data-table th:nth-child(3),
-.data-table td:nth-child(3) { text-align: center; }  /* Units */
-
-.data-table th:nth-child(4),
-.data-table td:nth-child(4) { text-align: center; }  /* Prerequisite */
-
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* Grades */
-
-.data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Status */
-
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Class / Schedule */
-
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Action */
-
-
 /* ── Stats Grid (5-card layout) ────────────────────────── */
 
 .stats-grid {
@@ -330,7 +284,7 @@
     transition: all .15s;
 }
 .year-tab:hover  { background: var(--red); color: white; }
-.year-tab.active { background: var(--red); color: white; }
+.year-tab.active { background: var(--red); color: var(--white); }
 
 .curric-sem-tabs {
     display: flex;
@@ -350,7 +304,7 @@
     transition: all .15s;
 }
 .sem-tab:hover  { border-color: var(--red); color: var(--red); }
-.sem-tab.active { background: var(--red); color: white; border-color: var(--red); }
+.sem-tab.active { background: var(--red); color: var(--white); border-color: var(--red); }
 
 /* ── Curriculum Panels ── */
 .curric-panel         { display: none; }
@@ -400,7 +354,7 @@
 .btn-reserve-row {
     padding: .38rem .8rem;
     background: var(--red);
-    color: white;
+    color: var(--white);
     border: none;
     border-radius: 6px;
     font-size: .8rem;
@@ -409,6 +363,277 @@
     display: inline-flex;
     align-items: center;
     gap: .3rem;
-    white-space: nowrap;
 }
 .btn-reserve-row:hover { opacity: .88; }
+
+
+/* Card Size "Don't Touch - Judah" */
+
+/* ── FACULTY DROP REQUESTS TABLE ── */
+
+.faculty-drop-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.faculty-drop-table {
+    min-width: 700px;
+    width: 100%;
+}
+
+.faculty-drop-table-header,
+.faculty-drop-row {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 60px 90px minmax(0, 1fr) minmax(0, 1fr) 100px;
+    gap: 12px;
+    text-align: center;
+}
+
+.faculty-drop-table-header {
+    background: #dc2626;
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.faculty-drop-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.faculty-drop-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.faculty-drop-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.faculty-drop-col-left {
+    text-align: left;
+}
+
+.faculty-drop-row .action-buttons {
+    justify-content: center;
+}
+
+
+/* ── SELF-ENROLLMENT REVIEW TABLE ── */
+
+.self-enroll-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.self-enroll-table {
+    min-width: 700px;
+    width: 100%;
+}
+
+.self-enroll-table-header,
+.self-enroll-row {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 60px 90px minmax(0, 1fr) minmax(0, 1fr) 100px;
+    gap: 12px;
+    text-align: center;
+}
+
+.self-enroll-table-header {
+    background: #2563eb;
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.self-enroll-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.self-enroll-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.self-enroll-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.self-enroll-col-left {
+    text-align: left;
+}
+
+.self-enroll-row .action-buttons {
+    justify-content: center;
+}
+
+
+/* ── ADMIN CURRICULUM ENROLLMENT TABLE ── */
+
+.admin-curric-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.admin-curric-table {
+    min-width: 1000px;
+    width: 100%;
+}
+
+.admin-curric-table-header,
+.admin-curric-row {
+    display: grid;
+    grid-template-columns: 110px 1.5fr 60px 1fr 80px 120px 1.5fr 100px;
+    gap: 12px;
+    text-align: center;
+}
+
+.admin-curric-table-header {
+    background: var(--red);
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.admin-curric-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-curric-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.admin-curric-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.admin-curric-col-left {
+    text-align: left;
+}
+
+.admin-curric-row.row-passed  { opacity: .6; }
+.admin-curric-row.row-failed  { background: #dc262608 !important; }
+.admin-curric-row.row-enrolled { background: #2563eb08 !important; }
+
+.admin-curric-row .action-buttons {
+    justify-content: center;
+}
+
+
+/* ── ADMIN IRREGULAR TABLE ── */
+
+.admin-irreg-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.admin-irreg-table {
+    min-width: 900px;
+    width: 100%;
+}
+
+.admin-irreg-table-header,
+.admin-irreg-row {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr) 60px 40px minmax(0, 1fr) minmax(0, 1fr) 80px minmax(0, 1.5fr) 100px;
+    gap: 12px;
+    text-align: center;
+}
+
+.admin-irreg-table-header {
+    background: #f97416;
+    color: var(--white);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.admin-irreg-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-irreg-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.admin-irreg-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.admin-irreg-col-left {
+    text-align: left;
+}
+
+.admin-irreg-row.row-locked { background: #f9741608 !important; opacity: .75; }
+.admin-irreg-row.row-failed { background: #dc262608 !important; }
+
+.admin-irreg-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+}
+
+.center-btn {
+    display: flex;
+    justify-content: center;
+}

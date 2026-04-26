@@ -1,40 +1,3 @@
-/* Card Size "Don't Touch - Judah" */
-
-/* Fixed */
-.data-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--off); 
-}
-
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
-}
-
-.data-table thead th:nth-child(1)  { width: 200px; }    /* Employee ID */
-.data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(3)  { width: 250px; }    /* Email */
-.data-table thead th:nth-child(4)  { width: 140px; }    /* Department */
-.data-table thead th:nth-child(5)  { width: 140px; }    /* Position */
-.data-table thead th:nth-child(6)  { width: 110px;  }    /* Employment */
-.data-table thead th:nth-child(7)  { width: 110px; }    /* Status */
-.data-table thead th:nth-child(8)  { width: 240px; }    /* Actions */
-
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Employee ID */
-
-.data-table th:nth-child(6),
-.data-table td:nth-child(6) { text-align: center; }  /* Employment */
-
-.data-table th:nth-child(7),
-.data-table td:nth-child(7) { text-align: center; }  /* Status */
-
-.data-table th:nth-child(8),
-.data-table td:nth-child(8) { text-align: center; }  /* Actions */
-
-
 /* ── Stats Grid ────────────────────────────────────────── */
 
 .stats-grid {
@@ -633,4 +596,83 @@
     .section-title {
         grid-column: 1;
     }
+}
+
+
+/* Card Size "Don't Touch - Judah" */
+
+/* ── FACULTY TABLE ── */
+
+.faculty-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.faculty-table {
+    min-width: 1150px;
+    width: 100%;
+}
+
+.faculty-table-header,
+.faculty-row {
+    display: grid;
+    grid-template-columns: 115px 1.2fr 1.2fr 1.2fr 1fr 100px 80px 180px;
+    gap: 12px;
+    text-align: center;
+}
+
+.faculty-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.faculty-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.faculty-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.faculty-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.faculty-row > * {  /* Okay lang */
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
+}
+
+.faculty-col-left {
+    text-align: left;
+}
+
+.faculty-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+}
+
+.faculty-row .action-buttons {
+    justify-content: center;
 }

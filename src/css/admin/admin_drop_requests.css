@@ -1,78 +1,3 @@
-/* ── DROP REQUESTS PAGE TABLE ── */
-
-.drop-req-table-wrapper {
-    overflow-x: auto;
-    overflow-y: auto;
-    max-height: 500px;
-}
-
-.drop-req-table {
-    min-width: 1100px;
-    width: 100%;
-}
-
-.drop-req-table-header,
-.drop-req-row {
-    display: grid;
-    grid-template-columns: 1.5fr 110px 1.5fr 1fr 1fr 100px 60px 100px 70px;
-    gap: 12px;
-    text-align: center;
-}
-
-.drop-req-table-header {
-    background: var(--off);
-    color: var(--text);
-
-    padding: 11px 20px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.drop-req-table-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.drop-req-row {
-    align-items: center;
-
-    padding: 11px 20px;
-    background-color: var(--white-pr);
-    border-bottom: 1px solid var(--off);
-
-    font-size: 0.8rem;
-    color: var(--dark);
-}
-
-.drop-req-row:nth-child(even) {
-    background-color: var(--surface-alt);
-}
-
-.drop-req-col-left {
-    text-align: left;
-}
-
-.drop-req-empty {
-    padding: 2rem;
-    text-align: center;
-    color: var(--text-label);
-}
-
-.drop-req-row .action-buttons {
-    justify-content: center;
-}
-
-.center-btn {
-  display: flex;
-  justify-content: center;
-}
-
-
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -197,4 +122,79 @@
   background: #16a34a;
   border-color: #16a34a;
   color: #fff;
+}
+
+
+/* ── DROP REQUESTS PAGE TABLE ── */
+
+.drop-req-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.drop-req-table {
+    min-width: 1000px;
+    width: 100%;
+}
+
+.drop-req-table-header,
+.drop-req-row {
+    display: grid;
+    grid-template-columns: 1.5fr 110px 120px 1fr 1fr 100px 60px 100px 70px;
+    gap: 12px;
+    text-align: center;
+}
+
+.drop-req-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.drop-req-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.drop-req-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.drop-req-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.drop-req-col-left {
+    text-align: left;
+}
+
+.drop-req-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+}
+
+.drop-req-row .action-buttons {
+    justify-content: center;
+}
+
+.center-btn {
+  display: flex;
+  justify-content: center;
 }

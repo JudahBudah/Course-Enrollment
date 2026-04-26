@@ -411,9 +411,9 @@
 .btn-submit-green {
     width: 100%;
     padding: 0.75rem;
-    background: linear-gradient(135deg, #16a34a, #15803d);
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dk) 100%);
     border: none;
-    color: #fff;
+    color: var(--white);
     font-family: 'DM Sans', sans-serif;
     font-weight: 600;
     font-size: 0.9rem;
@@ -423,8 +423,7 @@
 }
 
 .btn-submit-green:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(22,163,74,0.3);
+    box-shadow: 0 8px 20px rgba(140,28,36,0.3);
 }
 
 /* Modal action row */

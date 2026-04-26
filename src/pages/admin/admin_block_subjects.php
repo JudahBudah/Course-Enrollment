@@ -245,63 +245,54 @@ $available_query = mysqli_query($con, "
                         <div class="card-header">
                             <h2>Assigned Subjects</h2>
                         </div>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Subject Code</th>
-                                        <th>Subject Name</th>
-                                        <th>Units</th>
-                                        <th>Schedule</th>
-                                        <th>Instructor</th>
-                                        <th>Room</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (mysqli_num_rows($assigned_query) > 0): ?>
-                                        <?php while ($sub = mysqli_fetch_assoc($assigned_query)): ?>
-                                        <tr>
-                                            <td><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></td>
-                                            <td><?php echo htmlspecialchars($sub['subject_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($sub['units']); ?></td>
-                                            <td>
-                                                <?php echo htmlspecialchars(
-                                                    trim(($sub['schedule_day'] ?? '') . ' ' . ($sub['schedule_time'] ?? '')) ?: 'TBA'
-                                                ); ?>
-                                            </td>
-                                            <td>
-                                                <?php
-                                                $fname = $sub['first_name'] ?? '';
-                                                $lname = $sub['last_name']  ?? '';
-                                                echo htmlspecialchars(trim("$fname $lname") ?: 'TBA');
-                                                ?>
-                                            </td>
-                                            <td><?php echo htmlspecialchars($sub['room'] ?? 'TBA'); ?></td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <form method="POST" action="../../php/remove_block_subject.php"
-                                                        style="display:inline;">
-                                                        <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
-                                                        <input type="hidden" name="class_id" value="<?php echo $sub['class_id']; ?>">
-                                                        <button type="submit" class="btn-icon remove" title="Remove"
-                                                                onclick="return confirm('Remove this subject from block?')">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="7" style="text-align:center;color:var(--text-label);padding:1.5rem;">
-                                                No subjects assigned yet.
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+
+                        <div class="block-subj-table-wrapper">
+                            <div class="block-subj-table">
+
+                                <div class="block-subj-table-header">
+                                    <div>Subject Code</div>
+                                    <div class="block-subj-col-left word-break">Subject Name</div>
+                                    <div>Units</div>
+                                    <div>Schedule</div>
+                                    <div>Instructor</div>
+                                    <div>Room</div>
+                                    <div>Action</div>
+                                </div>
+
+                                <div class="block-subj-table-body">
+                                <?php if (mysqli_num_rows($assigned_query) > 0): ?>
+                                    <?php while ($sub = mysqli_fetch_assoc($assigned_query)): ?>
+                                    <div class="block-subj-row">
+                                        <div><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></div>
+                                        <div class="block-subj-col-left word-break"><?php echo htmlspecialchars($sub['subject_name']); ?></div>
+                                        <div><?php echo htmlspecialchars($sub['units']); ?></div>
+                                        <div><?php echo htmlspecialchars(trim(($sub['schedule_day'] ?? '') . ' ' . ($sub['schedule_time'] ?? '')) ?: 'TBA'); ?></div>
+                                        <div><?php
+                                            $fname = $sub['first_name'] ?? '';
+                                            $lname = $sub['last_name']  ?? '';
+                                            echo htmlspecialchars(trim("$fname $lname") ?: 'TBA');
+                                        ?></div>
+                                        <div><?php echo htmlspecialchars($sub['room'] ?? 'TBA'); ?></div>
+                                        <div>
+                                            <div class="action-buttons">
+                                                <form method="POST" action="../../php/remove_block_subject.php" style="display:inline;">
+                                                    <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
+                                                    <input type="hidden" name="class_id" value="<?php echo $sub['class_id']; ?>">
+                                                    <button type="submit" class="btn-icon remove" title="Remove"
+                                                            onclick="return confirm('Remove this subject from block?')">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <div class="block-subj-empty">No subjects assigned yet.</div>
+                                <?php endif; ?>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 

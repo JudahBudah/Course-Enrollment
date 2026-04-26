@@ -538,14 +538,14 @@
 }
 
 
-/* Modal Styles */
+/* Calendar Event Modal */
 
 #calEventModal {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
     z-index: 1000;
+    background: rgba(0, 0, 0, 0.45);
     align-items: center;
     justify-content: center;
 }
@@ -554,13 +554,14 @@
     display: flex !important;
 }
 
-.cem-inner {
+.cem-dialog {
     background: var(--white-pr);
     border-radius: 12px;
     width: min(460px, 92vw);
     max-height: 88vh;
     overflow-y: auto;
     overflow-x: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
 }
 
 #cem_color_strip {
@@ -571,6 +572,13 @@
     padding: 18px 20px 20px;
 }
 
+.cem-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+}
+
 #cem_title {
     font-family: "DM Sans", sans-serif;
     font-size: 1.15rem;
@@ -578,6 +586,7 @@
     color: var(--dark);
     margin: 0 0 10px;
     line-height: 1.35;
+    flex: 1;
 }
 
 #cem_meta {
@@ -611,26 +620,22 @@
     color: var(--dark);
     line-height: 1.7;
     white-space: pre-line;
+    margin: 0;
 }
 
 .cem-close-btn {
-    display: block;
-    width: calc(100% - 40px);
-    margin: 16px 20px 20px;
-    padding: 9px;
-    background: var(--off);
-    color: var(--dark);
+    background: none;
     border: none;
-    border-radius: 6px;
-    font-size: 0.82rem;
-    font-weight: 600;
+    font-size: 1.4rem;
     cursor: pointer;
-    transition: background 0.15s;
-    letter-spacing: 0.02em;
+    color: var(--text);
+    line-height: 1;
+    margin-left: 0.5rem;
+    transition: color 0.15s;
 }
 
 .cem-close-btn:hover {
-    background: var(--off-gray);
+    color: var(--dark);
 }
 
 

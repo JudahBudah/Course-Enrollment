@@ -374,21 +374,21 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
     window._evImageBase  = '../../uploads/events/';
     </script>
 
-    <!-- Calendar Event Modal -->
-    <div id="calEventModal" style="display:none;position:fixed;z-index:1000;inset:0;background:rgba(0,0,0,0.55);">
-        <div style="background:#fff;border-radius:12px;max-width:480px;width:90%;margin:5vh auto;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
-            <div id="cem_banner_wrap"></div>
-            <div id="cem_color_strip" style="height:5px;"></div>
-            <div style="padding:1.5rem;">
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
-                    <h3 id="cem_title" style="font-family:'Playfair Display',serif;font-size:1.3rem;color:#1a1612;margin:0;flex:1;"></h3>
-                    <button onclick="closeCalEventModal()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;line-height:1;margin-left:0.5rem;">&times;</button>
-                </div>
-                <div id="cem_meta" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;font-size:0.82rem;color:#666;"></div>
-                <p id="cem_desc" style="font-size:0.9rem;color:#444;line-height:1.7;white-space:pre-wrap;margin:0;"></p>
+<!-- Calendar Event Modal -->
+<div id="calEventModal">
+    <div class="cem-dialog">
+        <div id="cem_banner_wrap"></div>
+        <div id="cem_color_strip"></div>
+        <div class="cem-body">
+            <div class="cem-header">
+                <h3 id="cem_title"></h3>
+                <button class="cem-close-btn" onclick="closeCalEventModal()">&times;</button>
             </div>
+            <div id="cem_meta"></div>
+            <p id="cem_desc"></p>
         </div>
     </div>
+</div>
 
     <script src="../../js/faculty/faculty_home.js"></script>
     <script src="../../js/faculty/faculty_main.js"></script>

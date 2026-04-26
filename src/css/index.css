@@ -513,6 +513,8 @@ footer {
 }
 
 .footer-brand {
+    display: flex;
+    position: relative;
     font-family: 'Playfair Display', serif;
     font-size: 0.75rem;
     color: rgba(242,243,242,0.3);
@@ -523,6 +525,13 @@ footer {
     font-size: 0.62rem;
     color: rgba(242,243,242,0.2);
     letter-spacing: 0.08em;
+}
+
+.footer-brand img {
+    position: absolute;
+    top: -22px;
+    left: 62px;
+    height: 62px;
 }
 
 

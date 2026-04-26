@@ -274,53 +274,50 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                         <div class="card-header">
                             <h2>Students in Block <?php echo htmlspecialchars($block['block_name']); ?></h2>
                         </div>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Student No.</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Registration</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (mysqli_num_rows($assigned_students) > 0): ?>
-                                        <?php while ($s = mysqli_fetch_assoc($assigned_students)): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($s['student_number'] ?? $s['student_id']); ?></td>
-                                            <td><?php echo htmlspecialchars(trim(($s['first_name'] ?? '') . ' ' . ($s['last_name'] ?? ''))); ?></td>
-                                            <td><?php echo htmlspecialchars($s['email'] ?? ''); ?></td>
-                                            <td>
-                                                <span class="badge <?php echo strtolower($s['registration_status'] ?? 'regular'); ?>">
-                                                    <?php echo htmlspecialchars($s['registration_status'] ?? 'Regular'); ?>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <form method="POST" action="../../php/remove_student_from_block.php"
-                                                        style="display:inline;">
-                                                        <input type="hidden" name="student_id" value="<?php echo $s['student_id']; ?>">
-                                                        <input type="hidden" name="block_id"   value="<?php echo $block_id; ?>">
-                                                        <button type="submit" class="btn-icon remove" title="Remove from Block"
-                                                                onclick="return confirm('Remove student from this block?')">
-                                                            <i class="fa-solid fa-user-minus"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="5" style="text-align:center;color:var(--text-label);padding:1.5rem;">
-                                                No students assigned yet.
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
+
+                        <div class="block-students-table-wrapper">
+                            <div class="block-students-table">
+
+                                <div class="block-students-table-header">
+                                    <div>Student No.</div>
+                                    <div class="block-students-col-left">Name</div>
+                                    <div class="block-students-col-left">Email</div>
+                                    <div>Registration</div>
+                                    <div>Action</div>
+                                </div>
+
+                                <div class="block-students-table-body">
+                                <?php if (mysqli_num_rows($assigned_students) > 0): ?>
+                                    <?php while ($s = mysqli_fetch_assoc($assigned_students)): ?>
+                                    <div class="block-students-row">
+                                        <div><?php echo htmlspecialchars($s['student_number'] ?? $s['student_id']); ?></div>
+                                        <div class="block-students-col-left"><?php echo htmlspecialchars(trim(($s['first_name'] ?? '') . ' ' . ($s['last_name'] ?? ''))); ?></div>
+                                        <div class="block-students-col-left word-break"><?php echo htmlspecialchars($s['email'] ?? ''); ?></div>
+                                        <div>
+                                            <span class="badge <?php echo strtolower($s['registration_status'] ?? 'regular'); ?>">
+                                                <?php echo htmlspecialchars($s['registration_status'] ?? 'Regular'); ?>
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="action-buttons">
+                                                <form method="POST" action="../../php/remove_student_from_block.php" style="display:inline;">
+                                                    <input type="hidden" name="student_id" value="<?php echo $s['student_id']; ?>">
+                                                    <input type="hidden" name="block_id"   value="<?php echo $block_id; ?>">
+                                                    <button type="submit" class="btn-icon remove" title="Remove from Block"
+                                                            onclick="return confirm('Remove student from this block?')">
+                                                        <i class="fa-solid fa-user-minus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <div class="block-students-empty">No students assigned yet.</div>
+                                <?php endif; ?>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
@@ -334,8 +331,8 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                                 <div>
                                     <label><i class="fa-solid fa-search"></i> Search Student</label>
                                     <input type="text" id="studentSearch"
-                                           placeholder="Search by ID, name, or email…"
-                                           oninput="filterStudents()">
+                                        placeholder="Search by ID, name, or email…"
+                                        oninput="filterStudents()">
                                 </div>
                                 <div>
                                     <label><i class="fa-solid fa-filter"></i> Registration Status</label>
@@ -396,10 +393,10 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                         <div class="batch-section">
                             <h3><i class="fa-solid fa-users-gear"></i> Batch Assign Students</h3>
                             <form method="POST" action="../../php/batch_assign_to_block.php"
-                                  onsubmit="return confirm('Assign all filtered students to this block? This may take a moment.')">
-                                <input type="hidden" name="block_id"    value="<?php echo $block_id; ?>">
-                                <input type="hidden" name="course"      value="<?php echo htmlspecialchars($block['course']); ?>">
-                                <input type="hidden" name="year_level"  value="<?php echo htmlspecialchars($block['year_level']); ?>">
+                                onsubmit="return confirm('Assign all filtered students to this block? This may take a moment.')">
+                                <input type="hidden" name="block_id"   value="<?php echo $block_id; ?>">
+                                <input type="hidden" name="course"     value="<?php echo htmlspecialchars($block['course']); ?>">
+                                <input type="hidden" name="year_level" value="<?php echo htmlspecialchars($block['year_level']); ?>">
 
                                 <div class="batch-option-box">
                                     <label>

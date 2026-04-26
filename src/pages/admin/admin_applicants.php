@@ -495,9 +495,6 @@ $applicants = mysqli_query($con, $query);
             <span class="close" onclick="document.getElementById('viewModal').style.display='none'">&times;</span>
             <h2>Applicant Details</h2>
             <div id="viewContent" style="max-height:70vh;overflow-y:auto;padding:1rem 0;"></div>
-            <div class="modal-actions">
-                <button type="button" class="btn-secondary" onclick="document.getElementById('viewModal').style.display='none'">Close</button>
-            </div>
         </div>
     </div>
 
@@ -530,7 +527,6 @@ $applicants = mysqli_query($con, $query);
                 </div>
                 <div class="modal-actions">
                     <button type="submit" name="update_status" class="btn-primary">Update Status</button>
-                    <button type="button" class="btn-secondary" onclick="document.getElementById('statusModal').style.display='none'">Cancel</button>
                 </div>
             </form>
         </div>

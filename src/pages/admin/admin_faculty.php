@@ -522,59 +522,60 @@ foreach ($faculty_classes as $cls) {
                         <a href="?search=<?php echo urlencode($search); ?>&filter=inactive" class="filter-tab <?php echo $filter==='inactive'? 'active':''; ?>">Inactive</a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Employee ID</th>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Department</th>
-                                    <th>Position</th>
-                                    <th>Employment</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="faculty-table-wrapper">
+                        <div class="faculty-table">
+
+                            <div class="faculty-table-header">
+                                <div>Employee ID</div>
+                                <div class="faculty-col-left">Name</div>
+                                <div class="faculty-col-left">Email</div>
+                                <div class="faculty-col-left">Department</div>
+                                <div class="faculty-col-left">Position</div>
+                                <div>Employment</div>
+                                <div>Status</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="faculty-table-body">
                             <?php if (mysqli_num_rows($faculty_list) === 0): ?>
-                                <tr><td colspan="8" style="text-align:center;color:var(--text-label);padding:2rem;">No faculty found.</td></tr>
+                                <div class="faculty-empty">No faculty found.</div>
                             <?php else: ?>
                             <?php while ($fac = mysqli_fetch_assoc($faculty_list)):
                                 $js = htmlspecialchars(json_encode($fac), ENT_QUOTES);
                             ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($fac['employee_id']); ?></td>
-                                    <td>
-                                        <strong><?php echo htmlspecialchars($fac['last_name'] . ', ' . $fac['first_name']); ?></strong>
-                                        <?php if ($fac['middle_name']): ?>
-                                            <br><small style="color:var(--text-label);"><?php echo htmlspecialchars($fac['middle_name']); ?></small>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($fac['email']); ?></td>
-                                    <td><?php echo htmlspecialchars($fac['department'] ?? '—'); ?></td>
-                                    <td><?php echo htmlspecialchars($fac['position'] ?? '—'); ?></td>
-                                    <td><span class="badge <?php echo $fac['employment_status']; ?>"><?php echo ucfirst(str_replace('-', ' ', $fac['employment_status'])); ?></span></td>
-                                    <td><span class="badge <?php echo $fac['status']; ?>"><?php echo ucfirst($fac['status']); ?></span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js; ?>')"><i class="fa-solid fa-eye"></i></button>
-                                            <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=assign"   class="btn-icon assign"   title="Assign to Class"><i class="fa-solid fa-chalkboard"></i></a>
-                                            <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=schedule" class="btn-icon schedule" title="View Schedule"><i class="fa-solid fa-calendar-days"></i></a>
-                                            <button class="btn-icon" title="Edit" onclick="openEdit('<?php echo $js; ?>')"><i class="fa-solid fa-pen-to-square"></i></button>
-                                            <form method="POST" action="../../php/admin_faculty_handler.php" style="display:inline;"
-                                                  onsubmit="return confirm('Delete this faculty member?')">
-                                                <input type="hidden" name="action"     value="delete">
-                                                <input type="hidden" name="faculty_id" value="<?php echo $fac['faculty_id']; ?>">
-                                                <button type="submit" class="btn-icon danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <div class="faculty-row">
+                                <div><?php echo htmlspecialchars($fac['employee_id']); ?></div>
+                                <div class="faculty-col-left">
+                                    <strong><?php echo htmlspecialchars($fac['last_name'] . ', ' . $fac['first_name']); ?></strong>
+                                    <?php if ($fac['middle_name']): ?>
+                                        <br><small style="color:var(--text-label);"><?php echo htmlspecialchars($fac['middle_name']); ?></small>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="faculty-col-left"><?php echo htmlspecialchars($fac['email']); ?></div>
+                                <div class="faculty-col-left"><?php echo htmlspecialchars($fac['department'] ?? '—'); ?></div>
+                                <div class="faculty-col-left"><?php echo htmlspecialchars($fac['position'] ?? '—'); ?></div>
+                                <div><span class="badge <?php echo $fac['employment_status']; ?>"><?php echo ucfirst(str_replace('-', ' ', $fac['employment_status'])); ?></span></div>
+                                <div><span class="badge <?php echo $fac['status']; ?>"><?php echo ucfirst($fac['status']); ?></span></div>
+                                <div>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details" onclick="openView('<?php echo $js; ?>')"><i class="fa-solid fa-eye"></i></button>
+                                        <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=assign"   class="btn-icon assign"   title="Assign to Class"><i class="fa-solid fa-chalkboard"></i></a>
+                                        <a href="?faculty_id=<?php echo $fac['faculty_id']; ?>&view=schedule" class="btn-icon schedule" title="View Schedule"><i class="fa-solid fa-calendar-days"></i></a>
+                                        <button class="btn-icon" title="Edit" onclick="openEdit('<?php echo $js; ?>')"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <form method="POST" action="../../php/admin_faculty_handler.php" style="display:inline;"
+                                            onsubmit="return confirm('Delete this faculty member?')">
+                                            <input type="hidden" name="action"     value="delete">
+                                            <input type="hidden" name="faculty_id" value="<?php echo $fac['faculty_id']; ?>">
+                                            <button type="submit" class="btn-icon danger" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <?php endwhile; ?>
                             <?php endif; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

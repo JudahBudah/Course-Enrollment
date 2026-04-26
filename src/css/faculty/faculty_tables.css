@@ -310,6 +310,11 @@ select:focus {
     text-align: left;
     font-size: 0.78rem;
     color: var(--text);
+
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
 }
 
 /* Shared footer */

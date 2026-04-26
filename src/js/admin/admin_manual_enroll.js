@@ -53,7 +53,7 @@ const irregularSearch = document.getElementById('irregularSearch');
 if (irregularSearch) {
     irregularSearch.addEventListener('input', function () {
         const q = this.value.toLowerCase();
-        document.querySelectorAll('#irregularTable tbody tr').forEach(row => {
+        document.querySelectorAll('#irregularTable .admin-irreg-row').forEach(row => {
             row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
         });
     });

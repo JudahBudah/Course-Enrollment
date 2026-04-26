@@ -316,8 +316,8 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                     <option value="summer" <?php echo $semester_filter==='summer'?'selected':''; ?>>Summer</option>
                                 </select>
                                 <input type="text" name="search" class="header-search-input"
-                                       placeholder="Search code, section, room..."
-                                       value="<?php echo htmlspecialchars($search); ?>">
+                                    placeholder="Search code, section, room..."
+                                    value="<?php echo htmlspecialchars($search); ?>">
                                 <button type="submit" class="btn-secondary" style="padding:0.45rem 0.75rem;">
                                     <i class="fa-solid fa-search"></i>
                                 </button>
@@ -333,104 +333,99 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                     </div>
 
                     <div class="filter-tabs">
-                        <?php
-                        $base = '?search=' . urlencode($search) . '&semester=' . urlencode($semester_filter) . '&year=' . urlencode($year_filter);
-                        ?>
+                        <?php $base = '?search=' . urlencode($search) . '&semester=' . urlencode($semester_filter) . '&year=' . urlencode($year_filter); ?>
                         <a href="<?php echo $base; ?>&filter=all"       class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
                         <a href="<?php echo $base; ?>&filter=open"      class="filter-tab <?php echo $filter==='open'?'active':''; ?>">Open</a>
                         <a href="<?php echo $base; ?>&filter=closed"    class="filter-tab <?php echo $filter==='closed'?'active':''; ?>">Closed</a>
                         <a href="<?php echo $base; ?>&filter=cancelled" class="filter-tab <?php echo $filter==='cancelled'?'active':''; ?>">Cancelled</a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Subject</th>
-                                    <th>Section</th>
-                                    <th>Faculty</th>
-                                    <th>Schedule</th>
-                                    <th>Room</th>
-                                    <th>Capacity</th>
-                                    <th>Semester</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="classes-table-wrapper">
+                        <div class="classes-table">
+
+                            <div class="classes-table-header">
+                                <div class="classes-col-left">Subject</div>
+                                <div>Section</div>
+                                <div class="classes-col-left">Faculty</div>
+                                <div>Schedule</div>
+                                <div>Room</div>
+                                <div>Capacity</div>
+                                <div>Semester</div>
+                                <div>Status</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="classes-table-body">
                             <?php if (mysqli_num_rows($classes) === 0): ?>
-                                <tr>
-                                    <td colspan="9" style="text-align:center;color:var(--text-label);padding:2rem;">
-                                        No classes found.
-                                    </td>
-                                </tr>
+                                <div class="classes-empty">No classes found.</div>
                             <?php else: ?>
                             <?php while ($cls = mysqli_fetch_assoc($classes)):
                                 $capacity_pct   = $cls['max_slots'] > 0 ? ($cls['real_enrolled'] / $cls['max_slots']) * 100 : 0;
                                 $capacity_class = $capacity_pct >= 100 ? 'full' : ($capacity_pct >= 80 ? 'almost' : 'available');
                                 $js = htmlspecialchars(json_encode($cls), ENT_QUOTES);
                             ?>
-                                <tr>
-                                    <td>
-                                        <strong><?php echo htmlspecialchars($cls['subject_code']); ?></strong>
-                                        <span class="subject-name-small"><?php echo htmlspecialchars($cls['subject_name']); ?></span>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($cls['section']); ?></td>
-                                    <td><?php echo htmlspecialchars($cls['faculty_name'] ?? 'TBA'); ?></td>
-                                    <td>
-                                        <?php if ($cls['schedule_day']): ?>
-                                            <?php echo htmlspecialchars($cls['schedule_day']); ?>
-                                            <span class="schedule-time-small"><?php echo htmlspecialchars($cls['schedule_time'] ?? ''); ?></span>
-                                        <?php else: ?>
-                                            <span style="color:var(--text-label);">TBA</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($cls['room'] ?? 'TBA'); ?></td>
-                                    <td>
-                                        <span class="capacity-badge <?php echo $capacity_class; ?>">
-                                            <?php echo $cls['real_enrolled']; ?>/<?php echo $cls['max_slots']; ?>
-                                        </span>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($cls['semester'] . ' ' . $cls['school_year']); ?></td>
-                                    <td>
-                                        <span class="badge <?php echo $cls['status']; ?>">
-                                            <?php echo ucfirst($cls['status']); ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" title="View Students"
-                                                    onclick="viewStudents(<?php echo $cls['class_id']; ?>, '<?php echo htmlspecialchars($cls['subject_code'], ENT_QUOTES); ?>')">
-                                                <i class="fa-solid fa-users"></i>
+                            <div class="classes-row">
+                                <div class="classes-col-left">
+                                    <strong><?php echo htmlspecialchars($cls['subject_code']); ?></strong>
+                                    <span class="subject-name-small"><?php echo htmlspecialchars($cls['subject_name']); ?></span>
+                                </div>
+                                <div><?php echo htmlspecialchars($cls['section']); ?></div>
+                                <div class="classes-col-left"><?php echo htmlspecialchars($cls['faculty_name'] ?? 'TBA'); ?></div>
+                                <div>
+                                    <?php if ($cls['schedule_day']): ?>
+                                        <?php echo htmlspecialchars($cls['schedule_day']); ?>
+                                        <span class="schedule-time-small"><?php echo htmlspecialchars($cls['schedule_time'] ?? ''); ?></span>
+                                    <?php else: ?>
+                                        <span style="color:var(--text-label);">TBA</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div><?php echo htmlspecialchars($cls['room'] ?? 'TBA'); ?></div>
+                                <div>
+                                    <span class="capacity-badge <?php echo $capacity_class; ?>">
+                                        <?php echo $cls['real_enrolled']; ?>/<?php echo $cls['max_slots']; ?>
+                                    </span>
+                                </div>
+                                <div><?php echo htmlspecialchars($cls['semester'] . ' ' . $cls['school_year']); ?></div>
+                                <div>
+                                    <span class="badge <?php echo $cls['status']; ?>">
+                                        <?php echo ucfirst($cls['status']); ?>
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Students"
+                                                onclick="viewStudents(<?php echo $cls['class_id']; ?>, '<?php echo htmlspecialchars($cls['subject_code'], ENT_QUOTES); ?>')">
+                                            <i class="fa-solid fa-users"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Edit"
+                                                onclick="openEdit('<?php echo $js; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;">
+                                            <input type="hidden" name="action"     value="toggle_status">
+                                            <input type="hidden" name="class_id"   value="<?php echo $cls['class_id']; ?>">
+                                            <input type="hidden" name="new_status" value="<?php echo $cls['status']==='open'?'closed':'open'; ?>">
+                                            <button type="submit" class="btn-icon"
+                                                    title="<?php echo $cls['status']==='open'?'Close':'Open'; ?>">
+                                                <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock':'fa-lock-open'; ?>"></i>
                                             </button>
-                                            <button class="btn-icon" title="Edit"
-                                                    onclick="openEdit('<?php echo $js; ?>')">
-                                                <i class="fa-solid fa-pen-to-square"></i>
+                                        </form>
+                                        <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;"
+                                            onsubmit="return confirm('Delete this class? This cannot be undone.')">
+                                            <input type="hidden" name="action"   value="delete">
+                                            <input type="hidden" name="class_id" value="<?php echo $cls['class_id']; ?>">
+                                            <button type="submit" class="btn-icon danger" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
-                                            <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;">
-                                                <input type="hidden" name="action"     value="toggle_status">
-                                                <input type="hidden" name="class_id"   value="<?php echo $cls['class_id']; ?>">
-                                                <input type="hidden" name="new_status" value="<?php echo $cls['status']==='open'?'closed':'open'; ?>">
-                                                <button type="submit" class="btn-icon"
-                                                        title="<?php echo $cls['status']==='open'?'Close':'Open'; ?>">
-                                                    <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock':'fa-lock-open'; ?>"></i>
-                                                </button>
-                                            </form>
-                                            <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;"
-                                                  onsubmit="return confirm('Delete this class? This cannot be undone.')">
-                                                <input type="hidden" name="action"   value="delete">
-                                                <input type="hidden" name="class_id" value="<?php echo $cls['class_id']; ?>">
-                                                <button type="submit" class="btn-icon danger" title="Delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <?php endwhile; ?>
                             <?php endif; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

@@ -372,37 +372,57 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="card-header" style="background:#dc2626;">
             <h2><i class="fa-solid fa-right-from-bracket"></i> Drop Requests</h2>
         </div>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead><tr><th>Subject Code</th><th>Subject Name</th><th>Units</th><th>Section</th><th>Schedule</th><th>Instructor</th><th>Action</th></tr></thead>
-                <tbody>
+
+        <div class="faculty-drop-table-wrapper">
+            <div class="faculty-drop-table">
+
+                <div class="faculty-drop-table-header">
+                    <div>Subject Code</div>
+                    <div class="faculty-drop-col-left">Subject Name</div>
+                    <div>Units</div>
+                    <div>Section</div>
+                    <div>Schedule</div>
+                    <div>Instructor</div>
+                    <div>Action</div>
+                </div>
+
+                <div class="faculty-drop-table-body">
                 <?php while ($dr = mysqli_fetch_assoc($drop_requests)): ?>
-                <tr>
-                    <td><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($dr['subject_name']); ?></td>
-                    <td><?php echo $dr['units']; ?></td>
-                    <td><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></td>
-                    <td><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?></td>
-                    <td><?php echo htmlspecialchars($dr['faculty_name'] ?? 'TBA'); ?></td>
-                    <td>
-                        <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
-                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
-                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
-                            <input type="hidden" name="class_id" value="<?php echo $dr['class_id']; ?>">
-                            <input type="hidden" name="action" value="accept">
-                            <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept" onclick="return confirm('Accept drop request?')"><i class="fa-solid fa-check"></i></button>
-                        </form>
-                        <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
-                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
-                            <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
-                            <input type="hidden" name="action" value="reject">
-                            <button type="submit" class="btn-icon cancel" title="Reject" onclick="return confirm('Reject drop request?')"><i class="fa-solid fa-xmark"></i></button>
-                        </form>
-                    </td>
-                </tr>
+                <div class="faculty-drop-row">
+                    <div><strong><?php echo htmlspecialchars($dr['subject_code']); ?></strong></div>
+                    <div class="faculty-drop-col-left"><?php echo htmlspecialchars($dr['subject_name']); ?></div>
+                    <div><?php echo $dr['units']; ?></div>
+                    <div><?php echo htmlspecialchars($dr['section'] ?? 'TBA'); ?></div>
+                    <div><?php echo htmlspecialchars(($dr['schedule_day'] ?? '') . ' ' . ($dr['schedule_time'] ?? '')); ?></div>
+                    <div><?php echo htmlspecialchars($dr['faculty_name'] ?? 'TBA'); ?></div>
+                    <div>
+                        <div class="action-buttons">
+                            <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
+                                <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">
+                                <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                <input type="hidden" name="class_id"      value="<?php echo $dr['class_id']; ?>">
+                                <input type="hidden" name="action"        value="accept">
+                                <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept"
+                                        onclick="return confirm('Accept drop request?')">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="POST" action="../../php/handle_drop_request.php" style="display:inline;">
+                                <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">
+                                <input type="hidden" name="enrollment_id" value="<?php echo $dr['enrollment_id']; ?>">
+                                <input type="hidden" name="action"        value="reject">
+                                <button type="submit" class="btn-icon cancel" title="Reject"
+                                        onclick="return confirm('Reject drop request?')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <?php endwhile; ?>
-                </tbody>
-            </table>
+                </div>
+
+            </div>
         </div>
     </div>
     <?php endif; ?>
@@ -413,38 +433,58 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="card-header" style="background:#2563eb;">
             <h2><i class="fa-solid fa-user-pen"></i> Student Self-Enrollments — Pending Review</h2>
         </div>
-        <div class="table-responsive">
-            <table class="data-table">
-                <thead><tr><th>Subject Code</th><th>Subject Name</th><th>Units</th><th>Section</th><th>Schedule</th><th>Instructor</th><th>Action</th></tr></thead>
-                <tbody>
+
+        <div class="self-enroll-table-wrapper">
+            <div class="self-enroll-table">
+
+                <div class="self-enroll-table-header">
+                    <div>Subject Code</div>
+                    <div class="self-enroll-col-left">Subject Name</div>
+                    <div>Units</div>
+                    <div>Section</div>
+                    <div>Schedule</div>
+                    <div>Instructor</div>
+                    <div>Action</div>
+                </div>
+
+                <div class="self-enroll-table-body">
                 <?php while ($se = mysqli_fetch_assoc($self_enrolled)): ?>
-                <tr>
-                    <td><strong><?php echo htmlspecialchars($se['subject_code']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($se['subject_name']); ?></td>
-                    <td><?php echo $se['units']; ?></td>
-                    <td><?php echo htmlspecialchars($se['section'] ?? 'TBA'); ?></td>
-                    <td><?php echo htmlspecialchars(($se['schedule_day'] ?? '') . ' ' . ($se['schedule_time'] ?? '')); ?></td>
-                    <td><?php echo htmlspecialchars($se['faculty_name'] ?? 'TBA'); ?></td>
-                    <td>
-                        <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
-                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
-                            <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
-                            <input type="hidden" name="class_id" value="<?php echo $se['class_id']; ?>">
-                            <input type="hidden" name="action" value="accept">
-                            <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept" onclick="return confirm('Accept self-enrollment?')"><i class="fa-solid fa-check"></i></button>
-                        </form>
-                        <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
-                            <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
-                            <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
-                            <input type="hidden" name="class_id" value="<?php echo $se['class_id']; ?>">
-                            <input type="hidden" name="action" value="reject">
-                            <button type="submit" class="btn-icon cancel" title="Reject" onclick="return confirm('Reject self-enrollment?')"><i class="fa-solid fa-xmark"></i></button>
-                        </form>
-                    </td>
-                </tr>
+                <div class="self-enroll-row">
+                    <div><strong><?php echo htmlspecialchars($se['subject_code']); ?></strong></div>
+                    <div class="self-enroll-col-left"><?php echo htmlspecialchars($se['subject_name']); ?></div>
+                    <div><?php echo $se['units']; ?></div>
+                    <div><?php echo htmlspecialchars($se['section'] ?? 'TBA'); ?></div>
+                    <div><?php echo htmlspecialchars(($se['schedule_day'] ?? '') . ' ' . ($se['schedule_time'] ?? '')); ?></div>
+                    <div><?php echo htmlspecialchars($se['faculty_name'] ?? 'TBA'); ?></div>
+                    <div>
+                        <div class="action-buttons">
+                            <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
+                                <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">
+                                <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
+                                <input type="hidden" name="class_id"      value="<?php echo $se['class_id']; ?>">
+                                <input type="hidden" name="action"        value="accept">
+                                <button type="submit" class="btn-icon" style="background:#16a34a;" title="Accept"
+                                        onclick="return confirm('Accept self-enrollment?')">
+                                    <i class="fa-solid fa-check"></i>
+                                </button>
+                            </form>
+                            <form method="POST" action="../../php/handle_self_enrollment.php" style="display:inline;">
+                                <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">
+                                <input type="hidden" name="enrollment_id" value="<?php echo $se['enrollment_id']; ?>">
+                                <input type="hidden" name="class_id"      value="<?php echo $se['class_id']; ?>">
+                                <input type="hidden" name="action"        value="reject">
+                                <button type="submit" class="btn-icon cancel" title="Reject"
+                                        onclick="return confirm('Reject self-enrollment?')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <?php endwhile; ?>
-                </tbody>
-            </table>
+                </div>
+
+            </div>
         </div>
     </div>
     <?php endif; ?>
@@ -454,7 +494,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <div class="card-header"><h2>Curriculum — <?php echo htmlspecialchars($student_course); ?></h2></div>
 
         <?php if (empty($curriculum)): ?>
-            <div style="padding:2rem;text-align:center;color:var(--text-label);">No curriculum found for this program.</div>
+            <div style="padding:2rem;text-align:center;color:var(--text);">No curriculum found for this program.</div>
         <?php else: ?>
 
         <!-- Year tabs -->
@@ -484,28 +524,29 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
         <!-- Panels -->
         <?php $pi = 0; foreach ($curriculum as $yr => $sems): foreach ($sems as $sem => $subjects): ?>
         <div class="curric-panel <?php echo $pi === 0 ? 'active' : ''; ?>" id="apanel_<?php echo "{$yr}_{$sem}"; ?>">
-            <div class="table-responsive">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Subject Code</th>
-                            <th>Subject Name</th>
-                            <th>Units</th>
-                            <th>Prerequisite</th>
-                            <th>Grade</th>
-                            <th>Status</th>
-                            <th style="min-width:260px;">Class / Schedule</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+            <div class="admin-curric-table-wrapper">
+                <div class="admin-curric-table">
+
+                    <div class="admin-curric-table-header">
+                        <div>Subject Code</div>
+                        <div class="admin-curric-col-left">Subject Name</div>
+                        <div>Units</div>
+                        <div class="admin-curric-col-left">Prerequisite</div>
+                        <div>Grade</div>
+                        <div>Status</div>
+                        <div class="admin-curric-col-left">Class / Schedule</div>
+                        <div>Action</div>
+                    </div>
+
+                    <div class="admin-curric-table-body">
                     <?php foreach ($subjects as $subj):
-                        $grade_info  = $grades[$subj['subject_id']] ?? null;
-                        $enroll_info = $active_enrollments[$subj['subject_id']] ?? null;
+                        $grade_info   = $grades[$subj['subject_id']] ?? null;
+                        $enroll_info  = $active_enrollments[$subj['subject_id']] ?? null;
                         $classes_list = $available_classes[$subj['subject_id']] ?? [];
-                        $grade_val   = $grade_info['grade'] ?? null;
-                        $passed      = $grade_val && $grade_val !== '5.00' && strtoupper($grade_val) !== 'INC' && strtoupper($grade_val) !== 'DRP';
-                        $failed      = $grade_val && ($grade_val === '5.00' || strtoupper($grade_val) === 'INC');
+                        $grade_val    = $grade_info['grade'] ?? null;
+                        $passed       = $grade_val && $grade_val !== '5.00' && strtoupper($grade_val) !== 'INC' && strtoupper($grade_val) !== 'DRP';
+                        $failed       = $grade_val && ($grade_val === '5.00' || strtoupper($grade_val) === 'INC');
 
                         if ($enroll_info)    $row_class = 'row-enrolled';
                         elseif ($passed)     $row_class = 'row-passed';
@@ -513,25 +554,25 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         else                 $row_class = '';
 
                         $status_map = [
-                            'reserved'       => ['Pending',        '#f59e0b'],
-                            'confirmed'       => ['Confirmed',      '#16a34a'],
-                            'ongoing'         => ['Not Submitted',  '#2563eb'],
-                            'drop_requested'  => ['Drop Requested', '#dc2626'],
+                            'reserved'      => ['Pending',        '#f59e0b'],
+                            'confirmed'     => ['Confirmed',      '#16a34a'],
+                            'ongoing'       => ['Not Submitted',  '#2563eb'],
+                            'drop_requested'=> ['Drop Requested', '#dc2626'],
                         ];
                     ?>
-                    <tr class="<?php echo $row_class; ?>">
-                        <td><strong><?php echo htmlspecialchars($subj['subject_code']); ?></strong></td>
-                        <td><?php echo htmlspecialchars($subj['subject_name']); ?></td>
-                        <td><?php echo $subj['units']; ?></td>
-                        <td style="font-size:.78rem;color:var(--text-label);"><?php echo htmlspecialchars($subj['prerequisite'] ?: '—'); ?></td>
-                        <td>
+                    <div class="admin-curric-row <?php echo $row_class; ?>">
+                        <div><strong><?php echo htmlspecialchars($subj['subject_code']); ?></strong></div>
+                        <div class="admin-curric-col-left"><?php echo htmlspecialchars($subj['subject_name']); ?></div>
+                        <div><?php echo $subj['units']; ?></div>
+                        <div class="admin-curric-col-left" style="font-size:.78rem;color:var(--text);"><?php echo htmlspecialchars($subj['prerequisite'] ?: '—'); ?></div>
+                        <div>
                             <?php if ($grade_val): ?>
                                 <span class="grade-badge <?php echo $passed ? 'grade-pass' : 'grade-fail'; ?>"><?php echo htmlspecialchars($grade_val); ?></span>
                             <?php else: ?>
-                                <span style="color:var(--text-label);">—</span>
+                                <span style="color:var(--text);">—</span>
                             <?php endif; ?>
-                        </td>
-                        <td>
+                        </div>
+                        <div>
                             <?php if ($enroll_info):
                                 [$elabel, $ecolor] = $status_map[$enroll_info['status']] ?? [ucfirst($enroll_info['status']), '#888'];
                             ?>
@@ -541,12 +582,12 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                             <?php elseif ($failed): ?>
                                 <span class="enroll-status-badge" style="background:#dc26261a;color:#dc2626;padding:.2rem .6rem;border-radius:4px;">Failed</span>
                             <?php else: ?>
-                                <span style="font-size:.78rem;color:var(--text-label);">Not Taken</span>
+                                <span style="font-size:.78rem;color:var(--text);">Not Taken</span>
                             <?php endif; ?>
-                        </td>
-                        <td>
+                        </div>
+                        <div class="admin-curric-col-left">
                             <?php if ($enroll_info): ?>
-                                <span style="font-size:.82rem;color:var(--text-label);">
+                                <span style="font-size:.82rem;color:var(--text);">
                                     <?php echo htmlspecialchars($enroll_info['section'] . ' · ' . $enroll_info['schedule_day'] . ' ' . $enroll_info['schedule_time']); ?>
                                 </span>
                             <?php elseif (!$passed && !empty($classes_list)): ?>
@@ -567,29 +608,35 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                     <?php endforeach; ?>
                                 </select>
                             <?php elseif (!$passed): ?>
-                                <span style="font-size:.78rem;color:var(--text-label);">No class available</span>
+                                <span style="font-size:.78rem;color:var(--text);">No class available</span>
                             <?php else: ?>
-                                <span style="font-size:.78rem;color:var(--text-label);">—</span>
+                                <span style="font-size:.78rem;color:var(--text);">—</span>
                             <?php endif; ?>
-                        </td>
-                        <td>
+                        </div>
+                        <div class="center-btn">
                             <?php if ($enroll_info && in_array($enroll_info['status'], ['reserved','confirmed'])): ?>
                                 <form method="POST" action="../../php/drop_enrollment.php" style="display:inline;">
-                                    <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
+                                    <input type="hidden" name="student_id"    value="<?php echo $student_id; ?>">
                                     <input type="hidden" name="enrollment_id" value="<?php echo $enroll_info['enrollment_id']; ?>">
-                                    <input type="hidden" name="class_id" value="<?php echo $enroll_info['class_id']; ?>">
-                                    <button type="submit" class="btn-icon cancel" title="Drop" onclick="return confirm('Drop this subject?')"><i class="fa-solid fa-trash"></i></button>
+                                    <input type="hidden" name="class_id"      value="<?php echo $enroll_info['class_id']; ?>">
+                                    <button type="submit" class="btn-icon cancel" title="Drop"
+                                            onclick="return confirm('Drop this subject?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
                                 </form>
                             <?php elseif (!$enroll_info && !$passed && !empty($classes_list)): ?>
-                                <button class="btn-reserve-row" data-subject-id="<?php echo $subj['subject_id']; ?>" data-student-id="<?php echo $student_id; ?>">
+                                <button class="btn-reserve-row"
+                                        data-subject-id="<?php echo $subj['subject_id']; ?>"
+                                        data-student-id="<?php echo $student_id; ?>">
                                     <i class="fa-solid fa-bookmark"></i> Reserve
                                 </button>
                             <?php endif; ?>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                     <?php endforeach; ?>
-                    </tbody>
-                </table>
+                    </div>
+
+                </div>
             </div>
         </div>
         <?php $pi++; endforeach; endforeach; ?>
@@ -614,44 +661,46 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 <input type="text" id="irregularSearch" placeholder="Subject code or name…" style="width:200px;">
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="data-table" id="irregularTable">
-                <thead>
-                    <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th>Units</th>
-                        <th>Yr</th>
-                        <th>Sem</th>
-                        <th>Prerequisite</th>
-                        <th>Grade</th>
-                        <th style="min-width:220px;">Class / Schedule</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
+
+        <div class="admin-irreg-table-wrapper">
+            <div class="admin-irreg-table" id="irregularTable">
+
+                <div class="admin-irreg-table-header">
+                    <div>Subject Code</div>
+                    <div class="admin-irreg-col-left">Subject Name</div>
+                    <div>Units</div>
+                    <div>Yr</div>
+                    <div>Sem</div>
+                    <div class="admin-irreg-col-left">Prerequisite</div>
+                    <div>Grade</div>
+                    <div class="admin-irreg-col-left">Class / Schedule</div>
+                    <div>Action</div>
+                </div>
+
+                <div class="admin-irreg-table-body">
                 <?php foreach ($irregular_classes as $cls):
                     $g        = $grades[$cls['subject_id']] ?? null;
                     $gv       = $g['grade'] ?? null;
                     $failed_s = $gv && ($gv === '5.00' || strtoupper($gv) === 'INC');
                     $lock     = is_prereq_locked_admin($cls['prerequisite'], $failed_codes);
                     $slots    = $cls['max_slots'] - $cls['enrolled_count'];
+                    $row_class = $lock['locked'] ? 'row-locked' : ($failed_s ? 'row-failed' : '');
                 ?>
-                <tr class="<?php echo $lock['locked'] ? 'row-locked' : ($failed_s ? 'row-failed' : ''); ?>">
-                    <td><strong><?php echo htmlspecialchars($cls['subject_code']); ?></strong></td>
-                    <td><?php echo htmlspecialchars($cls['subject_name']); ?></td>
-                    <td><?php echo $cls['units']; ?></td>
-                    <td><?php echo $cls['year_level'] ?? '—'; ?></td>
-                    <td style="font-size:.78rem;"><?php echo $sem_labels[$cls['subj_sem'] ?? ''] ?? ($cls['subj_sem'] ?? '—'); ?></td>
-                    <td style="font-size:.78rem;color:var(--text-label);"><?php echo htmlspecialchars($cls['prerequisite'] ?: '—'); ?></td>
-                    <td>
+                <div class="admin-irreg-row <?php echo $row_class; ?>">
+                    <div><strong><?php echo htmlspecialchars($cls['subject_code']); ?></strong></div>
+                    <div class="admin-irreg-col-left"><?php echo htmlspecialchars($cls['subject_name']); ?></div>
+                    <div><?php echo $cls['units']; ?></div>
+                    <div><?php echo $cls['year_level'] ?? '—'; ?></div>
+                    <div style="font-size:.78rem;"><?php echo $sem_labels[$cls['subj_sem'] ?? ''] ?? ($cls['subj_sem'] ?? '—'); ?></div>
+                    <div class="admin-irreg-col-left" style="font-size:.78rem;color:var(--text);"><?php echo htmlspecialchars($cls['prerequisite'] ?: '—'); ?></div>
+                    <div>
                         <?php if ($gv): ?>
                             <span class="grade-badge <?php echo $failed_s ? 'grade-fail' : 'grade-pass'; ?>"><?php echo htmlspecialchars($gv); ?></span>
                         <?php else: ?>
-                            <span style="color:var(--text-label);">—</span>
+                            <span style="color:var(--text);">—</span>
                         <?php endif; ?>
-                    </td>
-                    <td>
+                    </div>
+                    <div class="admin-irreg-col-left">
                         <?php if (!$lock['locked'] && $slots > 0): ?>
                             <select class="class-dropdown" data-subject-id="<?php echo $cls['subject_id']; ?>">
                                 <option value="">— Select class —</option>
@@ -664,21 +713,23 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <?php else: ?>
                             <span style="font-size:.78rem;color:#dc2626;">Class Full</span>
                         <?php endif; ?>
-                    </td>
-                    <td>
+                    </div>
+                    <div>
                         <?php if (!$lock['locked'] && $slots > 0): ?>
                             <button class="btn-reserve-row" data-subject-id="<?php echo $cls['subject_id']; ?>">
                                 <i class="fa-solid fa-bookmark"></i> Reserve
                             </button>
                         <?php endif; ?>
-                    </td>
-                </tr>
+                    </div>
+                </div>
                 <?php endforeach; ?>
+
                 <?php if (empty($irregular_classes)): ?>
-                <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-label);">No additional subjects available.</td></tr>
+                    <div class="admin-irreg-empty">No additional subjects available.</div>
                 <?php endif; ?>
-                </tbody>
-            </table>
+                </div>
+
+            </div>
         </div>
     </div>
     <?php endif; ?>

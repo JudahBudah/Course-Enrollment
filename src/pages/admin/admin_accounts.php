@@ -333,18 +333,18 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                         </button>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="accounts-table-wrapper">
+                        <div class="accounts-table">
+
+                            <div class="accounts-table-header">
+                                <div class="accounts-col-left">Username</div>
+                                <div class="accounts-col-left">Email</div>
+                                <div>Role</div>
+                                <div>Created</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="accounts-table-body">
                             <?php foreach ($admins as $adm):
                                 $js = htmlspecialchars(json_encode([
                                     'admin_id' => $adm['admin_id'],
@@ -353,21 +353,21 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                                     'role'     => $adm['role'],
                                 ]), ENT_QUOTES);
                             ?>
-                            <tr>
-                                <td>
+                            <div class="accounts-row">
+                                <div class="accounts-col-left">
                                     <strong><?php echo htmlspecialchars($adm['username']); ?></strong>
                                     <?php if ($adm['admin_id'] == $self_id): ?>
                                         <span class="self-badge">You</span>
                                     <?php endif; ?>
-                                </td>
-                                <td><?php echo htmlspecialchars($adm['email']); ?></td>
-                                <td>
+                                </div>
+                                <div class="accounts-col-left"><?php echo htmlspecialchars($adm['email']); ?></div>
+                                <div>
                                     <span class="badge <?php echo $adm['role']; ?>">
                                         <?php echo ucfirst($adm['role']); ?>
                                     </span>
-                                </td>
-                                <td><?php echo date('M j, Y', strtotime($adm['created_at'])); ?></td>
-                                <td>
+                                </div>
+                                <div><?php echo date('M j, Y', strtotime($adm['created_at'])); ?></div>
+                                <div>
                                     <div class="action-buttons">
                                         <button class="btn-icon" title="Edit"
                                                 onclick="openEdit(<?php echo $js; ?>)">
@@ -375,8 +375,8 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                                         </button>
                                         <?php if ($adm['admin_id'] != $self_id): ?>
                                         <form method="POST" action="../../php/admin_accounts_handler.php"
-                                              style="display:inline;"
-                                              onsubmit="return confirm('Delete this admin account?')">
+                                            style="display:inline;"
+                                            onsubmit="return confirm('Delete this admin account?')">
                                             <input type="hidden" name="action"   value="delete">
                                             <input type="hidden" name="admin_id" value="<?php echo $adm['admin_id']; ?>">
                                             <button type="submit" class="btn-icon danger" title="Delete">
@@ -385,11 +385,12 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                                         </form>
                                         <?php endif; ?>
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                             <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

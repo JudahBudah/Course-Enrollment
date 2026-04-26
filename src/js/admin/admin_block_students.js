@@ -40,3 +40,15 @@ function clearFilters() {
 
 // Initialise count on load
 window.addEventListener('load', filterStudents);
+
+/* ── Assigned students search filter ───────────────────── */
+
+const assignedSearch = document.getElementById('assignedSearch');
+if (assignedSearch) {
+    assignedSearch.addEventListener('input', function () {
+        const q = this.value.toLowerCase();
+        document.querySelectorAll('.block-students-row').forEach(row => {
+            row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+}

@@ -297,8 +297,8 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                     <?php endforeach; ?>
                                 </select>
                                 <input type="text" name="search" class="header-search-input"
-                                       placeholder="Search code, name, course..."
-                                       value="<?php echo htmlspecialchars($search); ?>">
+                                    placeholder="Search code, name, course..."
+                                    value="<?php echo htmlspecialchars($search); ?>">
                                 <button type="submit" class="btn-secondary" style="padding:0.45rem 0.75rem;">
                                     <i class="fa-solid fa-search"></i>
                                 </button>
@@ -319,96 +319,93 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
 
                     <div class="filter-tabs">
                         <a href="?filter=all&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
-                           class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
+                        class="filter-tab <?php echo $filter==='all'?'active':''; ?>">All</a>
                         <a href="?filter=active&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
-                           class="filter-tab <?php echo $filter==='active'?'active':''; ?>">Active</a>
+                        class="filter-tab <?php echo $filter==='active'?'active':''; ?>">Active</a>
                         <a href="?filter=inactive&search=<?php echo urlencode($search); ?>&course=<?php echo urlencode($course_filter); ?>&year=<?php echo urlencode($year_filter); ?>"
-                           class="filter-tab <?php echo $filter==='inactive'?'active':''; ?>">Inactive</a>
+                        class="filter-tab <?php echo $filter==='inactive'?'active':''; ?>">Inactive</a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Code</th>
-                                    <th>Subject Name</th>
-                                    <th>Units</th>
-                                    <th>Lec / Lab Hrs</th>
-                                    <th>Department</th>
-                                    <th>Year</th>
-                                    <th>Semester</th>
-                                    <th>Prerequisite</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="subjects-table-wrapper">
+                        <div class="subjects-table">
+
+                            <div class="subjects-table-header">
+                                <div>Code</div>
+                                <div class="subjects-col-left">Subject Name</div>
+                                <div>Units</div>
+                                <div>Lec / Lab Hrs</div>
+                                <div class="subjects-col-left">Department</div>
+                                <div>Year</div>
+                                <div>Semester</div>
+                                <div class="subjects-col-left">Prerequisite</div>
+                                <div>Status</div>
+                                <div>Actions</div>
+                            </div>
+
+                            <div class="subjects-table-body">
                             <?php if (mysqli_num_rows($subjects) === 0): ?>
-                                <tr>
-                                    <td colspan="10" style="text-align:center;color:var(--text-label);padding:2rem;">
-                                        No subjects found.
-                                    </td>
-                                </tr>
+                                <div class="subjects-empty">No subjects found.</div>
                             <?php else: ?>
                             <?php while ($sub = mysqli_fetch_assoc($subjects)):
                                 $yr_class = $sub['year_level'] ? 'yr' . $sub['year_level'] : 'incomplete';
                                 $js = htmlspecialchars(json_encode($sub), ENT_QUOTES);
                             ?>
-                                <tr>
-                                    <td><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></td>
-                                    <td><?php echo htmlspecialchars($sub['subject_name']); ?></td>
-                                    <td><span class="units-badge"><?php echo $sub['units']; ?> units</span></td>
-                                    <td><?php echo $sub['lecture_hours']; ?> / <?php echo $sub['lab_hours']; ?></td>
-                                    <td><?php echo htmlspecialchars($sub['department'] ?? '—'); ?></td>
-                                    <td>
-                                        <?php if ($sub['year_level']): ?>
-                                            <span class="badge <?php echo $yr_class; ?>">Year <?php echo $sub['year_level']; ?></span>
-                                        <?php else: ?>
-                                            <span style="color:var(--text-label);">—</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $sub['semester']
-                                            ? htmlspecialchars(ucfirst($sub['semester']))
-                                            : '<span style="color:var(--text-label);">—</span>'; ?>
-                                    </td>
-                                    <td><?php echo htmlspecialchars($sub['prerequisite'] ?: '—'); ?></td>
-                                    <td><span class="badge <?php echo $sub['status']; ?>"><?php echo ucfirst($sub['status']); ?></span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="btn-icon" title="View"
-                                                    onclick="openView('<?php echo $js; ?>')">
-                                                <i class="fa-solid fa-eye"></i>
+                            <div class="subjects-row">
+                                <div><strong><?php echo htmlspecialchars($sub['subject_code']); ?></strong></div>
+                                <div class="subjects-col-left"><?php echo htmlspecialchars($sub['subject_name']); ?></div>
+                                <div><span class="units-badge"><?php echo $sub['units']; ?> units</span></div>
+                                <div><?php echo $sub['lecture_hours']; ?> / <?php echo $sub['lab_hours']; ?></div>
+                                <div class="subjects-col-left"><?php echo htmlspecialchars($sub['department'] ?? '—'); ?></div>
+                                <div>
+                                    <?php if ($sub['year_level']): ?>
+                                        <span class="badge <?php echo $yr_class; ?>">Year <?php echo $sub['year_level']; ?></span>
+                                    <?php else: ?>
+                                        <span style="color:var(--text-label);">—</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
+                                    <?php echo $sub['semester']
+                                        ? htmlspecialchars(ucfirst($sub['semester']))
+                                        : '<span style="color:var(--text-label);">—</span>'; ?>
+                                </div>
+                                <div class="subjects-col-left"><?php echo htmlspecialchars($sub['prerequisite'] ?: '—'); ?></div>
+                                <div><span class="badge <?php echo $sub['status']; ?>"><?php echo ucfirst($sub['status']); ?></span></div>
+                                <div>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View"
+                                                onclick="openView('<?php echo $js; ?>')">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button class="btn-icon" title="Edit"
+                                                onclick="openEdit('<?php echo $js; ?>')">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </button>
+                                        <form method="POST" action="../../php/admin_subjects_handler.php" style="display:inline;">
+                                            <input type="hidden" name="action"     value="toggle_status">
+                                            <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
+                                            <input type="hidden" name="new_status" value="<?php echo $sub['status']==='active'?'inactive':'active'; ?>">
+                                            <button type="submit"
+                                                    class="btn-icon <?php echo $sub['status']==='active'?'toggle-on':'toggle-off'; ?>"
+                                                    title="<?php echo $sub['status']==='active'?'Deactivate':'Activate'; ?>">
+                                                <i class="fa-solid <?php echo $sub['status']==='active'?'fa-toggle-on':'fa-toggle-off'; ?>"></i>
                                             </button>
-                                            <button class="btn-icon" title="Edit"
-                                                    onclick="openEdit('<?php echo $js; ?>')">
-                                                <i class="fa-solid fa-pen-to-square"></i>
+                                        </form>
+                                        <form method="POST" action="../../php/admin_subjects_handler.php" style="display:inline;"
+                                            onsubmit="return confirm('Delete this subject? This cannot be undone.')">
+                                            <input type="hidden" name="action"     value="delete">
+                                            <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
+                                            <button type="submit" class="btn-icon danger" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
-                                            <form method="POST" action="../../php/admin_subjects_handler.php" style="display:inline;">
-                                                <input type="hidden" name="action"     value="toggle_status">
-                                                <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
-                                                <input type="hidden" name="new_status" value="<?php echo $sub['status']==='active'?'inactive':'active'; ?>">
-                                                <button type="submit"
-                                                        class="btn-icon <?php echo $sub['status']==='active'?'toggle-on':'toggle-off'; ?>"
-                                                        title="<?php echo $sub['status']==='active'?'Deactivate':'Activate'; ?>">
-                                                    <i class="fa-solid <?php echo $sub['status']==='active'?'fa-toggle-on':'fa-toggle-off'; ?>"></i>
-                                                </button>
-                                            </form>
-                                            <form method="POST" action="../../php/admin_subjects_handler.php" style="display:inline;"
-                                                  onsubmit="return confirm('Delete this subject? This cannot be undone.')">
-                                                <input type="hidden" name="action"     value="delete">
-                                                <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
-                                                <button type="submit" class="btn-icon danger" title="Delete">
-                                                    <i class="fa-solid fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <?php endwhile; ?>
                             <?php endif; ?>
-                            </tbody>
-                        </table>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 

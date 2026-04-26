@@ -1,47 +1,3 @@
-/* Card Size "Don't Touch - Judah" */
-
-/* Fixed */
-.data-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--off); 
-}
-
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
-}
-
-.data-table thead th:nth-child(1)  { width: 140px; }    /* Student No. */
-.data-table thead th:nth-child(2)  { width: 200px; }    /* Name */
-.data-table thead th:nth-child(3)  { width: 220px; }    /* Email */
-.data-table thead th:nth-child(4)  { width: 140px; }    /* Registration */
-.data-table thead th:nth-child(5)  { width: 110px; }    /* Action */
-
-.data-table th:nth-child(1),
-.data-table td:nth-child(1) { text-align: center; }  /* Checkbox */
-
-.data-table th:nth-child(4),
-.data-table td:nth-child(4) { text-align: center; }  /* ID */
-
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; }  /* LRN */
-
-.card {
-    display: flex;
-    flex-direction: column;
-}
-
-.table-responsive {
-    flex: 1;
-}
-
-input::placeholder {
-    color: var(--text);
-}
-
-
 /* ── Content Grid (2-col: assigned + assign panel) ─────── */
 
 .content-grid {
@@ -324,4 +280,83 @@ input::placeholder {
     .assign-select-row {
         grid-template-columns: 1fr;
     }
+}
+
+
+/* Card Size "Don't Touch - Judah" */
+
+/* ── BLOCK STUDENTS TABLE ── */
+
+.block-students-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.block-students-table {
+    min-width: 550px;
+    width: 100%;
+}
+
+.block-students-table-header,
+.block-students-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 1fr 100px 60px;
+    gap: 12px;
+    text-align: center;
+}
+
+.block-students-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.block-students-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.block-students-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.block-students-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.block-students-col-left {
+    text-align: left;
+}
+
+.block-students-empty {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-label);
+}
+
+.block-students-row .action-buttons {
+    justify-content: center;
+}
+
+.word-break {
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
 }
