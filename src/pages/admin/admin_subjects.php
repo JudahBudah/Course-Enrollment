@@ -384,6 +384,10 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             <input type="hidden" name="action"     value="toggle_status">
                                             <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
                                             <input type="hidden" name="new_status" value="<?php echo $sub['status']==='active'?'inactive':'active'; ?>">
+                                            <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                                            <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                                            <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                                            <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
                                             <button type="submit"
                                                     class="btn-icon <?php echo $sub['status']==='active'?'toggle-on':'toggle-off'; ?>"
                                                     title="<?php echo $sub['status']==='active'?'Deactivate':'Activate'; ?>">
@@ -394,6 +398,10 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             onsubmit="return confirm('Delete this subject? This cannot be undone.')">
                                             <input type="hidden" name="action"     value="delete">
                                             <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
+                                            <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                                            <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                                            <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                                            <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
                                             <button type="submit" class="btn-icon danger" title="Delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
@@ -455,6 +463,10 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
             <form method="POST" action="../../php/admin_subjects_handler.php">
                 <input type="hidden" name="action"     id="form_action"     value="add">
                 <input type="hidden" name="subject_id" id="form_subject_id">
+                <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
 
                 <p class="form-section-title">Basic Information</p>
                 <div class="form-grid-2">

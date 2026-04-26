@@ -40,7 +40,7 @@ if($_SERVER["REQUEST_METHOD"]==="POST"&&$row){
   </header>
   <main style="padding-top:90px;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 90px)">
     <div style="min-width:320px;max-width:420px;width:100%;padding:24px;border:1px solid rgba(212,175,55,0.1);background:rgba(242,243,242,0.03);display:grid;gap:12px">
-      <h1 style="font-family:'Playfair Display',serif;margin:0 0 8px 0">Reset Password</h1>
+      <h1 style="font-family: 'DM Serif Display', serif;margin:0 0 8px 0">Reset Password</h1>
       <?php if(!$row&&!$done){ ?>
         <div style="color:#ff7b7b">Invalid or expired link</div>
         <a class="btn-secondary" href="student_forgot.php" style="text-decoration:none">Request a new link</a>

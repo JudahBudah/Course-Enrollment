@@ -3,6 +3,7 @@ session_start();
 include("../../php/connection.php");
 include("../../php/functions.php");
 include("../../php/grade_helpers.php");
+require_once("../../php/admin_functions.php");
 
 $user_data = check_login($con);
 $profile_src = !empty($user_data['profile_photo'])
@@ -358,12 +359,7 @@ $overall_gwa = calculateGWA($all_grades);
                         </div>
                         <div class="detail-item">
                             <label>Semester</label>
-                            <span>
-                                <?php
-                                    // Derive current semester label from the latest grades, or default
-                                    echo htmlspecialchars($user_data['current_semester'] ?? '—');
-                                ?>
-                            </span>
+                            <span><?php echo htmlspecialchars(get_setting($con, 'current_semester', '—')); ?></span>
                         </div>
                     </div>
                 </div>

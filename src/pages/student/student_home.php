@@ -9,6 +9,13 @@
 
     $user_data = check_login($con);
 
+    $block_row = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT b.block_name FROM students s
+         LEFT JOIN blocks b ON s.block_id = b.block_id
+         WHERE s.student_id = {$user_data['student_id']} LIMIT 1"
+    ));
+    $block_name = $block_row['block_name'] ?? null;
+
     // Check if student must change their password
     if (!empty($user_data['must_change_password'])) {
         $_SESSION['must_change_password'] = true;
@@ -183,6 +190,47 @@
 
     $today_schedule = $week_schedule[$today_name] ?? [];
 
+    // Quick grades summary for dashboard block
+    require_once '../../php/admin_functions.php';
+    require_once '../../php/grade_helpers.php';
+    $cur_sem = get_setting($con, 'current_semester', '');
+    $block_semester = $cur_sem;
+
+    $gs = mysqli_prepare($con, "
+        SELECT ge.computed_grade, s.units
+        FROM enrollments e
+        JOIN classes c ON e.class_id = c.class_id
+        JOIN subjects s ON c.subject_id = s.subject_id
+        LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+        WHERE e.student_id = ? AND e.status IN ('confirmed','ongoing','completed')
+          AND c.grades_finalized = 1
+    ");
+    mysqli_stmt_bind_param($gs, 'i', $user_data['student_id']);
+    mysqli_stmt_execute($gs);
+    $gs_res = mysqli_stmt_get_result($gs);
+    $gwa_points = 0; $gwa_units = 0; $graded_count = 0;
+    while ($gr = mysqli_fetch_assoc($gs_res)) {
+        if ($gr['computed_grade'] === null) continue;
+        $t = (function($g) {
+            if ($g>=97) return 99; if ($g>=94) return 96; if ($g>=91) return 93;
+            if ($g>=88) return 90; if ($g>=85) return 87; if ($g>=82) return 84;
+            if ($g>=79) return 81; if ($g>=76) return 78; if ($g>=73) return 75;
+            if ($g>=70) return 72; if ($g>=67) return 69; if ($g>=64) return 66;
+            if ($g>=61) return 63; if ($g>=55) return 60; return 55;
+        })((float)$gr['computed_grade']);
+        $pg = (function($t) {
+            if ($t>=97) return 1.00; if ($t>=94) return 1.25; if ($t>=91) return 1.50;
+            if ($t>=88) return 1.75; if ($t>=85) return 2.00; if ($t>=82) return 2.25;
+            if ($t>=79) return 2.50; if ($t>=76) return 2.75; if ($t>=73) return 3.00;
+            if ($t>=70) return 4.00; return 5.00;
+        })($t);
+        $gwa_points += $pg * $gr['units'];
+        $gwa_units  += $gr['units'];
+        $graded_count++;
+    }
+    mysqli_stmt_close($gs);
+    $dash_gwa = $gwa_units > 0 ? number_format($gwa_points / $gwa_units, 4) : null;
+
     // Fetch calendar events visible to students
     $cal_events = [];
     $ce_q = mysqli_query($con, "
@@ -351,13 +399,15 @@
                     <h2>Student Information</h2>
                 </div>
                 <div class="student-body">
-                    <div class="avatar-wrap">
-                        <img src="<?php echo htmlspecialchars($profile_src); ?>" alt="Profile">
-                    </div>
-                    <div class="student-title-content">
-                        <h3><?php echo htmlspecialchars(($user_data['first_name'] ?? '') . ' ' . ($user_data['last_name'] ?? '')); ?></h3>
-                        <p><?php echo htmlspecialchars($user_data['student_number'] ?? 'N/A'); ?></p>
-                        <p><?php echo htmlspecialchars($user_data['email'] ?? 'N/A'); ?></p>
+                    <div class="profile-section">
+                        <div class="avatar-wrap">
+                                <img src="<?php echo htmlspecialchars($profile_src); ?>" alt="Profile">
+                            </div>
+                        <div class="student-title-content">
+                            <h3><?php echo htmlspecialchars(($user_data['first_name'] ?? '') . ' ' . ($user_data['last_name'] ?? '')); ?></h3>
+                            <p><?php echo htmlspecialchars($user_data['student_number'] ?? 'N/A'); ?></p>
+                            <p><?php echo htmlspecialchars($user_data['email'] ?? 'N/A'); ?></p>
+                        </div>
                     </div>
                     <div class="student-divider"></div>
                     <div class="student-details">
@@ -366,8 +416,16 @@
                             <span><?php echo $program; ?></span>
                         </div>
                         <div class="detail-item">
+                            <label>Block</label>
+                            <span><?php echo htmlspecialchars($block_name); ?></span>
+                        </div>
+                        <div class="detail-item">
                             <label>Year</label>
                             <span><?php echo $year_display; ?></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Semester</label>
+                            <span><?php echo htmlspecialchars($block_semester); ?></span>
                         </div>
                         <div class="detail-item">
                             <label>Registration Status</label>

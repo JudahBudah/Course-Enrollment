@@ -345,5 +345,19 @@ $available_query = mysqli_query($con, "
     </div><!-- /.main-flex -->
 
     <script src="../../js/admin/admin_main.js"></script>
+    <script>
+        const leftCard  = document.querySelector('.content-grid > .card:first-child');
+        const rightCard = document.querySelector('.content-grid > .card:last-child');
+
+        function syncHeight() {
+            const rightHeight = rightCard.getBoundingClientRect().height;
+            leftCard.style.maxHeight = rightHeight + 'px';
+        }
+
+        const ro = new ResizeObserver(syncHeight);
+        ro.observe(rightCard);
+
+        syncHeight();
+    </script>
 </body>
 </html>

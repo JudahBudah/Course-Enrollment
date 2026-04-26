@@ -1,15 +1,13 @@
-﻿SET SQL_MODE = '';
-SET FOREIGN_KEY_CHECKS=0;
 -- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Apr 21, 2026 at 02:06 AM
+-- Generation Time: Apr 26, 2026 at 02:14 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
-SET SQL_MODE = "";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -68,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `admin_logs` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`log_id`),
   KEY `idx_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=229 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin_logs`
@@ -201,7 +199,108 @@ INSERT INTO `admin_logs` (`log_id`, `admin_id`, `admin_username`, `action`, `ent
 (124, 2, 'admin2', 'Created class', 'class', 'NSTP 01 — yessir', '2026-04-20 14:57:30'),
 (125, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 14:57:33'),
 (126, 2, 'admin2', 'Created class', 'class', 'PED 0001 — retryasdasdasdasd', '2026-04-20 15:00:45'),
-(127, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 15:00:47');
+(127, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-20 15:00:47'),
+(128, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:21:45'),
+(129, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2028-2029 | Enrollment: Open', '2026-04-21 08:25:42'),
+(130, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:25:43'),
+(131, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2028-2029 | Enrollment: Open', '2026-04-21 08:26:01'),
+(132, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:26:03'),
+(133, 2, 'admin2', 'Updated student record', 'student', 'John Louie Muncada (202412685)', '2026-04-21 08:28:35'),
+(134, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:28:37'),
+(135, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-21 08:33:47'),
+(136, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:33:47'),
+(137, 2, 'admin2', 'Updated student record', 'student', 'Louie Muncada (123)', '2026-04-21 08:49:24'),
+(138, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:50:01'),
+(139, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 08:56:00'),
+(140, 2, 'admin2', 'Updated applicant status to approved', 'applicant', '(ID 6)', '2026-04-21 09:02:27'),
+(141, 2, 'admin2', 'Updated applicant status to approved', 'applicant', '(ID 6)', '2026-04-21 09:04:47'),
+(142, 2, 'admin2', 'Updated applicant status to approved', 'applicant', '(ID 6)', '2026-04-21 09:04:50'),
+(143, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 09:07:07'),
+(144, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 09:11:23'),
+(145, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 10:33:49'),
+(146, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 7)', '2026-04-21 10:35:54'),
+(147, 2, 'admin2', 'Updated applicant status to incomplete', 'applicant', 'Louie Muncada (ID 7)', '2026-04-21 10:36:17'),
+(148, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 10:36:19'),
+(149, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 7)', '2026-04-21 10:36:57'),
+(150, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 7)', '2026-04-21 10:39:52'),
+(151, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 10:40:21'),
+(152, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 10:41:20'),
+(153, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 1st | AY: 2027-2028 | Enrollment: Open', '2026-04-21 10:41:46'),
+(154, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-21 10:41:47'),
+(155, 2, 'admin2', 'Created block', 'block', 'jklkjljkl — BSCpE 2 1st', '2026-04-21 12:50:45'),
+(156, 2, 'admin2', 'Added faculty', 'faculty', 'Louie Muncada', '2026-04-22 15:05:51'),
+(157, 2, 'admin2', 'Deleted faculty', 'faculty', 'Faculty ID 9', '2026-04-22 15:24:03'),
+(158, 2, 'admin2', 'Added faculty', 'faculty', 'Louie Muncada', '2026-04-22 15:24:19'),
+(159, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-22 15:24:46'),
+(160, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 8)', '2026-04-22 15:50:07'),
+(161, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-22 15:50:14'),
+(162, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-22 15:50:52'),
+(163, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-22 15:51:27'),
+(164, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-22 16:32:16'),
+(165, 2, 'admin2', 'Added faculty', 'faculty', 'John PLM', '2026-04-23 03:30:19'),
+(166, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 03:32:33'),
+(167, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 9)', '2026-04-23 03:44:00'),
+(168, 2, 'admin2', 'Updated applicant status to incomplete', 'applicant', 'Louie Muncada (ID 9)', '2026-04-23 03:45:01'),
+(169, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 9)', '2026-04-23 03:45:09'),
+(170, 2, 'admin2', 'Updated student record', 'student', 'Louie Muncada (221412412)', '2026-04-23 03:55:39'),
+(171, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 03:57:37'),
+(172, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 10)', '2026-04-23 04:03:42'),
+(173, 2, 'admin2', 'Updated applicant status to incomplete', 'applicant', 'Louie Muncada (ID 10)', '2026-04-23 04:05:40'),
+(174, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:05:47'),
+(175, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 10)', '2026-04-23 04:07:41'),
+(176, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:11:04'),
+(177, 2, 'admin2', 'Added faculty', 'faculty', 'Louie Muncada', '2026-04-23 04:12:21'),
+(178, 2, 'admin2', 'Deleted faculty', 'faculty', 'Faculty ID 13', '2026-04-23 04:14:42'),
+(179, 2, 'admin2', 'Added faculty', 'faculty', 'Louieasd Muncada', '2026-04-23 04:14:54'),
+(180, 2, 'admin2', 'Deleted faculty', 'faculty', 'Faculty ID 14', '2026-04-23 04:19:43'),
+(181, 2, 'admin2', 'Added faculty', 'faculty', '5 2', '2026-04-23 04:19:54'),
+(182, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:21:51'),
+(183, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 11)', '2026-04-23 04:27:58'),
+(184, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:38:37'),
+(185, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Louie Muncada (ID 12)', '2026-04-23 04:41:06'),
+(186, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:43:05'),
+(187, 2, 'admin2', 'Updated applicant status to approved', 'applicant', '32w5325 3 (ID 13)', '2026-04-23 04:45:50'),
+(188, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:46:33'),
+(189, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 04:56:53'),
+(190, 2, 'admin2', 'Updated applicant status to approved', 'applicant', 'Kiyotaka Ayanokoji (ID 14)', '2026-04-23 05:03:40'),
+(191, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-23 05:09:59'),
+(192, 2, 'admin2', 'Added faculty', 'faculty', 'Louie Muncada', '2026-04-24 16:02:19'),
+(193, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-24 16:02:25'),
+(194, 2, 'admin2', 'Normalized PATHFIT subject names', 'subject', '28 rows updated, 1 rows updated', '2026-04-25 04:43:13'),
+(195, 2, 'admin2', 'Seeded Martinez test class', 'class', '1 statements OK, 0 errors', '2026-04-25 06:40:53'),
+(196, 2, 'admin2', 'Updated subject', 'subject', 'CET 0112 — Chemistry for Engineers', '2026-04-26 13:09:27'),
+(197, 2, 'admin2', 'Updated subject', 'subject', 'CET 0112.1 — Chemistry for Engineers (Laboratory)', '2026-04-26 13:15:34'),
+(198, 2, 'admin2', 'Updated subject', 'subject', 'CET 0112 — Chemistry for Engineers (Lecture)', '2026-04-26 13:15:47'),
+(199, 2, 'admin2', 'Updated subject', 'subject', 'CET 0122A.1 — Physics for Engineers (Laboratory)', '2026-04-26 13:16:29'),
+(200, 2, 'admin2', 'Updated subject', 'subject', 'CET 0122A — Physics for Engineers (Lecture)', '2026-04-26 13:16:46'),
+(201, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0212.1 — Fundamentals of Electrical Circuits (Laboratory)', '2026-04-26 13:17:13'),
+(202, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0222.1 — Software Design (Laboratory)', '2026-04-26 13:19:18'),
+(203, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0212 — Fundamentals of Electrical Circuits (Lecture(', '2026-04-26 13:20:05'),
+(204, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0212 — Fundamentals of Electrical Circuits (Lecture)', '2026-04-26 13:20:20'),
+(205, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0222 — Software Design (Lecture)', '2026-04-26 13:21:09'),
+(206, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0223.1 — Fundamentals of Electronic Circuits (Laboratory)', '2026-04-26 13:21:42'),
+(207, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0223 — Fundamentals of Electronic Circuits (Lecture)', '2026-04-26 13:21:58'),
+(208, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0311.1 — Logic Circuits and Design (Laboratory)', '2026-04-26 13:22:46'),
+(209, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0311 — Logic Circuits and Design (Lecture)', '2026-04-26 13:23:04'),
+(210, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0322.1 — Computer Networks and Security (Laboratory)', '2026-04-26 13:24:54'),
+(211, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0323.1 — Computer Architecture and Organization (Laboratory)', '2026-04-26 13:25:51'),
+(212, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0318.1 — Elective 1 (Laboratory)', '2026-04-26 13:26:19'),
+(213, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0332.1 — Elective 3 (Laboratory)', '2026-04-26 13:27:32'),
+(214, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0332 — Elective 3 (Lecture)', '2026-04-26 13:27:51'),
+(215, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0411.1 — Embedded Systems (Laboratory)', '2026-04-26 13:35:09'),
+(216, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0411 — Embedded Systems (Lecture)', '2026-04-26 13:35:15'),
+(217, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0412.1 — Microprocessors (Laboratory)', '2026-04-26 13:35:26'),
+(218, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0412 — Microprocessors (Lecture)', '2026-04-26 13:35:31'),
+(219, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0415.1 — Digital Signal Processing (Lecture)', '2026-04-26 13:35:39'),
+(220, 2, 'admin2', 'Updated subject', 'subject', 'CPE 0415 — Digital Signal Processing (Laboratory)', '2026-04-26 13:35:51'),
+(221, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-26 13:36:06'),
+(222, 2, 'admin2', 'Updated system settings', 'admin', 'Semester: 2nd | AY: 2027-2028 | Enrollment: Open', '2026-04-26 13:56:07'),
+(223, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-26 13:56:08'),
+(224, 2, 'admin2', 'Batch assigned students to block', 'block', '6 students → BSIT 1-1', '2026-04-26 14:02:52'),
+(225, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-26 14:03:18'),
+(226, 2, 'admin2', 'Removed student from block', 'block', 'Student 1 from Block ID 1', '2026-04-26 14:03:47'),
+(227, 2, 'admin2', 'Assigned student to block', 'block', 'John Louie Muncada → BSIT 1-1', '2026-04-26 14:03:53'),
+(228, 2, 'admin2', 'Admin logged out', 'auth', 'admin2', '2026-04-26 14:03:55');
 
 -- --------------------------------------------------------
 
@@ -298,7 +397,7 @@ CREATE TABLE IF NOT EXISTS `applicants` (
   KEY `idx_email` (`email`),
   KEY `idx_lrn` (`lrn`),
   KEY `idx_application_status` (`application_status`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `applicants`
@@ -307,8 +406,16 @@ CREATE TABLE IF NOT EXISTS `applicants` (
 INSERT INTO `applicants` (`applicant_id`, `email`, `password`, `lrn`, `first_choice`, `second_choice`, `third_choice`, `last_name`, `first_name`, `middle_name`, `suffix`, `married_name`, `birthdate`, `nationality`, `place_of_birth`, `civil_status`, `contact_number`, `religion`, `gender`, `disability`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `application_status`, `documents_submitted`, `exam_scheduled`, `exam_date`, `exam_time`, `exam_venue`, `exam_room`, `exam_taken`, `exam_result`, `exam_score`, `created_at`, `updated_at`, `exam_schedule_id`, `exam_notified`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`) VALUES
 (2, '124@gmail.com', '$2y$10$KMppsxxZUlKrSE74rS6qvu.iCxO9HbLfwso3emP5.jVoVoAUKif0S', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'approved', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-03-27 12:02:16', '2026-03-30 04:55:54', 1, 0, NULL, NULL, NULL, NULL, NULL),
 (4, 'softdevset@gmail.com', '$2y$10$pJSk16nv8F.kfnnHswcWlenESYXo7ZveToupT6iHEk84AsRn2pOwS', '123456789123', 'BS Computer Science', 'BS Information Technology', 'BS Business Administration', 'Muncada', 'Louie', 'Lopez', '', '', '2005-11-17', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-08 09:12:06', '2026-04-09 12:03:23', NULL, 0, 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png'),
-(5, 'kevsistired@gmail.com', '$2y$10$qCwamMHL5C/MjJdCgoZxee8tfQIkty1fwe6S3syzCJ0i.CDznx56W', '000000000000', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Civil Engineering', 'Tiu', 'Khristian Gabriel', 'Romero', '', '', '2026-04-28', 'Filipino', 'Marikina', 'single', '09493258417', 'Catholic', 'male', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'approved', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-12 11:09:14', '2026-04-18 11:32:51', 2, 0, 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf'),
-(6, 'foran94631@spotshops.com', '$2y$10$bGokp7nRykjNU8huBWRHM.pcElznHsnULOkr5cYfG6hCiU4tJzjG6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'incomplete', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-15 14:58:44', '2026-04-18 11:32:55', NULL, 0, NULL, NULL, NULL, NULL, NULL);
+(5, 'kevsistired@gmail.com', '$2y$10$qCwamMHL5C/MjJdCgoZxee8tfQIkty1fwe6S3syzCJ0i.CDznx56W', '000000000000', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Accountancy', 'Bachelor of Science in Civil Engineering', 'Tiu', 'Khristian Gabriel', 'Romero', '', '', '2026-04-28', 'Filipino', 'Marikina', 'single', '09493258417', 'Catholic', 'male', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-12 11:09:14', '2026-04-21 09:05:22', 2, 0, 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf'),
+(6, 'foran94631@spotshops.com', '$2y$10$bGokp7nRykjNU8huBWRHM.pcElznHsnULOkr5cYfG6hCiU4tJzjG6', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'approved', 0, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-15 14:58:44', '2026-04-21 09:02:27', NULL, 0, NULL, NULL, NULL, NULL, NULL),
+(7, 'jekor95192@soppat.com', '$2y$10$5cE1Xrg37iyCsj.aHxCMc.GCOA32FfXSDRgd0wYIGs0D.yH33Xx6q', '234232323232', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Manufacturing Engineering', 'Bachelor of Science in Manufacturing Engineering', 'Muncada', 'Louie', 'Lopez', '', '', '2026-04-20', 'Filipino', 'Manila', 'single', '09543447352', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-21 10:34:33', '2026-04-21 10:40:06', NULL, 0, 'form138_1776767736.jpg', 'birth_cert_1776767736.jpg', 'good_moral_1776767736.jpg', 'our_au001_1776767736.jpg', 'our_au002_1776767736.jpg'),
+(8, 'pefif80395@4heats.com', '$2y$10$C5yjJMu6Xwr00gziYuyceOI/zViFaAhUrh8cahOjtbNP/Lsr.xobO', '555555555555', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Computer Engineering', 'Muncada', 'Louie', 'L', '', '', '2026-04-15', 'Filipino', 'Manila', 'single', '00000000000', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-22 15:41:00', '2026-04-22 15:50:45', NULL, 0, 'form138_1776872806.jpg', 'birth_cert_1776872838.png', 'good_moral_1776872991.png', 'our_au001_1776872991.png', 'our_au002_1776872991.jpg'),
+(9, 'pamav53617@soppat.com', '$2y$10$paM.hbp3WnGyUK7k/Av1V.cxGATtfhccoYxnTd.1DCc2DcbM.SnGm', '222222222222', 'Bachelor of Science in Mechanical Engineering', 'Bachelor of Science in Electronics Engineering', 'Bachelor of Science in Computer Engineering', 'Muncada', 'Louie', 'Romero', 'ds', 'as', '2026-04-24', 'Filipino', 'Manila', 'separated', '21312312312', 'Roman Catholic', 'male', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 03:41:59', '2026-04-23 03:45:30', NULL, 0, 'form138_1776915801.jpg', 'birth_cert_1776915771.png', 'good_moral_1776915801.png', 'our_au001_1776915813.jpg', 'our_au002_1776915813.jpg'),
+(10, 'koxomed767@4heats.com', '$2y$10$.IDkknz.B3.njon1GGBNreekbIp6v.AxzIoRx1.RSSMUkcVNMsB66', '123124463464', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Electronics Engineering', 'Bachelor of Science in Civil Engineering', 'Muncada', 'Louie', 'Lopez', 'ds', 'as', '2026-05-01', 'Filipino', 'Manila', 'single', '09543447352', '', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 03:59:18', '2026-04-23 04:07:47', NULL, 0, 'form138_1776916828.png', 'birth_cert_1776916828.png', 'good_moral_1776916828.png', 'our_au001_1776916828.png', 'our_au002_1776916828.jpg'),
+(11, 'cipopa5793@4heats.com', '$2y$10$48ac91SWANKSuDna929BnOu4bEEWfXo/CUgA9wto784CFMeHvUOVa', '322222222222', 'Bachelor of Science in Chemical Engineering', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Civil Engineering', 'Muncada', 'Louie', '52', 'ds', 'as', '2026-04-22', 'Filipino', 'Manila', 'single', '21312312312', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 04:26:52', '2026-04-23 04:28:29', NULL, 0, 'form138_1776918465.png', 'birth_cert_1776918465.png', 'good_moral_1776918465.png', 'our_au001_1776918465.png', 'our_au002_1776918465.png'),
+(12, 'mogepi2498@soppat.com', '$2y$10$ZMLtp/erI/0VOthOeGcqTukgZZR5awmSu3xyHbJ1MDRvdW7L1xTRa', '213123124124', 'Bachelor of Science in Manufacturing Engineering', 'Bachelor of Science in Electronics Engineering', 'Bachelor of Science in Computer Engineering', 'Muncada', 'Louie', 'Romero', 'ds', 'as', '2026-04-22', 'Filipino', 'Manila', 'single', '42424242424', 'Roman Catholic', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 04:40:02', '2026-04-23 04:41:15', NULL, 0, 'form138_1776919253.png', 'birth_cert_1776919253.png', 'good_moral_1776919253.png', 'our_au001_1776919253.png', 'our_au002_1776919253.png'),
+(13, 'labaxe1856@soppat.com', '$2y$10$FUEwh2JkiErB2nLP7SMDdOLjzAb24Eo8Orp68VqEjV9.8ocBQFCAC', '353535353532', 'Bachelor of Science in Electronics Engineering', 'Bachelor of Science in Civil Engineering', 'Bachelor of Science in Computer Engineering', '3', '32w5325', '3253', '253253', '253253', '2026-04-28', 'Filipino235325', '25325', 'widowed', '53252132131', '325325', 'male', '23532', '325', '5235', '532532', '3253', '325', '5235', '325', '5235', '532532', '3253', '325', '5235', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 04:43:29', '2026-04-23 04:45:56', NULL, 0, 'form138_1776919534.png', 'birth_cert_1776919534.png', 'good_moral_1776919534.png', 'our_au001_1776919534.png', 'our_au002_1776919534.png'),
+(14, 'lavite3299@soppat.com', '$2y$10$ocOfxcN4ehLqVe8G0J0GvuwrmlZjlLBObi1SBwYh4WgIOu097ssde', '412414124124', 'Bachelor of Science in Electronics Engineering', 'Bachelor of Science in Computer Engineering', 'Bachelor of Science in Chemical Engineering', 'Ayanokoji', 'Kiyotaka', 'GOnzales', 'sr', '253253', '2026-03-31', 'Filipino', 'Manila', 'widowed', '34124124124', '325325', 'male', 'Madami', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'enrolled', 1, 0, NULL, NULL, NULL, NULL, 0, NULL, NULL, '2026-04-23 04:55:17', '2026-04-23 05:06:46', NULL, 0, 'form138_1776920240.png', 'birth_cert_1776920240.png', 'good_moral_1776920240.png', 'our_au001_1776920240.png', 'our_au002_1776920240.png');
 
 -- --------------------------------------------------------
 
@@ -331,16 +438,17 @@ CREATE TABLE IF NOT EXISTS `blocks` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`block_id`),
   UNIQUE KEY `unique_block` (`block_name`,`course`,`year_level`,`semester`,`school_year`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `blocks`
 --
 
 INSERT INTO `blocks` (`block_id`, `block_name`, `course`, `year_level`, `semester`, `school_year`, `max_students`, `current_students`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'panget', 'BSCpE', '1', '1st', '2027-2028', 40, 1, 'active', '2026-03-12 02:43:43', '2026-04-20 14:48:54'),
-(2, 'asdas', 'BS Information Technology', '2', '1st', '2027-2028', 40, 0, 'active', '2026-04-08 16:22:10', '2026-04-20 14:48:54'),
-(6, 'BSIT 1-1', 'BSCpE', '1', '1st', '2027-2028', 40, 0, 'active', '2026-04-15 15:21:12', '2026-04-20 14:48:54');
+(1, 'panget', 'BSCpE', '1', '2nd', '2027-2028', 40, 0, 'active', '2026-03-12 02:43:43', '2026-04-26 14:03:47'),
+(2, 'asdas', 'BS Information Technology', '2', '2nd', '2027-2028', 40, 0, 'active', '2026-04-08 16:22:10', '2026-04-26 13:57:05'),
+(6, 'BSIT 1-1', 'BSCpE', '1', '2nd', '2027-2028', 40, 8, 'active', '2026-04-15 15:21:12', '2026-04-26 14:03:53'),
+(7, 'jklkjljkl', 'BSCpE', '2', '2nd', '2027-2028', 40, 0, 'active', '2026-04-21 12:50:45', '2026-04-26 13:57:05');
 
 -- --------------------------------------------------------
 
@@ -350,13 +458,14 @@ INSERT INTO `blocks` (`block_id`, `block_name`, `course`, `year_level`, `semeste
 
 DROP TABLE IF EXISTS `block_subjects`;
 CREATE TABLE IF NOT EXISTS `block_subjects` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `block_subject_id` int NOT NULL AUTO_INCREMENT,
   `block_id` int NOT NULL,
   `class_id` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `block_id` (`block_id`),
-  KEY `class_id` (`class_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`block_subject_id`),
+  UNIQUE KEY `uq_block_class` (`block_id`,`class_id`),
+  KEY `idx_block_id` (`block_id`),
+  KEY `idx_class_id` (`class_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -425,25 +534,25 @@ CREATE TABLE IF NOT EXISTS `classes` (
 --
 
 INSERT INTO `classes` (`class_id`, `subject_id`, `faculty_id`, `section`, `school_year`, `semester`, `schedule_day`, `schedule_time`, `room`, `max_slots`, `enrolled_count`, `status`, `grades_finalized`, `grades_finalized_at`, `specific_department`, `created_at`, `updated_at`) VALUES
-(6, 731, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MWF', '12:00PM - 3:00PM', '', 40, 4, 'open', 1, '2026-04-18 14:13:45', NULL, '2026-04-08 18:27:11', '2026-04-18 14:13:45'),
-(9, 732, 3, 'PLD 0001', '2025-2026', '1st', 'MW', '7:00AM - 11:00 AM', '0', 40, 2, 'open', 1, '2026-04-13 13:49:08', NULL, '2026-04-13 05:22:21', '2026-04-18 10:05:12'),
+(6, 731, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MWF', '12:00PM - 3:00PM', '', 40, 5, 'open', 1, '2026-04-18 14:13:45', NULL, '2026-04-08 18:27:11', '2026-04-21 08:31:49'),
+(9, 732, 3, 'PLD 0001', '2025-2026', '1st', 'MW', '7:00AM - 11:00 AM', '0', 40, 3, 'open', 1, '2026-04-13 13:49:08', NULL, '2026-04-13 05:22:21', '2026-04-21 08:33:10'),
 (10, 811, 3, 'CET 0111 - BSCpE', '2026-2027', '2nd', 'MS', '1:00AM - 3:00 AM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-13 12:40:21', '2026-04-18 13:54:46'),
 (11, 801, 3, 'Calculus 0001', '2024-2025', '1st', 'Tuesday Thursday', '11:00 PM - 2:00 PM', '0', 40, 1, 'open', 1, '2026-04-13 13:49:44', NULL, '2026-04-13 12:41:23', '2026-04-16 05:49:19'),
 (12, 801, 3, 'basta calculus 1 nil', '2024-2025', '2nd', 'Wednesday', '9:00 AM - 12:00 PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-13 12:47:47', '2026-04-16 05:49:22'),
 (13, 506, 8, 'hwllo', '2024-2025', '2nd', 'TH S', '12:00PM - 3:00PM', '0', 40, 1, 'open', 0, NULL, NULL, '2026-04-13 12:55:37', '2026-04-15 16:00:04'),
 (17, 506, 7, 'JUSTEN BEIVER', '2024-2025', '1st', 'THURSDAY FRIDAY', '4:00PM - 4:30 PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-15 15:29:52', '2026-04-15 16:04:56'),
-(18, 729, 4, 'BSCpE 1-A', '2026-2027', '1st', 'WF', '8:00AM - 9:00PM', 'seth', 40, 2, 'open', 1, '2026-04-19 07:18:03', NULL, '2026-04-18 04:13:02', '2026-04-19 07:18:03'),
-(19, 730, 7, 'BSCpE 1-A', '2025-2026', '1st', 'TS', '12:00PM - 3:00PM', '35', 40, 1, 'open', 0, NULL, NULL, '2026-04-18 04:53:51', '2026-04-18 11:36:43'),
-(20, 730, 3, 'asd', '2026-2027', '1st', 'TTH', '12:00PM - 3:00PM', '0', 40, 0, 'open', 0, NULL, NULL, '2026-04-18 13:19:59', '2026-04-18 13:19:59'),
+(18, 729, 4, 'BSCpE 1-A', '2026-2027', '1st', 'WF', '8:00AM - 9:00PM', 'seth', 40, 6, 'open', 1, '2026-04-19 07:18:03', NULL, '2026-04-18 04:13:02', '2026-04-26 11:20:31'),
+(19, 730, 7, 'BSCpE 1-A', '2025-2026', '1st', 'TS', '12:00PM - 3:00PM', '35', 40, 2, 'open', 0, NULL, NULL, '2026-04-18 04:53:51', '2026-04-21 08:32:12'),
+(20, 730, 3, 'asd', '2026-2027', '1st', 'TTH', '12:00PM - 3:00PM', '0', 40, 1, 'open', 0, NULL, NULL, '2026-04-18 13:19:59', '2026-04-21 09:25:42'),
 (21, 733, 4, 'BSCpE 1-A', '2026-2027', '1st', 'MTHS', '8:00AM - 9:00PM', 'GV311', 40, 1, 'open', 1, '2026-04-19 06:49:09', NULL, '2026-04-18 13:21:18', '2026-04-19 06:49:09'),
 (23, 728, 4, 'CET 0111 - BSCpE', '2026-2027', '1st', 'MF', '8:00AM - 9:00PM', 'GV911', 40, 1, 'open', 1, '2026-04-18 14:12:11', NULL, '2026-04-18 14:02:16', '2026-04-18 14:12:11'),
 (25, 728, 4, 'kl;d', '2026-2027', '1st', 'TTH', '8:00AM - 9:00PM', '35', 40, 1, 'open', 1, '2026-04-19 14:21:51', NULL, '2026-04-19 14:20:54', '2026-04-19 14:21:51'),
 (26, 728, 4, 'retry', '2026-2027', '2nd', 'WTH', '12:00PM - 3:00PM', 'GV311', 40, 1, 'open', 1, '2026-04-19 14:34:28', NULL, '2026-04-19 14:30:34', '2026-04-19 14:34:28'),
-(28, 739, 4, 'retrysadd', '2026-2027', '1st', 'WF', '1:00AM - 3:00 AM', 'GV311', 40, 0, 'open', 0, NULL, NULL, '2026-04-20 10:08:03', '2026-04-20 10:08:03'),
+(28, 739, 4, 'retrysadd', '2026-2027', '1st', 'WF', '1:00AM - 3:00 AM', 'GV311', 40, 1, 'closed', 1, '2026-04-21 08:37:05', NULL, '2026-04-20 10:08:03', '2026-04-21 08:37:05'),
 (30, 767, 4, 'retryhuyokl', '2027-2028', '2nd', 'T', '8:00AM - 9:00PM', 'seth', 40, 1, 'closed', 1, '2026-04-20 10:31:36', NULL, '2026-04-20 10:30:52', '2026-04-20 10:31:36'),
 (31, 765, 4, 'retryasdasd', '2027-2028', '2nd', 'MTWTHF', '8:00AM - 10:00AM', 'GV911', 40, 1, 'closed', 1, '2026-04-20 11:10:42', NULL, '2026-04-20 10:35:50', '2026-04-20 11:10:42'),
 (32, 732, 4, 'bvnbvvbnvbn', '2027-2028', '1st', 'MW', '12:00PM - 3:00PM', '35', 40, 1, 'closed', 1, '2026-04-20 14:48:49', NULL, '2026-04-20 14:47:53', '2026-04-20 14:48:49'),
-(33, 743, 4, 'cvnbnbvn', '2027-2028', '2nd', 'TF', '8:00AM - 9:00PM', 'GV311', 40, 1, 'open', 0, NULL, NULL, '2026-04-20 14:49:12', '2026-04-20 14:49:30'),
+(33, 743, 4, 'cvnbnbvn', '2027-2028', '2nd', 'TF', '8:00AM - 9:00PM', 'GV311', 40, 1, 'closed', 1, '2026-04-21 08:37:47', NULL, '2026-04-20 14:49:12', '2026-04-21 08:37:47'),
 (34, 738, 4, 'yessir', '2027-2028', '2nd', 'WF', '12:00PM - 3:00PM', '0', 40, 1, 'open', 0, NULL, NULL, '2026-04-20 14:57:30', '2026-04-20 14:57:50'),
 (35, 737, 4, 'retryasdasdasdasd', '2027-2028', '2nd', 'THS', '8:00AM - 9:00PM', 'seth', 40, 1, 'closed', 1, '2026-04-20 15:01:21', NULL, '2026-04-20 15:00:45', '2026-04-20 15:01:21');
 
@@ -511,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `enrollments` (
   `remarks` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
   PRIMARY KEY (`enrollment_id`),
   KEY `student_id` (`student_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=83 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `enrollments`
@@ -596,9 +705,18 @@ INSERT INTO `enrollments` (`enrollment_id`, `student_id`, `class_id`, `school_ye
 (77, 1, 30, '2027-2028', 2, '2026-04-20 10:31:09', 'completed', NULL, NULL, NULL),
 (78, 1, 31, '2027-2028', 2, '2026-04-20 11:10:16', 'completed', NULL, NULL, NULL),
 (79, 1, 32, '2027-2028', 1, '2026-04-20 14:48:34', 'completed', NULL, NULL, NULL),
-(80, 1, 33, '2027-2028', 2, '2026-04-20 14:49:30', 'confirmed', NULL, NULL, NULL),
+(80, 1, 33, '2027-2028', 2, '2026-04-20 14:49:30', 'completed', NULL, NULL, NULL),
 (81, 1, 34, '2027-2028', 2, '2026-04-20 14:57:50', 'confirmed', NULL, NULL, NULL),
-(82, 1, 35, '2027-2028', 2, '2026-04-20 15:00:59', 'confirmed', NULL, NULL, NULL);
+(82, 1, 35, '2027-2028', 2, '2026-04-20 15:00:59', 'completed', NULL, NULL, NULL),
+(83, 1, 28, '2026-2027', 1, '2026-04-21 08:24:13', 'completed', NULL, NULL, NULL),
+(84, 2, 18, '2026-2027', 1, '2026-04-21 08:31:45', 'completed', NULL, NULL, NULL),
+(85, 2, 6, '2026-2027', 1, '2026-04-21 08:31:49', 'completed', NULL, NULL, NULL),
+(86, 2, 19, '2025-2026', 1, '2026-04-21 08:32:12', 'confirmed', NULL, NULL, NULL),
+(87, 2, 9, '2025-2026', 1, '2026-04-21 08:33:10', 'completed', NULL, NULL, NULL),
+(88, 2, 18, '2026-2027', 1, '2026-04-21 09:09:27', 'completed', NULL, NULL, NULL),
+(89, 1, 20, '2026-2027', 1, '2026-04-21 09:25:42', 'confirmed', NULL, NULL, NULL),
+(90, 2, 18, '2026-2027', 1, '2026-04-26 11:04:14', 'completed', NULL, NULL, NULL),
+(91, 9, 18, '2026-2027', 1, '2026-04-26 11:20:31', 'completed', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -682,20 +800,25 @@ CREATE TABLE IF NOT EXISTS `faculty` (
   `degree` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `school` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `year_graduated` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`faculty_id`),
   UNIQUE KEY `employee_id` (`employee_id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `faculty`
 --
 
-INSERT INTO `faculty` (`faculty_id`, `employee_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `phone`, `department`, `position`, `specialization`, `employment_status`, `status`, `date_hired`, `created_at`, `updated_at`, `suffix_name`, `college`, `personal_email`, `date_of_birth`, `place_of_birth`, `sex`, `civil_status`, `religion`, `nationality`, `disability`, `permanent_region`, `permanent_province`, `permanent_municipality`, `permanent_barangay`, `permanent_address`, `permanent_zip_code`, `mailing_same_as_permanent`, `mailing_region`, `mailing_province`, `mailing_municipality`, `mailing_barangay`, `mailing_address`, `mailing_zip_code`, `profile_photo`, `emergency_name`, `emergency_relationship`, `emergency_phone`, `emergency_address`, `highest_education`, `degree`, `school`, `year_graduated`) VALUES
-(3, 'EMP20260323002', 'Sarah', 'Michelle', 'Johnson', 'sarah.johnson@university.edu', '$2y$10$HMHOQ94MITLMutBlzRSfGOx8dKPlZeG3C0V1U5u51rW6sZL6It6Ke', '555-0201', 'Information Technology', 'Assistant Professor', 'Network Security', 'full-time', 'active', '2023-06-15', '2026-03-23 09:20:23', '2026-03-23 09:20:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'EMP20260323003', 'Robert', 'James', 'Martinez', 'robert.martinez@university.edu', '$2y$10$WaSrslQ1GeAKa03oDZcC/OMHyP8GR17TdcZFzjlECdji55/L40dTm', '555-0202', 'Engineering', 'Instructor', 'Civil Engineering', 'part-time', 'active', '2024-01-10', '2026-03-23 09:20:23', '2026-04-16 08:33:54', NULL, NULL, 'sd@gmail.com', NULL, 'Manila', 'Male', 'Single', 'asd', 'asd', 'sd', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 'EMP2024', 'Kevin', 'Gregorio', 'Lumabi', 'kevinlumabi9@gmail.com', '$2y$10$PW3i6h0vou/sKDae4wwjEuf6AaiF.QfiTdb7YDhYrWEYCA4K5TN6q', NULL, 'Computer Engineering', 'INSTRUCTOR', NULL, 'full-time', 'active', NULL, '2026-04-14 16:36:01', '2026-04-14 16:38:18', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 'EMP2025', 'Karl', 'GGZ', 'Jacob', 'educationalgabai@gmail.com', '$2y$10$avbH5i1va.nzusWSFoO0OOajIleg8Z6NuOYZZeYJldmYbjgr0xu4q', NULL, 'Computer Engineering', 'Assistant Professor', NULL, 'full-time', 'active', NULL, '2026-04-14 16:43:43', '2026-04-14 16:43:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `faculty` (`faculty_id`, `employee_id`, `first_name`, `middle_name`, `last_name`, `email`, `password`, `phone`, `department`, `position`, `specialization`, `employment_status`, `status`, `date_hired`, `created_at`, `updated_at`, `suffix_name`, `college`, `personal_email`, `date_of_birth`, `place_of_birth`, `sex`, `civil_status`, `religion`, `nationality`, `disability`, `permanent_region`, `permanent_province`, `permanent_municipality`, `permanent_barangay`, `permanent_address`, `permanent_zip_code`, `mailing_same_as_permanent`, `mailing_region`, `mailing_province`, `mailing_municipality`, `mailing_barangay`, `mailing_address`, `mailing_zip_code`, `profile_photo`, `emergency_name`, `emergency_relationship`, `emergency_phone`, `emergency_address`, `highest_education`, `degree`, `school`, `year_graduated`, `must_change_password`) VALUES
+(3, 'EMP20260323002', 'Sarah', 'Michelle', 'Johnson', 'sarah.johnson@university.edu', '$2y$10$HMHOQ94MITLMutBlzRSfGOx8dKPlZeG3C0V1U5u51rW6sZL6It6Ke', '555-0201', 'Information Technology', 'Assistant Professor', 'Network Security', 'full-time', 'active', '2023-06-15', '2026-03-23 09:20:23', '2026-03-23 09:20:23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(4, 'EMP20260323003', 'Robert', 'James', 'Martinez', 'robert.martinez@university.edu', '$2y$10$WaSrslQ1GeAKa03oDZcC/OMHyP8GR17TdcZFzjlECdji55/L40dTm', '555-0202', 'Engineering', 'Instructor', 'Civil Engineering', 'part-time', 'active', '2024-01-10', '2026-03-23 09:20:23', '2026-04-16 08:33:54', NULL, NULL, 'sd@gmail.com', NULL, 'Manila', 'Male', 'Single', 'asd', 'asd', 'sd', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(7, 'EMP2024', 'Kevin', 'Gregorio', 'Lumabi', 'kevinlumabi9@gmail.com', '$2y$10$PW3i6h0vou/sKDae4wwjEuf6AaiF.QfiTdb7YDhYrWEYCA4K5TN6q', NULL, 'Computer Engineering', 'INSTRUCTOR', NULL, 'full-time', 'active', NULL, '2026-04-14 16:36:01', '2026-04-14 16:38:18', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(8, 'EMP2025', 'Karl', 'GGZ', 'Jacob', 'educationalgabai@gmail.com', '$2y$10$avbH5i1va.nzusWSFoO0OOajIleg8Z6NuOYZZeYJldmYbjgr0xu4q', NULL, 'Computer Engineering', 'Assistant Professor', NULL, 'full-time', 'active', NULL, '2026-04-14 16:43:43', '2026-04-14 16:43:43', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(10, '214214214', 'Louie', 'Lopez', 'Muncada', 'vnoir17@gmail.com', '$2y$10$4FNTcNsHrigTVXihXIEofOSuXUUeuelCrjPacV50jHDxCJXS3k4EC', NULL, 'at', 'ds', NULL, 'full-time', 'active', NULL, '2026-04-22 15:24:19', '2026-04-22 15:38:16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(11, '123123123', 'John', 'hARIBIDS', 'PLM', 'xsurethingx@gmail.com', '$2y$10$HoSSmaww1iLwVDmcS.ZjOe09Kg4a0aLoP/NxP8xa0MsFZbvPbYcty', NULL, 'at', 'ds', NULL, 'full-time', 'active', NULL, '2026-04-23 03:30:19', '2026-04-23 03:41:07', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(15, '522', '5', '52', '2', 'cipopa5793@4heats.com', '$2y$10$V7MSeeWWKxaEICu62RjZp.rbUAm1ojxKlG5OAIJDlkFmWqzjJkoAK', NULL, '2', '5', NULL, 'full-time', 'active', NULL, '2026-04-23 04:19:50', '2026-04-23 04:19:50', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(16, '12345', 'Louie', 'Lopez', 'Muncada', 'lavite3299@soppat.com', '$2y$10$KTrcdBvQ2St.hRYhOizbr.nnaZI0GomZRKLC9DO7n/nfQTI2Z7S4K', NULL, 'at', 'ds', NULL, 'full-time', 'active', NULL, '2026-04-24 16:02:19', '2026-04-24 16:09:27', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -715,7 +838,7 @@ CREATE TABLE IF NOT EXISTS `grades` (
   PRIMARY KEY (`grade_id`),
   KEY `student_id` (`student_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `grades`
@@ -737,7 +860,9 @@ INSERT INTO `grades` (`grade_id`, `student_id`, `subject_id`, `grade`, `status`,
 (13, 1, 767, '5.00', 'Failed', '2nd', '2027-2028'),
 (14, 1, 765, '1.00', 'Passed', '2nd', '2027-2028'),
 (15, 1, 732, '1.00', 'Passed', '1st', '2027-2028'),
-(16, 1, 737, '1.00', 'Passed', '2nd', '2027-2028');
+(16, 1, 737, '1.00', 'Passed', '2nd', '2027-2028'),
+(17, 1, 739, '1.00', 'Passed', '1st', '2026-2027'),
+(18, 1, 743, '1.00', 'Passed', '2nd', '2027-2028');
 
 -- --------------------------------------------------------
 
@@ -759,7 +884,7 @@ CREATE TABLE IF NOT EXISTS `grade_entries` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`entry_id`),
   UNIQUE KEY `uq_enroll` (`enrollment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `grade_entries`
@@ -787,7 +912,9 @@ INSERT INTO `grade_entries` (`entry_id`, `enrollment_id`, `class_id`, `student_i
 (68, 78, 31, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 11:10:41'),
 (72, 79, 32, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 14:48:45'),
 (76, 81, 34, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 14:58:17'),
-(80, 82, 35, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 15:01:18');
+(80, 82, 35, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-20 15:01:18'),
+(84, 83, 28, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-21 08:37:04'),
+(88, 80, 33, 1, 100.00, 100.00, 100.00, 100.00, '2026-04-21 08:37:43');
 
 -- --------------------------------------------------------
 
@@ -820,7 +947,7 @@ CREATE TABLE IF NOT EXISTS `grade_history` (
   UNIQUE KEY `uq_class_student` (`class_id`,`student_id`),
   KEY `idx_class` (`class_id`),
   KEY `idx_faculty` (`faculty_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `grade_history`
@@ -837,7 +964,9 @@ INSERT INTO `grade_history` (`history_id`, `class_id`, `faculty_id`, `subject_co
 (15, 30, 4, 'ETH 0008', 'Ethics', 'retryhuyokl', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 99.00, NULL, 99.00, 99.00, 69.30, '5.00', 'failed', '2026-04-20 10:31:36'),
 (16, 31, 4, 'TCW 0005', 'The Contemporary World', 'retryasdasd', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 11:10:42'),
 (17, 32, 4, 'CPE 0112.1', 'Programming Logic and Design (Laboratory)', 'bvnbvvbnvbn', '1st', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 14:48:49'),
-(18, 35, 4, 'PED 0001', 'Foundation of Physical Activities', 'retryasdasdasdasd', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 15:01:21');
+(18, 35, 4, 'PED 0001', 'Foundation of Physical Activities', 'retryasdasdasdasd', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-20 15:01:21'),
+(19, 28, 4, 'CET 0121', 'Calculus 2', 'retrysadd', '1st', '2026-2027', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-21 08:37:05'),
+(20, 33, 4, 'CPE 0121.1', 'Object Oriented Programming (Laboratory)', 'cvnbnbvn', '2nd', '2027-2028', 1, '202412685', 'Muncada, John Louie L.', 100.00, 100.00, 100.00, 100.00, 100.00, '1.00', 'passed', '2026-04-21 08:37:47');
 
 -- --------------------------------------------------------
 
@@ -881,40 +1010,6 @@ INSERT INTO `password_resets` (`id`, `student_id`, `token`, `expires_at`, `creat
 (20, 1, '1761d80c9f5a7b05da0b680721e9252f1c8c09dfbd664d8ba4c6a62e935ffcd8', '2026-03-08 08:29:08', '2026-03-08 07:29:08'),
 (21, 1, 'a9de556e3456e40c32e1a00d4deb9fd69a393a08b188e205945cf608b00be4e5', '2026-03-08 08:29:12', '2026-03-08 07:29:12'),
 (22, 1, '5a6cb01a27e8814043de1203b41b04e617bc4749fdd13ad18a72bf13504e28a3', '2026-03-08 08:29:15', '2026-03-08 07:29:15');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `registrations`
---
-
-DROP TABLE IF EXISTS `registrations`;
-CREATE TABLE IF NOT EXISTS `registrations` (
-  `registration_id` int NOT NULL AUTO_INCREMENT,
-  `student_id` int NOT NULL,
-  `subject_id` int NOT NULL,
-  PRIMARY KEY (`registration_id`),
-  KEY `student_id` (`student_id`),
-  KEY `subject_id` (`subject_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `remember_tokens`
---
-
-DROP TABLE IF EXISTS `remember_tokens`;
-CREATE TABLE IF NOT EXISTS `remember_tokens` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `portal` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `user_id` int NOT NULL,
-  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `expires_at` datetime NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `token` (`token`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -969,20 +1064,28 @@ CREATE TABLE IF NOT EXISTS `students` (
   `doc_our_au001` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `doc_our_au002` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
   `applicant_id` int DEFAULT NULL,
+  `must_change_password` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`student_id`),
   UNIQUE KEY `student_number` (`student_number`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `student_number`, `lrn`, `first_name`, `last_name`, `middle_name`, `gender`, `birthdate`, `email`, `contact_number`, `college`, `course`, `year_level`, `block_id`, `password`, `account_status`, `profile_photo`, `created_at`, `suffix_name`, `registration_status`, `status`, `place_of_birth`, `civil_status`, `religion`, `nationality`, `disability`, `married_name`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`, `applicant_id`) VALUES
-(1, '202412685', NULL, 'John Louie', 'Muncada', 'Lopez', 'Male', '2005-11-17', 'xsurethingx@gmail.com', '09543447352', 'CE', 'BSCpE', 1, 1, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69c1b0f24fe16_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-03-04 09:48:58', '', 'Irregular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, '2024-1244', NULL, 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 2, NULL, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', 'Irregular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, '123', '123456789123', 'Louie', 'Muncada', 'Lopez', 'male', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 2, NULL, '$2y$10$SRt3SGIcvvdnlXntYDcLIOAtOvbEK7nOCrvEtx3PMUY96F9eUyxXi', 'active', NULL, '2026-04-09 12:03:23', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png', 4),
-(7, '202411443', '000000000000', 'Khristian Gabriel', 'Tiu', 'Romero', '', '2026-04-28', 'kevsistired@gmail.com', '09493258417', 'College of Engineering', 'BSCpE', 2, NULL, '$2y$10$l.BzqNV01H6m2wOpKaYgLudypV7FT25F7MPouAS6KlKvxFctujl/W', 'active', NULL, '2026-04-13 05:05:25', '', 'Regular', 'Dropped', 'Marikina', 'single', 'Catholic', 'Filipino', '', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf', 5);
+INSERT INTO `students` (`student_id`, `student_number`, `lrn`, `first_name`, `last_name`, `middle_name`, `gender`, `birthdate`, `email`, `contact_number`, `college`, `course`, `year_level`, `block_id`, `password`, `account_status`, `profile_photo`, `created_at`, `suffix_name`, `registration_status`, `status`, `place_of_birth`, `civil_status`, `religion`, `nationality`, `disability`, `married_name`, `perm_region`, `perm_province`, `perm_municipality`, `perm_barangay`, `perm_address`, `perm_zipcode`, `mail_region`, `mail_province`, `mail_municipality`, `mail_barangay`, `mail_address`, `mail_zipcode`, `doc_form138`, `doc_birth_cert`, `doc_good_moral`, `doc_our_au001`, `doc_our_au002`, `applicant_id`, `must_change_password`) VALUES
+(1, '202412685', '', 'John Louie', 'Muncada', 'Lopez', '', '0000-00-00', 'xsurethingx@gmail.com', '', 'CE', 'BSCpE', 1, 6, '$2y$10$Bz0gMIypT.CH4I4Ab64cvO7pI0VWooeHYxByvmwYTcBQ58VEWPHOq', 'active', 'uploads/69e732cb3cc6b_c0695fe8-d3e2-4729-bd59-1e66c53db603 (1).jpg', '2026-03-04 09:48:58', '', 'Irregular', 'Enrolled', '', '', '', '', '', NULL, '', '', '', '', '', '', '', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(2, '2024-1244', NULL, 'John Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'vnoir17@gmail.com', '09543447352', 'CE', 'BSCpE', 2, NULL, '$2y$10$XWXT31AObvg0Q1DnXjd2EO2u99ctm6bpgMvIvNcA8/sHju2akx296', 'active', NULL, '2026-03-27 04:02:32', '', 'Irregular', 'Enrolled', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0),
+(6, '123', '123456789123', 'Louie', 'Muncada', 'Lopez', '', '2005-11-17', 'softdevset@gmail.com', '09543447352', 'College of Engineering', 'BSCpE', 2, NULL, '$2y$10$SRt3SGIcvvdnlXntYDcLIOAtOvbEK7nOCrvEtx3PMUY96F9eUyxXi', 'active', NULL, '2026-04-09 12:03:23', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1775642478.png', 'birth_cert_1775642470.png', 'good_moral_1775642470.png', 'our_au001_1775642470.png', 'our_au002_1775642470.png', 4, 0),
+(8, '555555555', '000000000000', 'Khristian Gabriel', 'Tiu', 'Romero', 'male', '2026-04-28', 'kevsistired@gmail.com', '09493258417', 'College of Accountancy', 'BSA', 1, NULL, '$2y$10$04k7IahaspOUQ/ycPHMoqu/Joi7JLoKFBB1wcQHVJBVE4ZySF6eXe', 'active', NULL, '2026-04-21 09:05:22', '', 'Regular', 'Not Enrolled', 'Marikina', 'single', 'Catholic', 'Filipino', '', '', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'NCR', 'Metro Manila', 'Manila', '346', '2054 Maria Natividad St.', '1014', 'form138_1775998861.jpg', 'birth_cert_1775998588.jpg', 'good_moral_1775998588.jpg', 'our_au001_1775998588.pdf', 'our_au002_1775998861.pdf', 5, 0),
+(9, '444444444', '', '', '', '', '', '0000-00-00', '', '', 'College of Engineering', 'BSCpE', 1, 6, '$2y$10$gxmsmWt5ne8aPh6pTF0.UeA0whikUfqWwBhkz0yOBar0MKj6qEMvG', 'active', NULL, '2026-04-21 10:40:06', '', 'Regular', 'Enrolled', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'form138_1776767736.jpg', 'birth_cert_1776767736.jpg', 'good_moral_1776767736.jpg', 'our_au001_1776767736.jpg', 'our_au002_1776767736.jpg', 7, 0),
+(10, '333333333', '555555555555', 'Louie', 'Muncada', 'L', 'male', '2026-04-15', 'pefif80395@4heats.com', '00000000000', 'College of Engineering', 'BSCpE', 1, 6, '$2y$10$/CZJeLVacOW2Jzp8N59uU.Y70PYg.bzjqJah7XsgFnbcTBfpH7gGW', 'active', NULL, '2026-04-22 15:50:45', '', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', '', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1776872806.jpg', 'birth_cert_1776872838.png', 'good_moral_1776872991.png', 'our_au001_1776872991.png', 'our_au002_1776872991.jpg', 8, 0),
+(11, '221412412', '222222222222', 'Louie', 'Muncada', 'Romero', '', '2026-04-24', 'pamav53617@soppat.com', '21312312312', 'College of Engineering', 'BSCpE', 1, 6, '$2y$10$MuGpmz5d3gLcFlNLL6xR3OsAfr2z2mA5jeClA6PLOfthPATg2HrU.', 'active', NULL, '2026-04-23 03:45:30', 'ds', 'Regular', 'Not Enrolled', 'Manila', 'separated', 'Roman Catholic', 'Filipino', '', 'as', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1776915801.jpg', 'birth_cert_1776915771.png', 'good_moral_1776915801.png', 'our_au001_1776915813.jpg', 'our_au002_1776915813.jpg', 9, 1),
+(12, '214124124', '123124463464', 'Louie', 'Muncada', 'Lopez', 'male', '2026-05-01', 'koxomed767@4heats.com', '09543447352', 'College of Engineering', 'BSCpE', 1, 6, '$2y$10$T96R57EVA03ZpfhbDY44duxFO0.ndBEQWOGbABOKx7N9vGvnro0DS', 'active', NULL, '2026-04-23 04:07:47', 'ds', 'Regular', 'Not Enrolled', 'Manila', 'single', '', 'Filipino', 'Madami', 'as', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1776916828.png', 'birth_cert_1776916828.png', 'good_moral_1776916828.png', 'our_au001_1776916828.png', 'our_au002_1776916828.jpg', 10, 1),
+(14, '335555553', '213123124124', 'Louie', 'Muncada', 'Romero', 'male', '2026-04-22', 'mogepi2498@soppat.com', '42424242424', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 1, 6, '$2y$10$VYT6bHy6RCvKiFM6u0fA0.vVZrH9J2r62LFRRdfFNg0C8trCBxTI2', 'active', NULL, '2026-04-23 04:41:15', 'ds', 'Regular', 'Not Enrolled', 'Manila', 'single', 'Roman Catholic', 'Filipino', 'Madami', 'as', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1776919253.png', 'birth_cert_1776919253.png', 'good_moral_1776919253.png', 'our_au001_1776919253.png', 'our_au002_1776919253.png', 12, 1),
+(15, '123123123', '353535353532', '32w5325', '3', '3253', 'male', '2026-04-28', 'labaxe1856@soppat.com', '53252132131', 'College of Engineering', 'Bachelor of Science in Computer Engineering', 1, 6, '$2y$10$iT3ZdZ2awWl.tvgOw5827.c5eG/Feivo1cMIxqPLSNqw6yBY7SiJ.', 'active', NULL, '2026-04-23 04:45:56', '253253', 'Regular', 'Not Enrolled', '25325', 'widowed', '325325', 'Filipino235325', '23532', '253253', '325', '5235', '532532', '3253', '325', '5235', '325', '5235', '532532', '3253', '325', '5235', 'form138_1776919534.png', 'birth_cert_1776919534.png', 'good_moral_1776919534.png', 'our_au001_1776919534.png', 'our_au002_1776919534.png', 13, 0),
+(16, '123124125', '412414124124', 'Kiyotaka', 'Ayanokoji', 'GOnzales', 'male', '2026-03-31', 'lavite3299@soppat.com', '34124124124', 'College of Engineering', 'BSCpE', 1, 6, '$2y$10$BzK2mq1B3d8gJ0g0zIIUueRyglgq3Mfsbgj/5p/x3LLo7rttUy1LK', 'active', 'uploads/69e9af0fedc43_Y0_STEAM_WALLPAPER_3_1600X900.jpg', '2026-04-23 05:06:46', 'sr', 'Regular', 'Not Enrolled', 'Manila', 'widowed', '325325', 'Filipino', 'Madami', '253253', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'NCR', 'Metro Manila', 'Manila', '903', 'B1-401 Jaime Cardinal Sin Village', '1009', 'form138_1776920240.png', 'birth_cert_1776920240.png', 'good_moral_1776920240.png', 'our_au001_1776920240.png', 'our_au002_1776920240.png', 14, 0);
 
 -- --------------------------------------------------------
 
@@ -1029,7 +1132,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (506, 10, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '1', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (507, 10, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo', NULL, 3, 3.0, 0.0, 'IPP', '1', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (508, 10, 'NSTP 01', 'National Service Training Program 1-(ROTC/CWTS/LITCY', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
-(509, 10, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
+(509, 10, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-25 04:43:13', NULL, NULL),
 (510, 10, 'RVA 123', 'Reading Visual Arts', NULL, 3, 3.0, 0.0, 'RVA', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (511, 10, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (512, 10, 'ACN 3222', 'Professional Elective 1 (Partnership)', NULL, 3, 3.0, 0.0, 'ACN', '1', '2nd', 'ACN 1101', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
@@ -1039,7 +1142,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (516, 10, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (517, 10, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '1', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (518, 10, 'NSTP 02', 'National Service Training Program 1- (ROTC/CWTS/LITCY)', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 011', 'active', '2026-04-08 17:52:44', '2026-04-20 14:59:33', NULL, NULL),
-(519, 10, 'PED 0002', 'Foundation of Physical Education', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
+(519, 10, 'PED 0002', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:52:44', '2026-04-25 04:43:13', NULL, NULL),
 (520, 10, 'ACN 0003', 'Business Logic', NULL, 3, 3.0, 0.0, 'ACN', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (521, 10, 'ECO 0015', 'Management Science', NULL, 3, 3.0, 0.0, 'ECO', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (522, 10, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
@@ -1048,7 +1151,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (525, 10, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (526, 10, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (527, 10, 'FIN 0013', 'Financial Markets', NULL, 3, 3.0, 0.0, 'FIN', '2', '1st', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
-(528, 10, 'PED 0033', 'Arnis', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PE 0002', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
+(528, 10, 'PED 0033', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PE 0002', 'active', '2026-04-08 17:52:44', '2026-04-25 04:43:13', NULL, NULL),
 (529, 10, 'ECO 0014', 'Statistical Analysis with Software Application', NULL, 3, 3.0, 0.0, 'ECO', '2', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (530, 10, 'ACN 2212', 'Governance, Business Ethics, Risk Management and Internal Control', NULL, 3, 3.0, 0.0, 'ACN', '2', '2nd', 'ACN 1202/1203', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (531, 10, 'ACN 2105', 'Intermediate Accounting 2', NULL, 2, 2.0, 0.0, 'ACN', '2', '2nd', 'ACN 1202/1203', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
@@ -1056,7 +1159,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (533, 10, 'ACN 2108', 'IT Application Tools in Business', NULL, 3, 3.0, 0.0, 'ACN', '2', '2nd', '', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (534, 10, 'CBM 0015A', 'International Business and Trade', NULL, 3, 3.0, 0.0, 'CBM', '2', '2nd', 'ACN 1202/1203', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (535, 10, 'ACN 2107', 'Financial Management', NULL, 2, 2.0, 0.0, 'ACN', '2', '2nd', 'PARCOR', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
-(536, 10, 'PED 0043', 'Badminton', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0003', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
+(536, 10, 'PED 0043', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0003', 'active', '2026-04-08 17:52:44', '2026-04-25 04:43:13', NULL, NULL),
 (537, 10, 'ACN 3118', 'Accounting for Specialized Transactions', NULL, 3, 3.0, 0.0, 'ACN', '3', '1st', 'ACN 2105', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (538, 10, 'ACN 2213', 'Accounting Information System', NULL, 3, 3.0, 0.0, 'ACN', '3', '1st', 'ACN 2108', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
 (539, 10, 'ACN 2211', 'Intermediate Accounting 3', NULL, 3, 3.0, 0.0, 'ACN', '3', '1st', 'ACN 2105', 'active', '2026-04-08 17:52:44', '2026-04-08 17:52:44', NULL, NULL),
@@ -1088,7 +1191,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (565, NULL, 'MMW 001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (566, NULL, 'STS 002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (567, NULL, 'ITE 0001', 'Living in the IT ERA', NULL, 3, 3.0, 0.0, 'ITE', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
-(568, NULL, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
+(568, NULL, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-25 04:43:13', NULL, NULL),
 (569, NULL, 'NSTP 1', 'National Service Training Program - ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (570, NULL, 'CET 0121', 'Calculus 2', NULL, 2, 2.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (571, NULL, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111, CET 0121', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
@@ -1099,7 +1202,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (576, NULL, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '1', '2nd', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (577, NULL, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'PCM', '1', '2nd', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (578, NULL, 'IPP 0010A', 'Interdisiplinaryong Pagbasa at Pagsulat sa mga Diskurso ng Pagpapahayag', NULL, 3, 3.0, 0.0, 'IPP', '1', '2nd', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
-(579, NULL, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
+(579, NULL, 'PED 0012', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:52:50', '2026-04-25 04:43:13', NULL, NULL),
 (580, NULL, 'NSTP2', 'National Service Training Program - ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP1', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (581, NULL, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121, CET 0122', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (582, NULL, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', '2nd Year Standing', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
@@ -1109,7 +1212,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (586, NULL, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '2', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (587, NULL, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '2', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (588, NULL, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '2', '1st', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
-(589, NULL, 'PED 0013', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
+(589, NULL, 'PED 0013', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:52:50', '2026-04-25 04:43:13', NULL, NULL),
 (590, NULL, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '2', '2nd', 'CIV 0121', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (591, NULL, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', 'CET 0121', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (592, NULL, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
@@ -1118,7 +1221,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (595, NULL, 'CIV 0221', 'Geology for Civil Engineers', NULL, 2, 2.0, 0.0, 'CIV', '2', '2nd', 'CET 0112', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (596, NULL, 'CIV 0222', 'Mechanics of Deformable Bodies', NULL, 4, 4.0, 0.0, 'CIV', '2', '2nd', 'CET 0214', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
 (597, NULL, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '2', '2nd', '', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
-(598, NULL, 'PED 0014', 'PE Elective (12, 13, OR 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 001', 'active', '2026-04-08 17:52:50', '2026-04-08 17:52:50', NULL, NULL),
+(598, NULL, 'PED 0014', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 001', 'active', '2026-04-08 17:52:50', '2026-04-25 04:43:13', NULL, NULL),
 (599, NULL, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '3', '1st', '', 'active', '2026-04-08 17:52:51', '2026-04-08 17:52:51', NULL, NULL),
 (600, NULL, 'CIV 0311', 'Highway and Railroad Engineering', NULL, 3, 3.0, 0.0, 'CIV', '3', '1st', 'CIV 0211', 'active', '2026-04-08 17:52:51', '2026-04-08 17:52:51', NULL, NULL),
 (601, NULL, 'CIV 0312', 'Hydrology', NULL, 2, 2.0, 0.0, 'CIV', '3', '1st', '', 'active', '2026-04-08 17:52:51', '2026-04-08 17:52:51', NULL, NULL),
@@ -1173,7 +1276,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (650, 1, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (651, 1, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (652, 1, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(653, 1, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(653, 1, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-25 04:43:13', NULL, NULL),
 (654, 1, 'NSTP 01', 'National Service Training Program 2-ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (655, 1, 'CHE 0121', 'Analytical Chemistry', NULL, 4, 4.0, 0.0, 'CHE', '1', '2nd', 'CET 0112', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (656, 1, 'CHE 0121.1', 'Analytical Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '1', '2nd', 'CET 0112.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
@@ -1183,7 +1286,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (660, 1, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'PCM', '1', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (661, 1, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '1', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (662, 1, 'IPP 0010A', 'Interdisiplinaryong Pagbasa at Pagsulat sa', NULL, 3, 3.0, 0.0, 'IPP', '1', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(663, 1, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(663, 1, 'PED 0012', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-25 04:43:13', NULL, NULL),
 (664, 1, 'NSTP 02', 'National Service Training Program 2-ROTC 2/CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:01', '2026-04-20 14:59:33', NULL, NULL),
 (665, 1, 'CHE 0211', 'Organic Chemistry', NULL, 4, 4.0, 0.0, 'CHE', '2', '1st', 'CHE 0121', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (666, 1, 'CHE 0211.1', 'Organic Chemistry', NULL, 1, 0.0, 1.0, 'CHE', '2', '1st', 'CHE 0121.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
@@ -1194,7 +1297,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (671, 1, 'CET 0213A', 'Engineering Mechanics', NULL, 4, 4.0, 0.0, 'CET', '2', '1st', 'CET 0122', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (672, 1, 'EIT 0121.1', 'Computer Fundamentals and Programming 1', NULL, 1, 1.0, 0.0, 'EIT', '2', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (673, 1, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '1st', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(674, 1, 'PED 0093', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(674, 1, 'PED 0093', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-25 04:43:13', NULL, NULL),
 (675, 1, 'CHE 0221', 'Physical Chemistry for Engineers 1', NULL, 2, 2.0, 0.0, 'CHE', '2', '2nd', 'CET 0211, CHE 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (676, 1, 'CHE 0221.1', 'Physical Chemistry for Engineers 1', NULL, 1, 0.0, 1.0, 'CHE', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (677, 1, 'CHE 0222', 'Momentum Transfer', NULL, 2, 2.0, 0.0, 'CHE', '2', '2nd', 'CHE 0212, CET 0211', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
@@ -1206,7 +1309,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (683, 1, 'ELE 0229', 'Basic Electrical and Electronics Engineering', NULL, 2, 2.0, 0.0, 'ELE', '2', '2nd', 'CET 0122', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (684, 1, 'ELE 0229.1', 'Basic Electrical and Electronics Engineering', NULL, 1, 0.0, 1.0, 'ELE', '2', '2nd', 'CET 0122.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (685, 1, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '2', '2nd', '', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
-(686, 1, 'PED 0014', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
+(686, 1, 'PED 0014', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:01', '2026-04-25 04:43:13', NULL, NULL),
 (687, 1, 'CHE 0311', 'Physical Chemistry for Engineers 2', NULL, 2, 2.0, 0.0, 'CHE', '3', '1st', 'CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (688, 1, 'CHE 0311.1', 'Physical Chemistry for Engineers 2', NULL, 1, 0.0, 1.0, 'CHE', '3', '1st', 'CHE 0221.1', 'active', '2026-04-08 17:53:01', '2026-04-20 15:11:13', NULL, NULL),
 (689, 1, 'CHE 0312', 'Chemical Engineering Thermodynamics', NULL, 2, 2.0, 0.0, 'CHE', '3', '1st', 'CHE 0212, CHE 0221', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
@@ -1249,48 +1352,48 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (726, 1, 'CHE 0428.1', 'ChE Thesis 2', NULL, 1, 1.0, 0.0, 'CHE', '4', '2nd', 'CHE 0418.1', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (727, 1, 'CET 0411A', 'Technopreneurship', NULL, 3, 3.0, 0.0, 'CET', '4', '2nd', '4th Year Standing', 'active', '2026-04-08 17:53:01', '2026-04-08 17:53:01', NULL, NULL),
 (728, 5, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(729, 5, 'CET 0112', 'Chemistry for Engineers', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(730, 5, 'CET 0112.1', 'Chemistry for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
+(729, 5, 'CET 0112', 'Chemistry for Engineers (Lecture)', '', 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-26 13:15:47', NULL, NULL),
+(730, 5, 'CET 0112.1', 'Chemistry for Engineers (Laboratory)', '', 1, 0.0, 1.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-26 13:15:34', NULL, NULL),
 (731, 5, 'CPE 0111', 'Computer Engineering as a Discipline', NULL, 1, 1.0, 0.0, 'CPE', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (732, 5, 'CPE 0112.1', 'Programming Logic and Design (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (733, 5, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (734, 5, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (735, 5, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (736, 5, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(737, 5, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(737, 5, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-25 04:43:13', NULL, NULL),
 (738, 5, 'NSTP 01', 'National Service Training Program 1- ROTC 1/ CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (739, 5, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(740, 5, 'CET 0122A', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-20 14:56:46', NULL, NULL),
-(741, 5, 'CET 0122A.1', 'Physics for Engineers', NULL, 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-20 14:56:46', NULL, NULL),
+(740, 5, 'CET 0122A', 'Physics for Engineers (Lecture)', '', 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-26 13:16:46', NULL, NULL),
+(741, 5, 'CET 0122A.1', 'Physics for Engineers (Laboratory)', '', 1, 0.0, 1.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-26 13:16:29', NULL, NULL),
 (742, 5, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (743, 5, 'CPE 0121.1', 'Object Oriented Programming (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '1', '2nd', 'CPE 0112.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (744, 5, 'CPE 0122', 'Discrete Mathematics', NULL, 3, 3.0, 0.0, 'CPE', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (745, 5, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (746, 5, 'PCM 0006', 'Purposive Communication', NULL, 3, 3.0, 0.0, 'PCM', '1', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(747, 5, 'PED 0043', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(747, 5, 'PED 0043', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-25 04:43:13', NULL, NULL),
 (748, 5, 'NSTP 02', 'National Service Training Program 2 - ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:10', '2026-04-20 14:59:33', NULL, NULL),
 (749, 5, 'CET 0123.1', 'Computer-Aided Drafting', NULL, 1, 1.0, 0.0, 'CET', '2', '1st', '2nd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (750, 5, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (751, 5, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0111', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (752, 5, 'CPE 0211.1', 'Data Structures and Algorithms (Laboratory)', NULL, 2, 0.0, 2.0, 'CPE', '2', '1st', 'CPE 0121.1', 'active', '2026-04-08 17:53:10', '2026-04-21 01:58:45', NULL, NULL),
-(753, 5, 'CPE 0212', 'Fundamentals of Electrical Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-20 15:07:04', NULL, NULL),
-(754, 5, 'CPE 0212.1', 'Fundamentals of Electrical Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '1st', 'CET 0122A', 'active', '2026-04-08 17:53:10', '2026-04-21 01:58:45', NULL, NULL),
+(753, 5, 'CPE 0212', 'Fundamentals of Electrical Circuits (Lecture)', '', 3, 3.0, 0.0, 'CPE', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-26 13:20:20', NULL, NULL),
+(754, 5, 'CPE 0212.1', 'Fundamentals of Electrical Circuits (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '2', '1st', 'CET 0122A', 'active', '2026-04-08 17:53:10', '2026-04-26 13:17:13', NULL, NULL),
 (755, 5, 'AAP 0007', 'Art Appreciation', NULL, 3, 3.0, 0.0, 'AAP', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (756, 5, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '2', '1st', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (757, 5, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo sa Mabisang Pagpapahayag', NULL, 3, 3.0, 0.0, 'IPP', '2', '1st', 'New Mandated Course', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(758, 5, 'PED 0013', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
+(758, 5, 'PED 0013', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-25 04:43:13', NULL, NULL),
 (759, 5, 'CPE 0221', 'Numerical Methods', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(760, 5, 'CPE 0222', 'Software Design', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CET 0211.1.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(761, 5, 'CPE 0222.1', 'Software Design', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CET 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
-(762, 5, 'CPE 0223', 'Fundamentals of Electronic Circuits', NULL, 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CPE 0212.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(763, 5, 'CPE 0223.1', 'Fundamentals of Electronic Circuits', NULL, 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CPE 0212', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(760, 5, 'CPE 0222', 'Software Design (Lecture)', '', 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CPE 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:21:09', NULL, NULL),
+(761, 5, 'CPE 0222.1', 'Software Design (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CPE 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:19:18', NULL, NULL),
+(762, 5, 'CPE 0223', 'Fundamentals of Electronic Circuits (Lecture)', '', 3, 3.0, 0.0, 'CPE', '2', '2nd', 'CPE 0212.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:21:58', NULL, NULL),
+(763, 5, 'CPE 0223.1', 'Fundamentals of Electronic Circuits (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '2', '2nd', 'CPE 0212', 'active', '2026-04-08 17:53:10', '2026-04-26 13:21:42', NULL, NULL),
 (764, 5, 'LWR 0009', 'Life and Works of Rizal', NULL, 3, 3.0, 0.0, 'LWR', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (765, 5, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (766, 5, 'PPC 122', 'GEC ELECTIVE 3-Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (767, 5, 'ETH 0008', 'Ethics', NULL, 3, 3.0, 0.0, 'ETH', '2', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(768, 5, 'PED 0074', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(769, 5, 'CPE 0311', 'Logic Circuits and Design', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(770, 5, 'CPE 0311.1', 'Logic Circuits and Design', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(768, 5, 'PED 0074', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:10', '2026-04-25 04:43:13', NULL, NULL),
+(769, 5, 'CPE 0311', 'Logic Circuits and Design (Lecture)', '', 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:23:04', NULL, NULL),
+(770, 5, 'CPE 0311.1', 'Logic Circuits and Design (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-26 13:22:46', NULL, NULL),
 (771, 5, 'CPE 0312.1', 'Introduction to HDL (Laboratory)', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0112.1, CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (772, 5, 'CPE 0313', 'Operating Systems', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0211.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (773, 5, 'CPE 0314', 'Data and Digital Communications', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
@@ -1298,28 +1401,28 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (775, 5, 'CPE 0316', 'Fundamentals of Mixed Signals and Sensors', NULL, 3, 3.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (776, 5, 'CPE 0317.1', 'Computer Engineering Drafting and Design (Design)', NULL, 1, 1.0, 0.0, 'CPE', '3', '1st', 'CPE 0223', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (777, 5, 'CPE 0318', 'Elective 1 (Lecture)', NULL, 2, 2.0, 0.0, 'CPE', '3', '1st', 'CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(778, 5, 'CPE 0318.1', 'Elective 1 (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(778, 5, 'CPE 0318.1', 'Elective 1 (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '3', '1st', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-26 13:26:19', NULL, NULL),
 (779, 5, 'CET 0411', 'Technopreneurship 101', NULL, 3, 3.0, 0.0, 'CET', '3', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (780, 5, 'CPE 0321', 'Basic Occupational Health and Safety', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', '3rd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (781, 5, 'CPE 0322', 'Computer Networks and Security (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0314.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(782, 5, 'CPE 0322.1', 'Computer Networks and Security (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0314', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(782, 5, 'CPE 0322.1', 'Computer Networks and Security (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0314', 'active', '2026-04-08 17:53:10', '2026-04-26 13:24:54', NULL, NULL),
 (783, 5, 'CPE 0323', 'Computer Architecture and Organization (Lecture)', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', 'CPE 0311.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(784, 5, 'CPE 0323.1', 'Computer Architecture and Organization (Lecture)', NULL, 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(784, 5, 'CPE 0323.1', 'Computer Architecture and Organization (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '3', '2nd', 'CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-26 13:25:51', NULL, NULL),
 (785, 5, 'CPE 0324', 'Methods of Research', NULL, 2, 2.0, 0.0, 'CPE', '3', '2nd', 'CET 0212, PCM 0006, CPE 0311', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (786, 5, 'CPE 0325', 'CPE Laws and Professional Practice', NULL, 2, 2.0, 0.0, 'CPE', '3', '2nd', '3rd Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (787, 5, 'CPE 0326', 'Elective 2', NULL, 3, 3.0, 0.0, 'CPE', '3', '2nd', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (788, 5, 'CPE 0331', 'Seminars and Field Trips (fld)', NULL, 1, 1.0, 0.0, 'CPE', '3', 'summer', '', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(789, 5, 'CPE 0332', 'Elective 3', NULL, 2, 2.0, 0.0, 'CPE', '3', 'summer', 'CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(790, 5, 'CPE 0332.1', 'Elective 3', NULL, 1, 0.0, 1.0, 'CPE', '3', 'summer', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL);
+(789, 5, 'CPE 0332', 'Elective 3 (Lecture)', '', 2, 2.0, 0.0, 'CPE', '3', 'summer', 'CPE 0222.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:27:51', NULL, NULL),
+(790, 5, 'CPE 0332.1', 'Elective 3 (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '3', 'summer', 'CPE 0222', 'active', '2026-04-08 17:53:10', '2026-04-26 13:27:32', NULL, NULL);
 INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name`, `description`, `units`, `lecture_hours`, `lab_hours`, `department`, `year_level`, `semester`, `prerequisite`, `status`, `created_at`, `updated_at`, `schedule`, `faculty_id`) VALUES
-(791, 5, 'CPE 0411', 'Embedded Systems', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(792, 5, 'CPE 0411.1', 'Embedded Systems', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
-(793, 5, 'CPE 0412', 'Microprocessors', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(794, 5, 'CPE 0412.1', 'Microprocessors', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(791, 5, 'CPE 0411', 'Embedded Systems (Lecture)', '', 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:15', NULL, NULL),
+(792, 5, 'CPE 0411.1', 'Embedded Systems (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:09', NULL, NULL),
+(793, 5, 'CPE 0412', 'Microprocessors (Lecture)', '', 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0323.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:31', NULL, NULL),
+(794, 5, 'CPE 0412.1', 'Microprocessors (Laboratory)', '', 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0323', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:26', NULL, NULL),
 (795, 5, 'CPE 0413', 'Emerging Technologies in CPE', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', '4th Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (796, 5, 'CPE 0414.1', 'CPE Practice and Design 1 (Design)', NULL, 1, 1.0, 0.0, 'CPE', '4', '1st', 'CPE 0323, CPE 0324', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
-(797, 5, 'CPE 0415', 'Digital Signal Processing', NULL, 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0315.1', 'active', '2026-04-08 17:53:10', '2026-04-20 15:05:38', NULL, NULL),
-(798, 5, 'CPE 0415.1', 'Digital Signal Processing', NULL, 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0315', 'active', '2026-04-08 17:53:10', '2026-04-20 15:10:02', NULL, NULL),
+(797, 5, 'CPE 0415', 'Digital Signal Processing (Laboratory)', '', 3, 3.0, 0.0, 'CPE', '4', '1st', 'CPE 0315.1', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:51', NULL, NULL),
+(798, 5, 'CPE 0415.1', 'Digital Signal Processing (Lecture)', '', 1, 0.0, 1.0, 'CPE', '4', '1st', 'CPE 0315', 'active', '2026-04-08 17:53:10', '2026-04-26 13:35:39', NULL, NULL),
 (799, 5, 'CPE 0421.1', 'CPE Practice and Design 2 (Design)', NULL, 2, 2.0, 0.0, 'CPE', '4', '2nd', 'CPE 0414.1', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (800, 5, 'CPE 0422.1', 'On-The-Job Training for CPE (240 hrs)', NULL, 3, 3.0, 0.0, 'CPE', '4', '2nd', '4th Year Standing', 'active', '2026-04-08 17:53:10', '2026-04-08 17:53:10', NULL, NULL),
 (801, 7, 'CET 0111', 'Calculus 1', NULL, 3, 3.0, 0.0, 'CET', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1330,7 +1433,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (806, 7, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (807, 7, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo sa Mabisang Pagpapahayag', NULL, 3, 3.0, 0.0, 'IPP', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (808, 7, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(809, 7, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(809, 7, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-25 04:43:13', NULL, NULL),
 (810, 7, 'NSTP 01', 'National Service Training Program 1-ROTC 1/CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (811, 7, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (812, 7, 'CET 0122', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:15', '2026-04-21 01:53:46', NULL, NULL),
@@ -1340,7 +1443,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (816, 7, 'CSE 0121.1', 'Computer Programming 1', NULL, 1, 1.0, 0.0, 'CSE', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (817, 7, 'STS 0002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'STS', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (818, 7, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '1', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(819, 7, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(819, 7, 'PED 0012', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-25 04:43:13', NULL, NULL),
 (820, 7, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP1', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (821, 7, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (822, 7, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1351,7 +1454,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (827, 7, 'ECE 0212.1', 'Electronics Devices and Circuits', NULL, 1, 0.0, 1.0, 'ECE', '2', '1st', 'CET 0122.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (828, 7, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '1st', '', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (829, 7, 'CET 0222', 'Fundamentals of Material Science and Engineering', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0112', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(830, 7, 'PED 0014', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(830, 7, 'PED 0014', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-25 04:43:13', NULL, NULL),
 (831, 7, 'ECE 0221', 'Circuits 2', NULL, 3, 3.0, 0.0, 'ECE', '2', '2nd', 'ECE 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (832, 7, 'ECE 0221.1', 'Circuits 2', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (833, 7, 'ECE 0222', 'Electronics Circuits Analysis and Design', NULL, 4, 3.0, 0.0, 'ECE', '2', '2nd', 'ECE 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1360,7 +1463,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (836, 7, 'ECE 0223.1', 'Advanced Engineering Mathematics for ECE', NULL, 1, 0.0, 1.0, 'ECE', '2', '2nd', '', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (837, 7, 'ECE 0224', 'Electromagnetics', NULL, 4, 0.0, 0.0, 'ECE', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (838, 7, 'CET 0216', 'Engineering Economics', NULL, 3, 0.0, 0.0, 'CET', '2', '2nd', 'CET 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
-(839, 7, 'PED 0023', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
+(839, 7, 'PED 0023', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:15', '2026-04-25 04:43:13', NULL, NULL),
 (840, 7, 'ECE 0311', 'Logic Circuits and Switching Theory', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0212', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
 (841, 7, 'ECE 0311.1', 'Logic Circuits and Switching Theory', NULL, 1, 0.0, 1.0, 'ECE', '3', '1st', 'ECE 0212.1', 'active', '2026-04-08 17:53:15', '2026-04-20 15:11:13', NULL, NULL),
 (842, 7, 'ECE 0312', 'Electronics Systems and Design', NULL, 3, 3.0, 0.0, 'ECE', '3', '1st', 'ECE 0222', 'active', '2026-04-08 17:53:15', '2026-04-08 17:53:15', NULL, NULL),
@@ -1409,7 +1512,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (885, 9, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:53:19', '2026-04-08 17:53:19', NULL, NULL),
 (886, 9, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (887, 9, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo sa Mabisang', NULL, 3, 3.0, 0.0, 'IPP', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(888, 9, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(888, 9, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-25 04:43:13', NULL, NULL),
 (889, 9, 'NSTP 01', 'National Service Training Program 1-ROTC 1/CWTS 1', NULL, 3, 2.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (890, 9, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (891, 9, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:20', '2026-04-21 01:53:31', NULL, NULL),
@@ -1419,7 +1522,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (895, 9, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (896, 9, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (897, 9, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(898, 9, 'PED 0033', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(898, 9, 'PED 0033', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-25 04:43:13', NULL, NULL),
 (899, 9, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:20', '2026-04-20 14:59:33', NULL, NULL),
 (900, 9, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (901, 9, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
@@ -1428,7 +1531,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (904, 9, 'MEC 0211', 'Thermodynamics 1', NULL, 3, 3.0, 0.0, 'MEC', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (905, 9, 'MEC 0212.1', 'Workshop, Theory and Practice', NULL, 1, 1.0, 0.0, 'MEC', '2', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (906, 9, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '2', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(907, 9, 'PED 0103', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(907, 9, 'PED 0103', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-25 04:43:13', NULL, NULL),
 (908, 9, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', 'CET 0121', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (909, 9, 'CET 0221', 'Engineering Management', NULL, 2, 2.0, 0.0, 'CET', '2', '2nd', 'CET 0214', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (910, 9, 'CET 0223', 'Dynamics of Rigid Bodies', NULL, 2, 2.0, 0.0, 'CET', '2', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
@@ -1437,7 +1540,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (913, 9, 'MEC 0222.1', 'Machine Shop Theory', NULL, 2, 2.0, 0.0, 'MEC', '2', '2nd', 'MEC 0212.1', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (914, 9, 'MEC 0223', 'Advanced Mathematics for ME', NULL, 3, 3.0, 0.0, 'MEC', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (915, 9, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '2nd', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
-(916, 9, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
+(916, 9, 'PED 0012', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:20', '2026-04-25 04:43:13', NULL, NULL),
 (917, 9, 'CET 0216', 'Engineering Economics', NULL, 3, 3.0, 0.0, 'CET', '3', '1st', '', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (918, 9, 'MEC 0311', 'Mechanics of Deformable Bodies', NULL, 3, 3.0, 0.0, 'MEC', '3', '1st', 'CET 0223', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
 (919, 9, 'ELE 0319', 'DC and AC Machinery', NULL, 3, 2.0, 0.0, 'ELE', '3', '1st', 'ELE 0219', 'active', '2026-04-08 17:53:20', '2026-04-08 17:53:20', NULL, NULL),
@@ -1478,7 +1581,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (954, 8, 'MMW 0001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'MMW', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (955, 8, 'UTS 0003', 'Understanding the Self', NULL, 3, 3.0, 0.0, 'UTS', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (956, 8, 'IPP 0010', 'Interdisiplinaryong Pagbasa at Pagsulat Tungo', NULL, 3, 3.0, 0.0, 'IPP', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(957, 8, 'PED 0001', 'Foundation of Physical Activities', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(957, 8, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PED', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-25 04:43:13', NULL, NULL),
 (958, 8, 'NSTP 01', 'National Service Training Program 1- ROTC 1/ CWTS 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (959, 8, 'CET 0121', 'Calculus 2', NULL, 3, 3.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (960, 8, 'CET 0122A', 'Physics for Engineers', NULL, 5, 4.0, 0.0, 'CET', '1', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:24', '2026-04-21 01:53:31', NULL, NULL),
@@ -1488,7 +1591,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (964, 8, 'RPH 0004', 'Readings in Philippine History', NULL, 3, 3.0, 0.0, 'RPH', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (965, 8, 'TCW 0005', 'The Contemporary World', NULL, 3, 3.0, 0.0, 'TCW', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (966, 8, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'ITE', '1', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(967, 8, 'PED 0012', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(967, 8, 'PED 0012', 'PATHFIT 2', NULL, 2, 2.0, 0.0, 'PED', '1', '2nd', 'PED 0001', 'active', '2026-04-08 17:53:24', '2026-04-25 04:43:13', NULL, NULL),
 (968, 8, 'NSTP 02', 'National Service Training Program 2- ROTC 2/ CWTS 2', NULL, 3, 3.0, 0.0, 'NSTP', '1', '2nd', 'NSTP 01', 'active', '2026-04-08 17:53:24', '2026-04-20 14:59:33', NULL, NULL),
 (969, 8, 'CET 0211', 'Differential Equations', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (970, 8, 'CET 0214', 'Statics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1497,7 +1600,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (973, 8, 'MEC 0211', 'Thermodynamics 1', NULL, 3, 3.0, 0.0, 'MEC', '2', '1st', 'CET 0122, CET 0121', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (974, 8, 'MEC 0212.1', 'Workshop, Theory and Practice', NULL, 1, 1.0, 0.0, 'MEC', '2', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (975, 8, 'GTB 121', 'Great Books', NULL, 3, 3.0, 0.0, 'GTB', '2', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(976, 8, 'PED 0013', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(976, 8, 'PED 0013', 'PATHFIT 3', NULL, 2, 2.0, 0.0, 'PED', '2', '1st', '', 'active', '2026-04-08 17:53:24', '2026-04-25 04:43:13', NULL, NULL),
 (977, 8, 'CET 0212', 'Engineering Data Analysis', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', 'CET 0111', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (978, 8, 'CET 0221', 'Engineering Management', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (979, 8, 'CET 0223', 'Dynamics of Rigid Bodies', NULL, 3, 3.0, 0.0, 'CET', '2', '2nd', 'CET 0214', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1505,7 +1608,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (981, 8, 'MEC 0222.1', 'Machine Shop Theory', NULL, 3, 3.0, 0.0, 'MEC', '2', '2nd', 'MEC 0212.1', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (982, 8, 'MEC 0223', 'Advanced Mathematics for ME', NULL, 1, 1.0, 0.0, 'MEC', '2', '2nd', 'CET 0211', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (983, 8, 'PPC 122', 'Philippine Popular Culture', NULL, 3, 3.0, 0.0, 'PPC', '2', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
-(984, 8, 'PED 0014', 'PE Elective (12, 13, or 14)', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
+(984, 8, 'PED 0014', 'PATHFIT 4', NULL, 2, 2.0, 0.0, 'PED', '2', '2nd', '', 'active', '2026-04-08 17:53:24', '2026-04-25 04:43:13', NULL, NULL),
 (985, 8, 'MEC 0311', 'Mechanics of Deformable Bodies', NULL, 3, 3.0, 0.0, 'MEC', '3', '1st', 'CET 0223', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (986, 8, 'MEC 0315', 'Vibration Engineering', NULL, 2, 2.0, 0.0, 'MEC', '3', '1st', 'CET 0211', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
 (987, 8, 'MEC 0313', 'Fluid Mechanics', NULL, 2, 2.0, 0.0, 'MEC', '3', '1st', 'MEC 0211', 'active', '2026-04-08 17:53:24', '2026-04-08 17:53:24', NULL, NULL),
@@ -1547,7 +1650,7 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (1023, 2, 'MMW 001', 'Mathematics in the Modern World', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
 (1024, 2, 'STS 002', 'Science, Technology and Society', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
 (1025, 2, 'ITE 0001', 'Living in the IT Era', NULL, 3, 3.0, 0.0, 'General Education', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
-(1026, 2, 'PED 0001', 'Physical Activities', NULL, 2, 2.0, 0.0, 'PE', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
+(1026, 2, 'PED 0001', 'PATHFIT 1', NULL, 2, 2.0, 0.0, 'PE', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-25 04:43:13', NULL, NULL),
 (1027, 2, 'NSTP 1', 'National Service Training Program 1', NULL, 3, 3.0, 0.0, 'NSTP', '1', '1st', '', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
 (1028, 2, 'CET 0121', 'Calculus 2', NULL, 2, 2.0, 0.0, 'Civil Engineering', '1', '2nd', 'CET 0111', 'active', '2026-04-19 07:25:02', '2026-04-19 07:25:02', NULL, NULL),
 (1029, 2, 'CET 0122', 'Physics for Engineers', NULL, 4, 4.0, 0.0, 'Civil Engineering', '1', '2nd', 'CET 0111', 'active', '2026-04-19 07:25:02', '2026-04-21 01:53:31', NULL, NULL),
@@ -1608,9 +1711,9 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (1084, 2, 'CIV 0412.1', 'Geotechnical Engineering Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
 (1085, 2, 'CIV 0413.1', 'Quantity Surveying Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
 (1086, 2, 'CIV 0414.1', 'Steel Design Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
-(1087, 2, 'CIVCM 0415', 'Construction Cost Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL);
+(1087, 2, 'CIVCM 0415', 'Construction Cost Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
+(1088, 2, 'CIVCM 0416', 'Advanced Construction Methods and Equipment', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL);
 INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name`, `description`, `units`, `lecture_hours`, `lab_hours`, `department`, `year_level`, `semester`, `prerequisite`, `status`, `created_at`, `updated_at`, `schedule`, `faculty_id`) VALUES
-(1088, 2, 'CIVCM 0416', 'Advanced Construction Methods and Equipment', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
 (1089, 2, 'CIVST 0415', 'Matrix Analysis of Structures', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
 (1090, 2, 'CIVST 0416', 'Earthquake Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '1st', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
 (1091, 2, 'CIV 0421.1', 'CE Project 2 Lab', NULL, 0, 0.0, 1.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-20 15:11:13', NULL, NULL),
@@ -1622,22 +1725,6 @@ INSERT INTO `subjects` (`subject_id`, `course_id`, `subject_code`, `subject_name
 (1097, 2, 'CIVST 0425', 'Bridge Engineering', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
 (1098, 2, 'CIVST 0426', 'Foundation and Retaining Wall Design', NULL, 3, 3.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL),
 (1099, 2, 'CIV 0427.1', 'Special Topics in Civil Engineering', NULL, 1, 1.0, 0.0, 'Civil Engineering', '4', '2nd', '', 'active', '2026-04-19 07:27:58', '2026-04-19 07:27:58', NULL, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `subject_blocks`
---
-
-DROP TABLE IF EXISTS `subject_blocks`;
-CREATE TABLE IF NOT EXISTS `subject_blocks` (
-  `subject_block_id` int NOT NULL AUTO_INCREMENT,
-  `class_id` int NOT NULL,
-  `block_name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `capacity` int DEFAULT '40',
-  PRIMARY KEY (`subject_block_id`),
-  KEY `subject_id` (`class_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -1658,8 +1745,8 @@ CREATE TABLE IF NOT EXISTS `system_settings` (
 --
 
 INSERT INTO `system_settings` (`setting_key`, `setting_value`, `updated_at`) VALUES
-('current_school_year', '2027-2028', '2026-04-20 10:12:02'),
-('current_semester', '2nd', '2026-04-20 14:49:16'),
+('current_school_year', '2027-2028', '2026-04-21 08:33:47'),
+('current_semester', '2nd', '2026-04-26 13:56:07'),
 ('enrollment_open', '1', '2026-04-19 07:16:19');
 
 --
@@ -1683,5 +1770,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-SET FOREIGN_KEY_CHECKS=1;

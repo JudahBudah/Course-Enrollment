@@ -165,7 +165,8 @@
 .block-subj-table-wrapper {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 400px;
+    flex: 1;      
+    min-height: 0;  
 }
 
 .block-subj-table {
@@ -234,4 +235,11 @@
     word-break: break-all;
     hyphens: auto;
     white-space: normal;
+}
+
+.content-grid > .card:first-child {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }

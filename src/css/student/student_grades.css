@@ -71,10 +71,10 @@ main {
 }
 
 .card-header h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     color: var(--white);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 500;
     letter-spacing: .03em;
 }
 
@@ -500,6 +500,7 @@ td {
     padding: 2rem;
     text-align: center;
     color: var(--text);
+    background: var(--white-pr);
 }
 
 .grades-gwa-row {

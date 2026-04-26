@@ -5,6 +5,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
     margin-bottom: 1.5rem;
+    align-items: stretch; 
 }
 
 /* ── Page header extras ────────────────────────────────── */
@@ -119,8 +120,8 @@
 }
 
 .assign-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1rem;
     color: var(--red);
     margin-bottom: 1rem;
     display: flex;
@@ -159,8 +160,8 @@
 }
 
 .batch-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1rem;
     color: var(--red);
     margin-bottom: 1rem;
     display: flex;
@@ -290,7 +291,8 @@
 .block-students-table-wrapper {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 400px;
+    flex: 1;
+    min-height: 0;
 }
 
 .block-students-table {
@@ -359,4 +361,13 @@
     word-break: break-all;
     hyphens: auto;
     white-space: normal;
+}
+
+/* ── Left card (assigned students) stretches as flex column ── */
+
+.content-grid > .card:first-child {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }

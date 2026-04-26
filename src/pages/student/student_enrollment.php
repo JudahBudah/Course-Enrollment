@@ -398,6 +398,12 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <ul>
                             <li><a href="student_info-program.php">Program</a></li>
                             <li><a href="student_info-college.php">College</a></li>
+                            <?php
+                            $course_info = get_course_info($con, $student_course);
+                            $curriculum_url = $course_info['curriculum_url'] ?? '';
+                            if ($curriculum_url): ?>
+                            <li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </li>

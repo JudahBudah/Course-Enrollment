@@ -378,7 +378,7 @@ $event_colors = ['#8C1C24','#D4AF37','#3b82f6','#22c55e','#a855f7','#f97316','#e
     <div id="eventModal" class="modal">
         <div class="modal-content event-modal">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="eventModalTitle">Add Event</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="eventModalTitle">Add Event</h2>
 
             <form method="POST" action="../../php/admin_calendar_handler.php" enctype="multipart/form-data">
                 <input type="hidden" name="action"   id="ev_action" value="add">

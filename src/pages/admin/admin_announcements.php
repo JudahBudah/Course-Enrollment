@@ -332,7 +332,7 @@ $media_base = '../../uploads/announcements/';
     <div id="annModal" class="modal">
         <div class="modal-content ann-modal">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="annModalTitle">New Announcement</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="annModalTitle">New Announcement</h2>
 
             <form method="POST" action="../../php/admin_announcements_handler.php"
                   enctype="multipart/form-data" id="annForm">

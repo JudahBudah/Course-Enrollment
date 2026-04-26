@@ -21,16 +21,28 @@ navButton.addEventListener("click", event => {
 
 
 /* Academic Dropdown */
-
 acadDropdown.addEventListener("click", event => {
-    acadDropdown.classList.toggle("open");
-    acadDropdownMenu.classList.toggle("open");
+    event.preventDefault();
 
-    if (navMenu.offsetWidth === 60) {
-        navMenu.classList.toggle("open");
+    const isOpen = acadDropdownMenu.classList.contains("open");
+
+    // Close
+    acadDropdown.classList.remove("open");
+    acadDropdownMenu.classList.remove("open");
+
+    // Re-open if it wasn't open before
+    if (!isOpen) {
+        acadDropdown.classList.add("open");
+        acadDropdownMenu.classList.add("open");
+        localStorage.setItem('openDropdown', acadDropdown.id);
+
+        if (navMenu.offsetWidth <= 60) {
+            navMenu.classList.add("open");
+        }
+    } else {
+        localStorage.removeItem('openDropdown');
     }
 });
-
 
 
 /* Dark Mode Toggle */
@@ -40,7 +52,7 @@ const modeIcon    = document.getElementById('modeIcon');
 const modeLabel   = document.getElementById('modeLabel');
 
 function applyTheme(isDark) {
-    document.documentElement.classList.toggle('dark-mode', isDark); // ← updated
+    document.documentElement.classList.toggle('dark-mode', isDark);
     toggleTrack.classList.toggle('active', isDark);
     modeIcon.className  = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     modeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
@@ -48,8 +60,42 @@ function applyTheme(isDark) {
 }
 
 toggleTrack.addEventListener('click', () => {
-    applyTheme(!document.documentElement.classList.contains('dark-mode')); // ← updated
+    applyTheme(!document.documentElement.classList.contains('dark-mode'));
 });
 
 // Restore saved preference on page load
 applyTheme(localStorage.getItem('darkMode') === 'true');
+
+
+/* ── Active Sidebar Link + Restore Dropdown ──────────── */
+
+const currentPath = window.location.pathname.split('/').pop();
+let activeDropdownFound = false;
+
+document.querySelectorAll('.main-ul li a').forEach(link => {
+    const href = link.getAttribute('href')?.split('/').pop();
+    if (href && href === currentPath) {
+        link.classList.add('active');
+
+        // If this link is inside the acad dropdown, open it
+        const menu = link.closest('.acad-dropdown-menu');
+        if (menu) {
+            menu.classList.add('open');
+            const trigger = menu.previousElementSibling;
+            if (trigger) {
+                trigger.classList.add('open');
+                localStorage.setItem('openDropdown', trigger.id);
+            }
+            activeDropdownFound = true;
+        }
+    }
+});
+
+// Fallback: restore last manually opened dropdown if no active child found
+if (!activeDropdownFound) {
+    const saved = localStorage.getItem('openDropdown');
+    if (saved && saved === acadDropdown.id) {
+        acadDropdown.classList.add('open');
+        acadDropdownMenu.classList.add('open');
+    }
+}

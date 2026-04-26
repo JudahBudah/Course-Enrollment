@@ -407,7 +407,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                             <input type="hidden" name="new_status" value="<?php echo $cls['status']==='open'?'closed':'open'; ?>">
                                             <button type="submit" class="btn-icon"
                                                     title="<?php echo $cls['status']==='open'?'Close':'Open'; ?>">
-                                                <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock':'fa-lock-open'; ?>"></i>
+                                                <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock-open':'fa-lock'; ?>"></i>
                                             </button>
                                         </form>
                                         <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;"
@@ -437,7 +437,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
     <div id="formModal" class="modal">
         <div class="modal-content class-modal">
             <span class="close" onclick="closeModal('formModal')">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="formModalTitle">Add Class</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="formModalTitle">Add Class</h2>
 
             <form method="POST" action="../../php/admin_classes_handler.php">
                 <input type="hidden" name="action"   id="form_action"   value="add">
@@ -555,7 +555,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
     <div id="studentsModal" class="modal">
         <div class="modal-content" style="max-width: 800px;">
             <span class="close" onclick="closeModal('studentsModal')">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="studentsModalTitle">Enrolled Students</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="studentsModalTitle">Enrolled Students</h2>
             
             <div id="studentsContent">
                 <div style="text-align:center;padding:2rem;color:var(--text-label);">

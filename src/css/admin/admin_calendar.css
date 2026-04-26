@@ -36,7 +36,7 @@
 }
 
 .stat-number {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--dark);
@@ -64,7 +64,7 @@
 }
 
 .cal-header h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.2rem;
     color: var(--dark);
 }
@@ -272,7 +272,7 @@
 }
 
 .event-date-badge .day {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.6rem;
     line-height: 1;
     color: var(--dark);
@@ -285,7 +285,7 @@
 }
 
 .event-title {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1rem;
     color: var(--dark);
     margin-bottom: 0.3rem;
@@ -361,7 +361,7 @@
 }
 
 .ev-view-title {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.4rem;
     color: var(--dark);
     margin-bottom: 0.5rem;

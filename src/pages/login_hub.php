@@ -278,7 +278,7 @@ $subs = [
                         <span>Sign In &nbsp;<i class="fa-solid fa-arrow-right"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
                 <?php endif; ?>
 
 
@@ -334,7 +334,7 @@ $subs = [
                     </button>
                 </form>
 
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
 
                 <?php endif; ?>
 
@@ -373,7 +373,7 @@ $subs = [
                     </button>
                 </form>
 
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
                 <?php endif; ?>
 
 
@@ -407,7 +407,7 @@ $subs = [
                         <span>Send Reset Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
                 <?php endif; ?>
 
 
@@ -442,7 +442,7 @@ $subs = [
                         <span>Verify Code &nbsp;<i class="fa-solid fa-check"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
                 <?php endif; ?>
 
                 <!-- ── RESET PASSWORD FORM ── -->
@@ -479,7 +479,7 @@ $subs = [
                         <span>Reset Password &nbsp;<i class="fa-solid fa-arrow-right"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider"><span>Powered by</span><img src="../assets/harinode.webp" ></div>
                 <p class="login-help">
                     <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link">
                         <i class="fa-solid fa-arrow-left"></i> Back to Sign In

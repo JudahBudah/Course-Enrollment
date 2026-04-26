@@ -402,7 +402,7 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
     <div id="accModal" class="modal">
         <div class="modal-content acc-modal">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="accModalTitle">
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="accModalTitle">
                 New Admin Account
             </h2>
 

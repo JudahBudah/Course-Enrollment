@@ -48,11 +48,14 @@ dropdowns.forEach(({ trigger, menu }) => {
         if (!isOpen) {
             trigger.classList.add('open');
             menu.classList.add('open');
+            localStorage.setItem('openDropdown', trigger.id);
 
             // Open sidebar on mobile if collapsed
             if (navMenu.offsetWidth <= 60) {
                 navMenu.classList.add('open');
             }
+        } else {
+            localStorage.removeItem('openDropdown');
         }
     });
 });
@@ -80,12 +83,38 @@ toggleTrack.addEventListener('click', () => {
 applyTheme(localStorage.getItem('darkMode') === 'true');
 
 
-/* ── Active Sidebar Link ───────────────────────────────── */
+/* ── Active Sidebar Link + Restore Dropdown ──────────── */
 
 const currentPath = window.location.pathname.split('/').pop();
+let activeDropdownFound = false;
+
 document.querySelectorAll('.main-ul li a').forEach(link => {
     const href = link.getAttribute('href')?.split('/').pop();
     if (href && href === currentPath) {
         link.classList.add('active');
+
+        // If this link is inside a dropdown, open the parent dropdown
+        const menu = link.closest('.acad-dropdown-menu');
+        if (menu) {
+            menu.classList.add('open');
+            const trigger = menu.previousElementSibling;
+            if (trigger) {
+                trigger.classList.add('open');
+                localStorage.setItem('openDropdown', trigger.id);
+            }
+            activeDropdownFound = true;
+        }
     }
 });
+
+// Fallback: restore last manually opened dropdown if no active child found
+if (!activeDropdownFound) {
+    const saved = localStorage.getItem('openDropdown');
+    if (saved) {
+        const d = dropdowns.find(d => d.trigger?.id === saved);
+        if (d) {
+            d.trigger.classList.add('open');
+            d.menu.classList.add('open');
+        }
+    }
+}

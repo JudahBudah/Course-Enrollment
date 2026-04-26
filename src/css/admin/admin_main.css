@@ -340,6 +340,12 @@ main {
     padding-left: 67px;
 }
 
+.acad-dropdown-menu li a.active {
+    color: var(--red);
+    font-weight: 600;
+    background-color: rgba(140,28,36,0.06);
+}
+
 .acad-dropdown-menu {
     max-height: 0;
     overflow: hidden;
@@ -436,8 +442,8 @@ main {
 }
 
 .page-header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
     color: var(--dark);
 }
@@ -466,10 +472,10 @@ main {
 }
 
 .card-header h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     color: var(--white);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 500;
     letter-spacing: 0.03em;
     margin: 0;
 }
@@ -672,8 +678,8 @@ main {
 }
 
 .modal-content h2 {
-    font-family: 'Playfair Display', serif;
-    margin-bottom: 1.5rem;
+    font-family: "DM Serif Display", serif;
+    margin-bottom: 1.65rem;
     color: var(--dark);
 }
 
@@ -724,8 +730,8 @@ main {
 }
 
 .empty-state h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1.6rem;
     color: var(--text);
     margin-bottom: 0.5rem;
 }

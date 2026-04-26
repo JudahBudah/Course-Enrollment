@@ -262,36 +262,38 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                             <h2>Recent Applicants</h2>
                             <a href="admin_applicants.php" class="link-small">View All</a>
                         </div>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Program</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $recent = mysqli_query($con, "SELECT * FROM applicants ORDER BY created_at DESC LIMIT 5");
-                                    while ($row = mysqli_fetch_assoc($recent)):
-                                    ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? 'N/A')); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email'] ?? 'N/A'); ?></td>
-                                        <td><?php echo htmlspecialchars($row['first_choice'] ?? 'N/A'); ?></td>
-                                        <td>
-                                            <span class="badge <?php echo strtolower($row['application_status'] ?? 'incomplete'); ?>">
-                                                <?php echo htmlspecialchars(ucfirst($row['application_status'] ?? 'Incomplete')); ?>
-                                            </span>
-                                        </td>
-                                        <td><?php echo date('M d, Y', strtotime($row['created_at'])); ?></td>
-                                    </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
+
+                        <div class="recent-applicants-table-wrapper">
+                            <div class="recent-applicants-table">
+
+                                <div class="recent-applicants-table-header">
+                                    <div class="recent-applicants-col-left">Name</div>
+                                    <div class="recent-applicants-col-left">Email</div>
+                                    <div class="recent-applicants-col-left">Program</div>
+                                    <div>Status</div>
+                                    <div>Date</div>
+                                </div>
+
+                                <div class="recent-applicants-table-body">
+                                <?php
+                                $recent = mysqli_query($con, "SELECT * FROM applicants ORDER BY created_at DESC LIMIT 5");
+                                while ($row = mysqli_fetch_assoc($recent)):
+                                ?>
+                                <div class="recent-applicants-row">
+                                    <div class="recent-applicants-col-left"><?php echo htmlspecialchars(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? 'N/A')); ?></div>
+                                    <div class="recent-applicants-col-left word-break"><?php echo htmlspecialchars($row['email'] ?? 'N/A'); ?></div>
+                                    <div class="recent-applicants-col-left"><?php echo htmlspecialchars($row['first_choice'] ?? 'N/A'); ?></div>
+                                    <div>
+                                        <span class="badge <?php echo strtolower($row['application_status'] ?? 'incomplete'); ?>">
+                                            <?php echo htmlspecialchars(ucfirst($row['application_status'] ?? 'Incomplete')); ?>
+                                        </span>
+                                    </div>
+                                    <div><?php echo date('M d, Y', strtotime($row['created_at'])); ?></div>
+                                </div>
+                                <?php endwhile; ?>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 
