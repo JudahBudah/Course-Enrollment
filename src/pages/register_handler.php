@@ -23,8 +23,23 @@ if ($action === 'send_code') {
         exit;
     }
 
-    if (strlen($password) < 6) {
-        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters.']);
+    if (strlen($password) < 8) {
+        echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters.']);
+        exit;
+    }
+
+    if (!preg_match('/[A-Z]/', $password)) {
+        echo json_encode(['success' => false, 'message' => 'Password must contain at least one uppercase letter.']);
+        exit;
+    }
+
+    if (!preg_match('/[a-z]/', $password)) {
+        echo json_encode(['success' => false, 'message' => 'Password must contain at least one lowercase letter.']);
+        exit;
+    }
+
+    if (!preg_match('/[0-9]/', $password)) {
+        echo json_encode(['success' => false, 'message' => 'Password must contain at least one number.']);
         exit;
     }
 

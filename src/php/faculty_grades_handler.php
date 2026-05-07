@@ -140,8 +140,8 @@ if ($action === 'save_cell') {
     if (!in_array($field, $allowed)) {
         echo json_encode(['ok'=>false,'msg'=>'Invalid field']); die;
     }
-    if ($value !== null && ($value < 1 || $value > 100)) {
-        echo json_encode(['ok'=>false,'msg'=>'Value must be 1–100']); die;
+    if ($value !== null && ($value < 0 || $value > 100)) {
+        echo json_encode(['ok'=>false,'msg'=>'Value must be 0–100']); die;
     }
 
     $stmt = mysqli_prepare($con,

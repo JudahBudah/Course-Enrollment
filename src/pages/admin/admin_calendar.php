@@ -409,11 +409,11 @@ $event_colors = ['#8C1C24','#D4AF37','#3b82f6','#22c55e','#a855f7','#f97316','#e
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label id="ev_date_label">Date <span style="color:var(--red)">*</span></label>
-                        <input type="date" name="event_date" id="ev_date" required>
+                        <input type="date" name="event_date" id="ev_date" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="form-group" id="ev_end_date_wrap" style="display:none;">
                         <label>End Date</label>
-                        <input type="date" name="end_date" id="ev_end_date">
+                        <input type="date" name="end_date" id="ev_end_date" min="<?php echo date('Y-m-d'); ?>">
                     </div>
                 </div>
 

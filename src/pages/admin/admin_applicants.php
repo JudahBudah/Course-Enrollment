@@ -423,7 +423,7 @@ $applicants = mysqli_query($con, $query);
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>Exam Date <span style="color:var(--red)">*</span></label>
-                        <input type="date" name="exam_date" id="exam_date" required>
+                        <input type="date" name="exam_date" id="exam_date" required min="<?php echo date('Y-m-d'); ?>">
                     </div>
                     <div class="form-group">
                         <label>Exam Time <span style="color:var(--red)">*</span></label>

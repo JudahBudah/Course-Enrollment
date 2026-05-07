@@ -7,10 +7,21 @@
     margin-bottom: 1.5rem;
 }
 
-.stat-card.blue  { border-left-color: #3b82f6; }
-.stat-card.green { border-left-color: #22c55e; }
-.stat-card.gold  { border-left-color: #D4AF37; }
-.stat-card.red   { border-left-color: #8C1C24; }
+.stat-card.blue {
+    border-left-color: #3b82f6;
+}
+
+.stat-card.green {
+    border-left-color: #22c55e;
+}
+
+.stat-card.gold {
+    border-left-color: #D4AF37;
+}
+
+.stat-card.red {
+    border-left-color: #8C1C24;
+}
 
 .stat-icon {
     width: 50px;
@@ -23,10 +34,25 @@
     flex-shrink: 0;
 }
 
-.stat-card.blue  .stat-icon { background: rgba(59,130,246,0.12); color: #3b82f6; }
-.stat-card.green .stat-icon { background: rgba(34,197,94,0.12);  color: #16a34a; }
-.stat-card.gold  .stat-icon { background: rgba(212,175,55,0.15); color: #a8881c; }
-.stat-card.red   .stat-icon { background: rgba(140,28,36,0.12);  color: #8C1C24; }
+.stat-card.blue .stat-icon {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+}
+
+.stat-card.green .stat-icon {
+    background: rgba(34, 197, 94, 0.12);
+    color: #16a34a;
+}
+
+.stat-card.gold .stat-icon {
+    background: rgba(212, 175, 55, 0.15);
+    color: #a8881c;
+}
+
+.stat-card.red .stat-icon {
+    background: rgba(140, 28, 36, 0.12);
+    color: #8C1C24;
+}
 
 .stat-content h3 {
     font-size: 0.73rem;
@@ -70,8 +96,8 @@
 
 .dept-select {
     padding: 0.5rem 0.75rem;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: var(--white);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.82rem;
@@ -87,8 +113,8 @@
 
 .dept-select:focus {
     outline: none;
-    background: rgba(255,255,255,0.2);
-    border-color: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .dept-select optgroup {
@@ -98,8 +124,8 @@
 
 .header-search-input {
     padding: 0.5rem 1rem;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: var(--white);
     font-family: 'DM Sans', sans-serif;
     font-size: 0.85rem;
@@ -110,22 +136,22 @@
 
 .header-search-input:focus {
     outline: none;
-    background: rgba(255,255,255,0.18);
-    border-color: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Buttons in the card header on red background */
 .card-header .btn-secondary {
-    border-color: rgba(255,255,255,0.4);
+    border-color: rgba(255, 255, 255, 0.4);
     color: var(--white);
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     font-size: 0.82rem;
     padding: 0.45rem 0.9rem;
 }
 
 .card-header .btn-secondary:hover {
-    background: rgba(255,255,255,0.22);
-    border-color: rgba(255,255,255,0.7);
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.7);
 }
 
 
@@ -149,7 +175,7 @@
 
 .units-badge {
     display: inline-block;
-    background: rgba(212,175,55,0.12);
+    background: rgba(212, 175, 55, 0.12);
     color: var(--gold-spc);
     padding: 0.2rem 0.65rem;
     border-radius: 10px;
@@ -159,10 +185,25 @@
 
 /* ── Year level badge variants ─────────────────────────── */
 
-.badge.yr1 { background: rgba(59,130,246,0.12);  color: #2563eb; }
-.badge.yr2 { background: rgba(168,85,247,0.12);  color: #9333ea; }
-.badge.yr3 { background: rgba(249,115,22,0.12);  color: #ea580c; }
-.badge.yr4 { background: rgba(212,175,55,0.15);  color: #a8881c; }
+.badge.yr1 {
+    background: rgba(59, 130, 246, 0.12);
+    color: #2563eb;
+}
+
+.badge.yr2 {
+    background: rgba(168, 85, 247, 0.12);
+    color: #9333ea;
+}
+
+.badge.yr3 {
+    background: rgba(249, 115, 22, 0.12);
+    color: #ea580c;
+}
+
+.badge.yr4 {
+    background: rgba(212, 175, 55, 0.15);
+    color: #a8881c;
+}
 
 /* Toggle status btn-icon variants */
 .btn-icon {
@@ -175,7 +216,7 @@
 }
 
 .btn-icon.toggle-on:hover {
-    background: rgba(249,115,22,0.1);
+    background: rgba(249, 115, 22, 0.1);
 }
 
 .btn-icon.toggle-off {
@@ -184,7 +225,7 @@
 }
 
 .btn-icon.toggle-off:hover {
-    background: rgba(34,197,94,0.1);
+    background: rgba(34, 197, 94, 0.1);
 }
 
 .btn-icon.danger {
@@ -193,7 +234,7 @@
 }
 
 .btn-icon.danger:hover {
-    background: rgba(220,38,38,0.1);
+    background: rgba(220, 38, 38, 0.1);
 }
 
 /* ── View Modal ────────────────────────────────────────── */
@@ -298,7 +339,7 @@
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(140,28,36,0.3);
+    box-shadow: 0 8px 20px rgba(140, 28, 36, 0.3);
 }
 
 .modal-actions {

@@ -264,6 +264,7 @@ $subs = [
                                 id="identifier" name="identifier"
                                 placeholder="<?php echo htmlspecialchars($current['id_placeholder']); ?>"
                                 value="<?php echo $saved_id; ?>"
+                                <?php echo $portal === 'student' ? 'maxlength="9" pattern="[0-9]{9}" inputmode="numeric"' : ''; ?>
                                 autocomplete="username" required>
                         </div>
                     </div>
@@ -335,7 +336,7 @@ $subs = [
                         <div class="field-wrap">
                             <i class="field-icon fa-solid fa-lock"></i>
                             <input type="password" id="reg-password" name="password"
-                                placeholder="Minimum 6 characters" minlength="6" required>
+                                placeholder="Minimum 8 characters, include uppercase, lowercase, number" minlength="8" required>
                             <button class="toggle-pw" type="button" onclick="togglePw('reg-password','reg-pw-icon')">
                                 <i class="fa-regular fa-eye" id="reg-pw-icon"></i>
                             </button>
@@ -596,6 +597,26 @@ $subs = [
             const btn      = document.getElementById('reg-btn');
             const alert    = document.getElementById('reg-alert');
             const alertMsg = document.getElementById('reg-alert-msg');
+            const password = document.getElementById('reg-password').value;
+            
+            // Client-side validation
+            if (password.length < 8) {
+                window.alert('⚠️ Weak Password\n\nPassword must be at least 8 characters long.\n\nPlease use a stronger password.');
+                return;
+            }
+            if (!/[A-Z]/.test(password)) {
+                window.alert('⚠️ Weak Password\n\nPassword must contain at least one uppercase letter (A-Z).\n\nPlease use a stronger password.');
+                return;
+            }
+            if (!/[a-z]/.test(password)) {
+                window.alert('⚠️ Weak Password\n\nPassword must contain at least one lowercase letter (a-z).\n\nPlease use a stronger password.');
+                return;
+            }
+            if (!/[0-9]/.test(password)) {
+                window.alert('⚠️ Weak Password\n\nPassword must contain at least one number (0-9).\n\nPlease use a stronger password.');
+                return;
+            }
+            
             alert.style.display = 'none';
             btn.disabled = true;
             btn.innerHTML = '<span>Sending... &nbsp;<i class="fa-solid fa-spinner fa-spin"></i></span>';
@@ -603,7 +624,7 @@ $subs = [
             const data = new FormData();
             data.append('action', 'send_code');
             data.append('email',            document.getElementById('reg-email').value);
-            data.append('password',         document.getElementById('reg-password').value);
+            data.append('password',         password);
             data.append('confirm_password', document.getElementById('reg-confirm').value);
 
             const showError = (msg) => {

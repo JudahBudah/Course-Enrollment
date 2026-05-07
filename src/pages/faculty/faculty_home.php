@@ -150,7 +150,7 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                     <?php echo htmlspecialchars($faculty_data['first_name'] . ' ' . $faculty_data['last_name']); ?>
                 </div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile" style="object-fit: cover; object-position: center top;">
                 </div>
             </div>
         </div>
@@ -233,7 +233,7 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                 </div>
                 <div class="faculty-body">
                     <div class="avatar-wrap">
-                        <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
+                        <img src="<?php echo !empty($faculty_data['profile_photo']) ? htmlspecialchars('../../'.$faculty_data['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile" style="object-fit: cover; object-position: center top;">
                     </div>
                     <div class="faculty-title-content">
                         <h2><?php echo htmlspecialchars($faculty_data['first_name'] . ' ' . ($faculty_data['middle_name'] ?? '') . ' ' . $faculty_data['last_name']); ?></h2>
@@ -459,8 +459,28 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
         const np = document.getElementById('newPw').value;
         const cp = document.getElementById('confirmPw').value;
         const err = document.getElementById('pwChangeError');
-        if (np.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.style.display='block'; return; }
-        if (np !== cp)     { err.textContent = 'Passwords do not match.'; err.style.display='block'; return; }
+        
+        if (np.length < 8) {
+            window.alert('⚠️ Weak Password\n\nPassword must be at least 8 characters long.\n\nPlease use a stronger password.');
+            return;
+        }
+        if (!/[A-Z]/.test(np)) {
+            window.alert('⚠️ Weak Password\n\nPassword must contain at least one uppercase letter (A-Z).\n\nPlease use a stronger password.');
+            return;
+        }
+        if (!/[a-z]/.test(np)) {
+            window.alert('⚠️ Weak Password\n\nPassword must contain at least one lowercase letter (a-z).\n\nPlease use a stronger password.');
+            return;
+        }
+        if (!/[0-9]/.test(np)) {
+            window.alert('⚠️ Weak Password\n\nPassword must contain at least one number (0-9).\n\nPlease use a stronger password.');
+            return;
+        }
+        if (np !== cp) {
+            window.alert('⚠️ Password Mismatch\n\nPasswords do not match.\n\nPlease make sure both passwords are identical.');
+            return;
+        }
+        
         err.style.display = 'none';
         fetch('../../php/faculty_profile_handler.php', {
             method: 'POST',

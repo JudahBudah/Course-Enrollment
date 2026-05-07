@@ -175,7 +175,7 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile" style="object-fit: cover; object-position: center top;">
                 </div>
             </div>
         </div>

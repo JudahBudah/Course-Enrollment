@@ -122,8 +122,20 @@ if ($action === 'change_password') {
     $new      = $_POST['new_password'] ?? '';
     $confirm  = $_POST['confirm_password'] ?? '';
 
-    if (strlen($new) < 6) {
-        echo json_encode(['ok'=>false,'msg'=>'Password must be at least 6 characters.']); die;
+    if (strlen($new) < 8) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must be at least 8 characters.']); die;
+    }
+
+    if (!preg_match('/[A-Z]/', $new)) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must contain at least one uppercase letter.']); die;
+    }
+
+    if (!preg_match('/[a-z]/', $new)) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must contain at least one lowercase letter.']); die;
+    }
+
+    if (!preg_match('/[0-9]/', $new)) {
+        echo json_encode(['ok'=>false,'msg'=>'Password must contain at least one number.']); die;
     }
     if ($new !== $confirm) {
         echo json_encode(['ok'=>false,'msg'=>'Passwords do not match.']); die;

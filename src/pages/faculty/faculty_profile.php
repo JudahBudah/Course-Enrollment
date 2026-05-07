@@ -71,7 +71,7 @@ function sel($faculty, $key, $option) {
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo val($faculty, 'first_name') . ' ' . val($faculty, 'last_name'); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo $profile_src; ?>" id="nav-photo" alt="Profile">
+                    <img src="<?php echo $profile_src; ?>" id="nav-photo" alt="Profile" style="object-fit: cover; object-position: center top;">
                 </div>
             </div>
         </div>
@@ -165,7 +165,7 @@ function sel($faculty, $key, $option) {
                 <div id="section-faculty" class="profile-section">
                 <div class="main-info">
                     <div class="img-container">
-                        <img src="<?php echo $profile_src; ?>" id="profile-img" alt="Profile Photo">
+                        <img src="<?php echo $profile_src; ?>" id="profile-img" alt="Profile Photo" style="object-fit: cover; object-position: center top;">
                         <div class="change-photo" id="change-photo-btn" title="Upload new photo">
                             <i class="fa-solid fa-camera"></i>
                             <span>Change Photo</span>

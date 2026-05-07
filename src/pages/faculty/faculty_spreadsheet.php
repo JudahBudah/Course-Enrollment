@@ -164,7 +164,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             <div class="acc-display-container">
                 <div class="acc-name"><?php echo htmlspecialchars($faculty['first_name'] . ' ' . $faculty['last_name']); ?></div>
                 <div class="acc-img">
-                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile">
+                    <img src="<?php echo !empty($faculty['profile_photo']) ? htmlspecialchars('../../' . $faculty['profile_photo']) : '../../uploads/default.jpg'; ?>" alt="Profile" style="object-fit: cover; object-position: center top;">
                 </div>
             </div>
         </div>
@@ -376,7 +376,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                             <input type="number" class="cell-input"
                                    data-field="<?php echo $field; ?>"
                                    value="<?php echo $val !== null ? htmlspecialchars($val) : ''; ?>"
-                                   placeholder="-" min="1" max="100" step="0.01"
+                                   placeholder="-" min="0" max="100" step="0.01"
                                    title="<?php echo ucwords(str_replace('_', ' ', $field)); ?> (0-100)"
                                    <?php echo $finalized ? 'disabled' : ''; ?>>
                         </span>
@@ -497,7 +497,8 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
 
         // -- Finalize grades ---------------------------------------------------
         function confirmFinalize() {
-            if (!confirm('Finalize grades for this class?\n\nThis is permanent and cannot be undone. Students will see their final grades and no further edits will be allowed.')) return;
+            if (!confirm('⚠️ FINALIZE GRADES - FIRST CONFIRMATION\n\nAre you sure you want to finalize grades for this class?\n\nThis action is PERMANENT and CANNOT be undone.')) return;
+            if (!confirm('⚠️ FINAL CONFIRMATION\n\nThis is your last chance to review.\n\nOnce finalized:\n• Students will see their final grades\n• No further edits will be allowed\n• This action is IRREVERSIBLE\n\nProceed with finalization?')) return;
             const fd = new FormData();
             fd.append('action',     'finalize_class');
             fd.append('class_id',   CLASS_ID);
@@ -505,14 +506,26 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             fetch(HANDLER, { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
-                    if (d.ok) location.reload();
-                    else alert(d.msg || 'Failed to finalize grades.');
+                    if (d.ok) {
+                        alert('✓ Grades have been successfully finalized!');
+                        location.reload();
+                    } else alert(d.msg || 'Failed to finalize grades.');
                 })
                 .catch(() => alert('Error finalizing grades.'));
         }
 
         // -- Save cell to server ----------------------------------------------
         function saveCell(input, row) {
+            const val = input.value.trim();
+            
+            // Validate input
+            if (val !== '' && (isNaN(val) || parseFloat(val) < 0 || parseFloat(val) > 100)) {
+                alert('⚠️ Invalid Input\n\nGrade must be a number between 0 and 100.\n\nPlease correct the value and try again.');
+                input.focus();
+                input.select();
+                return;
+            }
+            
             const fd  = new FormData();
             fd.append('action',        'save_cell');
             fd.append('enrollment_id', row.dataset.enrollment);
@@ -525,8 +538,12 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             fetch(HANDLER, { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
+                    if (!d.ok) {
+                        alert('⚠️ Error Saving Grade\n\n' + (d.msg || 'Failed to save grade. Please try again.'));
+                        showSaved(false);
+                        return;
+                    }
                     showSaved(d.ok);
-                    if (!d.ok) return;
                     const tgEl = row.querySelector('[data-col="tg"]');
                     const fgEl = row.querySelector('[data-col="fg"]');
                     const rmEl = row.querySelector('[data-col="remark"]');
@@ -542,7 +559,10 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                         rmEl.innerHTML   = '<i class="fa-solid fa-clock"></i> Pending';
                     }
                 })
-                .catch(() => showSaved(false));
+                .catch(() => {
+                    alert('⚠️ Network Error\n\nFailed to save grade. Please check your connection and try again.');
+                    showSaved(false);
+                });
         }
 
         // -- Keyboard navigation ----------------------------------------------
