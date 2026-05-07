@@ -246,14 +246,21 @@ Sidebar access: **Application Form → Submit Documents → Exam Schedule**
 
 ## Screenshots
 
+> - Landing page with portal selection
 <img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/183eb194-43f3-4723-b39d-7403a137e563" />
 
+> - Admin dashboard with live activity feed
 <img width="1365" height="631" alt="image" src="https://github.com/user-attachments/assets/135348a7-55fc-4338-8e5f-abfdc74c243a" />
 
+> - Student enrollment page with prerequisite checking
 <img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/604a72af-6a47-484e-9be2-81d777d0ae09" />
 
 > - Faculty grade spreadsheet and gradebook
+
+
 > - Applicant application timeline
+> - <img width="1365" height="629" alt="image" src="https://github.com/user-attachments/assets/070d87ca-9308-41c3-8fd7-caef1d8688d3" />
+
 
 ---
 
@@ -267,7 +274,7 @@ College of Engineering and Technology, Computer Engineering Department
 |---|---|
 | Blanco, Gabrielle Nicole S. | Developer |
 | Dela Cruz, Judah Isaiah N. | Developer |
-| Lumabi, Kevin G. | Developer |
+| Lumabi, Kevin G. | Project Manager & Q.A. |
 | Mendoza, Venedict E. | Developer |
 | Muncada, John Louie L. | Developer |
 
