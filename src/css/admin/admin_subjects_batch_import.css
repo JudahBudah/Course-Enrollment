@@ -33,7 +33,7 @@
 }
 
 .import-section h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.05rem;
     color: var(--red);
     margin-bottom: 1rem;
@@ -165,4 +165,151 @@
     .import-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ── Tabs ─────────────────────────────────────────────── */
+
+.batch-tabs {
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 2px solid var(--off);
+    padding-bottom: 0;
+}
+
+.batch-tab {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    padding: .6rem 1.25rem;
+    font-size: .9rem;
+    font-weight: 600;
+    color: var(--text-label);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    transition: color .15s, border-color .15s;
+}
+
+.batch-tab.active {
+    color: var(--red);
+    border-bottom-color: var(--red);
+}
+
+.batch-tab:not(.active):hover {
+    color: var(--dark);
+}
+
+.batch-tab-panel {
+    display: none;
+}
+
+.batch-tab-panel.active {
+    display: block;
+}
+
+/* ── CSV Drop Zone ────────────────────────────────────── */
+
+.csv-drop-zone {
+    border: 2px dashed var(--off-gray);
+    border-radius: 10px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+    color: var(--text-label);
+}
+
+.csv-drop-zone:hover,
+.csv-drop-zone.drag-over {
+    border-color: var(--red);
+    background: rgba(140,28,36,.04);
+}
+
+.csv-drop-zone i {
+    font-size: 2.2rem;
+    color: var(--red);
+    opacity: .7;
+}
+
+.csv-drop-zone p {
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--dark);
+    margin: 0;
+}
+
+.csv-drop-zone span {
+    font-size: .8rem;
+    color: var(--text-label);
+}
+
+.csv-browse-btn {
+    background: var(--red);
+    color: #fff;
+    padding: .45rem 1.25rem;
+    border-radius: 6px;
+    font-size: .85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.csv-browse-btn:hover {
+    background: #6e0e16;
+}
+
+.csv-browse-btn input[type="file"] {
+    display: none;
+}
+
+.csv-file-name {
+    font-size: .78rem;
+    color: var(--text-label);
+    margin: 0;
+}
+
+/* ── CSV Preview Table ─────────────────────────────────── */
+
+.csv-preview-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--off);
+    border-radius: 6px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.csv-preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .78rem;
+}
+
+.csv-preview-table th {
+    background: var(--off);
+    color: var(--text-label);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    padding: .45rem .75rem;
+    text-align: left;
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+}
+
+.csv-preview-table td {
+    padding: .4rem .75rem;
+    border-bottom: 1px solid var(--off);
+    color: var(--dark);
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

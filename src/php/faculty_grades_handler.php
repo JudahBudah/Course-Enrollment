@@ -91,14 +91,33 @@ if ($col_expr && trim(str_replace(' ', '', $col_expr['expr'] ?? '')) !== trim(st
 }
 
 header('Content-Type: application/json');
+
+// ── CSRF validation ─────────────────────────────────────────────────────────
+$csrf_token = $_POST['csrf_token'] ?? '';
+if (empty($csrf_token) || !hash_equals($_SESSION['csrf_token'] ?? '', $csrf_token)) {
+    http_response_code(403);
+    echo json_encode(['ok' => false, 'msg' => 'Invalid CSRF token']);
+    die;
+}
+
 $action = $_POST['action'] ?? '';
 
 // ── Helper: check if a class has finalized grades ───────────────────────────
 function isFinalized(mysqli $con, int $class_id): bool {
-    $r = mysqli_fetch_assoc(mysqli_query($con,
-        "SELECT grades_finalized FROM classes WHERE class_id = $class_id"
-    ));
+    $stmt = mysqli_prepare($con, "SELECT grades_finalized FROM classes WHERE class_id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $class_id);
+    mysqli_stmt_execute($stmt);
+    $r = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
     return $r && (int)$r['grades_finalized'] === 1;
+}
+
+// ── Helper: verify faculty owns the class ───────────────────────────────────
+function facultyOwnsClass(mysqli $con, int $class_id, int $faculty_id): bool {
+    $stmt = mysqli_prepare($con, "SELECT class_id FROM classes WHERE class_id = ? AND faculty_id = ?");
+    mysqli_stmt_bind_param($stmt, 'ii', $class_id, $faculty_id);
+    mysqli_stmt_execute($stmt);
+    $r = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    return (bool)$r;
 }
 
 // ── Save a single cell ──────────────────────────────────────────────────────
@@ -106,9 +125,13 @@ if ($action === 'save_cell') {
     $enrollment_id = (int)$_POST['enrollment_id'];
     $student_id    = (int)$_POST['student_id'];
     $class_id      = (int)$_POST['class_id'];
+    $faculty_id    = (int)$_SESSION['faculty_id'];
     $field         = $_POST['field'] ?? '';
     $value         = $_POST['value'] === '' ? null : (float)$_POST['value'];
 
+    if (!facultyOwnsClass($con, $class_id, $faculty_id)) {
+        echo json_encode(['ok'=>false,'msg'=>'Unauthorized']); die;
+    }
     if (isFinalized($con, $class_id)) {
         echo json_encode(['ok'=>false,'msg'=>'Grades are finalized and cannot be changed.']); die;
     }
@@ -130,10 +153,10 @@ if ($action === 'save_cell') {
     mysqli_stmt_bind_param($stmt, $bind_type, $enrollment_id, $class_id, $student_id, $value, $value);
     mysqli_stmt_execute($stmt);
 
-    $row = mysqli_fetch_assoc(mysqli_query($con,
-        "SELECT class_standing, quiz, midterms, finals
-         FROM grade_entries WHERE enrollment_id = $enrollment_id"
-    ));
+    $row_stmt = mysqli_prepare($con, "SELECT class_standing, quiz, midterms, finals FROM grade_entries WHERE enrollment_id = ?");
+    mysqli_stmt_bind_param($row_stmt, 'i', $enrollment_id);
+    mysqli_stmt_execute($row_stmt);
+    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($row_stmt));
 
     if ($row) {
         $computed = round(
@@ -294,11 +317,16 @@ if ($action === 'finalize_class') {
 
 // ── Load entries for a class ────────────────────────────────────────────────
 if ($action === 'load') {
-    $class_id = (int)$_POST['class_id'];
+    $class_id   = (int)$_POST['class_id'];
+    $faculty_id = (int)$_SESSION['faculty_id'];
+    if (!facultyOwnsClass($con, $class_id, $faculty_id)) {
+        echo json_encode(['ok'=>false,'msg'=>'Unauthorized']); die;
+    }
     $rows = [];
-    $q = mysqli_query($con,
-        "SELECT ge.* FROM grade_entries ge WHERE ge.class_id = $class_id"
-    );
+    $stmt = mysqli_prepare($con, "SELECT ge.* FROM grade_entries ge WHERE ge.class_id = ?");
+    mysqli_stmt_bind_param($stmt, 'i', $class_id);
+    mysqli_stmt_execute($stmt);
+    $q = mysqli_stmt_get_result($stmt);
     while ($r = mysqli_fetch_assoc($q)) $rows[$r['enrollment_id']] = $r;
     echo json_encode(['ok'=>true,'entries'=>$rows]);
     die;

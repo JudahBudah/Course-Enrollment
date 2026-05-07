@@ -190,6 +190,14 @@ $drop_requests = mysqli_query($con, "
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>

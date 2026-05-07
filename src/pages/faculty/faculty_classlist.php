@@ -35,33 +35,52 @@ $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
 }
+if ($selected_class_id && !$selected_class) { $selected_class_id = 0; }
 
-// Search
+// Search — use prepared statement with LIKE, no raw interpolation
 $search = trim($_GET['search'] ?? '');
 
 // Students enrolled in selected class
 $students = [];
 if ($selected_class_id) {
-    $s_esc = mysqli_real_escape_string($con, $search);
-    $search_clause = $search
-        ? "AND (s.last_name LIKE '%$s_esc%' OR s.first_name LIKE '%$s_esc%' OR s.student_number LIKE '%$s_esc%' OR s.email LIKE '%$s_esc%')"
-        : '';
-    $q = mysqli_query($con,
-        "SELECT s.student_number, s.first_name, s.last_name, s.middle_name,
-                s.email, s.course, s.year_level, e.status AS enroll_status
-         FROM enrollments e
-         JOIN students s ON e.student_id = s.student_id
-         WHERE e.class_id = $selected_class_id
-           AND e.status IN ('ongoing','confirmed','dropped')
-           AND e.enrollment_id = (
-               SELECT MAX(e2.enrollment_id) FROM enrollments e2
-               WHERE e2.student_id = e.student_id
-                 AND e2.class_id = $selected_class_id
-           )
-           $search_clause
-         ORDER BY s.last_name, s.first_name"
-    );
-    while ($r = mysqli_fetch_assoc($q)) $students[] = $r;
+    if ($search) {
+        $like = '%' . $search . '%';
+        $q = mysqli_prepare($con,
+            "SELECT s.student_number, s.first_name, s.last_name, s.middle_name,
+                    s.email, s.course, s.year_level, e.status AS enroll_status
+             FROM enrollments e
+             JOIN students s ON e.student_id = s.student_id
+             WHERE e.class_id = ?
+               AND e.status IN ('ongoing','confirmed','dropped')
+               AND e.enrollment_id = (
+                   SELECT MAX(e2.enrollment_id) FROM enrollments e2
+                   WHERE e2.student_id = e.student_id
+                     AND e2.class_id = ?
+               )
+               AND (s.last_name LIKE ? OR s.first_name LIKE ? OR s.student_number LIKE ? OR s.email LIKE ?)
+             ORDER BY s.last_name, s.first_name"
+        );
+        mysqli_stmt_bind_param($q, 'iissss', $selected_class_id, $selected_class_id, $like, $like, $like, $like);
+    } else {
+        $q = mysqli_prepare($con,
+            "SELECT s.student_number, s.first_name, s.last_name, s.middle_name,
+                    s.email, s.course, s.year_level, e.status AS enroll_status
+             FROM enrollments e
+             JOIN students s ON e.student_id = s.student_id
+             WHERE e.class_id = ?
+               AND e.status IN ('ongoing','confirmed','dropped')
+               AND e.enrollment_id = (
+                   SELECT MAX(e2.enrollment_id) FROM enrollments e2
+                   WHERE e2.student_id = e.student_id
+                     AND e2.class_id = ?
+               )
+             ORDER BY s.last_name, s.first_name"
+        );
+        mysqli_stmt_bind_param($q, 'ii', $selected_class_id, $selected_class_id);
+    }
+    mysqli_stmt_execute($q);
+    $res = mysqli_stmt_get_result($q);
+    while ($r = mysqli_fetch_assoc($res)) $students[] = $r;
 }
 
 $enrolled_count = count(array_filter($students, fn($s) => in_array($s['enroll_status'], ['ongoing','confirmed'])));

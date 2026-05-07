@@ -70,8 +70,8 @@ body {
 }
 
 .login-brand h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1.7rem;
     color: var(--gold);
     margin: 0;
 }
@@ -122,8 +122,8 @@ body {
 }
 
 .login-form h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
     color: var(--white);
 }

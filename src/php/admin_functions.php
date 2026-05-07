@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Manila');
 require_once __DIR__ . '/no_cache.php';
 
 function check_admin_login($con)
@@ -106,4 +107,41 @@ function save_setting($con, string $key, string $value): void
     mysqli_stmt_bind_param($stmt, 'ss', $key, $value);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
+}
+
+/**
+ * Returns the current enrollment period status.
+ * 'enrollment'      — regular enrollment window is open
+ * 'late_enrollment' — late enrollment + add/drop window is open
+ * 'closed'          — outside all windows
+ *
+ * Falls back to the legacy 'enrollment_open' toggle when no dates are set.
+ */
+function get_enrollment_period($con): string
+{
+    $enroll_start      = get_setting($con, 'enrollment_start',      '');
+    $enroll_end        = get_setting($con, 'enrollment_end',        '');
+    $late_start        = get_setting($con, 'late_enrollment_start', '');
+    $late_end          = get_setting($con, 'late_enrollment_end',   '');
+
+    // If no dates configured, default to closed
+    if (empty($enroll_start) && empty($enroll_end) && empty($late_start) && empty($late_end)) {
+        return 'closed';
+    }
+
+    $now = time();
+
+    if (!empty($enroll_start) && !empty($enroll_end)) {
+        if ($now >= strtotime($enroll_start) && $now <= strtotime($enroll_end)) {
+            return 'enrollment';
+        }
+    }
+
+    if (!empty($late_start) && !empty($late_end)) {
+        if ($now >= strtotime($late_start) && $now <= strtotime($late_end)) {
+            return 'late_enrollment';
+        }
+    }
+
+    return 'closed';
 }

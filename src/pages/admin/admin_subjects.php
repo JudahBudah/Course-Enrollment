@@ -59,8 +59,8 @@ $subjects = mysqli_query($con, "
     ORDER BY s.year_level ASC, s.semester ASC, s.subject_code ASC
 ");
 
-// Get courses for filter dropdown
-$courses_filter_query = mysqli_query($con, "SELECT DISTINCT c.course_id, c.course_code, c.course_name FROM subjects s INNER JOIN courses c ON s.course_id = c.course_id ORDER BY c.course_code");
+// Get courses for filter dropdown — all active courses, not just those with subjects
+$courses_filter_query = mysqli_query($con, "SELECT course_id, course_code, course_name, college_name FROM courses WHERE status = 'active' ORDER BY college_name, course_code");
 $courses_filter = [];
 while ($cf = mysqli_fetch_assoc($courses_filter_query)) $courses_filter[] = $cf;
 
@@ -216,6 +216,14 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -290,11 +298,19 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                 </select>
                                 <select name="course" class="dept-select" onchange="this.form.submit()">
                                     <option value="">All Courses</option>
-                                    <?php foreach ($courses_filter as $cf): ?>
+                                    <?php
+                                    $cur_college_filter = '';
+                                    foreach ($courses_filter as $cf):
+                                        if ($cur_college_filter !== $cf['college_name']) {
+                                            if ($cur_college_filter !== '') echo '</optgroup>';
+                                            echo '<optgroup label="' . htmlspecialchars($cf['college_name']) . '">';
+                                            $cur_college_filter = $cf['college_name'];
+                                        }
+                                    ?>
                                         <option value="<?php echo $cf['course_id']; ?>" <?php echo $course_filter==$cf['course_id']?'selected':''; ?>>
-                                            <?php echo htmlspecialchars($cf['course_code']); ?>
+                                            <?php echo htmlspecialchars($cf['course_code'] . ' — ' . $cf['course_name']); ?>
                                         </option>
-                                    <?php endforeach; ?>
+                                    <?php endforeach; if ($cur_college_filter !== '') echo '</optgroup>'; ?>
                                 </select>
                                 <input type="text" name="search" class="header-search-input"
                                     placeholder="Search code, name, course..."
@@ -307,8 +323,8 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                 <?php endif; ?>
                             </form>
                             <a href="admin_subjects_batch_import.php" class="btn-secondary btn-import">
-                                <i class="fa-solid fa-file-import"></i>
-                                <span class="li-name">Batch Import</span>
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span class="li-name">Batch Create</span>
                             </a>
                             <button class="btn-secondary" onclick="openAdd()">
                                 <i class="fa-solid fa-plus"></i>
@@ -384,20 +400,24 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
                                             <input type="hidden" name="action"     value="toggle_status">
                                             <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
                                             <input type="hidden" name="new_status" value="<?php echo $sub['status']==='active'?'inactive':'active'; ?>">
+                                            <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                                            <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                                            <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                                            <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
                                             <button type="submit"
                                                     class="btn-icon <?php echo $sub['status']==='active'?'toggle-on':'toggle-off'; ?>"
                                                     title="<?php echo $sub['status']==='active'?'Deactivate':'Activate'; ?>">
                                                 <i class="fa-solid <?php echo $sub['status']==='active'?'fa-toggle-on':'fa-toggle-off'; ?>"></i>
                                             </button>
                                         </form>
-                                        <form method="POST" action="../../php/admin_subjects_handler.php" style="display:inline;"
-                                            onsubmit="return confirm('Delete this subject? This cannot be undone.')">
-                                            <input type="hidden" name="action"     value="delete">
-                                            <input type="hidden" name="subject_id" value="<?php echo $sub['subject_id']; ?>">
-                                            <button type="submit" class="btn-icon danger" title="Delete">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button class="btn-icon danger" title="Delete"
+                                                onclick="confirmDelete(
+                                                    <?php echo $sub['subject_id']; ?>,
+                                                    '<?php echo htmlspecialchars(addslashes($sub['subject_code'])); ?>',
+                                                    '<?php echo htmlspecialchars(addslashes($sub['subject_name'])); ?>'
+                                                )">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -455,6 +475,10 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
             <form method="POST" action="../../php/admin_subjects_handler.php">
                 <input type="hidden" name="action"     id="form_action"     value="add">
                 <input type="hidden" name="subject_id" id="form_subject_id">
+                <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
 
                 <p class="form-section-title">Basic Information</p>
                 <div class="form-grid-2">
@@ -556,7 +580,82 @@ while ($row = mysqli_fetch_assoc($courses_query)) {
         </div>
     </div>
 
+    <!-- ── Delete Warning Modal ──────────────────────── -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content" style="max-width:520px;">
+            <span class="close" onclick="closeModal('deleteModal')">&times;</span>
+            <h2 class="modal-subject-title" style="color:var(--red);"><i class="fa-solid fa-triangle-exclamation"></i> Delete Subject</h2>
+
+            <p id="deleteModalDesc" style="margin:.75rem 0 1rem;font-size:.9rem;color:var(--dark);"></p>
+
+            <div id="deleteModalWarning" style="display:none;margin-bottom:1rem;">
+                <div style="background:#dc26261a;border-left:4px solid #dc2626;border-radius:6px;padding:.85rem 1rem;">
+                    <p style="font-size:.85rem;font-weight:600;color:#dc2626;margin-bottom:.5rem;">
+                        <i class="fa-solid fa-link-slash"></i>
+                        The following subjects list this as a prerequisite and will be affected:
+                    </p>
+                    <div id="deleteModalDependentsList" style="display:flex;flex-direction:column;gap:.35rem;"></div>
+                </div>
+            </div>
+
+            <form method="POST" action="../../php/admin_subjects_handler.php" id="deleteForm">
+                <input type="hidden" name="action"     value="delete">
+                <input type="hidden" name="subject_id" id="delete_subject_id">
+                <input type="hidden" name="_filter" value="<?php echo htmlspecialchars($filter); ?>">
+                <input type="hidden" name="_year"   value="<?php echo htmlspecialchars($year_filter); ?>">
+                <input type="hidden" name="_course" value="<?php echo htmlspecialchars($course_filter); ?>">
+                <input type="hidden" name="_search" value="<?php echo htmlspecialchars($search); ?>">
+                <div class="modal-actions">
+                    <button type="submit" class="btn-submit" style="background:#dc2626;" id="deleteConfirmBtn">Delete</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_subjects.js"></script>
+    <script>
+    function confirmDelete(subjectId, subjectCode, subjectName) {
+        document.getElementById('delete_subject_id').value = subjectId;
+        document.getElementById('deleteModalDesc').textContent =
+            'You are about to permanently delete "' + subjectCode + ' — ' + subjectName + '". This cannot be undone.';
+        document.getElementById('deleteModalWarning').style.display = 'none';
+        document.getElementById('deleteModalDependentsList').innerHTML = '';
+        document.getElementById('deleteConfirmBtn').textContent = 'Checking…';
+        document.getElementById('deleteConfirmBtn').disabled = true;
+        document.getElementById('deleteModal').style.display = 'flex';
+
+        const fd = new FormData();
+        fd.append('action', 'check_dependents');
+        fd.append('subject_id', subjectId);
+
+        fetch('../../php/admin_subjects_handler.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('deleteConfirmBtn').textContent = 'Delete';
+                document.getElementById('deleteConfirmBtn').disabled = false;
+                if (data.dependents && data.dependents.length > 0) {
+                    const list = document.getElementById('deleteModalDependentsList');
+                    data.dependents.forEach(dep => {
+                        const item = document.createElement('div');
+                        item.style.cssText = 'font-size:.82rem;color:#dc2626;display:flex;align-items:center;gap:.4rem;';
+                        const semMap = { '1st': '1st Sem', '2nd': '2nd Sem', 'summer': 'Summer' };
+                        const sem = semMap[dep.semester] || dep.semester || '';
+                        item.innerHTML = '<i class="fa-solid fa-arrow-right" style="font-size:.7rem;"></i>'
+                            + '<strong>' + dep.subject_code + '</strong> — ' + dep.subject_name
+                            + (dep.year_level ? ' <span style="opacity:.7">(Year ' + dep.year_level + (sem ? ', ' + sem : '') + ')</span>' : '');
+                        list.appendChild(item);
+                    });
+                    document.getElementById('deleteModalWarning').style.display = 'block';
+                    document.getElementById('deleteConfirmBtn').textContent = 'Delete Anyway';
+                }
+            })
+            .catch(() => {
+                document.getElementById('deleteConfirmBtn').textContent = 'Delete';
+                document.getElementById('deleteConfirmBtn').disabled = false;
+            });
+    }
+    </script>
 </body>
 </html>

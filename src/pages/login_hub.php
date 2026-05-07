@@ -1,99 +1,117 @@
 <?php
 session_start();
 include("../php/connection.php");
+require_once("../php/login_rate_limit.php");
 
 $error  = null;
 $portal = $_POST['portal'] ?? $_GET['portal'] ?? 'applicant';
-$view   = $_GET['view'] ?? 'login'; // login | register | verify
+$view   = $_GET['view'] ?? 'login';
 
 // Whitelist
 if (!in_array($portal, ['applicant', 'student', 'faculty', 'admin'])) $portal = 'applicant';
 if (!in_array($view, ['login','register','verify','forgot','reset-verify','reset-password'])) $view = 'login';
-// register/verify only for applicant
 if ($portal !== 'applicant' && in_array($view, ['register','verify'])) $view = 'login';
-// forgot/reset not for admin
 if ($portal === 'admin' && in_array($view, ['forgot','reset-verify','reset-password'])) $view = 'login';
-// verify needs pending reg session
 if ($view === 'verify' && empty($_SESSION['reg_pending'])) $view = 'register';
-// reset-verify/reset-password need pending reset session
 if (in_array($view, ['reset-verify','reset-password']) && empty($_SESSION['reset_pending'])) $view = 'forgot';
-// reset-password needs verified flag
 if ($view === 'reset-password' && empty($_SESSION['reset_pending']['verified'])) $view = 'reset-verify';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password  = $_POST['password'] ?? '';
+$rl_key = 'login_attempts_' . $portal;
 
-    switch ($portal) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $view === 'login') {
+    $password = $_POST['password'] ?? '';
 
-        case 'student':
-            $identifier = trim($_POST['identifier'] ?? '');
-            if (!empty($identifier) && !empty($password)) {
-                $stmt = mysqli_prepare($con, "SELECT * FROM students WHERE student_number = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "s", $identifier);
-                mysqli_stmt_execute($stmt);
-                $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-                if ($row && password_verify($password, $row['password'])) {
-                    $_SESSION['student_id']     = $row['student_id'];
-                    $_SESSION['student_number'] = $row['student_number'];
-                    header("Location: student/student_home.php");
-                    die;
-                }
-            }
-            $error = "Invalid student number or password.";
-            break;
+    if (rate_limit_check($rl_key, $error)) {
+        switch ($portal) {
 
-        case 'applicant':
-            $identifier = trim($_POST['identifier'] ?? '');
-            if (!empty($identifier) && !empty($password)) {
-                $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE email = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "s", $identifier);
-                mysqli_stmt_execute($stmt);
-                $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-                if ($row && password_verify($password, $row['password'])) {
-                    $_SESSION['applicant_id'] = $row['applicant_id'];
-                    header("Location: applicants/applicant_home.php");
-                    die;
-                }
-            }
-            $error = "Invalid email or password.";
-            break;
-
-        case 'faculty':
-            $identifier = trim($_POST['identifier'] ?? '');
-            if (!empty($identifier) && !empty($password)) {
-                $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE email = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "s", $identifier);
-                mysqli_stmt_execute($stmt);
-                $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-                if ($row && password_verify($password, $row['password'])) {
-                    if ($row['status'] !== 'active') {
-                        $error = "Your account is currently " . htmlspecialchars($row['status']) . ". Please contact administration.";
-                        break;
+            case 'student':
+                $identifier = trim($_POST['identifier'] ?? '');
+                if (!empty($identifier) && !empty($password)) {
+                    $stmt = mysqli_prepare($con, "SELECT * FROM students WHERE student_number = ? LIMIT 1");
+                    mysqli_stmt_bind_param($stmt, "s", $identifier);
+                    mysqli_stmt_execute($stmt);
+                    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                    if ($row && password_verify($password, $row['password'])) {
+                        rate_limit_reset($rl_key);
+                        session_regenerate_id(true);
+                        $_SESSION['student_id']     = $row['student_id'];
+                        $_SESSION['student_number'] = $row['student_number'];
+                        header("Location: student/student_home.php");
+                        die;
                     }
-                    $_SESSION['faculty_id'] = $row['faculty_id'];
-                    $_SESSION['email']      = $row['email'];
-                    header("Location: faculty/faculty_home.php");
-                    die;
                 }
-            }
-            $error = $error ?? "Invalid email or password.";
-            break;
+                rate_limit_fail($rl_key);
+                $error = "Invalid student number or password.";
+                break;
 
-        case 'admin':
-            $identifier = trim($_POST['identifier'] ?? '');
-            if (!empty($identifier) && !empty($password)) {
-                $stmt = mysqli_prepare($con, "SELECT * FROM admins WHERE username = ? LIMIT 1");
-                mysqli_stmt_bind_param($stmt, "s", $identifier);
-                mysqli_stmt_execute($stmt);
-                $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-                if ($row && password_verify($password, $row['password'])) {
-                    $_SESSION['admin_id'] = $row['admin_id'];
-                    header("Location: admin/admin_home.php");
-                    die;
+            case 'applicant':
+                $identifier = trim($_POST['identifier'] ?? '');
+                if (!empty($identifier) && !empty($password)) {
+                    $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE email = ? LIMIT 1");
+                    mysqli_stmt_bind_param($stmt, "s", $identifier);
+                    mysqli_stmt_execute($stmt);
+                    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                    if ($row && password_verify($password, $row['password'])) {
+                        rate_limit_reset($rl_key);
+                        session_regenerate_id(true);
+                        $_SESSION['applicant_id'] = $row['applicant_id'];
+                        header("Location: applicants/applicant_home.php");
+                        die;
+                    }
                 }
-            }
-            $error = "Invalid username or password.";
-            break;
+                rate_limit_fail($rl_key);
+                $error = "Invalid email or password.";
+                break;
+
+            case 'faculty':
+                $identifier = trim($_POST['identifier'] ?? '');
+                if (!empty($identifier) && !empty($password)) {
+                    $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE email = ? LIMIT 1");
+                    mysqli_stmt_bind_param($stmt, "s", $identifier);
+                    mysqli_stmt_execute($stmt);
+                    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                    if ($row && password_verify($password, $row['password'])) {
+                        if ($row['status'] !== 'active') {
+                            $error = "Your account is currently " . htmlspecialchars($row['status']) . ". Please contact administration.";
+                            break;
+                        }
+                        rate_limit_reset($rl_key);
+                        session_regenerate_id(true);
+                        $_SESSION['faculty_id']  = $row['faculty_id'];
+                        $_SESSION['email']       = $row['email'];
+                        $_SESSION['csrf_token']  = bin2hex(random_bytes(32));
+                        if (password_verify($row['employee_id'], $row['password'])) {
+                            $_SESSION['must_change_password'] = true;
+                        }
+                        header("Location: faculty/faculty_home.php");
+                        die;
+                    }
+                }
+                rate_limit_fail($rl_key);
+                $error = $error ?? "Invalid email or password.";
+                break;
+
+            case 'admin':
+                $identifier = trim($_POST['identifier'] ?? '');
+                if (!empty($identifier) && !empty($password)) {
+                    $stmt = mysqli_prepare($con, "SELECT * FROM admins WHERE username = ? LIMIT 1");
+                    mysqli_stmt_bind_param($stmt, "s", $identifier);
+                    mysqli_stmt_execute($stmt);
+                    $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+                    if ($row && password_verify($password, $row['password'])) {
+                        rate_limit_reset($rl_key);
+                        session_regenerate_id(true);
+                        $_SESSION['admin_id']       = $row['admin_id'];
+                        $_SESSION['admin_username'] = $row['username'];
+                        $_SESSION['admin_role']     = $row['role'] ?? 'admin';
+                        header("Location: admin/admin_home.php");
+                        die;
+                    }
+                }
+                rate_limit_fail($rl_key);
+                $error = "Invalid username or password.";
+                break;
+        }
     }
 }
 
@@ -228,6 +246,12 @@ $subs = [
                             <?php echo htmlspecialchars($error); ?>
                         </div>
                     <?php endif; ?>
+                    <?php $left = attempts_left($rl_key); if ($left <= 2 && $left > 0): ?>
+                        <div class="alert-error" style="background:rgba(180,100,0,0.12);border-color:#b46400;color:#b46400;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <?php echo $left; ?> attempt(s) remaining before lockout.
+                        </div>
+                    <?php endif; ?>
 
                     <div class="field-group">
                         <label class="field-label" for="identifier" id="id-label">
@@ -274,11 +298,17 @@ $subs = [
                     </div>
                     
 
+                    <?php if (needs_captcha($rl_key)) echo captcha_widget(); ?>
+
                     <button type="submit" class="btn-login">
                         <span>Sign In &nbsp;<i class="fa-solid fa-arrow-right"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
                 <?php endif; ?>
 
 
@@ -334,7 +364,11 @@ $subs = [
                     </button>
                 </form>
 
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
 
                 <?php endif; ?>
 
@@ -373,7 +407,11 @@ $subs = [
                     </button>
                 </form>
 
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
                 <?php endif; ?>
 
 
@@ -407,7 +445,11 @@ $subs = [
                         <span>Send Reset Code &nbsp;<i class="fa-solid fa-paper-plane"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
                 <?php endif; ?>
 
 
@@ -442,7 +484,11 @@ $subs = [
                         <span>Verify Code &nbsp;<i class="fa-solid fa-check"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
                 <?php endif; ?>
 
                 <!-- ── RESET PASSWORD FORM ── -->
@@ -479,7 +525,11 @@ $subs = [
                         <span>Reset Password &nbsp;<i class="fa-solid fa-arrow-right"></i></span>
                     </button>
                 </form>
-                <div class="login-divider"><span>PLM Portal</span></div>
+                <div class="login-divider">
+                    <div class="divider-container">
+                        <span>Powered by</span><img src="../assets/harinode02.webp" >
+                    </div>
+                </div>
                 <p class="login-help">
                     <a href="login_hub.php?portal=<?php echo $portal; ?>" class="link">
                         <i class="fa-solid fa-arrow-left"></i> Back to Sign In

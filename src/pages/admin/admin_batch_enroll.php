@@ -49,7 +49,7 @@ while ($c = mysqli_fetch_assoc($courses_query)) $courses[] = $c['course'];
     <style>
         .batch-container { max-width: 1000px; margin: 0 auto; }
         .batch-section { background: var(--gray-lt); padding: 2rem; border-radius: 8px; margin-bottom: 2rem; }
-        .batch-section h3 { font-family: 'Playfair Display', serif; color: var(--gold); margin-bottom: 1.5rem; }
+        .batch-section h3 { font-family: "DM Serif Display", serif; color: var(--gold); margin-bottom: 1.5rem; }
         .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .info-box { background: rgba(212,175,55,0.1); border-left: 3px solid var(--gold); padding: 1rem; margin: 1rem 0; color: rgba(242,243,242,0.8); font-size: 0.9rem; }
         .preview-box { background: var(--gray); padding: 1.5rem; border-radius: 6px; margin-top: 1.5rem; }
@@ -85,6 +85,9 @@ while ($c = mysqli_fetch_assoc($courses_query)) $courses[] = $c['course'];
         <a href="admin_classes.php" class="sidebar-link"><i class="fa-solid fa-door-open"></i><span>Classes</span></a>
         <a href="admin_enrollments.php" class="sidebar-link active"><i class="fa-solid fa-file-lines"></i><span>Enrollments</span></a>
         <a href="admin_announcements.php" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i><span>Announcements</span></a>
+        <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+        <a href="admin_settings.php" class="sidebar-link superadmin-link"><i class="fa-solid fa-sliders"></i><span>System Settings</span></a>
+        <?php endif; ?>
         <a href="../../php/admin_logout.php" class="sidebar-link logout"><i class="fa-solid fa-right-from-bracket"></i><span>Logout</span></a>
     </aside>
 

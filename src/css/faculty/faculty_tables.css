@@ -624,7 +624,7 @@ select:focus {
 .gb-table-header,
 .gb-row {
     display: grid;
-    grid-template-columns: 34px 110px 1fr 90px 90px 90px 90px 90px 90px 100px; 
+    grid-template-columns: 34px 110px 1fr 80px 80px 80px 80px 90px 80px 80px 110px;
     align-items: center;
     gap: 12px;
     padding: 11px 20px;
@@ -761,6 +761,259 @@ select:focus {
     margin-top: 2px;
 }
 
+
+/* ── Gradebook Charts ───────────────────────────────────── */
+
+.gb-charts-row {
+    display: grid;
+    grid-template-columns: 220px 1fr 220px;
+    gap: 1px;
+    background: var(--off);
+}
+
+.gb-chart-card {
+    background: var(--white-pr);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.gb-chart-title {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-label);
+}
+
+.gb-chart-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    align-self: center;
+    margin: 0 auto;
+}
+
+.gb-chart-wrap--bar {
+    width: 100%;
+    height: 180px;
+    margin: 0;
+}
+
+.gb-donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.gb-donut-pct {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+    font-family: "DM Sans", sans-serif;
+}
+
+.gb-donut-sub {
+    font-size: .6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-label);
+    margin-top: 2px;
+}
+
+.gb-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: .72rem;
+    color: var(--text);
+}
+
+.gb-chart-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gb-chart-legend i { font-size: .5rem; }
+
+@media (max-width: 900px) {
+    .gb-charts-row {
+        grid-template-columns: 1fr;
+    }
+    .gb-chart-wrap {
+        width: 140px;
+        height: 140px;
+    }
+}
+
+/* ── Gradebook Stats Panel ──────────────────────────────── */
+
+.gb-stats-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,0,0,.08);
+    background: var(--off);
+}
+
+.gb-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--white-pr);
+    gap: 1px;
+}
+
+.gb-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    flex: 1;
+    min-width: 110px;
+    background: var(--white-pr);
+}
+
+.gb-stat-card i {
+    font-size: 1.3rem;
+    color: var(--text-label);
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.gb-stat-card.green i { color: #16a34a; }
+.gb-stat-card.red   i { color: #dc2626; }
+.gb-stat-card.navy  i { color: var(--navy, #0B1F5B); }
+.gb-stat-card.gold  i { color: #b45309; }
+
+.gb-stat-card > div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.gb-sc-value {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+    font-family: "DM Sans", sans-serif;
+}
+
+.gb-sc-label {
+    font-size: .65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-label);
+}
+
+/* Metrics row */
+
+.gb-stats-row--metrics {
+    padding: 12px 20px;
+    gap: 0;
+    align-items: center;
+    flex-wrap: wrap;
+    background: var(--surface-alt, #f8f8f8);
+}
+
+.gb-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 16px;
+}
+
+.gb-metric-label {
+    font-size: .62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--text-label);
+}
+
+.gb-metric-value {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--dark);
+    font-family: "DM Sans", sans-serif;
+}
+
+.gb-metric-value.green { color: #16a34a; }
+.gb-metric-value.red   { color: #dc2626; }
+
+.gb-metric-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--off);
+    flex-shrink: 0;
+}
+
+/* Distribution bar */
+
+.gb-dist {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 20px;
+    background: var(--white-pr);
+}
+
+.gb-dist-label {
+    font-size: .65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-label);
+}
+
+.gb-dist-bars {
+    display: flex;
+    height: 28px;
+    border-radius: 6px;
+    overflow: hidden;
+    gap: 2px;
+}
+
+.gb-dist-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .65rem;
+    font-weight: 700;
+    color: #fff;
+    min-width: 4px;
+    transition: opacity .15s;
+    cursor: default;
+}
+
+.gb-dist-bar:hover { opacity: .8; }
+
+.gb-dist-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: .72rem;
+    color: var(--text);
+}
+
+.gb-dist-legend span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 
 /* ── Gradebook: Toolbar + Summary ───────────────────────── */
 

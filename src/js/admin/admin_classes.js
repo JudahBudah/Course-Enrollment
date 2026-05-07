@@ -104,6 +104,7 @@ function openAdd() {
     document.getElementById('form_semester').value    = CURRENT_SEMESTER;
     document.getElementById('form_max_slots').value   = 40;
     document.getElementById('form_status').value      = 'open';
+    document.getElementById('form_assign_block_id').value = '';
 
     setDayCheckboxes('');
 
@@ -135,6 +136,11 @@ function openEdit(raw) {
 
     setDayCheckboxes(c.schedule_day || '');
 
+    // Populate block assignment; restriction follows block selection
+    const assignedBlocks = BLOCK_ASSIGNMENTS[c.class_id] || [];
+    const blockSel = document.getElementById('form_assign_block_id');
+    blockSel.value = assignedBlocks.length ? assignedBlocks[0] : '';
+
     // Show locked note, hide course selector
     document.getElementById('subject_locked_note').style.display = 'block';
     document.getElementById('modal_course_select').disabled = true;
@@ -143,6 +149,7 @@ function openEdit(raw) {
 
     document.getElementById('formModal').style.display = 'block';
 }
+
 
 /* ── View Students modal ────────────────────────────── */
 

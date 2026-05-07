@@ -1,5 +1,14 @@
 <?php
 
+    // Only set session cookie flags if session hasn't started yet
+    if (session_status() === PHP_SESSION_NONE) {
+        ini_set('session.cookie_httponly', 1);
+        ini_set('session.cookie_samesite', 'Strict');
+        ini_set('session.use_strict_mode', 1);
+        // Uncomment the line below if your site runs on HTTPS
+        // ini_set('session.cookie_secure', 1);
+    }
+
     $dbhost = "localhost";
     $dbuser = "root";
     $dbpass = "";

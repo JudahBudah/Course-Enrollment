@@ -51,6 +51,7 @@ $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
 }
+if ($selected_class_id && !$selected_class) { $selected_class_id = 0; }
 
 // Pull history rows for selected class
 $rows = [];

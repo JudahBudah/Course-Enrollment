@@ -7,12 +7,20 @@ check_admin_login($con);
 
 $action = $_POST['action'] ?? '';
 
+// Auto-migrate block_restricted column using SHOW COLUMNS (compatible with all MySQL versions)
+$_col_check = mysqli_query($con, "SHOW COLUMNS FROM classes LIKE 'block_restricted'");
+if ($_col_check && mysqli_num_rows($_col_check) === 0) {
+    mysqli_query($con, "ALTER TABLE classes ADD COLUMN block_restricted TINYINT(1) NOT NULL DEFAULT 0");
+}
+
 if ($action === 'add' || $action === 'edit') {
-    $subject_id = (int) $_POST['subject_id'];
-    $faculty_id = !empty($_POST['faculty_id']) ? (int) $_POST['faculty_id'] : null;
-    $section = trim($_POST['section']);
-    $school_year = trim($_POST['school_year']);
-    $semester = $_POST['semester'];
+    $subject_id      = (int) $_POST['subject_id'];
+    $faculty_id      = !empty($_POST['faculty_id']) ? (int) $_POST['faculty_id'] : null;
+    $section         = trim($_POST['section']);
+    $school_year     = trim($_POST['school_year']);
+    $semester        = $_POST['semester'];
+    $assign_block_id  = !empty($_POST['assign_block_id']) ? (int)$_POST['assign_block_id'] : null;
+    $block_restricted = $assign_block_id ? 1 : 0;
 
     // Build schedule_day from checkbox array
     $days_input = $_POST['schedule_days'] ?? [];
@@ -33,21 +41,7 @@ if ($action === 'add' || $action === 'edit') {
         die;
     }
 
-    // Block creation/edit if school year doesn't match the current system school year
-    $system_school_year = get_setting($con, 'current_school_year', '');
-    if (!empty($system_school_year) && $school_year !== $system_school_year) {
-        header("Location: ../pages/admin/admin_classes.php?error=wrong_school_year");
-        die;
-    }
-
     if ($action === 'add') {
-        // Block if school year doesn't match current system school year
-        $system_school_year = get_setting($con, 'current_school_year', '');
-        if (!empty($system_school_year) && $school_year !== $system_school_year) {
-            header("Location: ../pages/admin/admin_classes.php?error=wrong_school_year");
-            die;
-        }
-
         // TC017: check duplicate by subject_code + section + school_year + semester
         $dup_check = mysqli_prepare($con, "
             SELECT c.class_id FROM classes c
@@ -87,14 +81,21 @@ if ($action === 'add' || $action === 'edit') {
             }
         }
 
-        $stmt = mysqli_prepare($con, "INSERT INTO classes (subject_id, faculty_id, section, school_year, semester, schedule_day, schedule_time, room, max_slots, enrolled_count, status, specific_department) VALUES (?,?,?,?,?,?,?,?,?,0,?,?)");
-        mysqli_stmt_bind_param($stmt, "iissssssiss", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department);
+        $stmt = mysqli_prepare($con, "INSERT INTO classes (subject_id, faculty_id, section, school_year, semester, schedule_day, schedule_time, room, max_slots, enrolled_count, status, specific_department, block_restricted) VALUES (?,?,?,?,?,?,?,?,?,0,?,?,?)");
+        mysqli_stmt_bind_param($stmt, "iissssssissi", $subject_id, $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department, $block_restricted);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_classes.php?error=insert_failed");
             die;
         }
         $new_class_id = mysqli_insert_id($con);
+        // Auto-assign to block if selected
+        if ($assign_block_id && $new_class_id) {
+            $bs = mysqli_prepare($con, "INSERT IGNORE INTO block_subjects (block_id, class_id) VALUES (?, ?)");
+            mysqli_stmt_bind_param($bs, 'ii', $assign_block_id, $new_class_id);
+            mysqli_stmt_execute($bs);
+            mysqli_stmt_close($bs);
+        }
         $subj_row = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = $subject_id"));
         log_activity($con, 'Created class', 'class', ($subj_row['subject_code'] ?? '') . ' — ' . $section);
         header("Location: ../pages/admin/admin_classes.php?success=added");
@@ -141,12 +142,20 @@ if ($action === 'add' || $action === 'edit') {
             }
         }
 
-        $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id=?, section=?, school_year=?, semester=?, schedule_day=?, schedule_time=?, room=?, max_slots=?, status=?, specific_department=? WHERE class_id=?");
-        mysqli_stmt_bind_param($stmt, "issssssissi", $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department, $class_id);
+        $stmt = mysqli_prepare($con, "UPDATE classes SET faculty_id=?, section=?, school_year=?, semester=?, schedule_day=?, schedule_time=?, room=?, max_slots=?, status=?, specific_department=?, block_restricted=? WHERE class_id=?");
+        mysqli_stmt_bind_param($stmt, "issssssissii", $faculty_id, $section, $school_year, $semester, $schedule_day, $schedule_time, $room, $max_slots, $status, $specific_department, $block_restricted, $class_id);
 
         if (!mysqli_stmt_execute($stmt)) {
             header("Location: ../pages/admin/admin_classes.php?error=update_failed");
             die;
+        }
+        // Update block assignment: remove old, add new if selected
+        mysqli_query($con, "DELETE FROM block_subjects WHERE class_id = $class_id");
+        if ($assign_block_id) {
+            $bs = mysqli_prepare($con, "INSERT IGNORE INTO block_subjects (block_id, class_id) VALUES (?, ?)");
+            mysqli_stmt_bind_param($bs, 'ii', $assign_block_id, $class_id);
+            mysqli_stmt_execute($bs);
+            mysqli_stmt_close($bs);
         }
         $subj_row = mysqli_fetch_assoc(mysqli_query($con, "SELECT subject_code FROM subjects WHERE subject_id = $subject_id"));
         log_activity($con, 'Updated class', 'class', ($subj_row['subject_code'] ?? '') . ' — ' . $section);

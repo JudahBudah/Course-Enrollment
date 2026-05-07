@@ -52,44 +52,51 @@ $classes = array_merge($current_classes, $past_classes);
 $view_mode = $_GET['view'] ?? 'current';
 $display_classes = $view_mode === 'past' ? $past_classes : $current_classes;
 
-// Selected class
+// Selected class — only allow class_ids that belong to this faculty
 $selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($display_classes[0]['class_id'] ?? 0);
 $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
 }
+// Reject class_id that doesn't belong to this faculty
+if ($selected_class_id && !$selected_class) { $selected_class_id = 0; }
 
 // Students + grade entries for selected class
 $students  = [];
 $entries   = [];
 $finalized = false;
 if ($selected_class_id) {
-    $sq = mysqli_query($con,
+    $sq = mysqli_prepare($con,
         "SELECT e.enrollment_id, e.student_id,
                 s.student_number, s.last_name, s.first_name, s.middle_name
          FROM enrollments e
          JOIN students s ON e.student_id = s.student_id
-         WHERE e.class_id = $selected_class_id
+         WHERE e.class_id = ?
            AND e.status IN ('ongoing','confirmed')
            AND e.enrollment_id = (
                SELECT MAX(e2.enrollment_id) FROM enrollments e2
                WHERE e2.student_id = e.student_id
-                 AND e2.class_id = $selected_class_id
+                 AND e2.class_id = ?
                  AND e2.status IN ('ongoing','confirmed')
            )
          ORDER BY s.last_name, s.first_name"
     );
-    while ($r = mysqli_fetch_assoc($sq)) $students[] = $r;
+    mysqli_stmt_bind_param($sq, 'ii', $selected_class_id, $selected_class_id);
+    mysqli_stmt_execute($sq);
+    $sq_res = mysqli_stmt_get_result($sq);
+    while ($r = mysqli_fetch_assoc($sq_res)) $students[] = $r;
 
-    $eq = mysqli_query($con,
-        "SELECT * FROM grade_entries WHERE class_id = $selected_class_id"
-    );
-    while ($r = mysqli_fetch_assoc($eq)) $entries[$r['enrollment_id']] = $r;
+    $eq = mysqli_prepare($con, "SELECT * FROM grade_entries WHERE class_id = ?");
+    mysqli_stmt_bind_param($eq, 'i', $selected_class_id);
+    mysqli_stmt_execute($eq);
+    $eq_res = mysqli_stmt_get_result($eq);
+    while ($r = mysqli_fetch_assoc($eq_res)) $entries[$r['enrollment_id']] = $r;
 
-    $cls_row   = mysqli_fetch_assoc(mysqli_query($con,
-        "SELECT grades_finalized, grades_finalized_at FROM classes WHERE class_id = $selected_class_id"
-    ));
-    $finalized = $cls_row && (int)$cls_row['grades_finalized'] === 1;
+    $cls_stmt = mysqli_prepare($con, "SELECT grades_finalized, grades_finalized_at FROM classes WHERE class_id = ?");
+    mysqli_stmt_bind_param($cls_stmt, 'i', $selected_class_id);
+    mysqli_stmt_execute($cls_stmt);
+    $cls_row  = mysqli_fetch_assoc(mysqli_stmt_get_result($cls_stmt));
+    $finalized    = $cls_row && (int)$cls_row['grades_finalized'] === 1;
     $finalized_at = $cls_row['grades_finalized_at'] ?? null;
 }
 
@@ -108,15 +115,14 @@ function pointGrade(int $t): string {
     if ($t>=70) return '4.00'; return '5.00';
 }
 function remark(string $p): string {
-    if ($p === '5.00') return 'failed';
-    if ($p === '4.00') return 'conditional';
+    if ($p === '5.00' || $p === '4.00') return 'failed';
     return 'passed';
 }
 function remarkLabel(string $r): string {
-    return match($r) { 'passed' => 'Passed', 'failed' => 'Failed', 'conditional' => 'Conditional', default => 'Pending' };
+    return match($r) { 'passed' => 'Passed', 'failed' => 'Failed', default => 'Pending' };
 }
 function remarkIcon(string $r): string {
-    return match($r) { 'passed' => 'fa-circle-check', 'failed' => 'fa-circle-xmark', 'conditional' => 'fa-circle-half-stroke', default => 'fa-clock' };
+    return match($r) { 'passed' => 'fa-circle-check', 'failed' => 'fa-circle-xmark', default => 'fa-clock' };
 }
 
 $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== null && transmute((float)$e['computed_grade']) >= 73));
@@ -127,6 +133,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spreadsheet</title>
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
     <link rel="icon" href="../../assets/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"/>
     <script>
@@ -279,7 +286,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
                                     data-section="<?php echo htmlspecialchars($c['section']); ?>"
                                     data-name="<?php echo htmlspecialchars($c['subject_name']); ?>"
                                     <?php echo $c['class_id'] == $selected_class_id ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($c['subject_code'] . ' - ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
+                                    <?php echo htmlspecialchars($c['subject_code'] . ' — ' . $c['subject_name'] . ' - ' . $c['section'] . ' (' . $c['semester'] . ' ' . $c['school_year'] . ')'); ?>
                                 </option>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -302,8 +309,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
         <div class="ss-toolbar">
             <div class="ss-legend">
                 <span><i class="fa-solid fa-circle-check" style="color:var(--passed-green);"></i> Passed (1.00&ndash;3.00)</span>
-                <span><i class="fa-solid fa-circle-half-stroke" style="color:var(--perm-navy);"></i> Conditional (4.00)</span>
-                <span><i class="fa-solid fa-circle-xmark" style="color:var(--red);"></i> Failed (5.00)</span>
+                <span><i class="fa-solid fa-circle-xmark" style="color:var(--red);"></i> Failed (4.00&ndash;5.00)</span>
                 <?php if (!$finalized): ?>
                 <span class="ss-legend-hint">Click any grade cell to edit &mdash; Tab / Enter to move &mdash; Values 0&ndash;100</span>
                 <?php endif; ?>
@@ -437,12 +443,11 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             if(t>=70)return'4.00';return'5.00';
         }
         function remark(p) {
-            if(p==='5.00') return 'failed';
-            if(p==='4.00') return 'conditional';
+            if(p==='5.00'||p==='4.00') return 'failed';
             return 'passed';
         }
-        const remarkLabel = { passed:'Passed', failed:'Failed', conditional:'Conditional', pending:'Pending' };
-        const remarkIcon  = { passed:'fa-circle-check', failed:'fa-circle-xmark', conditional:'fa-circle-half-stroke', pending:'fa-clock' };
+        const remarkLabel = { passed:'Passed', failed:'Failed', pending:'Pending' };
+        const remarkIcon  = { passed:'fa-circle-check', failed:'fa-circle-xmark', pending:'fa-clock' };
 
         // -- Update computed columns in the row -------------------------------
         function updateRowComputed(row) {
@@ -488,12 +493,15 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             saveTimer = setTimeout(() => el.classList.remove('show'), 1800);
         }
 
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').content;
+
         // -- Finalize grades ---------------------------------------------------
         function confirmFinalize() {
             if (!confirm('Finalize grades for this class?\n\nThis is permanent and cannot be undone. Students will see their final grades and no further edits will be allowed.')) return;
             const fd = new FormData();
-            fd.append('action',   'finalize_class');
-            fd.append('class_id', CLASS_ID);
+            fd.append('action',     'finalize_class');
+            fd.append('class_id',   CLASS_ID);
+            fd.append('csrf_token', CSRF_TOKEN);
             fetch(HANDLER, { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
@@ -512,6 +520,7 @@ $passed_count = count(array_filter($entries, fn($e) => $e['computed_grade'] !== 
             fd.append('class_id',      row.dataset.class);
             fd.append('field',         input.dataset.field);
             fd.append('value',         input.value);
+            fd.append('csrf_token',    CSRF_TOKEN);
 
             fetch(HANDLER, { method: 'POST', body: fd })
                 .then(r => r.json())

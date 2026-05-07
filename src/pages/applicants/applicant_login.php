@@ -1,30 +1,39 @@
 <?php
 session_start();
 include("../../php/connection.php");
+require_once("../../php/login_rate_limit.php");
+
+$rl_key = 'login_attempts_applicant';
+$error  = null;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    if (rate_limit_check($rl_key, $error)) {
+        $email    = $_POST['email']    ?? '';
+        $password = $_POST['password'] ?? '';
 
-    if (!empty($email) && !empty($password)) {
-        $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE email = ? LIMIT 1");
-        mysqli_stmt_bind_param($stmt, "s", $email);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        if (!empty($email) && !empty($password)) {
+            $stmt = mysqli_prepare($con, "SELECT * FROM applicants WHERE email = ? LIMIT 1");
+            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $applicant_data = mysqli_fetch_assoc($result);
-            
-            if (password_verify($password, $applicant_data['password'])) {
-                $_SESSION['applicant_id'] = $applicant_data['applicant_id'];
-                header("Location: applicant_home.php");
-                die;
+            if ($result && mysqli_num_rows($result) > 0) {
+                $applicant_data = mysqli_fetch_assoc($result);
+
+                if (password_verify($password, $applicant_data['password'])) {
+                    rate_limit_reset($rl_key);
+                    session_regenerate_id(true);
+                    $_SESSION['applicant_id'] = $applicant_data['applicant_id'];
+                    header("Location: applicant_home.php");
+                    die;
+                }
             }
+
+            rate_limit_fail($rl_key);
+            $error = "Invalid email or password";
+        } else {
+            $error = "Please enter both email and password";
         }
-        
-        $error = "Invalid email or password";
-    } else {
-        $error = "Please enter both email and password";
     }
 }
 ?>
@@ -69,9 +78,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <h2>Welcome Back</h2>
                 <p class="login-subtitle">Sign in to check your application status</p>
 
-                <?php if (isset($error)): ?>
+                <?php if ($error): ?>
                     <div class="error-message">
                         <?php echo htmlspecialchars($error); ?>
+                    </div>
+                <?php endif; ?>
+                <?php $left = attempts_left($rl_key); if ($left <= 2 && $left > 0): ?>
+                    <div class="error-message" style="background:rgba(180,100,0,0.15);border-color:#b46400;color:#b46400;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <?php echo $left; ?> attempt(s) remaining before lockout.
                     </div>
                 <?php endif; ?>
 
@@ -84,6 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <label>Password</label>
                     <input type="password" name="password" placeholder="Enter your password" required>
                 </div>
+
+                <?php if (needs_captcha($rl_key)) echo captcha_widget(); ?>
 
                 <button type="submit" class="btn-login">
                     <span>Sign In</span>

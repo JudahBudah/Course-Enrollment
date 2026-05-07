@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die;
 }
 
-$semester    = trim($_POST['current_semester'] ?? '');
+$semester    = trim($_POST['current_semester']    ?? '');
 $school_year = trim($_POST['current_school_year'] ?? '');
 
 $valid_semesters = ['1st', '2nd', 'summer'];
@@ -24,9 +24,10 @@ if (!in_array($semester, $valid_semesters) || !preg_match('/^\d{4}-\d{4}$/', $sc
     die;
 }
 
-save_setting($con, 'current_semester', $semester);
+save_setting($con, 'current_semester',    $semester);
 save_setting($con, 'current_school_year', $school_year);
-save_setting($con, 'enrollment_open', $_POST['enrollment_open'] === '1' ? '1' : '0');
+save_setting($con, 'enrollment_open',     $_POST['enrollment_open'] === '1' ? '1' : '0');
+save_setting($con, 'block_enrollment_restricted', isset($_POST['block_enrollment_restricted']) && $_POST['block_enrollment_restricted'] === '1' ? '1' : '0');
 
 $min_units = max(0, (int)($_POST['min_units'] ?? 0));
 $max_units = max(0, (int)($_POST['max_units'] ?? 0));

@@ -1,6 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 
+/* ── SUMMARY STRIP ── */
+
+.dash-summary-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--off);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.06);
+}
+
+.dash-summary-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.75rem;
+    background: var(--white-pr);
+    gap: 0.2rem;
+    text-align: center;
+}
+
+.dash-summary-num {
+    font-family: "DM Serif Display", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+}
+
+.dash-summary-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-label);
+}
+
+.dash-summary-warn .dash-summary-num {
+    color: #dc2626;
+}
+
+
 /* ── FACULTY INFO CARD ── */
 
 .card {
@@ -20,10 +65,10 @@
 }
 
 .card-header h2 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     color: var(--white);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 500;
     letter-spacing: .03em;
 }
 
@@ -776,6 +821,10 @@
         gap: 3px;
     }
 
+    .dash-summary-strip {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     .news-events-card {
         width: 33.333%;
     }
@@ -784,6 +833,10 @@
 @media (max-width: 501px) {
     .news-events-card {
         width: 50%;
+    }
+
+    .dash-summary-strip {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

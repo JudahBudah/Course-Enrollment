@@ -191,6 +191,14 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -273,6 +281,23 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                     <div class="card">
                         <div class="card-header">
                             <h2>Students in Block <?php echo htmlspecialchars($block['block_name']); ?></h2>
+                            <div style="margin-left:auto;">
+                                <div class="assigned-search-bar">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="assignedSearch" placeholder="Search assigned students…">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="capacity-bar-wrap">
+                            <?php $pct = $block['max_students'] > 0 ? round($block['current_students'] / $block['max_students'] * 100) : 0; ?>
+                            <div class="capacity-bar-track">
+                                <div class="capacity-bar-fill <?php echo $is_full ? 'full' : ($pct >= 80 ? 'warn' : ''); ?>" id="capacityFill"
+                                     style="width:<?php echo $pct; ?>%"></div>
+                            </div>
+                            <span class="capacity-bar-label" id="capacityLabel">
+                                <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?> students
+                            </span>
                         </div>
 
                         <div class="block-students-table-wrapper">
@@ -286,7 +311,7 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                                     <div>Action</div>
                                 </div>
 
-                                <div class="block-students-table-body">
+                                <div class="block-students-table-body" id="assignedTableBody">
                                 <?php if (mysqli_num_rows($assigned_students) > 0): ?>
                                     <?php while ($s = mysqli_fetch_assoc($assigned_students)): ?>
                                     <div class="block-students-row">
@@ -313,7 +338,7 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                                     </div>
                                     <?php endwhile; ?>
                                 <?php else: ?>
-                                    <div class="block-students-empty">No students assigned yet.</div>
+                                    <div class="block-students-empty" id="assignedEmpty">No students assigned yet.</div>
                                 <?php endif; ?>
                                 </div>
 
@@ -357,36 +382,49 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                             </p>
                         </div>
 
-                        <!-- Individual assignment -->
+                        <!-- Student picker list -->
                         <div class="assign-section">
                             <h3><i class="fa-solid fa-user-plus"></i> Assign Individual Student</h3>
-                            <form method="POST" action="../../php/assign_student_to_block.php">
-                                <input type="hidden" name="block_id" value="<?php echo $block_id; ?>">
-                                <div class="assign-select-row">
-                                    <select name="student_id" id="studentSelect" required>
-                                        <option value="">Choose a student…</option>
-                                        <?php while ($s = mysqli_fetch_assoc($unassigned_students)): ?>
-                                            <option value="<?php echo $s['student_id']; ?>"
-                                                    data-name="<?php echo htmlspecialchars(strtolower(($s['first_name'] ?? '') . ' ' . ($s['last_name'] ?? ''))); ?>"
-                                                    data-id="<?php echo htmlspecialchars(strtolower($s['student_number'] ?? $s['student_id'])); ?>"
-                                                    data-email="<?php echo htmlspecialchars(strtolower($s['email'] ?? '')); ?>"
-                                                    data-status="<?php echo htmlspecialchars($s['registration_status'] ?? 'Regular'); ?>">
-                                                <?php echo htmlspecialchars(
-                                                    ($s['student_number'] ?? $s['student_id']) . ' — ' .
-                                                    trim(($s['first_name'] ?? '') . ' ' . ($s['last_name'] ?? ''))
-                                                ); ?>
-                                                <?php if (($s['registration_status'] ?? '') === 'Irregular'): ?>
-                                                    (Irregular)
-                                                <?php endif; ?>
-                                            </option>
-                                        <?php endwhile; ?>
-                                    </select>
-                                    <button type="submit" class="btn-primary">
-                                        <i class="fa-solid fa-user-plus"></i>
-                                        <span class="li-name">Assign</span>
-                                    </button>
-                                </div>
-                            </form>
+
+                            <div class="student-picker" id="studentPicker">
+                                <?php
+                                // Re-run query since it was consumed above by the select
+                                $unassigned2 = mysqli_query($con, "
+                                    SELECT * FROM students
+                                    WHERE (block_id IS NULL OR block_id = 0)
+                                    AND (course = '$course_code_esc' OR course = '$course_name_esc')
+                                    AND year_level = '$year_esc'
+                                    ORDER BY last_name, first_name
+                                ");
+                                if (mysqli_num_rows($unassigned2) === 0): ?>
+                                    <div class="picker-empty">No unassigned students found for this block's course and year.</div>
+                                <?php else: ?>
+                                    <?php while ($s = mysqli_fetch_assoc($unassigned2)): ?>
+                                    <div class="picker-card"
+                                         data-id="<?php echo $s['student_id']; ?>"
+                                         data-name="<?php echo htmlspecialchars(strtolower(($s['first_name']??'').' '.($s['last_name']??''))); ?>"
+                                         data-number="<?php echo htmlspecialchars(strtolower($s['student_number']??'')); ?>"
+                                         data-email="<?php echo htmlspecialchars(strtolower($s['email']??'')); ?>"
+                                         data-status="<?php echo htmlspecialchars($s['registration_status']??'Regular'); ?>">
+                                        <div class="picker-card-info">
+                                            <div class="picker-card-name"><?php echo htmlspecialchars(trim(($s['first_name']??'').' '.($s['last_name']??''))); ?></div>
+                                            <div class="picker-card-sub">
+                                                <?php echo htmlspecialchars($s['student_number']??''); ?>
+                                                <?php if ($s['email']): ?> &middot; <?php echo htmlspecialchars($s['email']); ?><?php endif; ?>
+                                            </div>
+                                        </div>
+                                        <span class="badge <?php echo strtolower($s['registration_status']??'regular'); ?>" style="flex-shrink:0;">
+                                            <?php echo htmlspecialchars($s['registration_status']??'Regular'); ?>
+                                        </span>
+                                        <button type="button" class="btn-assign-card"
+                                                data-student-id="<?php echo $s['student_id']; ?>"
+                                                data-block-id="<?php echo $block_id; ?>">
+                                            <i class="fa-solid fa-plus"></i> Assign
+                                        </button>
+                                    </div>
+                                    <?php endwhile; ?>
+                                <?php endif; ?>
+                            </div>
                         </div>
 
                         <!-- Batch assignment -->
@@ -409,10 +447,10 @@ $is_full         = $block['current_students'] >= $block['max_students'];
                                     <div class="info-title">
                                         <i class="fa-solid fa-info-circle"></i> What will happen:
                                     </div>
-                                    • All unassigned students from <?php echo htmlspecialchars($block['course']); ?>,
+                                    &bull; All unassigned students from <?php echo htmlspecialchars($block['course']); ?>,
                                     Year <?php echo htmlspecialchars($block['year_level']); ?> will be assigned to this block<br>
-                                    • Students will be auto-enrolled in all block subjects<br>
-                                    • Block capacity: <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?>
+                                    &bull; Students will be auto-enrolled in all block subjects<br>
+                                    &bull; Block capacity: <?php echo $block['current_students']; ?> / <?php echo $block['max_students']; ?>
                                     (<?php echo $slots_available; ?> slots available)
                                 </div>
 
@@ -437,5 +475,19 @@ $is_full         = $block['current_students'] >= $block['max_students'];
 
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_block_students.js"></script>
+    <script>
+        const leftCard  = document.querySelector('.content-grid > .card:first-child');
+        const rightCard = document.querySelector('.content-grid > .card:last-child');
+
+        function syncHeight() {
+            const rightHeight = rightCard.getBoundingClientRect().height;
+            leftCard.style.maxHeight = rightHeight + 'px';
+        }
+
+        const ro = new ResizeObserver(syncHeight);
+        ro.observe(rightCard);
+
+        syncHeight(); // run once on load
+    </script>
 </body>
 </html>

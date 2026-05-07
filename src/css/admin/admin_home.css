@@ -1,43 +1,122 @@
-/* Do Delete! - Judah */
+/* ── Enrollment Period Banner ──────────────────────────── */
 
-/* Fixed */
-.data-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: var(--off); 
+.dash-period-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--white-pr);
+    border-left: 4px solid #16a34a;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.06);
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
 }
 
-.data-table {
-    table-layout: fixed;
-    min-width: auto;
-}
-
-.data-table thead th:nth-child(1)  { width: 150px; }  
-.data-table thead th:nth-child(2)  { width: 230px; }   
-.data-table thead th:nth-child(3)  { width: 200px; }   
-.data-table thead th:nth-child(4)  { width: 120px; }   
-.data-table thead th:nth-child(5)  { width: 145px; }    
-
-.data-table th:nth-child(4),
-.data-table td:nth-child(4) { text-align: center; } 
-
-.data-table th:nth-child(5),
-.data-table td:nth-child(5) { text-align: center; } 
-
-.card {
-    height: 400px;
-}
-
-.card:has(.table-responsive) {
+.dash-period-text {
     display: flex;
     flex-direction: column;
-}
-
-.table-responsive {
+    gap: 1px;
     flex: 1;
+    min-width: 140px;
 }
 
+.dash-period-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-label);
+}
+
+.dash-period-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.dash-period-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-label);
+    flex-wrap: wrap;
+}
+
+.dash-period-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.dash-period-alert {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem;
+    background: #dc26261a;
+    color: #dc2626;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.dash-period-alert:hover {
+    background: #dc262630;
+}
+
+/* ── Semester Summary Strip ────────────────────────────── */
+
+.dash-sem-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--off);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.06);
+}
+
+.dash-sem-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0.75rem;
+    background: var(--white-pr);
+    gap: 0.2rem;
+    text-align: center;
+}
+
+.dash-sem-num {
+    font-family: "DM Serif Display", serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark);
+    line-height: 1;
+}
+
+.dash-sem-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-label);
+}
+
+.dash-sem-warn .dash-sem-num  { color: #d97706; }
+.dash-sem-alert .dash-sem-num { color: #dc2626; }
+
+@media (max-width: 768px) {
+    .dash-sem-strip { grid-template-columns: repeat(3, 1fr); }
+    .dash-period-banner { gap: 0.6rem; }
+}
+
+@media (max-width: 480px) {
+    .dash-sem-strip { grid-template-columns: repeat(2, 1fr); }
+}
 
 /* ── Stats Grid ────────────────────────────────────────── */
 
@@ -86,8 +165,8 @@
 }
 
 .stat-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 2.1rem;
     font-weight: 700;
     color: var(--dark);
     line-height: 1;
@@ -277,4 +356,96 @@
     .stats-grid {
         grid-template-columns: 1fr;
     }
+}
+
+
+/* Do Not Delete! - Judah */
+
+/* ── RECENT APPLICANTS TABLE ── */
+
+.recent-applicants-table-wrapper {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 300px;
+}
+
+.recent-applicants-table {
+    min-width: 680px;
+    width: 100%;
+}
+
+.recent-applicants-table-header,
+.recent-applicants-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 90px 100px;
+    gap: 12px;
+    text-align: center;
+}
+
+.recent-applicants-table-header {
+    background: var(--off);
+    color: var(--text);
+
+    padding: 11px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.recent-applicants-table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-applicants-row {
+    align-items: center;
+
+    padding: 11px 20px;
+    background-color: var(--white-pr);
+    border-bottom: 1px solid var(--off);
+
+    font-size: 0.8rem;
+    color: var(--dark);
+}
+
+.recent-applicants-row:nth-child(even) {
+    background-color: var(--surface-alt);
+}
+
+.word-break {
+    overflow-wrap: break-word;
+    word-break: break-all;
+    hyphens: auto;
+    white-space: normal;
+}
+
+.recent-applicants-col-left {
+    text-align: left;
+}
+
+/* ── Settings form helpers ─────────────────────────────── */
+
+.settings-label {
+    display: block;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--text-label);
+    margin-bottom: .35rem;
+}
+
+.settings-input {
+    width: 100%;
+    padding: .5rem .75rem;
+    border: 1px solid var(--off-gray);
+    border-radius: 6px;
+    font-size: .9rem;
+    box-sizing: border-box;
+    background: var(--white-pr);
+    color: var(--dark);
 }

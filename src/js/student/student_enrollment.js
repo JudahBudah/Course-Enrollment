@@ -54,14 +54,19 @@ document.querySelectorAll('.btn-select-sched').forEach(btn => {
         modalList.innerHTML = '';
 
         classes.forEach(cls => {
-            const slotsLeft = cls.max_slots - cls.enrolled_count;
-            const isFull    = slotsLeft <= 0;
-            const semLabel  = {'1st':'1st Semester','2nd':'2nd Semester','summer':'Summer'}[cls.semester] || cls.semester || '';
-            const card      = document.createElement('div');
-            card.className  = 'sched-option' + (isFull ? ' sched-full' : '');
-            card.innerHTML  = `
+            const slotsLeft    = cls.max_slots - cls.enrolled_count;
+            const isFull       = slotsLeft <= 0;
+            const isRestricted = !!cls.ui_restricted;
+            const semLabel     = {'1st':'1st Semester','2nd':'2nd Semester','summer':'Summer'}[cls.semester] || cls.semester || '';
+            const card         = document.createElement('div');
+            card.className     = 'sched-option' + (isFull || isRestricted ? ' sched-full' : '');
+            if (isRestricted) card.style.cssText = 'opacity:.45;cursor:not-allowed;';
+            card.innerHTML = `
                 <div class="sched-option-info">
-                    <div class="sched-option-section">${cls.section}</div>
+                    <div class="sched-option-section">
+                        ${cls.section}
+                        ${isRestricted ? '<span style="margin-left:.4rem;font-size:.7rem;background:#dc26261a;color:#dc2626;padding:2px 7px;border-radius:4px;font-weight:600;"><i class="fa-solid fa-lock"></i> Not your block</span>' : ''}
+                    </div>
                     <div class="sched-option-details">
                         <span><i class="fa-solid fa-clock"></i> ${cls.schedule_day} ${cls.schedule_time}</span>
                         ${cls.room ? `<span><i class="fa-solid fa-door-open"></i> ${cls.room}</span>` : ''}
@@ -72,7 +77,7 @@ document.querySelectorAll('.btn-select-sched').forEach(btn => {
                 <div class="sched-option-slots ${isFull ? 'slots-full' : 'slots-open'}">
                     ${isFull ? 'Full' : slotsLeft + ' slot' + (slotsLeft !== 1 ? 's' : '') + ' left'}
                 </div>
-                ${!isFull ? `<button class="btn-enroll-class" data-class-id="${cls.class_id}"><i class="fa-solid fa-plus"></i> Enroll</button>` : ''}
+                ${(!isFull && !isRestricted) ? `<button class="btn-enroll-class" data-class-id="${cls.class_id}"><i class="fa-solid fa-plus"></i> Enroll</button>` : ''}
             `;
             modalList.appendChild(card);
         });

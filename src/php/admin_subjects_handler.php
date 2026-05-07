@@ -7,6 +7,17 @@ check_admin_login($con);
 
 $action = $_POST['action'] ?? '';
 
+// Preserve filter state across redirects
+$_filter = $_POST['_filter'] ?? 'all';
+$_year   = $_POST['_year']   ?? '';
+$_course = $_POST['_course'] ?? '';
+$_search = $_POST['_search'] ?? '';
+$_qs = '?filter=' . urlencode($_filter)
+     . '&year='   . urlencode($_year)
+     . '&course=' . urlencode($_course)
+     . '&search=' . urlencode($_search);
+$base = '../pages/admin/admin_subjects.php';
+
 if ($action === 'add' || $action === 'edit') {
     $subject_code   = trim($_POST['subject_code']);
     $subject_name   = trim($_POST['subject_name']);
@@ -22,7 +33,7 @@ if ($action === 'add' || $action === 'edit') {
     $status         = $_POST['status'];
 
     if (!$subject_code || !$subject_name || !$units) {
-        header("Location: ../pages/admin/admin_subjects.php?error=missing_fields");
+        header("Location: $base" . $_qs . "&error=missing_fields");
         die;
     }
 
@@ -33,7 +44,7 @@ if ($action === 'add' || $action === 'edit') {
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
-            header("Location: ../pages/admin/admin_subjects.php?error=duplicate_code");
+            header("Location: $base" . $_qs . "&error=duplicate_code");
             die;
         }
 
@@ -41,11 +52,11 @@ if ($action === 'add' || $action === 'edit') {
         mysqli_stmt_bind_param($stmt, "sssiddisssss", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $course_id, $department, $year_level, $semester, $prerequisite, $status);
 
         if (!mysqli_stmt_execute($stmt)) {
-            header("Location: ../pages/admin/admin_subjects.php?error=insert_failed");
+            header("Location: $base" . $_qs . "&error=insert_failed");
             die;
         }
         log_activity($con, 'Added subject', 'subject', $subject_code . ' — ' . $subject_name);
-        header("Location: ../pages/admin/admin_subjects.php?success=added");
+        header("Location: $base" . $_qs . "&success=added");
 
     } else {
         $subject_id = (int) $_POST['subject_id'];
@@ -56,7 +67,7 @@ if ($action === 'add' || $action === 'edit') {
         mysqli_stmt_execute($chk);
         mysqli_stmt_store_result($chk);
         if (mysqli_stmt_num_rows($chk) > 0) {
-            header("Location: ../pages/admin/admin_subjects.php?error=duplicate_code");
+            header("Location: $base" . $_qs . "&error=duplicate_code");
             die;
         }
 
@@ -64,12 +75,37 @@ if ($action === 'add' || $action === 'edit') {
         mysqli_stmt_bind_param($stmt, "sssiddisssssi", $subject_code, $subject_name, $description, $units, $lecture_hours, $lab_hours, $course_id, $department, $year_level, $semester, $prerequisite, $status, $subject_id);
 
         if (!mysqli_stmt_execute($stmt)) {
-            header("Location: ../pages/admin/admin_subjects.php?error=update_failed");
+            header("Location: $base" . $_qs . "&error=update_failed");
             die;
         }
         log_activity($con, 'Updated subject', 'subject', $subject_code . ' — ' . $subject_name);
-        header("Location: ../pages/admin/admin_subjects.php?success=updated");
+        header("Location: $base" . $_qs . "&success=updated");
     }
+    die;
+}
+
+if ($action === 'check_dependents') {
+    header('Content-Type: application/json');
+    $subject_id = (int)$_POST['subject_id'];
+
+    // Get the subject code to search for in prerequisite strings
+    $row = mysqli_fetch_assoc(mysqli_query($con,
+        "SELECT subject_code FROM subjects WHERE subject_id = $subject_id"
+    ));
+    if (!$row) { echo json_encode(['dependents' => []]); die; }
+
+    $code = mysqli_real_escape_string($con, $row['subject_code']);
+
+    // Find all subjects whose prerequisite field contains this code
+    $res = mysqli_query($con,
+        "SELECT subject_id, subject_code, subject_name, year_level, semester
+         FROM subjects
+         WHERE subject_id != $subject_id
+           AND prerequisite REGEXP '(^|,\\s*)" . $code . "(\\s*,|$)'"
+    );
+    $dependents = [];
+    while ($r = mysqli_fetch_assoc($res)) $dependents[] = $r;
+    echo json_encode(['dependents' => $dependents]);
     die;
 }
 
@@ -82,7 +118,7 @@ if ($action === 'delete') {
     mysqli_stmt_execute($chk);
     mysqli_stmt_store_result($chk);
     if (mysqli_stmt_num_rows($chk) > 0) {
-        header("Location: ../pages/admin/admin_subjects.php?error=in_use");
+        header("Location: $base" . $_qs . "&error=in_use");
         die;
     }
 
@@ -90,7 +126,7 @@ if ($action === 'delete') {
     mysqli_stmt_bind_param($stmt, "i", $subject_id);
     mysqli_stmt_execute($stmt);
     log_activity($con, 'Deleted subject', 'subject', 'Subject ID ' . $subject_id);
-    header("Location: ../pages/admin/admin_subjects.php?success=deleted");
+    header("Location: $base" . $_qs . "&success=deleted");
     die;
 }
 
@@ -101,9 +137,9 @@ if ($action === 'toggle_status') {
     mysqli_stmt_bind_param($stmt, "si", $new_status, $subject_id);
     mysqli_stmt_execute($stmt);
     log_activity($con, 'Toggled subject status to ' . $new_status, 'subject', 'Subject ID ' . $subject_id);
-    header("Location: ../pages/admin/admin_subjects.php?success=updated");
+    header("Location: $base" . $_qs . "&success=updated");
     die;
 }
 
-header("Location: ../pages/admin/admin_subjects.php");
+header("Location: $base" . $_qs);
 die;

@@ -1,30 +1,39 @@
 <?php
 session_start();
 include("../../php/connection.php");
+require_once("../../php/login_rate_limit.php");
+
+$rl_key = 'login_attempts_student';
+$error  = null;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $student_number = $_POST['student_number'];
-    $password = $_POST['password'];
+    if (rate_limit_check($rl_key, $error)) {
+        $student_number = $_POST['student_number'] ?? '';
+        $password       = $_POST['password']       ?? '';
 
-    if (!empty($student_number) && !empty($password)) {
-        $stmt = mysqli_prepare($con, "SELECT * FROM students WHERE student_number = ? LIMIT 1");
-        mysqli_stmt_bind_param($stmt, "s", $student_number);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        if (!empty($student_number) && !empty($password)) {
+            $stmt = mysqli_prepare($con, "SELECT * FROM students WHERE student_number = ? LIMIT 1");
+            mysqli_stmt_bind_param($stmt, "s", $student_number);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $user_data = mysqli_fetch_assoc($result);
+            if ($result && mysqli_num_rows($result) > 0) {
+                $user_data = mysqli_fetch_assoc($result);
 
-            if (password_verify($password, $user_data['password'])) {
-                $_SESSION['student_number'] = $user_data['student_number'];
-                header("Location: student_home.php");
-                die;
+                if (password_verify($password, $user_data['password'])) {
+                    rate_limit_reset($rl_key);
+                    session_regenerate_id(true);
+                    $_SESSION['student_number'] = $user_data['student_number'];
+                    header("Location: student_home.php");
+                    die;
+                }
             }
-        }
 
-        $error = "Invalid student number or password";
-    } else {
-        $error = "Please enter both student number and password";
+            rate_limit_fail($rl_key);
+            $error = "Invalid student number or password";
+        } else {
+            $error = "Please enter both student number and password";
+        }
     }
 }
 ?>
@@ -106,10 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 <form method="POST" id="login-form">
 
-                    <?php if (isset($error)): ?>
+                    <?php if ($error): ?>
                         <div class="alert-error">
                             <i class="fa-solid fa-circle-exclamation"></i>
                             <?php echo htmlspecialchars($error); ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php $left = attempts_left($rl_key); if ($left <= 2 && $left > 0): ?>
+                        <div class="alert-error" style="background:rgba(180,100,0,0.12);border-color:#b46400;color:#b46400;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <?php echo $left; ?> attempt(s) remaining before lockout.
                         </div>
                     <?php endif; ?>
 
@@ -158,6 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             </div>
                         </div>
                     </div>
+
+                    <?php if (needs_captcha($rl_key)) echo captcha_widget(); ?>
 
                     <button type="submit" class="btn-login">
                         <span>Sign In &nbsp;<i class="fa-solid fa-arrow-right"></i></span>

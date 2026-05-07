@@ -5,6 +5,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.25rem;
     margin-bottom: 1.5rem;
+    align-items: stretch; 
 }
 
 /* ── Page header extras ────────────────────────────────── */
@@ -119,8 +120,8 @@
 }
 
 .assign-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1rem;
     color: var(--red);
     margin-bottom: 1rem;
     display: flex;
@@ -159,8 +160,8 @@
 }
 
 .batch-section h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1rem;
     color: var(--red);
     margin-bottom: 1rem;
     display: flex;
@@ -290,7 +291,8 @@
 .block-students-table-wrapper {
     overflow-x: auto;
     overflow-y: auto;
-    max-height: 400px;
+    flex: 1;
+    min-height: 0;
 }
 
 .block-students-table {
@@ -359,4 +361,143 @@
     word-break: break-all;
     hyphens: auto;
     white-space: normal;
+}
+
+/* ── Left card (assigned students) stretches as flex column ── */
+
+.content-grid > .card:first-child {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── Assigned students search bar ──────────────────────── */
+
+.assigned-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--off);
+    border-radius: 6px;
+    padding: 0.45rem 0.75rem;
+}
+
+.assigned-search-bar i { color: var(--text-label); font-size: .8rem; }
+
+.assigned-search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .82rem;
+    color: var(--dark);
+    width: 180px;
+}
+
+/* ── Capacity bar ───────────────────────────────────────── */
+
+.capacity-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    border-bottom: 1px solid var(--off);
+    background: var(--surface-alt);
+}
+
+.capacity-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--off);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.capacity-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: #16a34a;
+    transition: width .4s ease, background .3s;
+}
+
+.capacity-bar-fill.warn { background: #d97706; }
+.capacity-bar-fill.full { background: #dc2626; }
+
+.capacity-bar-label {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text-label);
+    white-space: nowrap;
+}
+
+/* ── Student picker card list ───────────────────────────── */
+
+.student-picker {
+    max-height: 340px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.picker-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1.25rem;
+    border-bottom: 1px solid var(--off);
+    background: var(--white-pr);
+    transition: background .15s;
+}
+
+.picker-card:nth-child(even) { background: var(--surface-alt); }
+.picker-card:hover { background: rgba(140,28,36,.04); }
+
+.picker-card-info { flex: 1; min-width: 0; }
+
+.picker-card-name {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.picker-card-sub {
+    font-size: .75rem;
+    color: var(--text-label);
+    margin-top: .15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-assign-card {
+    padding: .35rem .85rem;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity .15s;
+}
+
+.btn-assign-card:hover:not(:disabled) { opacity: .85; }
+.btn-assign-card:disabled { opacity: .5; cursor: not-allowed; }
+
+.picker-empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-label);
+    font-size: .85rem;
 }

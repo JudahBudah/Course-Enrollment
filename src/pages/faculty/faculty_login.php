@@ -1,41 +1,52 @@
 <?php
 session_start();
 include("../../php/connection.php");
+require_once("../../php/login_rate_limit.php");
+
+$rl_key = 'login_attempts_faculty';
+$error  = null;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    if (rate_limit_check($rl_key, $error)) {
+        $email    = $_POST['email']    ?? '';
+        $password = $_POST['password'] ?? '';
 
-    if (!empty($email) && !empty($password)) {
-        $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE email = ? LIMIT 1");
-        mysqli_stmt_bind_param($stmt, "s", $email);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        if (!empty($email) && !empty($password)) {
+            $stmt = mysqli_prepare($con, "SELECT * FROM faculty WHERE email = ? LIMIT 1");
+            mysqli_stmt_bind_param($stmt, "s", $email);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $user_data = mysqli_fetch_assoc($result);
+            if ($result && mysqli_num_rows($result) > 0) {
+                $user_data = mysqli_fetch_assoc($result);
 
-            if (password_verify($password, $user_data['password'])) {
-                if ($user_data['status'] === 'active') {
-                    $_SESSION['email'] = $user_data['email'];
-                    $_SESSION['faculty_id'] = $user_data['faculty_id'];
-                    // If password is still the default (employee_id), force change
-                    if (password_verify($user_data['employee_id'], $user_data['password'])) {
-                        $_SESSION['must_change_password'] = true;
+                if (password_verify($password, $user_data['password'])) {
+                    if ($user_data['status'] === 'active') {
+                        rate_limit_reset($rl_key);
+                        session_regenerate_id(true);
+                        $_SESSION['email']      = $user_data['email'];
+                        $_SESSION['faculty_id'] = $user_data['faculty_id'];
+                        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                        if (password_verify($user_data['employee_id'], $user_data['password'])) {
+                            $_SESSION['must_change_password'] = true;
+                        }
+                        header("Location: faculty_home.php");
+                        die;
+                    } else {
+                        rate_limit_fail($rl_key);
+                        $error = "Your account is currently " . htmlspecialchars($user_data['status']) . ". Please contact administration.";
                     }
-                    header("Location: faculty_home.php");
-                    die;
                 } else {
-                    $error = "Your account is currently " . htmlspecialchars($user_data['status']) . ". Please contact administration.";
+                    rate_limit_fail($rl_key);
+                    $error = "Invalid email or password";
                 }
             } else {
+                rate_limit_fail($rl_key);
                 $error = "Invalid email or password";
             }
         } else {
-            $error = "Invalid email or password";
+            $error = "Please enter both email and password";
         }
-    } else {
-        $error = "Please enter both email and password";
     }
 }
 ?>
@@ -123,10 +134,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 <form method="POST" id="login-form">
 
-                    <?php if (isset($error)): ?>
+                    <?php if ($error): ?>
                         <div class="alert-error">
                             <i class="fa-solid fa-circle-exclamation"></i>
                             <?php echo htmlspecialchars($error); ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php $left = attempts_left($rl_key); if ($left <= 2 && $left > 0): ?>
+                        <div class="alert-error" style="background:rgba(180,100,0,0.12);border-color:#b46400;color:#b46400;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <?php echo $left; ?> attempt(s) remaining before lockout.
                         </div>
                     <?php endif; ?>
 
@@ -174,6 +191,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             </div>
                         </div>
                     </div>
+
+                    <?php if (needs_captcha($rl_key)) echo captcha_widget(); ?>
 
                     <button type="submit" class="btn-login">
                         <span>Sign In &nbsp;<i class="fa-solid fa-arrow-right"></i></span>

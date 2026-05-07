@@ -195,6 +195,14 @@ $available_query = mysqli_query($con, "
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -345,5 +353,19 @@ $available_query = mysqli_query($con, "
     </div><!-- /.main-flex -->
 
     <script src="../../js/admin/admin_main.js"></script>
+    <script>
+        const leftCard  = document.querySelector('.content-grid > .card:first-child');
+        const rightCard = document.querySelector('.content-grid > .card:last-child');
+
+        function syncHeight() {
+            const rightHeight = rightCard.getBoundingClientRect().height;
+            leftCard.style.maxHeight = rightHeight + 'px';
+        }
+
+        const ro = new ResizeObserver(syncHeight);
+        ro.observe(rightCard);
+
+        syncHeight();
+    </script>
 </body>
 </html>

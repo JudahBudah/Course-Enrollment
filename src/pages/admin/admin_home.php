@@ -8,6 +8,27 @@ include("../../php/admin_functions.php");
 
 $admin_data = check_admin_login($con);
 
+// Handle settings save (superadmin only)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
+    if (($admin_data['role'] ?? '') === 'superadmin') {
+        $fields = ['current_semester', 'current_school_year', 'min_units', 'max_units',
+                   'enrollment_start', 'enrollment_end', 'late_enrollment_start', 'late_enrollment_end'];
+        foreach ($fields as $f) {
+            if (isset($_POST[$f])) save_setting($con, $f, trim($_POST[$f]));
+        }
+    }
+    header('Location: admin_home.php?saved=1'); die;
+}
+
+$s_cur_semester          = get_setting($con, 'current_semester',       '');
+$s_cur_school_year       = get_setting($con, 'current_school_year',    '');
+$s_min_units             = get_setting($con, 'min_units',              '0');
+$s_max_units             = get_setting($con, 'max_units',              '0');
+$s_enrollment_start      = get_setting($con, 'enrollment_start',       '');
+$s_enrollment_end        = get_setting($con, 'enrollment_end',         '');
+$s_late_enrollment_start = get_setting($con, 'late_enrollment_start',  '');
+$s_late_enrollment_end   = get_setting($con, 'late_enrollment_end',    '');
+
 // Get statistics
 $total_students     = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM students"))['count'];
 $total_applicants   = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM applicants"))['count'];
@@ -15,6 +36,47 @@ $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 $total_faculty      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM faculty WHERE status = 'active'"))['count'];
 $total_subjects     = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM subjects WHERE status = 'active'"))['count'];
 $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as count FROM classes WHERE status IN ('open', 'closed')"))['count'];
+
+// Enrollment period & current semester stats
+$period          = get_enrollment_period($con);
+$sy              = get_setting($con, 'current_school_year', '');
+$sem             = get_setting($con, 'current_semester', '');
+
+$enrolled_now    = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM enrollments e
+     JOIN classes c ON e.class_id = c.class_id
+     WHERE e.status IN ('confirmed','ongoing')
+       AND c.school_year = '" . mysqli_real_escape_string($con,$sy) . "'
+       AND c.semester    = '" . mysqli_real_escape_string($con,$sem) . "'"))['c'];
+
+$pending_drops   = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM enrollments e
+     JOIN classes c ON e.class_id = c.class_id
+     WHERE e.status = 'drop_requested'
+       AND c.school_year = '" . mysqli_real_escape_string($con,$sy) . "'
+       AND c.semester    = '" . mysqli_real_escape_string($con,$sem) . "'"))['c'];
+
+$full_classes    = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM classes
+     WHERE status = 'open' AND enrolled_count >= max_slots
+       AND school_year = '" . mysqli_real_escape_string($con,$sy) . "'
+       AND semester    = '" . mysqli_real_escape_string($con,$sem) . "'"))['c'];
+
+$open_classes_now = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM classes
+     WHERE status = 'open'
+       AND school_year = '" . mysqli_real_escape_string($con,$sy) . "'
+       AND semester    = '" . mysqli_real_escape_string($con,$sem) . "'"))['c'];
+
+$irregular_count = mysqli_fetch_assoc(mysqli_query($con,
+    "SELECT COUNT(*) as c FROM students WHERE registration_status = 'Irregular'"))['c'];
+
+$period_labels = [
+    'enrollment'      => ['Open — Regular Enrollment', '#16a34a', 'fa-circle-check'],
+    'late_enrollment' => ['Open — Late / Add-Drop',    '#d97706', 'fa-right-left'],
+    'closed'          => ['Closed',                    '#dc2626', 'fa-lock'],
+];
+[$period_text, $period_color, $period_icon] = $period_labels[$period] ?? ['Unknown','#888','fa-question'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -179,6 +241,14 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -210,7 +280,27 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
 
                 <div class="page-header">
                     <h1>Dashboard Overview</h1>
-                    <p>Welcome back, <strong><?php echo htmlspecialchars($admin_data['first_name'] ?? 'Admin'); ?></strong>!</p>
+                    <p>Welcome back, <strong><?php echo htmlspecialchars($admin_data['username'] ?? 'Admin'); ?></strong>!</p>
+                </div>
+
+                <!-- Enrollment Period Banner -->
+                <div class="dash-period-banner" style="border-left-color:<?php echo $period_color; ?>;">
+                    <i class="fa-solid <?php echo $period_icon; ?>" style="color:<?php echo $period_color; ?>;font-size:1.1rem;"></i>
+                    <div class="dash-period-text">
+                        <span class="dash-period-label">Enrollment Period</span>
+                        <span class="dash-period-value" style="color:<?php echo $period_color; ?>;"><?php echo $period_text; ?></span>
+                    </div>
+                    <?php if ($sy || $sem): ?>
+                    <div class="dash-period-meta">
+                        <?php if ($sem): ?><span><i class="fa-solid fa-calendar-half"></i> <?php echo htmlspecialchars(ucfirst($sem)); ?> Semester</span><?php endif; ?>
+                        <?php if ($sy): ?><span><i class="fa-solid fa-school"></i> S.Y. <?php echo htmlspecialchars($sy); ?></span><?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($pending_drops > 0): ?>
+                    <a href="admin_drop_requests.php" class="dash-period-alert">
+                        <i class="fa-solid fa-triangle-exclamation"></i> <?php echo $pending_drops; ?> pending drop<?php echo $pending_drops > 1 ? 's' : ''; ?>
+                    </a>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Stats -->
@@ -255,6 +345,30 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                     </div>
                 </div>
 
+                <!-- Current Semester Summary Strip -->
+                <div class="dash-sem-strip">
+                    <div class="dash-sem-cell">
+                        <span class="dash-sem-num"><?php echo number_format($enrolled_now); ?></span>
+                        <span class="dash-sem-label">Enrolled This Sem</span>
+                    </div>
+                    <div class="dash-sem-cell">
+                        <span class="dash-sem-num"><?php echo number_format($open_classes_now); ?></span>
+                        <span class="dash-sem-label">Open Classes</span>
+                    </div>
+                    <div class="dash-sem-cell <?php echo $full_classes > 0 ? 'dash-sem-warn' : ''; ?>">
+                        <span class="dash-sem-num"><?php echo number_format($full_classes); ?></span>
+                        <span class="dash-sem-label">Classes at Capacity</span>
+                    </div>
+                    <div class="dash-sem-cell <?php echo $irregular_count > 0 ? 'dash-sem-warn' : ''; ?>">
+                        <span class="dash-sem-num"><?php echo number_format($irregular_count); ?></span>
+                        <span class="dash-sem-label">Irregular Students</span>
+                    </div>
+                    <div class="dash-sem-cell <?php echo $pending_drops > 0 ? 'dash-sem-alert' : ''; ?>">
+                        <span class="dash-sem-num"><?php echo number_format($pending_drops); ?></span>
+                        <span class="dash-sem-label">Pending Drop Requests</span>
+                    </div>
+                </div>
+
                 <!-- Content grid: recent applicants + quick actions -->
                 <div class="content-grid">
                     <div class="card">
@@ -262,36 +376,38 @@ $total_classes      = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as 
                             <h2>Recent Applicants</h2>
                             <a href="admin_applicants.php" class="link-small">View All</a>
                         </div>
-                        <div class="table-responsive">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Program</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $recent = mysqli_query($con, "SELECT * FROM applicants ORDER BY created_at DESC LIMIT 5");
-                                    while ($row = mysqli_fetch_assoc($recent)):
-                                    ?>
-                                    <tr>
-                                        <td><?php echo htmlspecialchars(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? 'N/A')); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email'] ?? 'N/A'); ?></td>
-                                        <td><?php echo htmlspecialchars($row['first_choice'] ?? 'N/A'); ?></td>
-                                        <td>
-                                            <span class="badge <?php echo strtolower($row['application_status'] ?? 'incomplete'); ?>">
-                                                <?php echo htmlspecialchars(ucfirst($row['application_status'] ?? 'Incomplete')); ?>
-                                            </span>
-                                        </td>
-                                        <td><?php echo date('M d, Y', strtotime($row['created_at'])); ?></td>
-                                    </tr>
-                                    <?php endwhile; ?>
-                                </tbody>
-                            </table>
+
+                        <div class="recent-applicants-table-wrapper">
+                            <div class="recent-applicants-table">
+
+                                <div class="recent-applicants-table-header">
+                                    <div class="recent-applicants-col-left">Name</div>
+                                    <div class="recent-applicants-col-left">Email</div>
+                                    <div class="recent-applicants-col-left">Program</div>
+                                    <div>Status</div>
+                                    <div>Date</div>
+                                </div>
+
+                                <div class="recent-applicants-table-body">
+                                <?php
+                                $recent = mysqli_query($con, "SELECT * FROM applicants ORDER BY created_at DESC LIMIT 5");
+                                while ($row = mysqli_fetch_assoc($recent)):
+                                ?>
+                                <div class="recent-applicants-row">
+                                    <div class="recent-applicants-col-left"><?php echo htmlspecialchars(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? 'N/A')); ?></div>
+                                    <div class="recent-applicants-col-left word-break"><?php echo htmlspecialchars($row['email'] ?? 'N/A'); ?></div>
+                                    <div class="recent-applicants-col-left"><?php echo htmlspecialchars($row['first_choice'] ?? 'N/A'); ?></div>
+                                    <div>
+                                        <span class="badge <?php echo strtolower($row['application_status'] ?? 'incomplete'); ?>">
+                                            <?php echo htmlspecialchars(ucfirst($row['application_status'] ?? 'Incomplete')); ?>
+                                        </span>
+                                    </div>
+                                    <div><?php echo date('M d, Y', strtotime($row['created_at'])); ?></div>
+                                </div>
+                                <?php endwhile; ?>
+                                </div>
+
+                            </div>
                         </div>
                     </div>
 

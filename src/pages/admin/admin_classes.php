@@ -6,6 +6,10 @@ include("../../php/admin_functions.php");
 $admin_data = check_admin_login($con);
 $pending_applicants = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM applicants WHERE application_status = 'pending'"))['c'];
 
+// Ensure block_restricted column exists
+$col_check = mysqli_fetch_assoc(mysqli_query($con, "SELECT COUNT(*) as c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'classes' AND COLUMN_NAME = 'block_restricted'"));
+if (!$col_check['c']) mysqli_query($con, "ALTER TABLE classes ADD COLUMN block_restricted TINYINT(1) NOT NULL DEFAULT 0");
+
 // Flash messages
 $flash_errors = [
     'missing_fields'    => 'Please fill in all required fields.',
@@ -15,7 +19,6 @@ $flash_errors = [
     'duplicate_class'   => 'This section already has this subject for the selected school year and semester.',
     'schedule_conflict' => 'Schedule conflict: Another class is already using this room at the same day and time.',
     'faculty_conflict'  => 'Schedule conflict: This faculty member already has a class at the same day and time.',
-    'wrong_school_year' => 'School year does not match the current system school year. Update it in Admin Accounts.',
 ];
 $flash = '';
 if (isset($_GET['error']) && isset($flash_errors[$_GET['error']])) {
@@ -56,7 +59,10 @@ if ($search !== '') {
 $classes = mysqli_query($con, "
     SELECT c.*, s.subject_code, s.subject_name, s.units, s.year_level,
            CONCAT(f.first_name, ' ', f.last_name) as faculty_name,
-           (SELECT COUNT(*) FROM enrollments e WHERE e.class_id = c.class_id AND e.status IN ('confirmed','reserved','ongoing')) as real_enrolled
+           (SELECT COUNT(*) FROM enrollments e WHERE e.class_id = c.class_id AND e.status IN ('confirmed','reserved','ongoing')) as real_enrolled,
+           (SELECT GROUP_CONCAT(b.block_name ORDER BY b.block_name SEPARATOR ', ')
+            FROM block_subjects bs JOIN blocks b ON bs.block_id = b.block_id
+            WHERE bs.class_id = c.class_id) as assigned_blocks
     FROM classes c
     JOIN subjects s ON c.subject_id = s.subject_id
     LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
@@ -91,6 +97,16 @@ $faculty_query = mysqli_query($con, "
 ");
 $faculty = [];
 while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
+
+// Blocks for dropdown (assign class to a block)
+$blocks_query = mysqli_query($con, "SELECT block_id, block_name, course, year_level, semester, school_year FROM blocks WHERE status = 'active' ORDER BY course, year_level, block_name");
+$all_blocks = [];
+while ($b = mysqli_fetch_assoc($blocks_query)) $all_blocks[] = $b;
+
+// Existing block assignments for classes (class_id => [block_ids])
+$block_assignments = [];
+$ba_res = mysqli_query($con, "SELECT block_id, class_id FROM block_subjects");
+while ($ba = mysqli_fetch_assoc($ba_res)) $block_assignments[$ba['class_id']][] = (int)$ba['block_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -237,6 +253,14 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -351,6 +375,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                 <div>Room</div>
                                 <div>Capacity</div>
                                 <div>Semester</div>
+                                <div>Block</div>
                                 <div>Status</div>
                                 <div>Actions</div>
                             </div>
@@ -387,6 +412,16 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                 </div>
                                 <div><?php echo htmlspecialchars($cls['semester'] . ' ' . $cls['school_year']); ?></div>
                                 <div>
+                                    <?php if (!empty($cls['block_restricted'])): ?>
+                                        <span style="font-size:.72rem;background:#dc26261a;color:#dc2626;padding:2px 7px;border-radius:4px;font-weight:600;">
+                                            <i class="fa-solid fa-lock"></i>
+                                            <?php echo $cls['assigned_blocks'] ? htmlspecialchars($cls['assigned_blocks']) : 'Restricted'; ?>
+                                        </span>
+                                    <?php else: ?>
+                                        <span style="color:var(--text-label);font-size:.78rem;">—</span>
+                                    <?php endif; ?>
+                                </div>
+                                <div>
                                     <span class="badge <?php echo $cls['status']; ?>">
                                         <?php echo ucfirst($cls['status']); ?>
                                     </span>
@@ -407,7 +442,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                                             <input type="hidden" name="new_status" value="<?php echo $cls['status']==='open'?'closed':'open'; ?>">
                                             <button type="submit" class="btn-icon"
                                                     title="<?php echo $cls['status']==='open'?'Close':'Open'; ?>">
-                                                <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock':'fa-lock-open'; ?>"></i>
+                                                <i class="fa-solid <?php echo $cls['status']==='open'?'fa-lock-open':'fa-lock'; ?>"></i>
                                             </button>
                                         </form>
                                         <form method="POST" action="../../php/admin_classes_handler.php" style="display:inline;"
@@ -437,12 +472,13 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
     <div id="formModal" class="modal">
         <div class="modal-content class-modal">
             <span class="close" onclick="closeModal('formModal')">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="formModalTitle">Add Class</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="formModalTitle">Add Class</h2>
 
             <form method="POST" action="../../php/admin_classes_handler.php">
                 <input type="hidden" name="action"   id="form_action"   value="add">
                 <input type="hidden" name="class_id" id="form_class_id">
                 <input type="hidden" name="subject_id" id="form_subject_id">
+                <input type="hidden" name="block_restricted" id="form_block_restricted" value="0">
 
                 <!-- Course selector -->
                 <div class="form-group" id="course_selector_group">
@@ -543,6 +579,18 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label>Assign to Block <span style="color:var(--text-label);font-size:.78rem;font-weight:400;">(optional)</span></label>
+                    <select name="assign_block_id" id="form_assign_block_id" onchange="document.getElementById('form_block_restricted').value=this.value?'1':'0'">
+                        <option value="">— No block (unrestricted) —</option>
+                        <?php foreach ($all_blocks as $blk): ?>
+                            <option value="<?php echo $blk['block_id']; ?>">
+                                <?php echo htmlspecialchars($blk['block_name'] . ' — ' . $blk['course'] . ' Yr' . $blk['year_level'] . ' ' . $blk['semester'] . ' ' . $blk['school_year']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
                 <div class="modal-actions">
                     <button type="submit" class="btn-submit" id="formSubmitBtn">Create Class</button>
                     <button type="button" class="btn-secondary" onclick="closeModal('formModal')">Cancel</button>
@@ -555,7 +603,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
     <div id="studentsModal" class="modal">
         <div class="modal-content" style="max-width: 800px;">
             <span class="close" onclick="closeModal('studentsModal')">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="studentsModalTitle">Enrolled Students</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="studentsModalTitle">Enrolled Students</h2>
             
             <div id="studentsContent">
                 <div style="text-align:center;padding:2rem;color:var(--text-label);">
@@ -576,6 +624,7 @@ while ($f = mysqli_fetch_assoc($faculty_query)) $faculty[] = $f;
     const SEM_LABELS  = {"1st":"1st Semester","2nd":"2nd Semester","summer":"Summer","N/A":"Unassigned"};
     const CURRENT_SCHOOL_YEAR = <?php echo json_encode(get_setting($con, 'current_school_year', date('Y').'-'.(date('Y')+1))); ?>;
     const CURRENT_SEMESTER    = <?php echo json_encode(get_setting($con, 'current_semester', '1st')); ?>;
+    const BLOCK_ASSIGNMENTS   = <?php echo json_encode($block_assignments); ?>;
     </script>
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_classes.js"></script>

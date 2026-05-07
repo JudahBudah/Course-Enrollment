@@ -35,27 +35,48 @@ $selected_class = null;
 foreach ($classes as $c) {
     if ($c['class_id'] == $selected_class_id) { $selected_class = $c; break; }
 }
+if ($selected_class_id && !$selected_class) { $selected_class_id = 0; }
 
 // Pull students + their grade entries for the selected class
 $rows = [];
 if ($selected_class_id) {
-    $q = mysqli_query($con,
-        "SELECT s.student_number, s.last_name, s.first_name, s.middle_name,
-                ge.computed_grade
-         FROM enrollments e
-         JOIN students s ON e.student_id = s.student_id
-         LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
-         WHERE e.class_id = $selected_class_id
-           AND e.status IN ('ongoing','confirmed')
-           AND e.enrollment_id = (
-               SELECT MAX(e2.enrollment_id) FROM enrollments e2
-               WHERE e2.student_id = e.student_id
-                 AND e2.class_id = $selected_class_id
-                 AND e2.status IN ('ongoing','confirmed')
-           )
-         ORDER BY s.last_name, s.first_name"
-    );
-    while ($r = mysqli_fetch_assoc($q)) $rows[] = $r;
+    $is_past = (int)($selected_class['grades_finalized'] ?? 0) === 1;
+
+    if ($is_past) {
+        // For finalized classes, pull from grade_history which has the snapshot
+        $q = mysqli_prepare($con,
+            "SELECT gh.student_number, s.last_name, s.first_name, s.middle_name,
+                    gh.class_standing, gh.quiz, gh.midterms, gh.finals,
+                    gh.computed_grade, gh.point_grade, gh.remarks
+             FROM grade_history gh
+             JOIN students s ON gh.student_id = s.student_id
+             WHERE gh.class_id = ? AND gh.faculty_id = ?
+             ORDER BY s.last_name, s.first_name"
+        );
+        mysqli_stmt_bind_param($q, 'ii', $selected_class_id, $faculty_id);
+        mysqli_stmt_execute($q);
+        $res = mysqli_stmt_get_result($q);
+        while ($r = mysqli_fetch_assoc($res)) $rows[] = $r;
+    } else {
+        $q = mysqli_query($con,
+            "SELECT s.student_number, s.last_name, s.first_name, s.middle_name,
+                    ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade,
+                    NULL as point_grade, NULL as remarks
+             FROM enrollments e
+             JOIN students s ON e.student_id = s.student_id
+             LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+             WHERE e.class_id = $selected_class_id
+               AND e.status IN ('ongoing','confirmed')
+               AND e.enrollment_id = (
+                   SELECT MAX(e2.enrollment_id) FROM enrollments e2
+                   WHERE e2.student_id = e.student_id
+                     AND e2.class_id = $selected_class_id
+                     AND e2.status IN ('ongoing','confirmed')
+               )
+             ORDER BY s.last_name, s.first_name"
+        );
+        while ($r = mysqli_fetch_assoc($q)) $rows[] = $r;
+    }
 }
 
 // Transmutation helpers
@@ -79,14 +100,43 @@ function remark(string $p): string {
 }
 
 // Summary counts
-$total  = count($rows);
-$graded = array_filter($rows, fn($r) => $r['computed_grade'] !== null);
-$passed = array_filter($graded, fn($r) => transmute((float)$r['computed_grade']) >= 73);
-$failed = array_filter($graded, fn($r) => transmute((float)$r['computed_grade']) < 70);
+$is_past = (int)($selected_class['grades_finalized'] ?? 0) === 1;
+$total   = count($rows);
+$graded  = array_filter($rows, fn($r) => $r['computed_grade'] !== null);
+$passed  = array_filter($graded, fn($r) => transmute((float)$r['computed_grade']) >= 73);
+$failed  = array_filter($graded, fn($r) => transmute((float)$r['computed_grade']) < 70);
+$pending = $total - count($graded);
 
 $sum = 0;
 foreach ($graded as $r) $sum += (float)$r['computed_grade'];
 $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
+
+$cg_vals    = array_map(fn($r) => (float)$r['computed_grade'], array_values($graded));
+$highest_cg = $cg_vals ? max($cg_vals) : null;
+$lowest_cg  = $cg_vals ? min($cg_vals) : null;
+$pass_rate  = count($graded) ? round(count($passed) / count($graded) * 100, 1) : null;
+$fail_rate  = count($graded) ? round(count($failed) / count($graded) * 100, 1) : null;
+
+// Grade distribution by point grade
+$dist = ['1.00'=>0,'1.25'=>0,'1.50'=>0,'1.75'=>0,'2.00'=>0,'2.25'=>0,'2.50'=>0,'2.75'=>0,'3.00'=>0,'4.00'=>0,'5.00'=>0];
+foreach ($graded as $r) {
+    $pg = pointGrade(transmute((float)$r['computed_grade']));
+    if (isset($dist[$pg])) $dist[$pg]++;
+}
+
+// Component averages
+$avg_cs = $avg_qz = $avg_mt = $avg_fn = null;
+$comp_map = ['class_standing'=>'cs','quiz'=>'qz','midterms'=>'mt','finals'=>'fn'];
+$comp_avgs = [];
+foreach ($comp_map as $col => $key) {
+    $vals = array_filter(array_column($rows, $col), fn($v) => $v !== null);
+    $comp_avgs[$key] = $vals ? round(array_sum($vals) / count($vals), 2) : null;
+}
+$avg_cs = $comp_avgs['cs'];
+$avg_qz = $comp_avgs['qz'];
+$avg_mt = $comp_avgs['mt'];
+$avg_fn = $comp_avgs['fn'];
+$has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $avg_fn !== null);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -105,6 +155,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
     </script>
     <link rel="stylesheet" href="../../css/faculty/faculty_tables.css" />
     <link rel="stylesheet" href="../../css/faculty/faculty_main.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   </head>
   <body>
     <header>
@@ -265,44 +316,116 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
 
         <?php else: ?>
 
-        <!-- Summary Stats + Search + Export Toolbar -->
-        <div class="gb-toolbar">
-            <div class="gb-summary">
-                <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo $total; ?></span>
-                    <span class="gb-stat-label">Students</span>
+        <!-- ── Stats Panel ─────────────────────────────── -->
+        <div class="gb-stats-panel">
+
+            <!-- Row 1: stat cards -->
+            <div class="gb-stats-row">
+                <div class="gb-stat-card">
+                    <i class="fa-solid fa-users"></i>
+                    <div><span class="gb-sc-value"><?php echo $total; ?></span><span class="gb-sc-label">Total Students</span></div>
                 </div>
-                <div class="sched-stat-divider"></div>
-                <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo count($graded); ?></span>
-                    <span class="gb-stat-label">Graded</span>
+                <div class="gb-stat-card">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <div><span class="gb-sc-value"><?php echo count($graded); ?></span><span class="gb-sc-label">Graded</span></div>
                 </div>
-                <div class="sched-stat-divider"></div>
-                <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo count($passed); ?></span>
-                    <span class="gb-stat-label">Passed</span>
+                <div class="gb-stat-card green">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div><span class="gb-sc-value"><?php echo count($passed); ?></span><span class="gb-sc-label">Passed</span></div>
                 </div>
-                <div class="sched-stat-divider"></div>
-                <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo count($failed); ?></span>
-                    <span class="gb-stat-label">Failed</span>
+                <div class="gb-stat-card red">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                    <div><span class="gb-sc-value"><?php echo count($failed); ?></span><span class="gb-sc-label">Failed</span></div>
                 </div>
-                <div class="sched-stat-divider"></div>
-                <div class="gb-stat">
-                    <span class="gb-stat-value"><?php echo $avg_cg ?? '-'; ?></span>
-                    <span class="gb-stat-label">Class Avg</span>
+                <div class="gb-stat-card gold">
+                    <i class="fa-solid fa-clock"></i>
+                    <div><span class="gb-sc-value"><?php echo $pending; ?></span><span class="gb-sc-label">Pending</span></div>
+                </div>
+                <div class="gb-stat-card navy">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <div><span class="gb-sc-value"><?php echo $pass_rate !== null ? $pass_rate.'%' : '—'; ?></span><span class="gb-sc-label">Pass Rate</span></div>
+                </div>
+                <div class="gb-stat-card">
+                    <i class="fa-solid fa-calculator"></i>
+                    <div><span class="gb-sc-value"><?php echo $avg_cg ?? '—'; ?></span><span class="gb-sc-label">Class Avg</span></div>
+                </div>
+                <div class="gb-stat-card green">
+                    <i class="fa-solid fa-arrow-up"></i>
+                    <div><span class="gb-sc-value"><?php echo $highest_cg !== null ? number_format($highest_cg,2) : '—'; ?></span><span class="gb-sc-label">Highest</span></div>
+                </div>
+                <div class="gb-stat-card red">
+                    <i class="fa-solid fa-arrow-down"></i>
+                    <div><span class="gb-sc-value"><?php echo $lowest_cg !== null ? number_format($lowest_cg,2) : '—'; ?></span><span class="gb-sc-label">Lowest</span></div>
                 </div>
             </div>
-            <div class="gb-toolbar-right">
+
+            <!-- Row 2: charts -->
+            <?php if (count($graded) > 0): ?>
+            <div class="gb-charts-row">
+
+                <!-- Donut: Pass vs Fail -->
+                <div class="gb-chart-card">
+                    <div class="gb-chart-title">Pass / Fail Breakdown</div>
+                    <div class="gb-chart-wrap">
+                        <canvas id="chartDonut"></canvas>
+                        <div class="gb-donut-center">
+                            <span class="gb-donut-pct"><?php echo $pass_rate ?? 0; ?>%</span>
+                            <span class="gb-donut-sub">Pass Rate</span>
+                        </div>
+                    </div>
+                    <div class="gb-chart-legend">
+                        <span><i class="fa-solid fa-circle" style="color:#16a34a"></i> Passed (<?php echo count($passed); ?>)</span>
+                        <span><i class="fa-solid fa-circle" style="color:#dc2626"></i> Failed (<?php echo count($failed); ?>)</span>
+                        <?php if ($pending > 0): ?>
+                        <span><i class="fa-solid fa-circle" style="color:#d97706"></i> Pending (<?php echo $pending; ?>)</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+
+                <!-- Bar: Grade Distribution -->
+                <div class="gb-chart-card gb-chart-card--wide">
+                    <div class="gb-chart-title">Grade Distribution</div>
+                    <div class="gb-chart-wrap gb-chart-wrap--bar">
+                        <canvas id="chartBar"></canvas>
+                    </div>
+                </div>
+
+                <!-- Radar: Component Averages (only if data exists) -->
+                <?php if ($has_components): ?>
+                <div class="gb-chart-card">
+                    <div class="gb-chart-title">Component Averages</div>
+                    <div class="gb-chart-wrap">
+                        <canvas id="chartRadar"></canvas>
+                    </div>
+                    <div class="gb-chart-legend">
+                        <?php if ($avg_cs !== null): ?><span><i class="fa-solid fa-circle" style="color:#3b82f6"></i> Class Standing: <?php echo $avg_cs; ?></span><?php endif; ?>
+                        <?php if ($avg_qz !== null): ?><span><i class="fa-solid fa-circle" style="color:#8b5cf6"></i> Quiz: <?php echo $avg_qz; ?></span><?php endif; ?>
+                        <?php if ($avg_mt !== null): ?><span><i class="fa-solid fa-circle" style="color:#f59e0b"></i> Midterms: <?php echo $avg_mt; ?></span><?php endif; ?>
+                        <?php if ($avg_fn !== null): ?><span><i class="fa-solid fa-circle" style="color:#ef4444"></i> Finals: <?php echo $avg_fn; ?></span><?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+            </div>
+            <?php endif; ?>
+
+        </div><!-- /.gb-stats-panel -->
+
+        <!-- Toolbar: search + export -->
+        <div class="gb-toolbar">
+            <div class="gb-toolbar-right" style="margin-left:auto;">
                 <div class="cl-search-wrapper">
                     <i class="fa-solid fa-magnifying-glass cl-search-icon"></i>
-                    <input type="text" class="cl-search" id="gbSearch"
-                           placeholder="Search student-"
-                           oninput="filterRows(this.value)">
+                    <input type="text" class="cl-search" id="gbSearch" placeholder="Search student…" oninput="filterRows(this.value)">
                 </div>
                 <button class="btn-export" onclick="exportCSV()">
                     <i class="fa-solid fa-file-csv"></i> Export CSV
                 </button>
+                <?php if (!$is_past): ?>
+                <a href="faculty_spreadsheet.php?class_id=<?php echo $selected_class_id; ?>" class="btn-export" style="background:var(--navy,#0B1F5B);text-decoration:none;">
+                    <i class="fa-solid fa-table"></i> Spreadsheet
+                </a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -313,6 +436,12 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                     <span class="col-head">#</span>
                     <span class="col-head">STUDENT NO.</span>
                     <span class="col-head col-align-left">FULL NAME (LN, FN MN)</span>
+                    <?php if ($is_past): ?>
+                    <span class="col-head">CLASS<br><small>STANDING</small></span>
+                    <span class="col-head">QUIZ</span>
+                    <span class="col-head">MIDTERMS</span>
+                    <span class="col-head">FINALS</span>
+                    <?php endif; ?>
                     <span class="col-head">COMPUTED<br><small>GRADE</small></span>
                     <span class="col-head">TRANSMUTED<br><small>GRADE</small></span>
                     <span class="col-head">POINT<br><small>GRADE</small></span>
@@ -345,6 +474,12 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                             <span class="student-no"><?php echo htmlspecialchars($r['student_number']); ?></span>
                         </span>
                         <span class="col-side"><?php echo $fullname; ?></span>
+                        <?php if ($is_past): ?>
+                        <span class="col-cg"><?php echo $r['class_standing'] !== null ? number_format((float)$r['class_standing'], 2) : '<span class="no-grade">—</span>'; ?></span>
+                        <span class="col-cg"><?php echo $r['quiz']          !== null ? number_format((float)$r['quiz'],          2) : '<span class="no-grade">—</span>'; ?></span>
+                        <span class="col-cg"><?php echo $r['midterms']      !== null ? number_format((float)$r['midterms'],      2) : '<span class="no-grade">—</span>'; ?></span>
+                        <span class="col-cg"><?php echo $r['finals']        !== null ? number_format((float)$r['finals'],        2) : '<span class="no-grade">—</span>'; ?></span>
+                        <?php endif; ?>
                         <span class="col-cg">
                             <?php echo $cg !== null ? number_format($cg, 2) : '<span class="no-grade">-</span>'; ?>
                         </span>
@@ -367,12 +502,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
                 <div class="table-footer">
                     <span id="gbCount">Total Students: <strong><?php echo $total; ?></strong></span>
                     <span><?php echo count($passed); ?> passed &bull; <?php echo count($failed); ?> failed</span>
-                    <?php if ($avg_cg !== null): ?>
-                    <span>Class avg: <strong><?php echo $avg_cg; ?></strong></span>
-                    <?php endif; ?>
-                    <a href="faculty_spreadsheet.php?class_id=<?php echo $selected_class_id; ?>" class="gb-edit-link">
-                        <i class="fa-solid fa-table"></i> Edit in Spreadsheet
-                    </a>
+                    <?php if ($avg_cg !== null): ?><span>Class avg: <strong><?php echo $avg_cg; ?></strong></span><?php endif; ?>
                 </div>
             </div>
         </div>
@@ -384,7 +514,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
 
     <script src="../../js/faculty/faculty_main.js"></script>
     <script>
-        // -- Meta badge updater -----------------------------------------------
+        // -- Meta badge updater
         const classSelect = document.getElementById('classSelect');
         if (classSelect) {
             classSelect.addEventListener('change', function () {
@@ -398,7 +528,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             });
         }
 
-        // -- Search filter ----------------------------------------------------
+        // -- Search filter
         function filterRows(q) {
             q = q.toLowerCase();
             const rows = document.querySelectorAll('.gb-row');
@@ -414,7 +544,7 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             if (cnt) cnt.innerHTML = 'Total Students: <strong>' + visible + '</strong>';
         }
 
-        // -- CSV Export -------------------------------------------------------
+        // -- CSV Export
         function exportCSV() {
             const rows = document.querySelectorAll('.gb-row');
             const lines = [['#', 'Student No.', 'Full Name', 'Computed Grade', 'Transmuted Grade', 'Point Grade', 'Remarks']];
@@ -436,6 +566,108 @@ $avg_cg = count($graded) ? round($sum / count($graded), 2) : null;
             a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
             a.download = 'gradebook_<?php echo $selected_class_id; ?>.csv';
             a.click();
+        }
+
+        // -- Charts
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        const textColor  = isDark ? '#ccc' : '#555';
+        const gridColor  = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.07)';
+
+        // Donut — Pass / Fail / Pending
+        const donutEl = document.getElementById('chartDonut');
+        if (donutEl) {
+            new Chart(donutEl, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passed', 'Failed', 'Pending'],
+                    datasets: [{
+                        data: [<?php echo count($passed); ?>, <?php echo count($failed); ?>, <?php echo $pending; ?>],
+                        backgroundColor: ['#16a34a', '#dc2626', '#d97706'],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    cutout: '72%',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: {
+                        label: ctx => ` ${ctx.label}: ${ctx.parsed} students`
+                    }}},
+                    animation: { animateRotate: true, duration: 600 }
+                }
+            });
+        }
+
+        // Bar — Grade Distribution
+        const barEl = document.getElementById('chartBar');
+        if (barEl) {
+            const distLabels = <?php echo json_encode(array_keys($dist)); ?>;
+            const distData   = <?php echo json_encode(array_values($dist)); ?>;
+            const barColors  = [
+                '#16a34a','#22c55e','#4ade80','#86efac','#bef264',
+                '#facc15','#fb923c','#f97316','#ef4444','#3b82f6','#8C1C24'
+            ];
+            new Chart(barEl, {
+                type: 'bar',
+                data: {
+                    labels: distLabels,
+                    datasets: [{
+                        label: 'Students',
+                        data: distData,
+                        backgroundColor: barColors,
+                        borderRadius: 5,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { callbacks: {
+                        label: ctx => ` ${ctx.parsed.y} student${ctx.parsed.y !== 1 ? 's' : ''}`
+                    }}},
+                    scales: {
+                        x: { ticks: { color: textColor, font: { size: 11 } }, grid: { color: gridColor } },
+                        y: { ticks: { color: textColor, stepSize: 1, font: { size: 11 } }, grid: { color: gridColor }, beginAtZero: true }
+                    },
+                    animation: { duration: 600 }
+                }
+            });
+        }
+
+        // Radar — Component Averages
+        const radarEl = document.getElementById('chartRadar');
+        if (radarEl) {
+            const radarLabels = [];
+            const radarData   = [];
+            <?php if ($avg_cs !== null): ?>radarLabels.push('Class Standing'); radarData.push(<?php echo $avg_cs; ?>);<?php endif; ?>
+            <?php if ($avg_qz !== null): ?>radarLabels.push('Quiz');           radarData.push(<?php echo $avg_qz; ?>);<?php endif; ?>
+            <?php if ($avg_mt !== null): ?>radarLabels.push('Midterms');       radarData.push(<?php echo $avg_mt; ?>);<?php endif; ?>
+            <?php if ($avg_fn !== null): ?>radarLabels.push('Finals');         radarData.push(<?php echo $avg_fn; ?>);<?php endif; ?>
+            new Chart(radarEl, {
+                type: 'radar',
+                data: {
+                    labels: radarLabels,
+                    datasets: [{
+                        label: 'Class Average',
+                        data: radarData,
+                        backgroundColor: 'rgba(140,28,36,0.15)',
+                        borderColor: '#8C1C24',
+                        pointBackgroundColor: '#8C1C24',
+                        borderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { r: {
+                        min: 0, max: 100,
+                        ticks: { stepSize: 25, color: textColor, font: { size: 10 }, backdropColor: 'transparent' },
+                        grid: { color: gridColor },
+                        pointLabels: { color: textColor, font: { size: 11, weight: '600' } }
+                    }},
+                    animation: { duration: 600 }
+                }
+            });
         }
     </script>
   </body>

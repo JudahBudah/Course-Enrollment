@@ -117,6 +117,32 @@ if (!empty($failed_codes) && ($student['registration_status'] ?? 'Regular') !== 
 
 $cur_school_year = get_setting($con, 'current_school_year', '');
 
+// Block schedule restriction — must be set before the class queries below
+$block_id = $student['block_id'] ?? null;
+$global_block_restricted = get_setting($con, 'block_enrollment_restricted', '0') === '1';
+
+$block_class_ids = [];
+if ($block_id) {
+    $bq = mysqli_query($con, "SELECT class_id FROM block_subjects WHERE block_id = $block_id");
+    while ($br = mysqli_fetch_assoc($bq)) $block_class_ids[] = (int)$br['class_id'];
+}
+
+$bypass_subject_ids = [];
+if ($block_id || $global_block_restricted) {
+    $dq = mysqli_query($con,
+        "SELECT DISTINCT subject_id FROM grades
+         WHERE student_id = $student_id AND (grade = '5.00' OR UPPER(grade) = 'INC')"
+    );
+    while ($dr = mysqli_fetch_assoc($dq)) $bypass_subject_ids[] = (int)$dr['subject_id'];
+    $rq = mysqli_query($con,
+        "SELECT DISTINCT c.subject_id FROM enrollments e
+         JOIN classes c ON e.class_id = c.class_id
+         WHERE e.student_id = $student_id AND e.status = 'completed'"
+    );
+    while ($rr = mysqli_fetch_assoc($rq)) $bypass_subject_ids[] = (int)$rr['subject_id'];
+    $bypass_subject_ids = array_unique($bypass_subject_ids);
+}
+
 // Build set of year levels the student has touched (has grades or active enrollments in)
 $student_year = (int)($student['year_level'] ?? 1);
 $touched_years = [$student_year];
@@ -171,10 +197,11 @@ while ($row = mysqli_fetch_assoc($ae_result)) {
 mysqli_stmt_close($ae_stmt);
 
 // Get available classes per subject for the modal (keyed by subject_id)
+// All classes are shown; restricted ones are flagged for UI greying
 $available_classes = [];
 if ($course_id) {
     $stmt = mysqli_prepare($con, "
-        SELECT c.class_id, c.subject_id, c.section, c.schedule_day, c.schedule_time, c.room, c.max_slots, c.enrolled_count, c.semester,
+        SELECT c.class_id, c.subject_id, c.section, c.schedule_day, c.schedule_time, c.room, c.max_slots, c.enrolled_count, c.semester, c.block_restricted,
                CONCAT(f.first_name, ' ', f.last_name) as faculty_name
         FROM classes c
         JOIN subjects s ON c.subject_id = s.subject_id
@@ -186,9 +213,18 @@ if ($course_id) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     while ($row = mysqli_fetch_assoc($result)) {
-        // For irregular students, show all open classes regardless of semester
-        // For regular students, only show classes matching the current semester
         if (!$is_irregular && !empty($effective_semester) && $row['semester'] !== $effective_semester) continue;
+
+        // Determine if this class is UI-restricted (greyed out) for this student
+        $is_class_restricted = !empty($row['block_restricted']) || $global_block_restricted;
+        $row['ui_restricted'] = false;
+        if ($is_class_restricted && $block_id) {
+            $is_bypass_subj = $is_irregular && in_array((int)$row['subject_id'], $bypass_subject_ids);
+            if (!$is_bypass_subj && !in_array((int)$row['class_id'], $block_class_ids)) {
+                $row['ui_restricted'] = true;
+            }
+        }
+
         $available_classes[$row['subject_id']][] = $row;
     }
 }
@@ -265,7 +301,7 @@ $irregular_classes = [];
 if ($is_irregular && $course_id) {
     $stmt = mysqli_prepare($con, "
         SELECT c.class_id, c.subject_id, c.section, c.schedule_day, c.schedule_time, c.room,
-               c.max_slots, c.enrolled_count, c.semester, c.school_year,
+               c.max_slots, c.enrolled_count, c.semester, c.school_year, c.block_restricted,
                s.subject_code, s.subject_name, s.units, s.lecture_hours, s.lab_hours,
                s.year_level, s.semester as subj_sem, s.prerequisite,
                CONCAT(f.first_name, ' ', f.last_name) as faculty_name
@@ -290,6 +326,16 @@ if ($is_irregular && $course_id) {
         if ($passed) continue;
         // Only show subjects from years the student has touched or their current year
         if (!in_array((int)$row['year_level'], $touched_years) && (int)$row['year_level'] > $student_year) continue;
+
+        // Determine if this class is UI-restricted for this student
+        $is_class_restricted = !empty($row['block_restricted']) || $global_block_restricted;
+        $ui_restricted = false;
+        if ($is_class_restricted && $block_id) {
+            $is_bypass_subj = in_array((int)$row['subject_id'], $bypass_subject_ids);
+            if (!$is_bypass_subj && !in_array((int)$row['class_id'], $block_class_ids)) {
+                $ui_restricted = true;
+            }
+        }
         $sid = $row['subject_id'];
         if (!isset($irregular_classes[$sid])) {
             // Store subject meta on first encounter
@@ -315,6 +361,7 @@ if ($is_irregular && $course_id) {
             'enrolled_count'=> $row['enrolled_count'],
             'semester'      => $row['semester'],
             'school_year'   => $row['school_year'],
+            'ui_restricted' => $ui_restricted,
         ];
     }
 }
@@ -337,7 +384,31 @@ mysqli_stmt_execute($stmt);
 $drop_requests = mysqli_stmt_get_result($stmt);
 
 // Check enrollment period status
-$enrollment_open = get_setting($con, 'enrollment_open', '1') === '1';
+$period = get_enrollment_period($con);
+$enrollment_open = in_array($period, ['enrollment', 'late_enrollment']);
+$drop_open       = ($period === 'late_enrollment');
+
+// Build period label for display
+$enroll_end_str      = get_setting($con, 'enrollment_end',      '');
+$late_start_str      = get_setting($con, 'late_enrollment_start','');
+$late_end_str        = get_setting($con, 'late_enrollment_end',  '');
+$period_notice = '';
+if ($period === 'enrollment') {
+    $period_notice = 'Regular enrollment is <strong>open</strong>' . (!empty($enroll_end_str) ? ' until <strong>' . date('M j, Y g:i A', strtotime($enroll_end_str)) . '</strong>' : '') . '.';
+} elseif ($period === 'late_enrollment') {
+    $period_notice = 'Late enrollment &amp; add/drop period is <strong>open</strong>' . (!empty($late_end_str) ? ' until <strong>' . date('M j, Y g:i A', strtotime($late_end_str)) . '</strong>' : '') . '.';
+} else {
+    // Closed — show when next window opens if configured
+    $now = time();
+    $enroll_start_str = get_setting($con, 'enrollment_start', '');
+    if (!empty($enroll_start_str) && $now < strtotime($enroll_start_str)) {
+        $period_notice = 'Enrollment opens on <strong>' . date('M j, Y g:i A', strtotime($enroll_start_str)) . '</strong>.';
+    } elseif (!empty($late_start_str) && $now < strtotime($late_start_str)) {
+        $period_notice = 'Late enrollment &amp; add/drop opens on <strong>' . date('M j, Y g:i A', strtotime($late_start_str)) . '</strong>.';
+    } else {
+        $period_notice = 'Enrollment is currently <strong>closed</strong>.';
+    }
+}
 
 $year_labels = ['1' => '1st Year', '2' => '2nd Year', '3' => '3rd Year', '4' => '4th Year', '5' => '5th Year', '6' => '6th Year', '0' => 'Unassigned'];
 $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'Summer', 'N/A' => 'Unassigned'];
@@ -398,6 +469,12 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <ul>
                             <li><a href="student_info-program.php">Program</a></li>
                             <li><a href="student_info-college.php">College</a></li>
+                            <?php
+                            $course_info = get_course_info($con, $student_course);
+                            $curriculum_url = $course_info['curriculum_url'] ?? '';
+                            if ($curriculum_url): ?>
+                            <li><a href="<?php echo htmlspecialchars($curriculum_url); ?>" target="_blank">Curriculum</a></li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </li>
@@ -419,11 +496,28 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
 <div class="spacer"></div>
 <main>
 
+    <!-- PERIOD STATUS BANNER -->
+    <div class="flash" style="background:<?php echo $period === 'closed' ? '#fef9ec' : '#f0fdf4'; ?>;color:<?php echo $period === 'closed' ? '#92400e' : '#15803d'; ?>;border-left-color:<?php echo $period === 'closed' ? '#f59e0b' : '#16a34a'; ?>;">
+        <i class="fa-solid <?php echo $period === 'closed' ? 'fa-clock' : ($period === 'late_enrollment' ? 'fa-right-left' : 'fa-circle-check'); ?>"></i>
+        <?php echo $period_notice; ?>
+        <?php if ($period === 'late_enrollment'): ?>
+            &nbsp;<span style="font-size:.8rem;opacity:.8;">(Late enrollment &amp; add/drop active)</span>
+        <?php endif; ?>
+    </div>
+
     <!-- FLASH MESSAGES -->
     <?php if (!$enrollment_open): ?>
         <div class="flash flash-error" style="background:#f974161a;color:#c2410c;border-left-color:#f97416;">
             <i class="fa-solid fa-lock"></i>
-            <strong>Enrollment is currently closed.</strong> The enrollment period has not started or has ended. Please check with the registrar.
+            <strong>Enrollment is currently closed.</strong> Please check with the registrar.
+        </div>
+    <?php endif; ?>
+    <?php if ($block_id && !empty($block_class_ids)): ?>
+        <div class="flash" style="background:#eff6ff;color:#1e40af;border-left-color:#3b82f6;">
+            <i class="fa-solid fa-layer-group"></i>
+            <strong>Block Schedule Restriction is active for some classes.</strong>
+            You are in block <strong><?php echo htmlspecialchars($student['block_name'] ?? ''); ?></strong> — classes marked as block-restricted will only show your block’s assigned schedule.
+            Retakes and deficient subjects are always exempt.
         </div>
     <?php endif; ?>
     <?php if (isset($_GET['success'])): ?>
@@ -435,6 +529,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 'drop_requested' => 'Drop request submitted. Awaiting admin approval.',
                 'drop_cancelled' => 'Drop request cancelled.',
                 'removed'        => 'Subject removed from enrollment.',
+                'dropped'        => 'Enrollment cancelled.',
             ];
             echo $msgs[$_GET['success']] ?? 'Action completed.';
             ?>
@@ -453,6 +548,8 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                 'prereq'           => 'Missing prerequisites: ' . htmlspecialchars(urldecode($_GET['missing'] ?? '')),
                 'no_class'         => 'No class selected.',
                 'enrollment_closed'=> 'Enrollment is currently closed. Please wait for the enrollment period to open.',
+                'drop_closed'      => 'Drop requests are only allowed during the late enrollment / add-drop period.',
+                'not_in_block'     => 'That schedule is not assigned to your block. Please select a schedule from your block\'s assigned classes.',
                 'max_units'        => 'You have reached the maximum of ' . htmlspecialchars($_GET['max'] ?? '') . ' units allowed this semester.',
             ];
             echo $errs[$_GET['error']] ?? 'An error occurred.';
@@ -579,6 +676,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                             </span>
                         </div>
                         <div>
+                            <?php if ($drop_open): ?>
                             <form method="POST" action="../../php/student_enrollment_action.php" style="display:inline;">
                                 <input type="hidden" name="action" value="drop">
                                 <input type="hidden" name="enrollment_id" value="<?php echo $row['enrollment_id']; ?>">
@@ -587,6 +685,9 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                     <i class="fa-solid fa-right-from-bracket"></i> Request Drop
                                 </button>
                             </form>
+                            <?php else: ?>
+                            <span style="font-size:.8rem;color:#9ca3af;"><i class="fa-solid fa-lock"></i> Drop closed</span>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <?php endwhile; ?>
@@ -743,7 +844,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                         data-subject-id="<?php echo $subj['subject_id']; ?>"
                                         data-subject-code="<?php echo htmlspecialchars($subj['subject_code']); ?>"
                                         data-subject-name="<?php echo htmlspecialchars($subj['subject_name']); ?>"
-                                        data-classes="<?php echo htmlspecialchars(json_encode($classes_list)); ?>">
+                                        data-classes='<?php echo json_encode($classes_list, JSON_HEX_APOS); ?>'>
                                     <i class="fa-solid fa-calendar-plus"></i> Select Schedule
                                 </button>
                             <?php else: ?>
@@ -828,7 +929,7 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                                     data-subject-id="<?php echo $subj['subject_id']; ?>"
                                     data-subject-code="<?php echo htmlspecialchars($subj['subject_code']); ?>"
                                     data-subject-name="<?php echo htmlspecialchars($subj['subject_name']); ?>"
-                                    data-classes="<?php echo htmlspecialchars(json_encode($subj['classes'])); ?>">
+                                    data-classes='<?php echo json_encode($subj['classes'], JSON_HEX_APOS); ?>'>
                                 <i class="fa-solid fa-calendar-plus"></i> Enroll
                             </button>
                         <?php endif; ?>

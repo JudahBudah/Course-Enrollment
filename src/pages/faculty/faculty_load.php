@@ -18,20 +18,32 @@ while ($r = mysqli_fetch_assoc($yq)) $years[] = $r['school_year'];
 $sel_year = $_GET['year'] ?? ($years[0] ?? '');
 $sel_sem  = $_GET['sem']  ?? '';
 
-$where = "c.faculty_id = $faculty_id";
-if ($sel_year) $where .= " AND c.school_year = '" . mysqli_real_escape_string($con, $sel_year) . "'";
-if ($sel_sem)  $where .= " AND c.semester = '"    . mysqli_real_escape_string($con, $sel_sem)  . "'";
+// Whitelist semester — only allow known values
+$allowed_sems = ['', '1st', '2nd', 'summer'];
+if (!in_array($sel_sem, $allowed_sems, true)) $sel_sem = '';
+
+// Whitelist school year — must match YYYY-YYYY format or be empty
+if ($sel_year !== '' && !preg_match('/^\d{4}-\d{4}$/', $sel_year)) $sel_year = '';
+
+$where_params = [$faculty_id];
+$where_types  = 'i';
+$where_sql    = 'c.faculty_id = ?';
+if ($sel_year) { $where_sql .= ' AND c.school_year = ?'; $where_params[] = $sel_year; $where_types .= 's'; }
+if ($sel_sem)  { $where_sql .= ' AND c.semester = ?';    $where_params[] = $sel_sem;  $where_types .= 's'; }
 
 $classes = [];
-$cq = mysqli_query($con,
+$cq_stmt = mysqli_prepare($con,
     "SELECT c.class_id, c.section, c.schedule_day, c.schedule_time, c.room,
             c.semester, c.school_year,
             s.subject_code, s.subject_name, s.units
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
-     WHERE $where
+     WHERE $where_sql
      ORDER BY c.schedule_time, s.subject_code"
 );
+mysqli_stmt_bind_param($cq_stmt, $where_types, ...$where_params);
+mysqli_stmt_execute($cq_stmt);
+$cq = mysqli_stmt_get_result($cq_stmt);
 while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
 
 $total_units   = array_sum(array_column($classes, 'units'));
@@ -44,13 +56,24 @@ $total_classes = count($classes);
 function parse_days_to_tokens(string $raw): array {
     $raw = strtoupper(trim($raw));
     $combos = [
-        'TTH'    => ['T','TH'],
-        'MWF'    => ['M','W','F'],
-        'MW'     => ['M','W'],
-        'TF'     => ['T','F'],
-        'MTH'    => ['M','TH'],
-        'WF'     => ['W','F'],
         'MTWTHF' => ['M','T','W','TH','F'],
+        'MTWTHFS'=> ['M','T','W','TH','F','S'],
+        'MWF'    => ['M','W','F'],
+        'TTH'    => ['T','TH'],
+        'MTTH'   => ['M','T','TH'],
+        'MTH'    => ['M','TH'],
+        'MTHS'   => ['M','TH','S'],
+        'MW'     => ['M','W'],
+        'MWS'    => ['M','W','S'],
+        'MT'     => ['M','T'],
+        'MF'     => ['M','F'],
+        'MS'     => ['M','S'],
+        'TF'     => ['T','F'],
+        'TS'     => ['T','S'],
+        'THS'    => ['TH','S'],
+        'WF'     => ['W','F'],
+        'WTH'    => ['W','TH'],
+        'FS'     => ['F','S'],
     ];
     if (isset($combos[$raw])) return $combos[$raw];
     $map = [

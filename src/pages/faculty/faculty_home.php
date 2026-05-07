@@ -20,19 +20,31 @@ include("../../php/admin_functions.php");
 $cur_semester    = get_setting($con, 'current_semester', '');
 $cur_school_year = get_setting($con, 'current_school_year', '');
 
-// Fetch assigned classes for current semester only
+// Fetch assigned classes for current semester and school year only
+// Excludes cancelled classes and past-finalized classes with zero enrolled students
 $classes = [];
 $cq = mysqli_query($con,
     "SELECT c.class_id, c.section, c.schedule_day, c.schedule_time, c.room,
+            c.enrolled_count, c.max_slots, c.grades_finalized, c.status,
             s.subject_code, s.subject_name, s.units
      FROM classes c
      JOIN subjects s ON c.subject_id = s.subject_id
      WHERE c.faculty_id = $faculty_id
        AND c.semester = '" . mysqli_real_escape_string($con, $cur_semester) . "'
        AND c.school_year = '" . mysqli_real_escape_string($con, $cur_school_year) . "'
+       AND c.status != 'cancelled'
      ORDER BY c.schedule_time, s.subject_code"
 );
 while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
+
+// Summary stats
+// Active = open classes not yet finalized
+// Finalized = closed classes with grades submitted
+$active_classes = array_filter($classes, fn($c) => !$c['grades_finalized'] && $c['status'] === 'open');
+$total_load     = count($active_classes);
+$total_students = array_sum(array_column(array_values($active_classes), 'enrolled_count'));
+$grades_pending = count(array_filter($active_classes, fn($c) => (int)$c['enrolled_count'] > 0));
+$grades_done    = count(array_filter($classes, fn($c) => (int)$c['grades_finalized'] === 1));
 
 // Build week schedule grouped by day
 $today = date('l');
@@ -256,6 +268,30 @@ while ($ce = mysqli_fetch_assoc($ce_q)) $cal_events[] = $ce;
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- SUMMARY STRIP -->
+            <div class="dash-summary-strip">
+                <div class="dash-summary-cell">
+                    <span class="dash-summary-num"><?php echo $total_load; ?></span>
+                    <span class="dash-summary-label">Classes This Sem</span>
+                </div>
+                <div class="dash-summary-cell">
+                    <span class="dash-summary-num"><?php echo $total_students; ?></span>
+                    <span class="dash-summary-label">Total Students</span>
+                </div>
+                <div class="dash-summary-cell <?php echo $grades_pending > 0 ? 'dash-summary-warn' : ''; ?>">
+                    <span class="dash-summary-num"><?php echo $grades_pending; ?></span>
+                    <span class="dash-summary-label">Grades Pending</span>
+                </div>
+                <div class="dash-summary-cell">
+                    <span class="dash-summary-num"><?php echo $grades_done; ?></span>
+                    <span class="dash-summary-label">Grades Finalized</span>
+                </div>
+                <div class="dash-summary-cell">
+                    <span class="dash-summary-num" style="font-size:0.9rem;font-weight:700;color:var(--text-label);"><?php echo htmlspecialchars(ucfirst($cur_semester) . ' ' . $cur_school_year); ?></span>
+                    <span class="dash-summary-label">Current Semester</span>
                 </div>
             </div>
 

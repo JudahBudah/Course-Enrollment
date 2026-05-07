@@ -36,7 +36,7 @@
 }
 
 .stat-number {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.8rem;
     font-weight: 700;
     color: var(--dark);
@@ -64,8 +64,8 @@
 }
 
 .panel-header h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.15rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1.2rem;
     color: var(--dark);
     display: flex;
     align-items: center;
@@ -535,7 +535,7 @@
 }
 
 .modal-header-info h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: "DM Serif Display", serif;
     font-size: 1.25rem;
     color: var(--dark);
     margin: 0 0 0.2rem;
@@ -562,8 +562,8 @@
 }
 
 .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
+    font-family: "DM Serif Display", serif;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--red);
     border-bottom: 1px solid var(--off);

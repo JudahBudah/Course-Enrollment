@@ -189,6 +189,14 @@ $media_base = '../../uploads/announcements/';
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -332,7 +340,7 @@ $media_base = '../../uploads/announcements/';
     <div id="annModal" class="modal">
         <div class="modal-content ann-modal">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="annModalTitle">New Announcement</h2>
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="annModalTitle">New Announcement</h2>
 
             <form method="POST" action="../../php/admin_announcements_handler.php"
                   enctype="multipart/form-data" id="annForm">

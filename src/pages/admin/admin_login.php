@@ -2,33 +2,42 @@
 session_start();
 include("../../php/connection.php");
 include("../../php/admin_functions.php");
+require_once("../../php/login_rate_limit.php");
+
+$rl_key = 'login_attempts_admin';
+$error  = null;
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    if (rate_limit_check($rl_key, $error)) {
+        $username = $_POST['username'] ?? '';
+        $password = $_POST['password'] ?? '';
 
-    if (!empty($username) && !empty($password)) {
-        $stmt = mysqli_prepare($con, "SELECT * FROM admins WHERE username = ? LIMIT 1");
-        mysqli_stmt_bind_param($stmt, "s", $username);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+        if (!empty($username) && !empty($password)) {
+            $stmt = mysqli_prepare($con, "SELECT * FROM admins WHERE username = ? LIMIT 1");
+            mysqli_stmt_bind_param($stmt, "s", $username);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-        if ($result && mysqli_num_rows($result) > 0) {
-            $admin_data = mysqli_fetch_assoc($result);
-            
-            if (password_verify($password, $admin_data['password'])) {
-                $_SESSION['admin_id']       = $admin_data['admin_id'];
-                $_SESSION['admin_username'] = $admin_data['username'];
-                $_SESSION['admin_role']     = $admin_data['role'] ?? 'admin';
-                log_activity($con, 'Admin logged in', 'auth', $admin_data['username']);
-                header("Location: admin_home.php");
-                die;
+            if ($result && mysqli_num_rows($result) > 0) {
+                $admin_data = mysqli_fetch_assoc($result);
+
+                if (password_verify($password, $admin_data['password'])) {
+                    rate_limit_reset($rl_key);
+                    session_regenerate_id(true);
+                    $_SESSION['admin_id']       = $admin_data['admin_id'];
+                    $_SESSION['admin_username'] = $admin_data['username'];
+                    $_SESSION['admin_role']     = $admin_data['role'] ?? 'admin';
+                    log_activity($con, 'Admin logged in', 'auth', $admin_data['username']);
+                    header("Location: admin_home.php");
+                    die;
+                }
             }
+
+            rate_limit_fail($rl_key);
+            $error = "Invalid username or password";
+        } else {
+            $error = "Please enter both username and password";
         }
-        
-        $error = "Invalid username or password";
-    } else {
-        $error = "Please enter both username and password";
     }
 }
 ?>
@@ -68,10 +77,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <h2>Admin Access</h2>
                 <p class="login-subtitle">Sign in to manage the system</p>
 
-                <?php if (isset($error)): ?>
+                <?php if ($error): ?>
                     <div class="error-message">
                         <i class="fa-solid fa-exclamation-circle"></i>
                         <?php echo htmlspecialchars($error); ?>
+                    </div>
+                <?php endif; ?>
+                <?php $left = attempts_left($rl_key); if ($left <= 2 && $left > 0): ?>
+                    <div class="error-message" style="background:rgba(180,100,0,0.12);border-color:#b46400;color:#b46400;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <?php echo $left; ?> attempt(s) remaining before lockout.
                     </div>
                 <?php endif; ?>
 
@@ -84,6 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <label>Password</label>
                     <input type="password" name="password" placeholder="Enter your password" required>
                 </div>
+
+                <?php if (needs_captcha($rl_key)) echo captcha_widget(); ?>
 
                 <button type="submit" class="btn-login">
                     <span>Sign In</span>

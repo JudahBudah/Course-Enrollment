@@ -37,12 +37,9 @@ if (isset($_GET['success'])) {
     $flash = '<div class="success-message"><i class="fa-solid fa-check-circle"></i> ' . ($msgs[$_GET['success']] ?? 'Done.') . '</div>';
 }
 
-// Current system settings
+// Current system settings — kept for flash message reference only
 $cur_semester       = get_setting($con, 'current_semester', '1st');
 $cur_school_year    = get_setting($con, 'current_school_year', date('Y') . '-' . (date('Y') + 1));
-$enrollment_open    = get_setting($con, 'enrollment_open', '1') === '1';
-$min_units          = (int)get_setting($con, 'min_units', '0');
-$max_units          = (int)get_setting($con, 'max_units', '0');
 
 // Fetch all admins
 $admins = [];
@@ -197,6 +194,14 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                         </div>
                     </li>
 
+                    <?php if (($admin_data['role'] ?? '') === 'superadmin'): ?>
+                    <li>
+                        <a href="admin_settings.php" class="superadmin-link">
+                            <i class="fa-solid fa-sliders"></i>
+                            <span class="li-name">System Settings</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
                     <li>
                         <a href="../../php/admin_logout.php" class="logout-bg">
                             <i class="fa-solid fa-right-from-bracket"></i>
@@ -247,78 +252,6 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
                         <div class="stat-content">
                             <h3>Superadmins</h3>
                             <p class="stat-number"><?php echo $superadmin_count; ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- System Settings -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2>System Settings</h2>
-                    </div>
-                    <div style="padding:1.5rem;">
-                        <form method="POST" action="../../php/admin_settings_handler.php">
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start;">
-
-                                <!-- LEFT: Enrollment Period -->
-                                <div style="border-right:1px solid var(--off);padding-right:2rem;">
-                                    <div class="form-group" style="margin-bottom:0;">
-                                        <label>Enrollment Period</label>
-                                        <div style="font-size:.82rem;color:var(--text-label);margin-bottom:.75rem;" id="epDesc">
-                                            <?php echo $enrollment_open ? 'Open — Students can currently enroll' : 'Closed — Students cannot enroll'; ?>
-                                        </div>
-                                        <div style="display:flex;align-items:center;gap:.75rem;">
-                                            <div class="toggle-track <?php echo $enrollment_open ? 'active' : ''; ?>" id="epTrack" style="cursor:pointer;">
-                                                <div class="toggle-thumb"></div>
-                                            </div>
-                                            <span style="font-size:.9rem;font-weight:600;color:var(--dark);" id="epText"><?php echo $enrollment_open ? 'Open' : 'Closed'; ?></span>
-                                            <input type="hidden" name="enrollment_open" id="epInput" value="<?php echo $enrollment_open ? '1' : '0'; ?>">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- RIGHT: Semester + School Year -->
-                                <div>
-                                    <div class="form-group">
-                                        <label>Current Semester <span style="color:var(--red)">*</span></label>
-                                        <select name="current_semester" required>
-                                            <option value="1st"    <?php echo $cur_semester==='1st'    ?'selected':''; ?>>1st Semester</option>
-                                            <option value="2nd"    <?php echo $cur_semester==='2nd'    ?'selected':''; ?>>2nd Semester</option>
-                                            <option value="summer" <?php echo $cur_semester==='summer' ?'selected':''; ?>>Summer</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group" style="margin-bottom:0;">
-                                        <label>School Year <span style="color:var(--red)">*</span></label>
-                                        <input type="text" name="current_school_year"
-                                               value="<?php echo htmlspecialchars($cur_school_year); ?>"
-                                               placeholder="e.g. 2024-2025"
-                                               pattern="\d{4}-\d{4}" required>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--off);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-                                <button type="submit" class="btn-primary">
-                                    <i class="fa-solid fa-floppy-disk"></i> Save Settings
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Promote All Students -->
-                        <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--off);">
-                            <div style="font-weight:600;font-size:.9rem;margin-bottom:.4rem;">
-                                <i class="fa-solid fa-circle-arrow-up" style="color:var(--gold);"></i> Promote All Students
-                            </div>
-                            <div style="font-size:.82rem;color:var(--text-label);margin-bottom:.85rem;">
-                                Increments every student's year level by 1 (Year 1→2, 2→3, 3→4, 4→5, 5→6). Year 6 students are unaffected.
-                                Irregular students are also promoted and will retake deficient subjects alongside their new year's load.
-                            </div>
-                            <form method="POST" action="../../php/admin_promote_students.php"
-                                  onsubmit="return confirm('Promote ALL students by one year level? This affects every student in the system and cannot be undone.')">
-                                <button type="submit" class="btn-primary" style="background:var(--gold);border-color:var(--gold);">
-                                    <i class="fa-solid fa-circle-arrow-up"></i> Promote All Students
-                                </button>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -402,7 +335,7 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
     <div id="accModal" class="modal">
         <div class="modal-content acc-modal">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2 style="font-family:'Playfair Display',serif;margin-bottom:1.5rem;" id="accModalTitle">
+            <h2 style="font-family: 'DM Serif Display', serif;margin-bottom:1.5rem;" id="accModalTitle">
                 New Admin Account
             </h2>
 
@@ -452,22 +385,5 @@ $admin_count       = count(array_filter($admins, fn($a) => $a['role'] === 'admin
 
     <script src="../../js/admin/admin_main.js"></script>
     <script src="../../js/admin/admin_accounts.js"></script>
-    <script>
-    const epTrack = document.getElementById('epTrack');
-    const epInput = document.getElementById('epInput');
-    const epText  = document.getElementById('epText');
-    const epDesc  = document.getElementById('epDesc');
-
-    epTrack.addEventListener('click', function() {
-        const isOpen = epInput.value === '1';
-        const nowOpen = !isOpen;
-        epInput.value = nowOpen ? '1' : '0';
-        epTrack.classList.toggle('active', nowOpen);
-        epText.textContent = nowOpen ? 'Open' : 'Closed';
-        epDesc.textContent = nowOpen
-            ? 'Open — Students can currently enroll'
-            : 'Closed — Students cannot enroll';
-    });
-    </script>
 </body>
 </html>
