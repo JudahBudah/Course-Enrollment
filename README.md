@@ -246,10 +246,12 @@ Sidebar access: **Application Form → Submit Documents → Exam Schedule**
 
 ## Screenshots
 
-> Screenshots of the running system are included in the project paper. Key views include:
-> - Landing page with portal selection
-> - Admin dashboard with live activity feed
-> - Student enrollment page with prerequisite checking
+<img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/183eb194-43f3-4723-b39d-7403a137e563" />
+
+<img width="1365" height="631" alt="image" src="https://github.com/user-attachments/assets/135348a7-55fc-4338-8e5f-abfdc74c243a" />
+
+<img width="1365" height="630" alt="image" src="https://github.com/user-attachments/assets/604a72af-6a47-484e-9be2-81d777d0ae09" />
+
 > - Faculty grade spreadsheet and gradebook
 > - Applicant application timeline
 
