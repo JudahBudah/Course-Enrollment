@@ -155,6 +155,23 @@ enrollments     → grade_entries
 
 ## Getting Started
 
+202400000 - Irreg Second Year Student 
+202411111 - Regular Second Year Student 
+202422222 - First Year Student (Different Block)
+202433333 - First year Student (Different Block)
+
+softdevset@gmail.com - Applicant
+
+kevsistired@gmail.com - Faculty
+sarah.johnson@university.edu - Faculty
+PASSWORDS: 9fRJV5ag
+
+robert.martinez@university.edu - Faculty
+PASSWORD: password123
+
+admin2 - superadmin
+PASSWORD: password
+
 ### Prerequisites
 - [XAMPP](https://www.apachefriends.org/) or [WAMP](https://www.wampserver.com/) installed
 - PHP 7.4 or higher
