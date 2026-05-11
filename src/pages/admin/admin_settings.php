@@ -162,6 +162,31 @@ $period_labels = [
                     <?php endif; ?>
                 </div>
 
+                <!-- Section: Promote Students -->
+                <div class="settings-section" style="border-left: 4px solid #dc2626;">
+                    <div class="settings-section-header">
+                        <i class="fa-solid fa-arrow-up" style="color:#dc2626;"></i>
+                        <div>
+                            <h2>Promote All Students</h2>
+                            <p>Advance every student up by one year level. Ungraded active enrollments will be marked <strong>INC</strong> and those students flagged as Irregular. This action cannot be undone.</p>
+                        </div>
+                    </div>
+                    <div style="padding:1.25rem 1.5rem;">
+                        <?php if (isset($_GET['success']) && $_GET['success'] === 'promoted'): ?>
+                        <div style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:8px;padding:.65rem 1rem;font-size:.85rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <?php echo (int)$_GET['count']; ?> students promoted &mdash; <?php echo (int)$_GET['inc']; ?> marked INC.
+                        </div>
+                        <?php endif; ?>
+                        <form method="POST" action="../../php/admin_promote_students.php"
+                              onsubmit="return confirm('Promote ALL students by one year level?\n\nUngraded enrollments will be marked INC and those students flagged Irregular.\n\nThis cannot be undone.');">
+                            <button type="submit" class="btn-settings-save" style="background:#dc2626;">
+                                <i class="fa-solid fa-arrow-up"></i> Promote All Students
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
                 <form method="POST">
 
                     <!-- Section: Academic Calendar -->

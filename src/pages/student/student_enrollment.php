@@ -171,24 +171,14 @@ if ($is_irregular) {
     $touched_years = array_unique($touched_years);
 }
 $active_enrollments = [];
-if ($is_irregular) {
-    $ae_stmt = mysqli_prepare($con,
-        "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id
-         FROM enrollments e
-         JOIN classes c ON e.class_id = c.class_id
-         WHERE e.student_id = ? AND e.status IN ('confirmed','drop_requested')"
-    );
-    mysqli_stmt_bind_param($ae_stmt, "i", $student_id);
-} else {
-    $ae_stmt = mysqli_prepare($con,
-        "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id
-         FROM enrollments e
-         JOIN classes c ON e.class_id = c.class_id
-         WHERE e.student_id = ? AND e.status IN ('confirmed','drop_requested')
-           AND c.semester = ? AND c.school_year = ?"
-    );
-    mysqli_stmt_bind_param($ae_stmt, "iss", $student_id, $cur_semester, $cur_school_year);
-}
+$ae_stmt = mysqli_prepare($con,
+    "SELECT e.enrollment_id, e.status, e.class_id, c.subject_id
+     FROM enrollments e
+     JOIN classes c ON e.class_id = c.class_id
+     WHERE e.student_id = ? AND e.status IN ('confirmed','drop_requested')
+       AND c.semester = ? AND c.school_year = ?"
+);
+mysqli_stmt_bind_param($ae_stmt, "iss", $student_id, $cur_semester, $cur_school_year);
 mysqli_stmt_execute($ae_stmt);
 $ae_result = mysqli_stmt_get_result($ae_stmt);
 while ($row = mysqli_fetch_assoc($ae_result)) {
@@ -229,18 +219,8 @@ if ($course_id) {
     }
 }
 
-// Fetch current enrolled subjects — for irregular: all semesters/years; for regular: current only
-$enroll_query = $is_irregular
-    ? "SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
-              c.class_id, c.schedule_day, c.schedule_time, c.room, c.section, c.semester as class_semester, c.school_year as class_school_year,
-              CONCAT(f.first_name, ' ', f.last_name) as faculty_name
-       FROM enrollments e
-       JOIN classes c ON e.class_id = c.class_id
-       JOIN subjects s ON c.subject_id = s.subject_id
-       LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
-       WHERE e.student_id = ? AND e.status = 'confirmed'
-       ORDER BY s.subject_code"
-    : "SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
+// Fetch current enrolled subjects — always filter by current semester/school year
+$enroll_query = "SELECT e.enrollment_id, e.status, s.subject_code, s.subject_name, s.lecture_hours, s.lab_hours, s.units,
               c.class_id, c.schedule_day, c.schedule_time, c.room, c.section, c.semester as class_semester, c.school_year as class_school_year,
               CONCAT(f.first_name, ' ', f.last_name) as faculty_name
        FROM enrollments e
@@ -252,11 +232,7 @@ $enroll_query = $is_irregular
        ORDER BY s.subject_code";
 
 $stmt = mysqli_prepare($con, $enroll_query);
-if ($is_irregular) {
-    mysqli_stmt_bind_param($stmt, "i", $student_id);
-} else {
-    mysqli_stmt_bind_param($stmt, "iss", $student_id, $cur_semester, $cur_school_year);
-}
+mysqli_stmt_bind_param($stmt, "iss", $student_id, $cur_semester, $cur_school_year);
 mysqli_stmt_execute($stmt);
 $enrolled_subjects = mysqli_stmt_get_result($stmt);
 
@@ -664,9 +640,6 @@ $sem_labels  = ['1st' => '1st Semester', '2nd' => '2nd Semester', 'summer' => 'S
                         <div class="enroll-col-left">
                             <div class="sched-cell">
                                 <span class="sched-tag"><?php echo htmlspecialchars($row['section'] . ' · ' . $row['schedule_day'] . ' ' . $row['schedule_time'] . ($row['room'] ? ' · ' . $row['room'] : '')); ?></span>
-                                <?php if ($is_irregular): ?>
-                                <span style="font-size:.75rem;color:var(--text-label);display:block;margin-top:.2rem;"><?php echo htmlspecialchars(($sem_labels[$row['class_semester']] ?? $row['class_semester']) . ' ' . $row['class_school_year']); ?></span>
-                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="enroll-col-left faculty-name"><?php echo htmlspecialchars($row['faculty_name'] ?? 'TBA'); ?></div>

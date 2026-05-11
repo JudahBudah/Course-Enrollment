@@ -22,13 +22,12 @@ $cq = mysqli_query($con,
      ORDER BY c.grades_finalized ASC, s.subject_code, c.section"
 );
 while ($r = mysqli_fetch_assoc($cq)) {
-    if ((int)$r['grades_finalized'] === 1) $past_classes[] = $r;
-    else $current_classes[] = $r;
+    $current_classes[] = $r;
 }
-$classes = array_merge($current_classes, $past_classes);
+$classes = $current_classes;
 
-$view_mode = $_GET['view'] ?? 'current';
-$display_classes = $view_mode === 'past' ? $past_classes : $current_classes;
+$view_mode = 'current';
+$display_classes = $current_classes;
 
 $selected_class_id = isset($_GET['class_id']) ? (int)$_GET['class_id'] : ($display_classes[0]['class_id'] ?? 0);
 $selected_class = null;
@@ -40,43 +39,24 @@ if ($selected_class_id && !$selected_class) { $selected_class_id = 0; }
 // Pull students + their grade entries for the selected class
 $rows = [];
 if ($selected_class_id) {
-    $is_past = (int)($selected_class['grades_finalized'] ?? 0) === 1;
-
-    if ($is_past) {
-        // For finalized classes, pull from grade_history which has the snapshot
-        $q = mysqli_prepare($con,
-            "SELECT gh.student_number, s.last_name, s.first_name, s.middle_name,
-                    gh.class_standing, gh.quiz, gh.midterms, gh.finals,
-                    gh.computed_grade, gh.point_grade, gh.remarks
-             FROM grade_history gh
-             JOIN students s ON gh.student_id = s.student_id
-             WHERE gh.class_id = ? AND gh.faculty_id = ?
-             ORDER BY s.last_name, s.first_name"
-        );
-        mysqli_stmt_bind_param($q, 'ii', $selected_class_id, $faculty_id);
-        mysqli_stmt_execute($q);
-        $res = mysqli_stmt_get_result($q);
-        while ($r = mysqli_fetch_assoc($res)) $rows[] = $r;
-    } else {
-        $q = mysqli_query($con,
-            "SELECT s.student_number, s.last_name, s.first_name, s.middle_name,
-                    ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade,
-                    NULL as point_grade, NULL as remarks
-             FROM enrollments e
-             JOIN students s ON e.student_id = s.student_id
-             LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
-             WHERE e.class_id = $selected_class_id
-               AND e.status IN ('ongoing','confirmed')
-               AND e.enrollment_id = (
-                   SELECT MAX(e2.enrollment_id) FROM enrollments e2
-                   WHERE e2.student_id = e.student_id
-                     AND e2.class_id = $selected_class_id
-                     AND e2.status IN ('ongoing','confirmed')
-               )
-             ORDER BY s.last_name, s.first_name"
-        );
-        while ($r = mysqli_fetch_assoc($q)) $rows[] = $r;
-    }
+    $q = mysqli_query($con,
+        "SELECT s.student_number, s.last_name, s.first_name, s.middle_name,
+                ge.class_standing, ge.quiz, ge.midterms, ge.finals, ge.computed_grade,
+                NULL as point_grade, NULL as remarks
+         FROM enrollments e
+         JOIN students s ON e.student_id = s.student_id
+         LEFT JOIN grade_entries ge ON ge.enrollment_id = e.enrollment_id
+         WHERE e.class_id = $selected_class_id
+           AND e.status IN ('ongoing','confirmed')
+           AND e.enrollment_id = (
+               SELECT MAX(e2.enrollment_id) FROM enrollments e2
+               WHERE e2.student_id = e.student_id
+                 AND e2.class_id = $selected_class_id
+                 AND e2.status IN ('ongoing','confirmed')
+           )
+         ORDER BY s.last_name, s.first_name"
+    );
+    while ($r = mysqli_fetch_assoc($q)) $rows[] = $r;
 }
 
 // Transmutation helpers
@@ -100,7 +80,7 @@ function remark(string $p): string {
 }
 
 // Summary counts
-$is_past = (int)($selected_class['grades_finalized'] ?? 0) === 1;
+$is_past = false;
 $total   = count($rows);
 $graded  = array_filter($rows, fn($r) => $r['computed_grade'] !== null);
 $passed  = array_filter($graded, fn($r) => transmute((float)$r['computed_grade']) >= 73);
@@ -252,26 +232,10 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
 
     <main>
 
-        <!-- Current / Past toggle -->
-        <div class="sched-toggle-wrapper">
-            <a href="?view=current" class="sched-toggle-btn sched-toggle-btn--current <?php echo $view_mode==='current'?'active':''; ?>">
-                <i class="fa-solid fa-chalkboard"></i> Current Classes
-                <?php if (count($current_classes)): ?>
-                    <span class="sched-toggle-badge sched-toggle-badge--maroon"><?php echo count($current_classes); ?></span>
-                <?php endif; ?>
-            </a>
-            <a href="?view=past" class="sched-toggle-btn sched-toggle-btn--past <?php echo $view_mode==='past'?'active':''; ?>">
-                <i class="fa-solid fa-clock-rotate-left"></i> Past Classes
-                <?php if (count($past_classes)): ?>
-                    <span class="sched-toggle-badge sched-toggle-badge--navy"><?php echo count($past_classes); ?></span>
-                <?php endif; ?>
-            </a>
-        </div>
-
         <!-- Class Selector Card -->
         <div class="class-nav">
             <div class="class-nav-left">
-                <div class="class-nav-title">Gradebook <?php if($view_mode==='past'): ?><span style="font-size:.75rem;color:var(--text-label);font-weight:400;"> - Past / Finalized</span><?php endif; ?></div>
+                <div class="class-nav-title">Gradebook</div>
                 <?php if ($selected_class): ?>
                 <div class="class-meta">
                     <span class="class-meta-badge code" id="metaCode"><?php echo htmlspecialchars($selected_class['subject_code']); ?></span>
@@ -284,7 +248,7 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
             </div>
             <div class="class-nav-right">
                 <form method="GET" id="classSelectForm">
-                    <input type="hidden" name="view" value="<?php echo htmlspecialchars($view_mode); ?>">
+                    <input type="hidden" name="view" value="current">
                     <div class="sched-label-container">
                         <label>Class</label>
                         <select name="class_id" id="classSelect" onchange="this.form.submit()">
@@ -421,11 +385,9 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
                 <button class="btn-export" onclick="exportCSV()">
                     <i class="fa-solid fa-file-csv"></i> Export CSV
                 </button>
-                <?php if (!$is_past): ?>
                 <a href="faculty_spreadsheet.php?class_id=<?php echo $selected_class_id; ?>" class="btn-export" style="background:var(--navy,#0B1F5B);text-decoration:none;">
                     <i class="fa-solid fa-table"></i> Spreadsheet
                 </a>
-                <?php endif; ?>
             </div>
         </div>
 
@@ -436,12 +398,7 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
                     <span class="col-head">#</span>
                     <span class="col-head">STUDENT NO.</span>
                     <span class="col-head col-align-left">FULL NAME (LN, FN MN)</span>
-                    <?php if ($is_past): ?>
-                    <span class="col-head">CLASS<br><small>STANDING</small></span>
-                    <span class="col-head">QUIZ</span>
-                    <span class="col-head">MIDTERMS</span>
-                    <span class="col-head">FINALS</span>
-                    <?php endif; ?>
+
                     <span class="col-head">COMPUTED<br><small>GRADE</small></span>
                     <span class="col-head">TRANSMUTED<br><small>GRADE</small></span>
                     <span class="col-head">POINT<br><small>GRADE</small></span>
@@ -474,12 +431,7 @@ $has_components = ($avg_cs !== null || $avg_qz !== null || $avg_mt !== null || $
                             <span class="student-no"><?php echo htmlspecialchars($r['student_number']); ?></span>
                         </span>
                         <span class="col-side"><?php echo $fullname; ?></span>
-                        <?php if ($is_past): ?>
-                        <span class="col-cg"><?php echo $r['class_standing'] !== null ? number_format((float)$r['class_standing'], 2) : '<span class="no-grade">—</span>'; ?></span>
-                        <span class="col-cg"><?php echo $r['quiz']          !== null ? number_format((float)$r['quiz'],          2) : '<span class="no-grade">—</span>'; ?></span>
-                        <span class="col-cg"><?php echo $r['midterms']      !== null ? number_format((float)$r['midterms'],      2) : '<span class="no-grade">—</span>'; ?></span>
-                        <span class="col-cg"><?php echo $r['finals']        !== null ? number_format((float)$r['finals'],        2) : '<span class="no-grade">—</span>'; ?></span>
-                        <?php endif; ?>
+
                         <span class="col-cg">
                             <?php echo $cg !== null ? number_format($cg, 2) : '<span class="no-grade">-</span>'; ?>
                         </span>

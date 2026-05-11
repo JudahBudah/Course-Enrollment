@@ -38,9 +38,7 @@ $cq = mysqli_query($con,
 while ($r = mysqli_fetch_assoc($cq)) $classes[] = $r;
 
 // Summary stats
-// Active = open classes not yet finalized
-// Finalized = closed classes with grades submitted
-$active_classes = array_filter($classes, fn($c) => !$c['grades_finalized'] && $c['status'] === 'open');
+$active_classes = array_filter($classes, fn($c) => $c['status'] === 'open');
 $total_load     = count($active_classes);
 $total_students = array_sum(array_column(array_values($active_classes), 'enrolled_count'));
 $grades_pending = count(array_filter($active_classes, fn($c) => (int)$c['enrolled_count'] > 0));

@@ -166,10 +166,11 @@
         JOIN subjects s ON c.subject_id = s.subject_id
         LEFT JOIN faculty f ON c.faculty_id = f.faculty_id
         WHERE e.student_id = ? AND e.status IN ('confirmed','ongoing')
+          AND c.semester = ? AND c.school_year = ?
           AND c.schedule_day IS NOT NULL AND c.schedule_day != ''
         ORDER BY c.schedule_time
     ");
-    mysqli_stmt_bind_param($sched_stmt, "i", $user_data['student_id']);
+    mysqli_stmt_bind_param($sched_stmt, "iss", $user_data['student_id'], $cur_sem, $cur_sy);
     mysqli_stmt_execute($sched_stmt);
     $sched_result = mysqli_stmt_get_result($sched_stmt);
     while ($r = mysqli_fetch_assoc($sched_result)) $all_schedule[] = $r;

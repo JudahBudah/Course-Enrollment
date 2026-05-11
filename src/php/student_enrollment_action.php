@@ -76,14 +76,15 @@ function get_block_semester($con, $student_id) {
     return $row['semester'] ?? null;
 }
 
-function already_enrolled_subject($con, $student_id, $subject_id) {
+function already_enrolled_subject($con, $student_id, $subject_id, $school_year, $semester) {
     $chk = mysqli_prepare($con, "
         SELECT e.enrollment_id FROM enrollments e
         JOIN classes c ON e.class_id = c.class_id
         WHERE e.student_id = ? AND c.subject_id = ?
+        AND c.school_year = ? AND c.semester = ?
         AND e.status IN ('reserved','confirmed','ongoing','drop_requested')
     ");
-    mysqli_stmt_bind_param($chk, "ii", $student_id, $subject_id);
+    mysqli_stmt_bind_param($chk, "iiss", $student_id, $subject_id, $school_year, $semester);
     mysqli_stmt_execute($chk);
     mysqli_stmt_store_result($chk);
     $found = mysqli_stmt_num_rows($chk) > 0;
@@ -190,7 +191,7 @@ if ($action === 'self_enroll') {
         header("Location: ../pages/student/student_enrollment.php?error=wrong_year"); die;
     }
 
-    if (already_enrolled_subject($con, $student_id, $class['subject_id'])) {
+    if (already_enrolled_subject($con, $student_id, $class['subject_id'], $class['school_year'], $class['semester'])) {
         header("Location: ../pages/student/student_enrollment.php?error=already_enrolled"); die;
     }
 

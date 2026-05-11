@@ -132,9 +132,6 @@ if ($action === 'save_cell') {
     if (!facultyOwnsClass($con, $class_id, $faculty_id)) {
         echo json_encode(['ok'=>false,'msg'=>'Unauthorized']); die;
     }
-    if (isFinalized($con, $class_id)) {
-        echo json_encode(['ok'=>false,'msg'=>'Grades are finalized and cannot be changed.']); die;
-    }
 
     $allowed = ['class_standing','quiz','midterms','finals'];
     if (!in_array($field, $allowed)) {
@@ -194,10 +191,6 @@ if ($action === 'finalize_class') {
     if (!$owns) {
         echo json_encode(['ok'=>false,'msg'=>'Unauthorized']); die;
     }
-    if (isFinalized($con, $class_id)) {
-        echo json_encode(['ok'=>false,'msg'=>'Already finalized']); die;
-    }
-
     // Get class info for grades table
     $class_info = mysqli_fetch_assoc(mysqli_query($con,
         "SELECT semester, school_year, subject_id FROM classes WHERE class_id = $class_id"
