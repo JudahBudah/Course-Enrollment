@@ -167,7 +167,6 @@ enrollments     → grade_entries
 softdevset@gmail.com - Applicant
 
 
-kevsistired@gmail.com - Faculty
 
 sarah.johnson@university.edu - Faculty
 
